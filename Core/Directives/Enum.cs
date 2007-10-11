@@ -28,7 +28,7 @@ namespace Core.Directives {
 			int[] Args = source.GetCommaDelimitedArguments(index + 2);
 
 			TokenisedSource.Token EnumName = source.Tokens[index + 1];
-			compiler.Labels.EnterModule(EnumName.Name);
+			compiler.Labels.EnterModule(EnumName.Data);
 			
 			Label DefaultCreator = new Label(compiler.Labels, 0, false);
 			compiler.Labels.ImplicitCreationDefault = DefaultCreator;

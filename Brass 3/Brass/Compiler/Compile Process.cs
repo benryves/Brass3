@@ -24,16 +24,8 @@ namespace Brass3 {
 
 					foreach (KeyValuePair<TokenisedSource.Token, TokenisedSource> MacroArguments in tokenReplacements) {
 						for (int i = 0; i < Duplicate.Source.Tokens.Length; ++i) {
-							if (Duplicate.Source.Tokens[i].Name.ToLower() == MacroArguments.Key.Name.ToLower()) {
+							if (Duplicate.Source.Tokens[i].DataLowerCase == MacroArguments.Key.DataLowerCase) {
 								TokenisedSource.Token[] Replacement = MacroArguments.Value.Tokens;
-								string Prefix = Duplicate.Source.Tokens[i].NamePrefix;
-								string Suffix = Duplicate.Source.Tokens[i].NameSuffix;
-								if (!string.IsNullOrEmpty(Prefix) || !string.IsNullOrEmpty(Suffix)){
-									Replacement = new TokenisedSource.Token[Replacement.Length];
-									Array.Copy(MacroArguments.Value.Tokens, Replacement, Replacement.Length);
-								}
-								if (!string.IsNullOrEmpty(Prefix)) Replacement[0] = Replacement[0].Clone(Prefix + Replacement[0].Data) as TokenisedSource.Token;
-								if (!string.IsNullOrEmpty(Suffix)) Replacement[Replacement.Length - 1] = Replacement[0].Clone(Replacement[Replacement.Length - 1].Data + Suffix) as TokenisedSource.Token;
 								Duplicate.Source.ReplaceToken(i, Replacement);
 								//i = 0;
 							}

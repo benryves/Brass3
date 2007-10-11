@@ -26,7 +26,7 @@ namespace Core.Directives {
 
 			int CurrentFieldOffset = 0;
 
-			DataStructure NewStruct = new DataStructure(StructName.Name);
+			DataStructure NewStruct = new DataStructure(StructName.Data);
 
 			foreach (int Arg in Args) {
 				TokenisedSource Field = source.GetExpressionTokens(Arg).Clone() as TokenisedSource;
@@ -49,9 +49,9 @@ namespace Core.Directives {
 					ArraySize = (int)(Field.EvaluateExpression(compiler, 1).Value);
 				}
 
-				string FieldName = Field.Tokens[Field.Tokens.Length - 1].Name;
-				DataStructure FieldType = compiler.GetStructureByName(Field.Tokens[0].Name);
-				if (FieldType == null) throw new CompilerExpection(Field.Tokens[0], "Undefined data type '" + Field.Tokens[0].Name + "'.");
+				string FieldName = Field.Tokens[Field.Tokens.Length - 1].Data;
+				DataStructure FieldType = compiler.GetStructureByName(Field.Tokens[0].Data);
+				if (FieldType == null) throw new CompilerExpection(Field.Tokens[0], "Undefined data type '" + Field.Tokens[0].Data + "'.");
 
 
 				DataStructure.Field F = new DataStructure.Field(FieldName, FieldType, CurrentFieldOffset, ArraySize);

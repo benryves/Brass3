@@ -73,8 +73,8 @@ namespace Variables {
 
 			source.GetCommaDelimitedArguments(index + 1);
 
-			DataStructure VarType = compiler.GetStructureByName(source.Tokens[index + 1].Name);
-			if (VarType == null) throw new CompilerExpection(source.Tokens[index + 1], string.Format("Unrecognised variable type '{0}'.", source.Tokens[index + 1].Name));
+			DataStructure VarType = compiler.GetStructureByName(source.Tokens[index + 1].Data);
+			if (VarType == null) throw new CompilerExpection(source.Tokens[index + 1], string.Format("Unrecognised variable type '{0}'.", source.Tokens[index + 1].Data));
 
 			int NameListIndex = index + 2;
 			int ElementCount = 1;
@@ -91,14 +91,14 @@ namespace Variables {
 
 			foreach (int NameArg in source.GetCommaDelimitedArguments(NameListIndex, 1, int.MaxValue)) {
 				TokenisedSource.Token T = source.GetExpressionToken(NameArg);
-				if (!Label.IsValidLabelName(T.Name)) {
-					throw new CompilerExpection(T, string.Format("Invalid variable name '{0}'.", T.Name));
+				if (!Label.IsValidLabelName(T.Data)) {
+					throw new CompilerExpection(T, string.Format("Invalid variable name '{0}'.", T.Data));
 				}
 
-				TokenisedSource.Token VarName = T.Clone(compiler.Labels.ModuleGetFullPath(T.Name)) as TokenisedSource.Token;
+				TokenisedSource.Token VarName = T.Clone(compiler.Labels.ModuleGetFullPath(T.Data)) as TokenisedSource.Token;
 				string VarNameLower = VarName.Data.ToLowerInvariant();
 
-				if (AlreadyAllocated.Contains(VarNameLower)) throw new CompilerExpection(T, string.Format("Variable '{0}' already declared.", VarName.Name));
+				if (AlreadyAllocated.Contains(VarNameLower)) throw new CompilerExpection(T, string.Format("Variable '{0}' already declared.", VarName.Data));
 
 				ToAllocate.Add(new VariableToAllocate(T, VarType, ElementCount));
 				AlreadyAllocated.Add(VarNameLower);
@@ -136,12 +136,12 @@ namespace Variables {
 					// Sort by free space:
 					this.VariableLocations.Sort();
 
-					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerExpection(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Name));
+					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerExpection(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Data));
 					Label StructLabel = compiler.Labels.Create(Var.Name);
 					StructLabel.Value = this.VariableLocations[0].CurrentOffset;
 					StructLabel.Type = Var.DataType;
 					foreach (KeyValuePair<string, DataStructure.Field> Field in Var.DataType.GetAllFields()) {
-						TokenisedSource.Token StructField = new TokenisedSource.Token(LabelCollection.ModuleCombine(Var.Name.Name, Field.Key));
+						TokenisedSource.Token StructField = new TokenisedSource.Token(LabelCollection.ModuleCombine(Var.Name.Data, Field.Key));
 						Label StructFieldLabel = compiler.Labels.Create(StructField);
 						StructFieldLabel.Value = this.VariableLocations[0].CurrentOffset + Field.Value.Offset;
 						StructFieldLabel.Type = Field.Value.DataType;						

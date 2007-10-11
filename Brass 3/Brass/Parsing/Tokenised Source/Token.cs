@@ -109,43 +109,6 @@ namespace Brass3 {
 				return this.ExpressionGroup + ":" + this.Type.ToString() + " [" + this.Data + "]";
 			}
 
-			/// <summary>
-			/// Gets the name from the token.
-			/// </summary>
-			/// <remarks>For example: "#define" has a name of "define".</remarks>
-			public string Name {
-				get {
-					if (this.data.Length > 0) {
-						if (this.data[0] == '.' || this.data[0] == '#') {
-							return this.data.Substring(1);
-
-						} else if (this.data[0] == ':') {
-							return this.data.Substring(1);
-						} else if (this.data[this.data.Length - 1] == ':') {
-							return this.data.Remove(this.data.Length - 1);
-						} else {
-							return this.data;
-						}
-					} else {
-						return this.data;
-					}
-				}
-			}
-
-			public string NamePrefix {
-				get {
-					if (this.data.Length > 0 && this.data[0] == '.' || this.data[0] == '#' || this.data[0] == ':') return this.data[0].ToString();
-					return null;
-				}
-			}
-
-
-			public string NameSuffix {
-				get {
-					if (this.data.Length > 0 && this.data[this.data.Length - 1] == ':') return ":";
-					return null;
-				}
-			}
 
 			/// <summary>
 			/// Gets true if a token is an open bracket or parenthesis.
