@@ -1,0 +1,6448 @@
+;
+; GEMINI
+;
+; The final raycast version! Read readme.txt for more info.
+;
+; Menu:
+;  Up			-> Move up selection
+;  Down			-> Move down selection
+;  2nd			-> Select
+;
+; Keys:
+;	Up		-> Walk forward
+;	Down		-> Walk backward
+;	Left		-> Turn left
+;	Right		-> Turn right
+;	ALPHA		-> Sidestep left
+;	XT@n		-> Sidestep right
+;	2nd | MODE	-> Shoot
+;	Del			-> Open door
+;	Clear		-> Exit
+;	^			-> Exit to main menu
+;
+; When a level is finished:
+;   Y=			-> Yes
+;	Window		-> No
+;
+.nolist
+#define TI83P
+#include "ion.inc"
+#include "extras.inc"
+; Hardly used... Please don't alter these
+#define CIRCLE				256
+#define QUARTER				64
+#define HALF				128
+#define QUARTER3			192
+
+; Important distances
+#define WALL_DIST			64
+#define ITEM_DIST			64
+#define TELEPORT_DIST		96
+#define SKIP_DIST			32
+#define KNIFE_DIST			128
+#define OBJECT_DEPTH		32
+
+; Aim precision
+#define	KNIFE_AIM			32
+#define HANDGUN_AIM			6
+#define SHOTGUN_AIM			16
+#define CHAINGUN_AIM		8
+#define PLASMARIFLE_AIM		12
+
+; Weapon power
+#define KNIFE				2
+#define HANDGUN				1
+#define SHOTGUN				6
+#define CHAINGUN			1
+#define PLASMARIFLE			12
+
+; Weapon delays
+#define SHOTGUN_DELAY		4
+#define PLASMARIFLE_DELAY	6
+
+; Player status item-boosts
+#define MAX_HEALTH			96
+#define MAX_ARMOR			96
+#define SMALL_HEALTH		12
+#define BIG_HEALTH			24
+#define SMALL_ARMOR			12
+#define BIG_ARMOR			24
+
+; Time till enemies fall to the ground after they've been shot to death
+#define ENEMY_DIE			3
+
+
+;
+; Coming up, looong variable list...
+;
+
+
+done			= saferam1;
+nextLevel		= done + 1;
+
+; Player data
+playerX			= nextLevel + 1;
+playerY			= playerX + 2;
+sin				= playerY + 2;
+cos				= sin + 1;
+playerDX		= cos + 1;
+playerDY		= playerDX + 1;
+newPlayerX		= playerDY + 1;
+newPlayerY		= newPlayerX + 2;
+playerAngle		= newPlayerY + 2;
+playerDis		= playerAngle + 1;
+playerKeys		= playerDis + 1;
+playerMove		= playerKeys + 1;
+
+; Player status
+health			= playerMove + 1;
+armor			= health + 1;
+
+; Player weapon status
+curWeapon		= armor + 1;
+attacking		= curWeapon + 1;
+frame			= attacking + 1;
+clips			= frame + 1;
+shells			= clips + 1;
+bullets			= shells + 1;
+clip			= bullets + 1;
+slot			= clip + 1;
+cells			= slot + 1;
+reload			= cells + 1;
+
+; Global casting stuff
+angle			= reload + 1;
+column			= angle + 1;
+
+; Ray-specific data
+xx				= column + 1;
+dx				= xx + 1;
+
+yy				= dx + 2;
+
+; For drawing
+hit				= yy + 1;
+sidehitX		= hit + 1;
+sidehitY		= sidehitX + 1;
+u				= sidehitY + 1;
+height			= u + 1;
+scrBit			= height + 1;
+
+; Visited tiles and Z-buffer
+visited			= scrBit + 1;
+zBuffer			= visited + 128;
+
+; Object temp
+ox				= zBuffer + 128;
+oy				= ox + 2;
+dist			= oy + 2;
+width			= dist + 2;
+clippedHeight	= width + 1;
+v				= clippedHeight + 1;
+
+; Level
+doors			= v + 2;
+pushable		= doors + 12;
+
+; Object info
+curObject		= pushable + 3;
+object			= curObject + 1;
+objects			= object + 2;
+visObjects		= objects + 1;
+objectData		= visObjects + 1;
+
+; Specific object data
+objectSprite	= objectData + 2;
+objectX			= objectSprite + 2;
+objectY			= objectX + 2;
+
+; Game difficulty
+difficulty		= objectY + 2;
+
+; Level number (0..n)
+levelNum		= difficulty + 1;
+; Pointer to object data in current level
+levelData		= levelNum + 1;
+levelEnd		= levelData + 2;
+
+; Scan-line storage
+dy				= levelEnd + 2;
+cycle			= dy + 1;
+
+; Screen flashing (0 = none, 1 = black, 2 = slightly white, 3 = done)
+flash			= cycle + 1;
+
+; End when unpacking
+compEnd			= flash + 1;
+
+; Kill info
+kills			= compEnd + 2;
+hits			= kills + 2;
+shots			= hits + 2;
+secrets			= shots + 2;
+
+; Random dummy
+randData		= secrets + 1;
+
+.list
+
+
+; ==== ;
+; Main ;
+; ==== ;
+
+#ifdef TI83P
+	.org	progstart - 2
+	.db	$BB, $6D
+	ret
+#ifdef MIRAGEOS
+	.db	1
+	.db	%11111111, %11111110
+	.db %10100101, %00101000
+	.db %01101100, %00100000
+	.db %00100101, %00100000
+	.db %00100101, %00101000
+	.db %11111111, %11111110
+	.db %11000001, %00000110
+	.db %10000000, %10000010
+	.db %10000000, %10000010
+	.db %10111000, %10100010
+	.db %11110001, %00110010
+	.db %10111000, %10110010
+	.db %10000000, %10000010
+	.db %10000000, %10000010
+	.db %11000001, %00000110
+#else
+	jr	nc, begin
+#endif
+#else
+	.org progstart
+	ret
+	jr	nc, begin
+#endif
+	.db	"GEMINI - by coelurus", 0
+
+begin:
+
+	; ---- ;
+	; Menu ;
+	; ---- ;
+
+	; Be sure to fix contrast
+	ld	a, (contrast)
+	add	a, 216
+	out	($10), a
+
+	ld	a, 2
+	ld	(difficulty), a
+
+mainMenu:
+
+	ld	a, $1A
+	ld	(yy), a
+
+mainMenuRedraw:
+
+	call	clear
+
+	; Unpack GEMINI-logo
+	ld	hl, level + (96*16/8)
+	ld	(compEnd), hl
+	ld	hl, geminiLogo
+	call	decompressData
+
+	; Draw logo
+	ld	ix, level
+	ld	hl, gbuf
+	ld	c, 16
+
+mainLogo:
+
+	ld	b, 12
+
+mainInnerLogo:
+	ld	a, (ix)
+	ld	(hl), a
+	inc	ix
+	inc	hl
+	djnz	mainInnerLogo
+
+	dec	c
+	jr	nz, mainLogo
+
+	ld	a, 255
+	ld	c, 48
+
+mainFill:
+
+	ld	b, 12
+
+mainInnerFill:
+	ld	(hl), a
+	inc	hl
+	djnz	mainInnerFill
+
+	dec	c
+	jr	nz, mainFill
+
+	set	7, (iy + 20)
+	set	3, (iy + 5)
+
+	ld	hl, $1B20
+	ld	(pencol), hl
+	ld	hl, newgame
+	bcall(_vputs)
+
+	ld	hl, $2120
+	ld	(pencol), hl
+	ld	hl, resume
+	bcall(_vputs)
+
+	ld	hl, $2720
+	ld	(pencol), hl
+	ld	a, (difficulty)
+	dec	a
+	jr	z, mainMenuHard
+	dec	a
+	jr	z, mainMenuMedium
+	ld	hl, easy
+	jp	mainMenuDifficulty
+mainMenuHard:
+	ld	hl, hard
+	jp	mainMenuDifficulty
+mainMenuMedium:
+	ld	hl, medium
+mainMenuDifficulty:
+	bcall(_vputs)
+
+	ld  hl, $2D20
+	ld  (pencol), hl
+	ld	hl, quit
+	bcall(_vputs)
+
+	ld	hl, $3901
+	ld	(pencol), hl
+	ld	hl, author
+	bcall(_vputs)
+
+	res	3, (iy + 5)
+	res	7, (iy + 20)
+
+	; The dots over the 'o' in my last name :)
+	ld	hl, gbuf + 700
+	ld	a, %01011111
+	and	(hl)
+	ld	(hl), a
+
+mainMenuLoop:
+
+	; Draw cursor
+	ld	hl, gbuf
+	ld	b, 0
+	ld	a, (yy)
+	ld	c, a
+	sla	c
+	sla	c
+	add	hl, bc
+	add	hl, bc
+	add	hl, bc
+	inc	hl
+	inc	hl
+
+	ld	ix, arrowCursor
+	ld	de, 12
+	ld	b, 8
+
+mainMenuDrawArrow:
+	ld	a, (ix)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	mainMenuDrawArrow
+
+	; Gotta add some delay
+	push	hl
+	ld	b, 12
+mainMenuDelay:
+	push	bc
+	call	flip
+	pop	bc
+	djnz	mainMenuDelay
+	pop	hl
+
+mainMenuPoll:
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, UpperRow
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+	and	K_2nd
+	jr	nz, mainMenuChosen
+
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, Arrows
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+	ld	c, a
+	and	%00001001
+	jr	z, mainMenuPoll
+
+	; Clear arrow
+	ld	a, 255
+	ld	de, -96
+	add	hl, de
+	ld	de, 12
+	ld	b, 8
+
+mainMenuClearArrow:
+	ld	(hl), a
+	add	hl, de
+	djnz	mainMenuClearArrow
+
+	; Up arrow pressed
+	ld	a, c
+	and	K_Up
+	jr	z, mainMenuDown
+	ld	a, (yy)
+	sub	6
+	cp	$1A
+	jr	nc, mainMenuUpOK
+	ld	a, $1A
+
+mainMenuUpOK:
+
+	ld	(yy), a
+	jp	mainMenuLoop
+
+mainMenuDown:
+
+	; Down arrow pressed
+	ld	a, (yy)
+	add	a, 6
+	cp	$2D
+	jr	c, mainMenuDownOK
+	ld	a, $2C
+
+mainMenuDownOK:
+
+	ld	(yy), a
+	jp	mainMenuLoop
+
+mainMenuChosen:
+
+	ld	a, (yy)
+	cp	$1A
+	jr	z, mainNewGame
+	cp	$20
+	jr	z, mainResume
+	cp	$2C
+	jp	z, mainQuit
+
+	; -------------- ;
+	; Set difficulty ;
+	; -------------- ;
+
+	ld	a, (difficulty)
+	dec	a
+	ld	(difficulty), a
+	or	a
+	jp	nz, mainMenuRedraw
+	ld	a, 3
+	ld	(difficulty), a
+	jp	mainMenuRedraw
+
+	; -------------------------- ;
+	; Initialization of New Game ;
+	; -------------------------- ;
+
+mainNewGame:
+
+	; Start at level 0
+	xor	a
+	ld	(levelNum), a
+
+	ld	a, MAX_HEALTH
+	ld	(health), a
+	xor	a
+	ld	(armor), a
+
+	ld	(curWeapon), a
+	ld	(clips), a
+	ld	(shells), a
+	ld	(bullets), a
+	ld	(cells), a
+	ld	(clip), a
+	ld	(slot), a
+
+	ld	hl, 0
+	ld	(kills), hl
+
+	jp	mainGame
+
+	; ----------------------------- ;
+	; Initialization of Stored Game ;
+	; ----------------------------- ;
+
+mainResume:
+
+	ld	a, (storeDifficulty)
+	ld	(difficulty), a
+
+	ld	a, (storeLevelNum)
+	ld	(levelNum), a
+	or	a
+	jr	z, mainNewGame		; No game stored, make sure player doesn't get 0's
+
+	ld	hl, (storeStatus)
+	ld	a, l
+	ld	(health), a
+	ld	a, h
+	ld	(armor), a
+
+	ld	a, (storeWeapon)
+	ld	(curWeapon), a
+
+	ld	hl, (storeHandgun)
+	ld	a, l
+	ld	(clips), a
+	ld	a, h
+	ld	(clip), a
+
+	ld	hl, (storeShotgun)
+	ld	a, l
+	ld	(shells), a
+	ld	a, h
+	ld	(slot), a
+
+	ld	a, (storeChaingun)
+	ld	(bullets), a
+
+	ld	a, (storePlasmarifle)
+	ld	(cells), a
+
+	ld	hl, (storeKills)
+	ld	(kills), hl
+
+	; ---------------------- ;
+	; Initialization of Game ;
+	; ---------------------- ;
+
+mainGame:
+
+	ld	a, (contrast)
+	add	a, 216
+	out	($10), a
+
+	ld	a, 255
+	call	wipe
+	xor	a
+	call	wipe
+
+	xor	a
+	ld	(nextLevel), a
+	ld	(attacking), a
+	ld	(frame), a
+	ld	(reload), a
+	ld	(flash), a
+	ld	(secrets), a
+
+	; Init level
+	ld	hl, level + 1024
+	ld	(compEnd), hl
+	ld	a, (levelNum)
+	or	a
+	jr	z, levelNum0
+	dec	a
+	jr	z, levelNum1
+	dec	a
+	jr	z, levelNum2
+	ld	hl, level3
+	jr	levelFound
+levelNum0:
+	ld	hl, level0
+	jr	levelFound
+levelNum1:
+	ld	hl, level1
+	jr	levelFound
+levelNum2:
+	ld	hl, level2
+levelFound:
+
+	push	hl
+	inc	hl
+	inc	hl
+	call	decompressData
+	pop	hl
+
+	; Get level-data structure
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	inc	hl
+	add	hl, de
+	ld	(levelData), hl
+
+	call	resetLevel
+	call	resetPlayer
+	call	resetObjects
+
+	xor	a
+	ld	(done), a
+	ld	(playerKeys), a
+	ld	(playerMove), a
+
+	; Draw once
+	call	clear
+	call	raycast
+	call	objs
+	call	weapon
+	call	hud
+	call	flip
+
+	; Reset shooting stuff
+	ld	hl, 0
+	ld	(hits), hl
+	ld	(shots), hl
+
+	; --------- ;
+	; Game loop ;
+	; --------- ;
+
+mainGameLoop:
+
+	; Screen flashing?
+	ld	a, (flash)
+	or	a
+	jr	z, mainFlashDone
+	dec	a
+	jr	z, mainFlashBlack
+	dec	a
+	jr	z, mainFlashWhite
+	xor	a
+	ld	(flash), a
+	ld	a, (contrast)
+	add	a, $18
+	jp	mainFlasher
+
+mainFlashBlack:
+
+	ld	a, 3
+	ld	(flash), a
+	ld	a, (contrast)
+	add	a, $1D
+	jp	mainFlasher
+
+mainFlashWhite:
+
+	ld	a, 3
+	ld	(flash), a
+	ld	a, (contrast)
+	add	a, $13
+
+mainFlasher:
+
+	or	$C0
+	push	af
+	push	hl
+	pop	hl
+	pop	af
+	out	($10), a
+
+mainFlashDone:
+
+	call	clear
+
+	; Draw everything
+	call	raycast
+
+	call	objs
+	ld	a, (done)
+	dec	a
+	jp	z, begin
+	ld	a, (nextLevel)
+	or	a
+	jp	nz, mainGame
+
+	call	weapon
+
+	call	hud
+
+	call	flip
+
+	xor	a
+	ld	(playerMove), a
+	call	update
+
+	ld	a, (done)
+	or	a
+	jr	z, mainGameLoop
+	dec	a
+	jp	z, begin
+
+	; Quit
+
+mainQuit:
+
+	ld	a, (contrast)
+	add	a, 216
+	out	($10), a
+
+	ld	a, 255
+	call	wipe
+	xor	a
+	jp	wipe
+
+; ================================== ;
+; Pretty advanced raycasting routine ;
+; ================================== ;
+raycast:
+
+	; Shut down interrupts, shadow registers will be used when texturing
+	di
+
+	; Convert player direction into tracing direction
+	ld	a, (playerAngle)
+	add	a, 32
+	ld	(angle), a
+
+	; Reset column counter
+	ld	a, 63
+	ld	(column), a
+
+	; Reset screen bit
+	xor	a
+	ld	(scrBit), a
+
+	; Clear visited-array
+	ld	hl, visited
+	ld	b, 128
+	xor	a
+
+raycastClearVisited:
+
+	ld	(hl), a
+	inc	hl
+	djnz	raycastClearVisited
+
+	; Must put player into the visited array
+	ld	hl, visited
+	ld	a, (playerY + 1)
+	sla	a
+	sla	a
+	ld	c, a
+	add	hl, bc
+	ld	a, (playerX + 1)
+	ld	c, a
+	srl	c
+	srl	c
+	srl	c
+	add	hl, bc
+	ex	de, hl
+	ld	hl, masks
+	and	7
+	ld	c, a
+	add	hl, bc
+	ld	a, (hl)
+	ex	de, hl
+	or	(hl)
+	ld	(hl), a
+
+	; Store Z-buffer pointer
+	ld	hl, zBuffer + 127
+	push	hl
+
+raycastColumnLoop:
+
+	; ----------- ;
+	; Setup X-ray ;
+	; ----------- ;
+
+	; xx = playerX >> SHIFT
+	ld	a, (playerX + 1)
+	ld	hl, xx
+	ld	(hl), a
+
+	; if (angle < QUARTER || angle > QUARTER3) goto raycastXRayRight
+	ld	a, (angle)
+	ld	c, a
+	add	a, QUARTER
+	and	%10000000
+	jr	z, raycastXRayRight
+
+	; xx--
+	dec	(hl)
+
+	; xxs = -1
+	ld	a, $35
+	ld	(raycastXRayXX), a
+
+	; For door-side hit
+	ld  a, $23
+	ld  (raycastXRayWall), a
+
+	; tx = playerX & 255
+	ld	a, (playerX)
+
+	jr	raycastXRayLeft
+
+raycastXRayRight:
+
+	; xx++
+	inc	(hl)
+
+	; xxs = 1
+	ld	a, $34
+	ld	(raycastXRayXX), a
+
+	; For door-side hit
+	ld  a, $2B
+	ld  (raycastXRayWall), a
+
+	; tx = -(playerX & 255)
+	ld	a, (playerX)
+	cpl
+
+raycastXRayLeft:
+
+	ld	e, c
+
+	; xys = tantbl[angle]
+	ld	hl, tantbl
+	ld	b, 0
+	sla	c
+	rl	b
+	add	hl, bc
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	ld	(raycastXRayXYS + 1), bc
+
+	; yxs = tantbl[angle + QUARTER]
+	ld	bc, 2*QUARTER - 1
+	add	hl, bc
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	ld	(raycastYRayYXS + 1), bc
+
+	; dxs = dtbl[angle]
+	ld	hl, dtbl
+	ld	d, 0
+	sla	e
+	rl	d
+	add	hl, de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(raycastXRayDXS + 1), de
+
+	; dys = dtbl[angle + QUARTER]
+	ld	bc, 2*QUARTER - 1
+	add	hl, bc
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	ld	(raycastYRayDYS + 1), bc
+
+	; dx = tx * dxs >> SHIFT
+	call	ade
+	push	hl
+	pop	ix
+
+	; xy = playerY + (tx * xys >> SHIFT)
+	ld	a, b
+	ld	de, (raycastXRayXYS + 1)
+	call	ade
+	ld	de, (playerY)
+	add	hl, de
+	push	hl
+
+	; Go straight to tile-checking
+	jr	raycastXRayEntry
+
+	; ---------- ;
+	; Cast X-ray ;
+	; ---------- ;
+
+raycastXRayLoop:
+
+	; xx += (-)1
+	ld	hl, xx
+raycastXRayXX:
+	nop
+
+	; dx += dxs
+raycastXRayDXS:
+	ld	de, 0
+	add	ix, de
+
+	; xy += xys
+	pop	hl
+raycastXRayXYS:
+	ld	de, 0
+	add	hl, de
+	push	hl
+
+	; Range checking
+	ld	a, ixh
+	and	$F8
+	jp	nz, raycastYRay
+	ld	a, h
+	and	$E0
+	jp	nz, raycastYRay
+
+raycastXRayEntry:
+
+	; Mark cell as visited
+	ld	l, h
+	ld	h, 0
+	sla	l
+	sla	l
+	ld	a, (xx)
+	ld	b, 0
+	ld	c, a
+	srl	c
+	srl	c
+	srl	c
+	add	hl, bc
+	ld	bc, visited
+	add	hl, bc
+	ex	de, hl
+	and	7
+	ld	b, 0
+	ld	c, a
+	ld	hl, masks
+	add	hl, bc
+	ld	a, (hl)
+	ex	de, hl
+	or	(hl)
+	ld	(hl), a
+
+	; Get tile data
+	pop	hl
+	push	hl
+	ld	l, h
+	ld	h, 0
+	sla	l
+	sla	l
+	sla	l
+	sla	l
+	rl	h
+	sla	l
+	rl	h
+	ld	a, (xx)
+	ld	c, a
+	add	hl, bc
+	ld	bc, level
+	add	hl, bc
+	ld	a, (hl)
+	or	a
+	jp	z, raycastXRayLoop		; cell = path
+	ld	c, a
+	and	%10000000
+	jp	nz, raycastXRayDoor		; cell = door
+	ld	a, c
+	and	%01000000
+	jp	nz, raycastXRayPushable	; cell = pushable
+
+	; Did we hit a door side?
+raycastXRayWall:
+	nop							; inc/dec hl
+	ld	a, (hl)
+	ld	b, a
+	and	%10000000
+	jp	z, raycastYRay
+
+	; Use a door-side texture
+	ld	a, b
+	ld	(sidehitX), a
+	and	%00000111
+	or	%00010000
+	ld	c, a
+	jp	raycastYRay
+
+raycastXRayDoor:
+
+	; hl = xy, a = xy >> SHIFT
+	pop	hl
+	push	hl
+	ld	a, h
+
+	; xy + xys / 2
+	ld	de, (raycastXRayXYS + 1)
+	sra	d
+	rr	e
+	add	hl, de
+
+	; Same cell?
+	cp	h
+	jp	nz, raycastXRayLoop		; Didn't hit the door, continue tracing
+
+	; Active door?
+	ld	a, c
+	and	%01100000
+	jr	z, raycastXRayDoorHit	; Nope, just draw it
+
+	; Is the door open past the intersection?
+	push	hl
+	ld	hl, doors
+	dec	a
+	srl	a
+	srl	a
+	srl	a
+	and	%00001100
+	inc	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (hl)
+	pop	hl
+	sub	l
+	jp	nc, raycastXRayLoop		; Yup, continue tracing
+
+	; Door displaced, move texture
+	cpl
+	ld	l, a
+
+raycastXRayDoorHit:
+
+	; OK, we hit the door, fix distance
+	pop	de
+	push	hl
+	ld	de, (raycastXRayDXS + 1)
+	sra	d
+	rr	e
+	add	ix, de
+	jp	raycastYRay
+
+raycastXRayPushable:
+
+	; Is it already open?
+	ld	a, c
+	and	%00100000
+	jp	nz, raycastXRayLoop
+
+	; Is it totally closed?
+	ld	a, (pushable)
+	or	a
+	jr	z, raycastYRay			; No active pushables
+
+	ld	b, a
+	ld	a, c
+	ld	(hit), a
+	ld	a, b
+
+	; Did we really hit the pushable?
+	ld	de, (raycastXRayXYS + 1)
+	call	ade
+	pop	de
+	push	de
+	add	hl, de
+	ld	a, d
+	cp	h
+	jp	nz, raycastXRayLoop		; No, continue tracing
+
+	; We did hit it, store new data
+	pop	de
+	push	hl
+	ld	a, (pushable)
+	ld	de, (raycastXRayDXS + 1)
+	call	ade
+	ex	de, hl
+	add	ix, de
+
+	ld	a, (hit)
+	ld	c, a
+
+	; ----------- ;
+	; Setup Y-ray ;
+	; ----------- ;
+
+raycastYRay:
+
+	; OK, a little X-ray here...
+	ld	a, c
+	ld	(hit), a
+	ld	(dx), ix
+	pop	hl
+	ld	a, l
+	ld	(u), a
+
+	; yy = playerY >> SHIFT
+	ld	a, (playerY + 1)
+	ld	hl, yy
+	ld	(hl), a
+
+	; if (angle < HALF) goto raycastYRayDown
+	ld	a, (angle)
+	and	%10000000
+	jr	z, raycastYRayDown
+
+	; yy--
+	dec	(hl)
+
+	; yys = -1
+	ld	a, $35
+	ld	(raycastYRayYY), a
+
+	; For door-side check
+	ld  bc, 32
+	ld  (raycastYRayWall + 1), bc
+
+	; ty = playerY & 255
+	ld	a, (playerY)
+
+	jp	raycastYRayUp
+
+raycastYRayDown:
+
+	; yy++
+	inc	(hl)
+
+	; yys = 1
+	ld	a, $34
+	ld	(raycastYRayYY), a
+
+	; For door-side hit
+	ld  bc, -32
+	ld  (raycastYRayWall + 1), bc
+
+	; ty = -(playerY & 255)
+	ld	a, (playerY)
+	cpl
+
+raycastYRayUp:
+
+	; dy = ty * dys >> SHIFT
+	ld	de, (raycastYRayDYS + 1)
+	call	ade
+	push	hl
+	pop	ix
+
+	; yx = playerX + (ty * yxs >> SHIFT)
+	ld	a, b
+	ld	de, (raycastYRayYXS + 1)
+	call	ade
+	ld	de, (playerX)
+	add	hl, de
+	push	hl
+
+	jr	raycastYRayEntry
+
+	; ---------- ;
+	; Cast Y-ray ;
+	; ---------- ;
+
+raycastYRayLoop:
+
+	; yy += (-)1
+	ld	hl, yy
+raycastYRayYY:
+	nop
+
+	; dy += dys
+raycastYRayDYS:
+	ld	de, 0
+	add	ix, de
+
+	; yx += yxs
+	pop	hl
+raycastYRayYXS:
+	ld	de, 0
+	add	hl, de
+	push	hl
+
+	; Range checking
+	ld	a, ixh
+	and	$F8
+	jp	nz, raycastDistances
+	ld	a, h
+	and	$E0
+	jp	nz, raycastDistances
+
+raycastYRayEntry:
+
+	; Mark cell as visited
+	ld	a, (yy)
+	ld	b, 0
+	ld	c, a
+	sla	c
+	sla	c
+	ld	a, h
+	ld	l, a
+	ld	h, 0
+	srl	l
+	srl	l
+	srl	l
+	add	hl, bc
+	ld	bc, visited
+	add	hl, bc
+	ex	de, hl
+	and	7
+	ld	b, 0
+	ld	c, a
+	ld	hl, masks
+	add	hl, bc
+	ld	a, (hl)
+	ex	de, hl
+	or	(hl)
+	ld	(hl), a
+
+	; Check tile
+	pop	hl
+	push	hl
+	ld	l, h
+	ld	h, 0
+	ld	a, (yy)
+	ld	c, a
+	sla	c
+	sla	c
+	sla	c
+	sla	c
+	rl	b
+	sla	c
+	rl	b
+	add	hl, bc
+	ld	bc, level
+	add	hl, bc
+	ld	a, (hl)
+	or	a
+	jp	z, raycastYRayLoop			; cell = path
+	ld	c, a
+	and	%10000000
+	jp	nz, raycastYRayDoor			; cell = door
+	ld	a, c
+	and	%01000000
+	jp	nz, raycastYRayPushable		; cell = pushable
+
+	; Did we hit a door side?
+raycastYRayWall:
+	ld	de, 0						; 32/-32
+	add	hl, de
+	ld	a, (hl)
+	ld	b, a
+	and	%10000000
+	jr	z, raycastDistances
+
+	; Use a door-side texture
+	ld	a, b
+	ld	(sidehitY), a
+	and	%00000111
+	or	%00010000
+	ld	c, a
+	jp	raycastDistances
+
+raycastYRayDoor:
+
+	; hl = yx, a = yx >> SHIFT
+	pop	hl
+	push	hl
+	ld	a, h
+
+	; yx + yxs / 2
+	ld	de, (raycastYRayYXS + 1)
+	sra	d
+	rr	e
+	add	hl, de
+
+	; Same cell?
+	cp	h
+	jp	nz, raycastYRayLoop
+
+	; Active?
+	ld	a, c
+	and	%01100000
+	jr	z, raycastYRayDoorHit		; Not active, draw door
+
+	; Is the door open past the intersection?
+	push	hl
+	ld	hl, doors
+	dec	a
+	srl	a
+	srl	a
+	srl	a
+	and	%00001100
+	inc	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (hl)
+	pop	hl
+	sub	l
+	jp	nc, raycastYRayLoop		; Open, go on tracing
+
+	; Trim texture
+	cpl
+	ld	l, a
+
+raycastYRayDoorHit:
+
+	; We hit the door, finally fix it
+	pop	de
+	push	hl
+	ld	de, (raycastYRayDYS + 1)
+	sra	d
+	rr	e
+	add	ix, de
+	jp	raycastDistances
+
+raycastYRayPushable:
+
+	; Is it already open?
+	ld	a, c
+	and	%00100000
+	jp	nz, raycastYRayLoop
+
+	; Is it totally closed?
+	ld	a, (pushable)
+	or	a
+	jp	z, raycastDistances		; No active pushables
+
+	ld	b, a
+	ld	a, c
+	ld	(hit), a
+	ld	a, b
+
+	; Did we really hit the pushable?
+	ld	de, (raycastYRayYXS + 1)
+	call	ade
+	pop	de
+	push	de
+	add	hl, de
+	ld	a, d
+	cp	h
+	jp	nz, raycastYRayLoop		; No, continue tracing
+
+	; We did hit it, store new data
+	pop	de
+	push	hl
+	ld	a, (pushable)
+	ld	de, (raycastYRayDYS + 1)
+	call	ade
+	ex	de, hl
+	add	ix, de
+
+	ld	a, (hit)
+	ld	c, a
+
+raycastDistances:
+
+	; --------------- ;
+	; Choose distance ;
+	; --------------- ;
+
+	; A lil' more Y-ray here too
+	push	ix
+	pop	de
+	pop	hl
+	ld	a, l
+
+	; Choose shortest distance
+	ld	hl, (dx)
+	sbc	hl, de
+	jr	c, raycastXRayShortest
+
+	; dx > dy
+	ld	b, a
+	ld	a, c
+	ld	(hit), a
+	ld	a, b
+	jp	raycastZBuffer
+
+raycastXRayShortest:
+
+	; dy > dx
+	ld	a, (sidehitX)
+	ld	(sidehitY), a
+	ld	de, (dx)
+	ld	a, (u)
+
+raycastZBuffer:
+
+	; Store in Z-buffer
+	pop	hl
+	ld	(hl), d
+	dec	hl
+	ld	(hl), e
+	dec	hl
+	push	hl
+
+	; Store u-coordinate
+	srl	a
+	srl	a
+	srl	a
+	ld	(u), a
+
+	; Remove fisheye-effect
+	ld	hl, otbl
+	ld	a, (column)
+	add	a, QUARTER - (64 / 2)
+	sra	a
+	ld	b, 0
+	ld	c, a
+	add	hl, bc
+	ld	a, (hl)
+	call	ade
+
+	; Check ray distance
+	ld	a, h
+	or	a
+	jr	nz, raycastBigDist
+
+	; Short distance, use accurate perspective
+	srl	l
+	ld	bc, heights
+	add	hl, bc
+	ld	c, (hl)
+	jp	raycastDistDone
+
+raycastBigDist:
+
+	ld	a, h
+	and	$F0
+	jr	nz, raycastGreatDist
+
+	; Medium distance, use simpler perspective
+	ld	a, h
+	sla	l
+	rla
+	sla	l
+	rla
+	sla	l
+	rla
+	ld	l, a
+	ld	h, 0
+	ld	bc, heights + 121
+	add	hl, bc
+	ld	c, (hl)
+	jp	raycastDistDone
+
+raycastGreatDist:
+
+	; Uhm, right, perspective...
+	ld	c, 1
+
+raycastDistDone:
+
+	; ---------------------- ;
+	; Draw wall slice/column ;
+	; ---------------------- ;
+
+	; Calculate wall height
+	ld	a, c
+
+	ld	b, c
+	sll	b
+
+	; Get pointer to texture-coords
+	ld	hl, vptbl
+	ld	d, 0
+	ld	e, c
+	sla	e
+	add	hl, de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+
+	; Clip wall top
+	ld	a, 24
+	sub	c
+	ld	c, a
+	and	80h
+	jr	z, raycastWallOK
+
+	ld	c, 0
+	ld	b, 48
+
+raycastWallOK:
+
+	ld	a, b
+	ld	(height), a
+
+	; Calculate screen pointer
+	sla	c
+	sla	c
+	ld	b, 0
+	ld	hl, gbuf
+	add	hl, bc
+	add	hl, bc
+	add	hl, bc
+	ld	a, (column)
+	add	a, 16
+	ld	c, a
+	srl	c
+	srl	c
+	srl	c
+	add	hl, bc
+	push	hl
+	pop	ix
+
+	; Calculate texture pointer
+	ld	a, (hit)
+	ld	b, a
+	and	%10000000
+	jr	z, raycastTextureWalls
+
+	; Door
+	ld	a, b
+	and	$7
+	ld	b, a
+	ld	hl, doorSprites
+	jp	raycastTextureDone
+
+raycastTextureWalls:
+
+	; Wall
+	ld	a, b
+	and	%00010000
+	jr	nz, raycastTextureDoorside
+
+	; Normal wall (or pushwall)
+	ld	hl, wallSprites
+	ld	a, b
+	and	$F
+	dec	a
+	ld	b, a
+	jp	raycastTextureDone
+
+raycastTextureDoorside:
+
+	; Doorside. Key-color markings?
+	ld	a, (sidehitY)
+	and	%00011000
+	jr	z, raycastTextureNormalDoorside
+
+	; Yep, choose special texture
+	srl	a
+	srl	a
+	srl	a
+	inc	a
+	ld	b, a
+	ld	hl, keyDoorsideSprites
+
+raycastTextureNormalDoorside:
+
+	; Use normal doorside
+	ld	a, b
+	and	$7
+	ld	b, a
+	ld	hl, doorsideSprites
+
+raycastTextureDone:
+
+	ld	c, 0
+	srl	b
+	rr	c
+	add	hl, bc
+	ld	a, (u)
+	ld	b, 0
+	ld	c, a
+	srl	c
+	srl	c
+	srl	c
+	add	hl, bc
+
+	; Store bits directly in code
+	cpl
+	and	7
+	sla	a
+	sla	a
+	sla	a
+	add	a, $46
+	ld	(raycastTexMask0 + 1), a
+	ld	(raycastTexMask1 + 1), a
+	ld  (raycastTexMask2 + 1), a
+
+	ld	a, (scrBit)
+	sla	a
+	sla	a
+	sla	a
+	add	a, $C6
+	ld	(raycastScrMask0 + 3), a
+	ld	(raycastScrMask1 + 3), a
+	ld  (raycastScrMask2 + 3), a
+
+	ld	a, (height)
+	srl	a
+
+	; Vertical line texturizer
+
+raycastDraw:
+
+	ex	af, af'
+
+raycastTexMask0:
+	bit	0, (hl)
+	jp	z, raycastDrawBlank0
+
+raycastScrMask0:
+	set	0, (ix)
+
+raycastDrawBlank0:
+
+	ld	a, (de)
+	inc	de
+	ld	c, a
+	add	hl, bc
+
+raycastTexMask1:
+	bit	0, (hl)
+	jp	z, raycastDrawBlank1
+
+raycastScrMask1:
+	set	0, (ix + 12)
+
+raycastDrawBlank1:
+
+	ld	a, (de)
+	inc	de
+	ld	c, a
+	add	hl, bc
+	ld	c, 24
+	add	ix, bc
+
+	ex	af, af'
+	dec	a
+	jp	nz, raycastDraw
+
+	; One last pixel
+raycastTexMask2:
+	bit	0, (hl)
+	jp	z, raycastDrawBlank2
+
+raycastScrMask2:
+	set	0, (ix)
+
+raycastDrawBlank2:
+
+	; Update screen bit
+	ld	a, (scrBit)
+	inc	a
+	and	7
+	ld	(scrBit), a
+
+	; Update angle (going from right to left!)
+	ld	hl, angle
+	dec	(hl)
+
+	; Decrease column counter
+	ld	a, (column)
+	dec	a
+	ld	(column), a
+	jp	nz, raycastColumnLoop
+
+	; Get rid of stored Z-buffer
+	pop	hl
+
+	; Enable interrupts again
+	ei
+
+	ret
+
+
+; ======================= ;
+; Update objects and draw ;
+; ======================= ;
+objs:
+
+	; trigs
+
+	ld	hl, otbl
+	ld	b, 0
+	ld	a, (playerAngle)
+	srl	a
+	ld	c, a
+	add	hl, bc
+	ld	a, (hl)
+	ld	(sin), a
+	ld	c, QUARTER/2
+	add	hl, bc
+	ld	a, (hl)
+	ld	(cos), a
+
+	; -------------------------------- ;
+	; Calculate all objects' distances ;
+	; -------------------------------- ;
+
+	ld	a, (objects)
+	or	a
+	ret	z
+	ld	(curObject), a
+	ld	(visObjects), a
+	ld	hl, (objectData)
+	ld	(object), hl
+
+objectsDistanceLoop:
+
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%10000000
+	jr	z, objectsDistanceStaticLocation
+
+	; Get enemy location
+	ld	de, 5
+	add	hl, de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectX), de
+
+	inc	hl
+	inc	hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectY), de
+
+	; Handle dying enemies
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%01000000
+	jr	nz, objectsDistanceEnemyLocation
+
+	; Is the enemy dying?
+	ld	de, 12
+	add	hl, de
+	ld	a, (hl)
+	cp	(ENEMY_DIE + 1)
+	jr	nc, objectsDistanceEnemyLocation
+
+	; Yop, kill him
+	dec	a
+	ld	(hl), a
+	or	a
+	jr	nz, objectsDistanceEnemyLocation
+
+	; Enemy really dead
+	ld	hl, (object)
+	ld	a, %01000000
+	or	(hl)
+	ld	(hl), a
+	jp	objectsDistanceEnemyLocation
+
+objectsDistanceStaticLocation:
+
+	; Is an item already picked up?
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%00100000
+	jp	nz, objectsDistanceTrash
+
+	; Get item location
+	inc	hl
+	inc	hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectX), de
+
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectY), de
+
+objectsDistanceEnemyLocation:
+
+	; Was the object visible through the raycaster?
+
+	ld	a, (objectY + 1)
+	ld	l, a
+	ld	h, 0
+	sla	l
+	sla	l
+	ld	a, (objectX + 1)
+	ld	c, a
+	ld	b, 0
+	srl	c
+	srl	c
+	srl	c
+	add	hl, bc
+	ld	bc, visited
+	add	hl, bc
+	and	7
+	ld	b, 0
+	ld	c, a
+	ex	de, hl
+	ld	hl, masks
+	add	hl, bc
+	ld	a, (hl)
+	ex	de, hl
+	and	(hl)
+	jp	z, objectsDistanceTrash
+
+	; Calculate distance
+
+	; DeltaX
+	ld	a, (playerAngle)
+	add	a, QUARTER
+	and	$80
+	jp	z, objectsDistancePosDX
+
+	ld	hl, (playerX)
+	ld	de, (objectX)
+	jp	objectsDistanceNegDX
+
+objectsDistancePosDX:
+
+	ld	hl, (objectX)
+	ld	de, (playerX)
+
+objectsDistanceNegDX:
+
+	sbc	hl, de
+	push	hl
+
+	; DeltaY
+	ld	a, (playerAngle)
+	and	$80
+	jp	z, objectsDistancePosDY
+
+	ld	hl, (playerY)
+	ld	de, (objectY)
+	jp	objectsDistanceNegDY
+
+objectsDistancePosDY:
+
+	ld	hl, (objectY)
+	ld	de, (playerY)
+
+objectsDistanceNegDY:
+
+	sbc	hl, de
+
+	ld	a, (sin)
+	ex	de, hl
+	call	ade
+	pop	de
+	push	hl
+	ld	a, (cos)
+	call	ade
+
+	; dist = x + y - OBJECT_DEPTH
+	pop	de
+	add	hl, de
+	ld	de, -OBJECT_DEPTH
+	add	hl, de
+	ld	a, h
+	and	$F8
+	jr	nz, objectsDistanceTrash
+	ex	de, hl
+	jr	objectsDistanceSet
+
+objectsDistanceTrash:
+
+	; Invisible objects get no distance, will not be handled
+	ld	de, 0
+
+	ld	hl, visObjects
+	dec	(hl)
+
+objectsDistanceSet:
+
+	; Store distance
+	ld	hl, (object)
+	inc	hl
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+
+	; Next object
+
+	ld	de, 7
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%10000000
+	jr	z, objectsDistanceStatic
+
+	ld	de, 15
+
+objectsDistanceStatic:
+
+	add	hl, de
+	ld	(object), hl
+
+	ld	de, (levelEnd)
+	sbc	hl, de
+	jr	nc, objectsDistanceDone
+
+	ld	a, (curObject)
+	dec	a
+	ld	(curObject), a
+	or	a
+	jp	nz, objectsDistanceLoop
+
+objectsDistanceDone:
+
+	ld	a, (visObjects)
+	or	a
+	ret	z
+
+	; -------------------------------------------- ;
+	; Z-sort: Draw farthest, visible objects first ;
+	; -------------------------------------------- ;
+
+	; Disable ints, just as in the raycaster
+	di
+
+objectsLoop:
+
+	; Find visible object
+
+	ld	hl, (objectData)
+	ld	(object), hl
+	ld	hl, 0
+	ld	(dist), hl
+	ld	a, (visObjects)
+	ld	(curObject), a
+
+objectsFind:
+
+	ld	hl, (object)
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	a, d
+	or	e
+	jr	z, objectsNotVisible
+
+	; It's determined as a visible object, decrease number of found visibles
+	ld	hl, curObject
+	dec	(hl)
+
+	; Compare to farthest distance found
+	ld	hl, (dist)
+	sbc	hl, de
+	jr	nc, objectsNotVisible
+
+	; It's far away, store distance and object
+	ld	(dist), de
+	ld	hl, (object)
+	ld	(oy), hl
+
+objectsNotVisible:
+
+	ld	a, (curObject)
+	or	a
+	jr	z, objectsFound
+
+	; Next object
+	ld	de, 7
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%10000000
+	jr	z, objectsFindStatic
+
+	ld	de, 15
+
+objectsFindStatic:
+
+	add	hl, de
+	ld	(object), hl
+
+	ld	de, (levelEnd)
+	sbc	hl, de
+	jp	c, objectsFind
+
+objectsFound:
+
+	; Current object
+	ld	hl, (oy)
+	ld	(object), hl
+
+	; So that it won't be revisited
+	xor	a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+
+	; Calculate size of sprite
+	ld	hl, (dist)
+	ld	a, h
+	or	a
+	jr	nz, objectsBigDist
+
+	; Accurate perspective
+	srl	l
+	ld	bc, heights
+	add	hl, bc
+	ld	c, (hl)
+	jp	objectsDistDone
+
+objectsBigDist:
+
+	; Simpler perspective
+	ld	a, h
+	sla	l
+	rla
+	sla	l
+	rla
+	sla	l
+	rla
+	ld	l, a
+	ld	h, 0
+	ld	bc, heights + 121
+	add	hl, bc
+	ld	c, (hl)
+
+objectsDistDone:
+
+	; Depending on object type, use different final sizes
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%11010000
+	jr	z, objectsScaling8x8
+	ld	a, b
+	and	%11000000
+	jr	z, objectsScaling16x8
+
+	; Is an enemy dead?
+	ld	a, b
+	cp	%11000000
+	jr	nc, objectsScaling16x8
+
+	; Small grounded sprite?
+	ld	a, b
+	and	%01000100
+	cp	%01000100
+	jr	z, objectsScaling16x8
+
+	; Scale 32x32
+	ld	a, c
+	ld	(width), a
+	ld	(height), a
+	ld	(clippedHeight), a
+	jp	objectsScalingChosen
+
+objectsScaling8x8:
+
+	; Scaling 8x8
+	ld	a, c
+	srl	a
+	srl	a
+	ld	(width), a
+	ld	(height), a
+	ld  (clippedHeight), a
+	jp	objectsScalingChosen
+
+objectsScaling16x8:
+
+	; Scaling 16x8
+	ld	a, c
+	srl	a
+	ld	(width), a
+	srl	a
+	ld	(height), a
+	ld  (clippedHeight), a
+
+objectsScalingChosen:
+
+	; Retrieve object coordinates
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%10000000
+	jp	z, objectsStaticLocation
+
+	ld	de, 5
+	add	hl, de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectX), de
+
+	inc	hl
+	inc	hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectY), de
+
+	; Skip dead or dying enemies for coming checks
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%01000000
+	jp	nz, objectsEnemyLocation
+
+	ld	de, 12
+	add	hl, de
+	ld	a, (hl)
+	cp	(ENEMY_DIE + 1)
+	jp	c, objectsEnemyLocation
+
+	; ------------------- ;
+	; Update enemy attack ;
+	; ------------------- ;
+
+	; Use simple random shooting :)
+	; Depends on:
+	;  difficulty
+	;  player movement
+	;  enemy weapon
+
+	ld	c, 0
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%00111111
+	cp	2
+	jr	z, objectsChaingunAttackDiff
+
+	ld	a, (difficulty)
+	add	a, c
+	ld	c, a
+	ld	a, (playerMove)
+	add	a, c
+	inc	a
+	ld	b, 0
+	ld	c, a
+	ld	hl, diffMasks
+	add	hl, bc
+	ld	b, (hl)
+	call	random
+	and	b
+	jp	nz, objectsEnemyCalm
+	jp	objectsAttackYop
+
+objectsChaingunAttackDiff:
+
+	; Do the reverse, check for non-zero! Schweizer-cheeze comes to mind...
+	ld	a, (difficulty)
+	ld	c, a
+	ld	a, (playerMove)
+	add	a, c
+	ld	c, a
+	ld	a, 4
+	sub	c
+	ld	b, 0
+	ld	c, a
+	ld	hl, diffMasks
+	add	hl, bc
+	ld	b, (hl)
+	call	random
+	and	b
+	jr	z, objectsEnemyCalm
+
+objectsAttackYop:
+
+	; Enemy is getting hot! Or can he even correctly shoot the player?
+	call	scanLine
+	or	a
+	jr	nz, objectsEnemyCalm
+
+	; Shooting
+	ld	a, 2
+	ld	(flash), a
+
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%00111111
+	or	a
+	jr	z, objectsEnemyHandgunning
+	cp	1
+	jr	z, objectsEnemyShotgunning
+	cp	2
+	jr	z, objectsEnemyChaingunning
+
+	; Enemy is "plasma-rifling"
+	ld	a, (armor)
+	sub	PLASMARIFLE
+	jp	objectsEnemyAttacked
+
+objectsEnemyHandgunning:
+
+	ld	a, (armor)
+	sub	HANDGUN
+	jp	objectsEnemyAttacked
+
+objectsEnemyShotgunning:
+
+	ld	a, (armor)
+	sub	SHOTGUN
+	jp	objectsEnemyAttacked
+
+objectsEnemyChaingunning:
+
+	ld	a, (armor)
+	sub	CHAINGUN
+
+objectsEnemyAttacked:
+
+	; Is the armor shot to strips?
+	cp	(MAX_ARMOR + 1)
+	jr	nc, objectsPlayerBadArmor
+
+	; Nup, just decrease armor
+	ld	(armor), a
+	jp	objectsEnemyCalm
+
+objectsPlayerBadArmor:
+
+	; Decrease on health
+	ld	b, a
+	ld	a, (health)
+	add	a, b
+	ld	(health), a
+	cp	(MAX_HEALTH + 1)
+	jr	c, objectsPlayerAlive
+
+	; Seems like the player was unlucky this time
+	ld	a, 1
+	ld	(done), a
+	xor	a
+
+objectsPlayerAlive:
+
+	ld	(health), a
+	xor	a
+	ld	(armor), a
+
+objectsEnemyCalm:
+
+	; --------------------- ;
+	; Update enemy movement ;
+	; --------------------- ;
+
+	ld	hl, (object)
+	ld	de, 14
+	add	hl, de
+	ld	a, (hl)
+	or	a
+	jr	nz, objectsEnemyMove
+
+	dec	hl
+	ld	a, r
+	srl	a
+	srl	a
+	ld	(hl), a
+	inc	hl
+	ld	a, r
+	srl	a
+	srl	a
+	ld	(hl), a
+
+objectsEnemyMove:
+
+	dec	(hl)
+	dec	hl
+	ld	a, (hl)
+
+	; Get trigs
+	ld	hl, movtbl
+	ld	b, 0
+	ld	c, a
+	add	hl, bc
+	ld	e, (hl)
+	ld	c, 8
+	add	hl, bc
+	ld	d, (hl)
+
+	; Speed depends on enemy
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%00111111
+	or	a
+	jr	z, objectsHandgunSpeed
+	dec	a
+	jr	z, objectsShotgunSpeed
+	dec	a
+	jr	z, objectsChaingunSpeed
+
+	; Plasma-rifle enemy, move swiftly
+	jp	objectsSpeedDone
+
+objectsHandgunSpeed:
+	sra	d
+	sra	e
+	jp	objectsSpeedDone
+
+objectsShotgunSpeed:
+	sra	d
+	sra	e
+	jp	objectsSpeedDone
+
+objectsChaingunSpeed:
+	sra	d
+	sra	e
+	sra	d
+	sra	e
+
+objectsSpeedDone:
+
+	; New X
+	ld	bc, (objectX)
+
+	ld	h, 0
+	ld	l, d
+	ld	a, l
+	and	$80
+	jr	z, objectsPosCos
+	dec	h
+
+objectsPosCos:
+
+	add	hl, bc
+	ld	(ox), hl
+
+	; New Y
+	ld	bc, (objectY)
+
+	ld	h, 0
+	ld	l, e
+	ld	a, l
+	and	$80
+	jr	z, objectsPosSin
+	dec	h
+
+objectsPosSin:
+
+	add	hl, bc
+	ld	(oy), hl
+
+	ld	a, (ox + 1)
+	ld	b, a
+	ld	a, (oy + 1)
+	ld	c, a
+	call	checkLevel
+	or	a
+	jr	nz, objectsEnemyWalkingWall
+
+	; Free path, let the enemy move there
+	ld	hl, (object)
+	ld	bc, 5
+	add	hl, bc
+	ld	bc, (ox)
+	ld	(hl), c
+	inc	hl
+	ld	(hl), b
+	inc	hl
+	inc	hl
+	inc	hl
+	ld	bc, (oy)
+	ld	(hl), c
+	inc	hl
+	ld	(hl), b
+	jp	objectsEnemyLocation
+
+objectsEnemyWalkingWall:
+
+	; Enemy was walking into a wall, new direction
+	ld	hl, (object)
+	ld	bc, 14
+	add	hl, bc
+	xor	a
+	ld	(hl), a
+	jp	objectsEnemyLocation
+
+objectsStaticLocation:
+
+	inc	hl
+	inc	hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectX), de
+
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(objectY), de
+
+objectsEnemyLocation:
+
+	; Calculate X-coordinate
+
+	ld	a, (playerAngle)
+	ld	b, a
+	and	$80
+	jr	z, objectsHalf
+	ld	a, b
+	and	$40
+	jr	z, objectsQuarter3
+
+	ld	hl, (playerX)
+	push	hl
+	ld	de, (objectX)
+	push	de
+
+	ld	hl, (playerY)
+	ld	de, (objectY)
+
+	jp	objectsCircle
+
+objectsQuarter3:
+
+	ld	hl, (playerX)
+	push	hl
+	ld	de, (objectX)
+	push	de
+
+	ld	hl, (objectY)
+	ld	de, (playerY)
+
+	jp	objectsCircle
+
+objectsHalf:
+
+	ld	a, b
+	and	$40
+	jr	z, objectsQuarter
+
+	ld	hl, (objectX)
+	push	hl
+	ld	de, (playerX)
+	push	de
+
+	ld	hl, (objectY)
+	ld	de, (playerY)
+
+	jp	objectsCircle
+
+objectsQuarter:
+
+	ld	hl, (objectX)
+	push	hl
+	ld	de, (playerX)
+	push	de
+
+	ld	hl, (playerY)
+	ld	de, (objectY)
+
+objectsCircle:
+
+	sbc	hl, de
+	ex	de, hl
+	ld	a, (cos)
+	call	ade
+	ld	(oy), hl
+
+	pop	de
+	pop	hl
+	sbc	hl, de
+	ex	de, hl
+	ld	a, (sin)
+	call	ade
+
+	ld	de, (oy)
+
+	add	hl, de
+	ld	(ox), hl
+
+	ld	a, h
+	and	$80
+	jr	z, objectsXPos
+
+	ld	a, h
+	cpl
+	ld	h, a
+	ld	a, l
+	cpl	
+	ld	l, a
+
+objectsXPos:
+
+	ld	de, (dist)
+	sbc	hl, de
+	jp	nc, objectsNext
+
+	; ----------- ;
+	; Item pickup ;
+	; ----------- ;
+
+	; Is the item in the right place "X-ily"?
+	ld	hl, (ox)
+	ld	de, 32*ITEM_DIST
+	add	hl, de
+	ld	a, h
+	and	$80
+	jp	nz, objectsPickupDone
+	sla	e
+	rl	d
+	sbc	hl, de
+	jp	nc, objectsPickupDone
+
+	; Item?
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%11000000
+	jr	z, objectsPickupItem
+
+	; Exit?
+	ld	a, b
+	cp	%01000000
+	jp	z, objectsTeleport
+
+	; Some crap, skip it
+	jp	objectsPickupDone
+
+objectsPickupItem:
+
+	; Close enough to pick up?
+	ld	de, ITEM_DIST
+	ld	hl, (dist)
+	sbc	hl, de
+	jp	nc, objectsPickupDone
+
+	; What kind of item?
+	ld	a, b
+	and	%00010000
+	jr	z, objectsPickupStatusItem
+
+	; A weapon! Uahaha!
+	ld	a, b
+	and	%00000111
+	or	a
+	jr	z, objectsPickupHandgun
+	dec	a
+	jr	z, objectsPickupShotgun
+	dec	a
+	jr	z, objectsPickupChaingun
+
+	; A plasma-rifle!
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%01000000
+	jr	nz, objectsPickupCells
+
+	; New plasma-rifle!
+	ld	a, b
+	or	%01000000
+	and	%01111000
+	or	4
+	ld	(curWeapon), a
+	xor	a
+	ld	(reload), a
+	ld	(frame), a
+	jp	objectsPickupCells
+
+objectsPickupHandgun:
+
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%00001000
+	jp	nz, objectsPickupClip
+
+	; New handgun
+	ld	a, b
+	or	%00001000
+	and	%01111000
+	or	1
+	ld	(curWeapon), a
+	xor	a
+	ld	(reload), a
+	ld	(frame), a
+	jp	objectsPickupClip
+
+objectsPickupShotgun:
+
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%00010000
+	jr	nz, objectsPickupShells
+
+	; New shotgun
+	ld	a, b
+	or	%00010000
+	and	%01111000
+	or	2
+	ld	(curWeapon), a
+	xor	a
+	ld	(reload), a
+	ld	(frame), a
+	jp	objectsPickupShells
+
+objectsPickupChaingun:
+
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%00100000
+	jr	nz, objectsPickupBullets
+
+	; New chaingun
+	ld	a, b
+	or	%00100000
+	and	%01111000
+	or	3
+	ld	(curWeapon), a
+	xor	a
+	ld	(reload), a
+	ld	(frame), a
+	jp	objectsPickupBullets
+
+objectsPickupStatusItem:
+
+	ld	a, b
+	and	%00001000
+	jp	nz, objectsPickupStatusKeys
+
+	ld	a, b
+	and	%00000100
+	jr	z, objectsPickupBoosts
+
+	; Ammos
+	ld	a, b
+	sub	4
+	jr	z, objectsPickupClip
+	dec	a
+	jr	z, objectsPickupShells
+	dec	a
+	jr	z, objectsPickupBullets
+
+objectsPickupCells:
+
+	; Pick up 4 cells
+	ld	a, (cells)
+	cp	24
+	jp	nc, objectsPickupDone
+	add	a, 4
+
+	; Don't override
+	cp	24
+	jr	c, objectsCellsDone
+	ld	a, 24
+
+objectsCellsDone:
+
+	ld	(cells), a
+	jp	objectsPickedup
+
+objectsPickupBullets:
+
+	; Pick up 40 bullets
+	ld	a, (bullets)
+	cp	240
+	jp	nc, objectsPickupDone			; Need no bullets
+	add	a, 40
+
+	; Don't override 240 bullets
+	cp	240
+	jr	nc, objectsPickupBulletsMax
+	cp	40
+	jr	nc, objectsPickupBulletsDone
+
+objectsPickupBulletsMax:
+
+	ld	a, 240
+
+objectsPickupBulletsDone:
+
+	ld	(bullets), a
+	jp	objectsPickedup
+
+objectsPickupShells:
+
+	; Pick up 4 shells
+	ld	a, (shells)
+	cp	16
+	jp	nc, objectsPickupDone			; Need no shells
+	add	a, 4
+
+	; Don't override 16 shells
+	cp	16
+	jr	c, objectsPickupShellsDone
+	ld	a, 16
+
+objectsPickupShellsDone:
+
+	ld	(shells), a
+	jp	objectsPickedup
+
+objectsPickupClip:
+
+	; Pick up a 12 bullet clip
+	ld	a, (clips)
+	cp	12
+	jp	nc, objectsPickupDone			; Need no clips
+	inc	a
+
+	; Don't override 12 clips
+	cp	12
+	jr	c, objectsPickupClipDone
+	ld	a, 12
+
+objectsPickupClipDone:
+
+	ld	(clips), a
+	jp	objectsPickedup
+
+objectsPickupBoosts:
+
+	ld	a, b
+	and	%00000011
+	jr	z, objectsPickupSmallHealth
+	dec	a
+	jr	z, objectsPickupBigHealth
+	dec	a
+	jr	z, objectsPickupSmallArmor
+
+	; Pick up big armor
+	ld	a, (armor)
+	cp	MAX_ARMOR
+	jp	nc, objectsPickupDone			; Need no armor
+	add	a, BIG_ARMOR
+
+objectsArmorClamp:
+
+	cp	MAX_ARMOR
+	jr	c, objectsPickupArmorDone
+	ld	a, MAX_ARMOR
+
+objectsPickupArmorDone:
+
+	ld	(armor), a
+	jp	objectsPickedup
+
+objectsPickupSmallHealth:
+
+	; Pick up a small health boost
+	ld	a, (health)
+	cp	MAX_HEALTH
+	jp	nc, objectsPickupDone			; Need no health
+	add	a, SMALL_HEALTH
+
+objectsHealthClamp:
+
+	cp	MAX_HEALTH
+	jr	c, objectsPickupHealthDone
+	ld	a, MAX_HEALTH
+
+objectsPickupHealthDone:
+
+	ld	(health), a
+	jp	objectsPickedup
+
+objectsPickupBigHealth:
+
+	; Pick up a big health boost
+	ld	a, (health)
+	cp	MAX_HEALTH
+	jp	nc, objectsPickupDone			; Need no health
+	add	a, BIG_HEALTH
+	jp	objectsHealthClamp
+
+objectsPickupSmallArmor:
+
+	ld	a, (armor)
+	cp	MAX_ARMOR
+	jp	nc, objectsPickupDone			; Need no armor
+	add	a, SMALL_ARMOR
+	jp	objectsArmorClamp
+
+objectsPickupStatusKeys:
+
+	; Door key
+	ld	a, b
+	ld	hl, playerKeys
+	or	(hl)
+	ld	(hl), a
+
+objectsPickedup:
+
+	ld	hl, (object)
+	ld	a, %00100000
+	or	(hl)
+	ld	(hl), a
+
+	ld	a, 1
+	ld	(flash), a
+
+	jp	objectsPickupDone
+
+objectsTeleport:
+
+	; Close enough to exit?
+	ld	de, TELEPORT_DIST
+	ld	hl, (dist)
+	sbc	hl, de
+	jp	nc, objectsPickupDone
+
+	ld	a, (levelNum)
+	inc	a
+	ld	(levelNum), a
+	cp	4
+	jp	nc, objectsEndGame
+
+	ld	a, 1
+	ld	(nextLevel), a
+
+	; Ask for saving and output some info
+	ld	a, 255
+	call	wipe
+	xor	a
+	call	wipe
+	call	clear
+
+	ld	hl, gbuf + 72
+	ld	a, 255
+	ld	b, 96
+objectsFillStuff:
+	ld	(hl), a
+	inc	hl
+	djnz	objectsFillStuff
+	call	flip
+
+	ld	hl, $0610
+	ld	(pencol), hl
+	ld	hl, askResume
+	set	3, (iy + 5)
+	bcall(_vputs)
+	res	3, (iy + 5)
+
+	ld	hl, $0F10
+	ld	(pencol), hl
+	ld	hl, resumeKeys
+	bcall(_vputs)
+
+	ld	hl, $2010
+	ld	(pencol), hl
+	ld	hl, killsSoFar
+	bcall(_vputs)
+
+	ld	hl, $2610
+	ld	(pencol), hl
+	ld	hl, showShots
+	bcall(_vputs)
+
+	ld	hl, $2C10
+	ld	(pencol), hl
+	ld	hl, showHits
+	bcall(_vputs)
+
+	ld	hl, $3210
+	ld	(pencol), hl
+	ld	hl, showPercent
+	bcall(_vputs)
+
+	ld	hl, $3810
+	ld	(pencol), hl
+	ld	hl, showSecrets
+	bcall(_vputs)
+
+	ld  hl, 32 * 256 + 60
+	ld  (pencol), hl
+	ld  hl, (kills)
+	bcall(_setxxxxop2)
+	bcall(_op2toop1)
+	ld  a, 4
+	bcall(_dispop1a)
+
+	ld  hl, 38 * 256 + 60
+	ld  (pencol), hl
+	ld  hl, (shots)
+	bcall(_setxxxxop2)
+	bcall(_op2toop1)
+	ld  a, 4
+	bcall(_dispop1a)
+
+	ld  hl, 44 * 256 + 60
+	ld  (pencol), hl
+	ld  hl, (hits)
+	bcall(_setxxxxop2)
+	bcall(_op2toop1)
+	ld  a, 4
+	bcall(_dispop1a)
+
+	; 100 * hits
+	ld	de, (hits)
+	ld	a, d
+	sla	e
+	rla
+	sla	e
+	rla
+	ld	h, a
+	ld	l, e
+	sla	e
+	rla
+	sla	e
+	rla
+	sla	e
+	rla
+	ld	d, a
+	add	hl, de
+	sla	e
+	rl	d
+	add	hl, de
+
+	; Divide
+	ld	de, (shots)
+	call	hlde
+	push	hl
+	ld	hl, 50 * 256 + 60
+	ld	(pencol), hl
+	pop	hl
+	bcall(_setxxxxop2)
+	bcall(_op2toop1)
+	ld	a, 4
+	bcall(_dispop1a)
+
+	ld	hl, 56 * 256 + 60
+	ld	(pencol), hl
+	ld	a, (secrets)
+	ld	h, 0
+	ld	l, a
+	bcall(_setxxxxop2)
+	bcall(_op2toop1)
+	ld	a, 4
+	bcall(_dispop1a)
+
+objectsPollSave:
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, UpperRow
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+	ld	b, a
+	and	K_Y
+	jr	nz, objectsSave
+	ld	a, b
+	and	K_Window
+	ret	nz
+	jp	objectsPollSave
+
+objectsSave:
+
+	; Store game
+	ld	a, (difficulty)
+	ld	(storeDifficulty), a
+
+	ld	a, (levelNum)
+	ld	(storeLevelNum), a
+
+	ld	a, (health)
+	ld	l, a
+	ld	a, (armor)
+	ld	h, a
+	ld	(storeStatus), hl
+
+	ld	a, (curWeapon)
+	ld	(storeWeapon), a
+
+	ld	a, (clips)
+	ld	l, a
+	ld	a, (clip)
+	ld	h, a
+	ld	(storeHandgun), hl
+
+	ld	a, (shells)
+	ld	l, a
+	ld	a, (slot)
+	ld	h, a
+	ld	(storeShotgun), hl
+
+	ld	a, (bullets)
+	ld	(storeChaingun), a
+
+	ld	a, (cells)
+	ld	(storePlasmarifle), a
+
+	ld	hl, (kills)
+	ld	(storeKills), hl
+	ret
+
+objectsEndGame:
+
+	ld	a, 1
+	ld	(done), a
+
+	jp	TheEnd
+
+objectsPickupDone:
+
+	; ------------------------- ;
+	; Setup drawing coordinates ;
+	; ------------------------- ;
+
+	; If the object's VERY close, skip to draw (to rid possible bugs)
+	ld	hl, (dist)
+	ld	de, SKIP_DIST
+	sbc	hl, de
+	jp	c, objectsNext
+
+	; Reset texture-coord
+	xor	a
+	ld	(u), a
+
+	; Calculate correct screen position
+
+	ld	de, (dist)
+	ld	a, e
+	srl	d
+	rra
+	srl	d
+	rra
+	srl	d
+	rra
+	srl	d
+	rra
+	srl	d
+	rra
+	ld	e, a
+	ld	hl, (ox)
+	call	hlde
+	ld	a, 48
+	sub	l
+	ld	(ox), a
+
+	; --------------- ;
+	; Player shooting ;
+	; --------------- ;
+
+	; Check if player is shooting an enemy
+	ld	a, (attacking)
+	dec	a
+	jp	nz, objectsSetupScaling
+
+	; Increase shots
+	ld	hl, (shots)
+	inc	hl
+	ld	(shots), hl
+
+	; Is there an enemy there?
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%10000000
+	jp	z, objectsSetupScaling
+
+	; Is the enemy alive?
+	ld	a, b
+	and	%01000000
+	jp	nz, objectsSetupScaling
+
+	; Is the enemy already dying?
+	ld	hl, (object)
+	ld	bc, 12
+	add	hl, bc
+	ld	a, (hl)
+	cp	(ENEMY_DIE + 1)
+	jp	c, objectsSetupScaling
+
+	; Perform correct visiblity check
+	push	hl
+	call	scanLine
+	pop	hl
+	or	a
+	jp	nz, objectsSetupScaling
+
+	; Enemy is shot at!
+	push	hl
+	ld	hl, (hits)
+	inc	hl
+	ld	(hits), hl
+	pop	hl
+	ld	a, (curWeapon)
+	and	7
+	jr	z, objectsKnifeAttack
+	dec	a
+	jr	z, objectsHandgunAttack
+	dec	a
+	jr	z, objectsShotgunAttack
+	dec	a
+	jr	z, objectsChaingunAttack
+
+	ld	b, 48 - PLASMARIFLE_AIM
+	ld	c, 48 + PLASMARIFLE_AIM
+	ld	d, PLASMARIFLE
+	jp	objectsShotEnemy
+
+objectsKnifeAttack:
+
+	; Close enough?
+	push	hl
+	ld	hl, (dist)
+	ld	de, KNIFE_DIST
+	sbc	hl, de
+	pop	hl
+	jr	nc, objectsSetupScaling
+
+	ld	b, 48 - KNIFE_AIM
+	ld	c, 48 + KNIFE_AIM
+	ld	d, KNIFE
+	jp	objectsShotEnemy
+
+objectsHandgunAttack:
+
+	ld	b, 48 - HANDGUN_AIM
+	ld	c, 48 + HANDGUN_AIM
+	ld	d, HANDGUN
+	jp	objectsShotEnemy
+
+objectsShotgunAttack:
+
+	ld	b, 48 - SHOTGUN_AIM
+	ld	c, 48 + SHOTGUN_AIM
+	ld	d, SHOTGUN
+	jp	objectsShotEnemy
+
+objectsChaingunAttack:
+
+	ld	b, 48 - CHAINGUN_AIM
+	ld	c, 48 + CHAINGUN_AIM
+	ld	d, CHAINGUN
+
+objectsShotEnemy:
+
+	; Shoot him!
+	ld	a, (width)
+	srl	a
+	ld	e, a
+	ld	a, b
+	sub	e
+	ld	e, a
+	ld	a, (ox)
+	cp	e
+	jr	c, objectsSetupScaling
+
+	ld	a, (width)
+	srl	a
+	ld	e, a
+	ld	a, c
+	add	a, e
+	ld	e, a
+	ld	a, (ox)
+	cp	e
+	jr	nc, objectsSetupScaling
+
+	ld	a, (hl)
+	sub	d
+	ld	(hl), a
+
+	; Make sure the enemy is shot correctly :)
+	cp	(ENEMY_DIE + 1)
+	jr	c, objectsEnemyGonnaDie
+	cp	220
+	jr	nc, objectsEnemyGonnaDie
+	jp	objectsSetupScaling
+
+objectsEnemyGonnaDie:
+
+	; He's as good as dying...
+	ld	a, ENEMY_DIE
+	ld	(hl), a
+	ld	hl, kills
+	inc	(hl)
+
+objectsSetupScaling:
+
+	; ------------- ;
+	; Setup scaling ;
+	; ------------- ;
+
+	; Fix X-position to left side of sprite
+	ld	a, (ox)
+	ld	b, a
+	ld	a, (width)
+	ld	c, a
+	ld	a, b
+	sub	c
+	cp	16
+	jr	nc, objectsXOK0
+	ld	b, a
+	ld	a, 16
+	sub	b
+	ld	(u), a
+	ld	a, 16
+	jp	objectsXOK1
+
+objectsXOK0:
+
+	cp	80
+	jp	nc, objectsNext			; Totally out of display
+
+objectsXOK1:
+
+	ld	(ox), a
+
+	; Set screen bit
+	cpl
+	and	7
+	ld	(scrBit), a
+
+	; Pointer to texture-coordinates
+	ld  hl, vptbl
+	ld  a, (width)
+	ld	b, 0
+	ld  c, a
+	sla c
+	add hl, bc
+	ld  e, (hl)
+	inc hl
+	ld  d, (hl)
+	ld	(v), de
+
+	; Different objects have different Y-coords
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%11000000
+	jr	z, objectsItemYCoordinate
+	ld	a, b
+	cp	%11000000
+	jr	nc, objectsItemYCoordinate
+
+	ld	a, (height)
+	ld	b, a
+
+	; Ceiling objects must be handled correctly
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%01000100
+	cp	%01000100
+	jr	nz, objectsNotGroundedHeight
+	sla	b
+	sla	b
+	ld	a, 22				; Put it so that the player spots it easily
+	sub	b
+	jr	nc, objectsEnemyYCoordinate
+	ld	c, a
+	ld	a, b
+	srl	a
+	srl	a
+	add	a, c
+	cp	100
+	jp	nc, objectsNext
+	ld	(clippedHeight), a
+	xor	a
+	jp	objectsEnemyYCoordinate
+
+objectsNotGroundedHeight:
+
+	ld	a, 26				; Put the enemy in a position easier for the player
+	sub	b
+	jr	nc, objectsEnemyYCoordinate
+	ld	a, 24
+	ld	(clippedHeight), a
+	xor	a
+	jp	objectsEnemyYCoordinate
+
+objectsItemYCoordinate:
+
+	ld	a, (height)
+	sla	a
+	add	a, 26			; Not 24, so that the player sees the item better
+	cp	48
+	jp	nc, objectsNext	; Not visible anyway
+
+	; Clip height, we don't want to draw outside
+	ld	b, a
+	ld	a, (height)
+	sla	a
+	add	a, b
+	sub	48
+	jr	c, objectsItemYOK
+
+	; Clip!
+	srl	a
+	ld	c, a
+	ld	a, (height)
+	sub	c
+	ld	(clippedHeight), a
+
+objectsItemYOK:
+
+	ld	a, b
+
+objectsEnemyYCoordinate:
+
+	sla	a
+	sla	a
+	ld	hl, gbuf
+	ld	b, 0
+	ld	c, a
+	add	hl, bc
+	add	hl, bc
+	add	hl, bc
+	ld	(oy), hl
+
+	; Anything to draw at all?
+	ld	a, (clippedHeight)
+	or	a
+	jp	z, objectsNext
+
+	; ----------- ;
+	; Load sprite ;
+	; ----------- ;
+
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%11010000
+	jr	z, objectsLoadSpriteStatusItem
+	ld	a, b
+	and	%11000000
+	jp	z, objectsLoadSpriteWeaponItem
+	ld	a, b
+	and	%10000000
+	jp	z, objectsLoadSpriteGrounded
+
+	; An enemy! Find which state the enemy is in
+	ld	a, b
+	and	%01000000
+	jr	z, objectsLivingEnemy
+
+	; Dead
+	ld	de, 0
+	ld	hl, enemyDeadSprite
+	jp	objectsLoadedSprite
+
+objectsLivingEnemy:
+
+	; Not dead enemy
+	ld	de, 12
+	add	hl, de
+	ld	de, 0
+	ld	a, (hl)
+	cp	(ENEMY_DIE + 1)
+	jr	nc, objectsEnemySpriteOffset
+
+	; He's still "living", but not for very long...
+	ld	d, 1
+
+objectsEnemySpriteOffset:
+
+	ld	a, b
+	and	7
+	or	a
+	jr	z, objectsHandgunEnemy
+	cp	1
+	jr	z, objectsShotgunEnemy
+	cp	2
+	jr	z, objectsChaingunEnemy
+
+	; Enemy's using plasma rifle...
+	ld	hl, enemyPlasmarifle + 128
+	jp	objectsLoadedSprite
+
+objectsChaingunEnemy:
+
+	; Enemy is using chaingun! Yowtch!
+	ld	hl, enemyChaingun + 128
+	jp	objectsLoadedSprite
+
+objectsHandgunEnemy:
+
+	ld	hl, enemyHandgun + 128
+	jp	objectsLoadedSprite
+
+objectsShotgunEnemy:
+
+	ld	hl, enemyShotgun + 128
+	jp	objectsLoadedSprite
+
+objectsLoadSpriteStatusItem:
+
+	ld	a, b
+	and	%00001000
+	jr	nz, objectsLoadSpriteKey
+	ld	a, b
+	and	%00000111
+	ld	hl, statItemSprites
+	ld	d, 0
+	sla	a
+	sla	a
+	sla	a
+	ld	e, a
+	jp	objectsLoadedSprite
+
+objectsLoadSpriteKey:
+
+	ld	a, b
+	and	%00000111
+	ld	b, a
+	xor	a
+	srl	b
+	jr	z, objectsLoadSpriteKeyChosen
+	inc	a
+	srl	b
+	jr	z, objectsLoadSpriteKeyChosen
+	inc	a
+
+objectsLoadSpriteKeyChosen:
+
+	sla	a
+	sla	a
+	sla	a
+	ld	d, 0
+	ld	e, a
+	ld	hl, keySprites
+	jp	objectsLoadedSprite
+
+objectsLoadSpriteWeaponItem:
+
+	ld	a, b
+	and	7
+	ld	hl, weapItemSprites
+	ld	d, 0
+	sla	a
+	sla	a
+	sla	a
+	sla	a
+	ld	e, a
+	jp	objectsLoadedSprite
+
+objectsLoadSpriteGrounded:
+
+	ld	a, b
+	and	4
+	jr	z, objectsLoadSpriteGroundedBig
+
+	ld	a, b
+	and	3
+	ld	d, 0
+	sla	a
+	sla	a
+	sla	a
+	sla	a
+	ld	e, a
+	ld	hl, groundedSpritesSmall
+	jp	objectsLoadedSprite
+
+objectsLoadSpriteGroundedBig:
+
+	ld	a, b
+	and	3
+	ld	d, a
+	ld	e, 0
+	srl	d
+	rr	e
+	ld	hl, groundedSprites + 128
+
+objectsLoadedSprite:
+
+	add	hl, de
+	ld	(objectSprite), hl
+
+	; Setup scaling values
+	ld	hl, (object)
+	ld	a, (hl)
+	ld	b, a
+	and	%11010000
+	jr	z, objectsScale8x8
+	ld	a, b
+	and	%11000000
+	jp	z, objectsScale16x8
+	ld	a, b
+	cp	%11000000
+	jp	nc, objectsScale16x8
+	ld	a, b
+	and	%11000100
+	cp	%01000100
+	jp	z, objectsScale16x8
+
+	ld	hl, -128
+	ld	(objectsSpriteSize1 + 1), hl
+	ld  (objectsSpriteSize3 + 1), hl
+	ld	hl, 128
+	ld	(objectsSpriteSize2 + 1), hl
+	ld	(objectsSpriteSize4 + 1), hl
+	xor	a
+	ld	(objectsSpriteTexBit + 1), a
+	ld  (objectsSpriteTexBit + 3), a
+	ld  (objectsSpriteTex + 1), a
+	ld  (objectsSpriteTex + 3), a
+	ld	(objectsSpriteInc0 + 1), a
+	ld  (objectsSpriteInc0 + 3), a
+	ld  (objectsSpriteInc1 + 1), a
+	ld  (objectsSpriteInc1 + 3), a
+	ld	hl, 0
+	ld	(objectsFixVPtbl), hl
+	jp	objectsXLoop
+
+objectsScale8x8:
+
+	ld	hl, 0
+	ld	(objectsSpriteSize1 + 1), hl
+	ld  (objectsSpriteSize3 + 1), hl
+	ld	hl, 0
+	ld	(objectsSpriteSize2 + 1), hl
+	ld	(objectsSpriteSize4 + 1), hl
+	ld	a, $3F
+	ld	(objectsSpriteTexBit + 1), a
+	ld	(objectsSpriteTexBit + 3), a
+	ld	(objectsSpriteTex + 1), a
+	ld	(objectsSpriteTex + 3), a
+	ld	a, $39
+	ld	(objectsSpriteInc0 + 1), a
+	ld	(objectsSpriteInc0 + 3), a
+	ld	(objectsSpriteInc1 + 1), a
+	ld	(objectsSpriteInc1 + 3), a
+	ld	hl, $1313
+	ld	(objectsFixVPtbl), hl
+	ld	a, (height)
+	sla	a
+	sla	a
+	ld	(height), a
+	jp	objectsXLoop
+
+objectsScale16x8:
+
+	ld	hl, 0
+	ld  (objectsSpriteSize1 + 1), hl
+	ld  (objectsSpriteSize3 + 1), hl
+	ld  hl, 0
+	ld  (objectsSpriteSize2 + 1), hl
+	ld  (objectsSpriteSize4 + 1), hl
+	xor	a
+	ld	(objectsSpriteTexBit + 1), a
+	ld	(objectsSpriteTex + 1), a
+	ld  (objectsSpriteInc0 + 1), a
+	ld  (objectsSpriteInc1 + 1), a
+	ld	a, $3F
+	ld	(objectsSpriteTexBit + 3), a
+	ld	(objectsSpriteTex + 3), a
+	ld	a, $39
+	ld  (objectsSpriteInc0 + 3), a
+	ld  (objectsSpriteInc1 + 3), a
+	ld	hl, (object)
+	ld	a, (hl)
+	and	%11000000
+	cp	%01000000
+	jr	nz, objects16x8Item
+	ld	hl, 0
+	jp	objects16x8Grounded
+
+objects16x8Item:
+
+	ld	hl, $1313
+
+objects16x8Grounded:
+
+	ld	(objectsFixVPtbl), hl
+	ld	a, (height)
+	sla	a
+	sla	a
+	ld	(height), a
+
+	; ------ ;
+	; X-loop ;
+	; ------ ;
+
+objectsXLoop:
+
+	; Is the sprite hidden here?
+	ld	hl, zBuffer
+	ld	a, (ox)
+	sub	16
+	sla	a
+	ld	b, 0
+	ld	c, a
+	add	hl, bc
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	hl, (dist)
+	sbc	hl, de
+	jp	nc, objectsNextColumn
+
+	; Set texture bits
+	ld	a, (u)
+objectsSpriteTexBit:
+	srl	a
+	srl	a
+	cpl
+	and	7
+	sla	a
+	sla	a
+	sla	a
+	add	a, $46
+	ld	(objectsTransMask0 + 1), a
+	ld  (objectsTransMask1 + 1), a
+	ld	(objectsTexMask0 + 1), a
+	ld  (objectsTexMask1 + 1), a
+
+	; Set screen bit
+	ld	a, (scrBit)
+	sla	a
+	sla	a
+	sla	a
+	add	a, $C6
+	ld	(objectsBlackMask0 + 3), a
+	ld  (objectsBlackMask1 + 3), a
+	add	a, $86 - $C6
+	ld	(objectsWhiteMask0 + 3), a
+	ld  (objectsWhiteMask1 + 3), a
+
+	; Texture incrementer
+	ld	hl, vptbl
+	ld	a, (height)
+	ld	b, 0
+	ld	c, a
+	sla	c
+	add	hl, bc
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+objectsFixVPtbl:
+	inc	de
+	inc	de
+
+	; Screen
+	ld	ix, (oy)
+	ld	a, (ox)
+	srl	a
+	srl	a
+	srl	a
+	ld	c, a
+	add	ix, bc
+
+	; Sprite (begin with mask)
+	ld	hl, (objectSprite)
+	ld	a, (u)
+objectsSpriteTex:
+	srl	a
+	srl	a
+	srl	a
+	srl	a
+	srl	a
+	ld	c, a
+	add	hl, bc
+
+	ld	a, (clippedHeight)
+
+	; ------------------- ;
+	; Draw vertical strip ;
+	; ------------------- ;
+
+objectsYLoop:
+
+	ex	af, af'
+
+objectsTransMask0:
+	bit	0, (hl)
+	jp	z, objectsBlank0
+
+objectsSpriteSize1:
+	ld	bc, -128
+	add	hl, bc
+objectsTexMask0:
+	bit	0, (hl)
+	jp	z, objectsWhiteMask0
+objectsBlackMask0:
+	set	0, (ix)
+	jp	objectsSpriteSize2
+objectsWhiteMask0:
+	res	0, (ix)
+objectsSpriteSize2:
+	ld	bc, 128
+	add	hl, bc
+
+objectsBlank0:
+
+	ld	a, (de)
+	inc	de
+	ld	c, a
+objectsSpriteInc0:
+	srl	c
+	srl	c
+	add	hl, bc
+
+objectsTransMask1:
+	bit	0, (hl)
+	jp	z, objectsBlank1
+
+objectsSpriteSize3:
+	ld	bc, -128
+	add	hl, bc
+objectsTexMask1:
+	bit	0, (hl)
+	jp	z, objectsWhiteMask1
+objectsBlackMask1:
+	set	0, (ix + 12)
+	jp	objectsSpriteSize4
+objectsWhiteMask1:
+	res	0, (ix + 12)
+objectsSpriteSize4:
+	ld	bc, 128
+	add	hl, bc
+
+objectsBlank1:
+
+	ld	a, (de)
+	inc	de
+	ld	c, a
+objectsSpriteInc1:
+	srl	c
+	srl	c
+	add	hl, bc
+	ld	c, 24
+	add	ix, bc
+
+	ex	af, af'
+	dec	a
+	jp	nz, objectsYLoop
+
+	; ---------- ;
+	; Next strip ;
+	; ---------- ;
+
+objectsNextColumn:
+
+	; Next screen column
+	ld	a, (ox)
+	inc	a
+	cp	80
+	jp	nc, objectsNext			; We're now drawing outside
+	ld	(ox), a
+
+	; Next bit
+	ld	a, (scrBit)
+	dec	a
+	and	7
+	ld	(scrBit), a
+
+	; Next texture column
+	ld	hl, (v)
+	ld	c, (hl)
+	srl	c
+	srl	c
+	inc	hl
+	ld	(v), hl
+	ld	a, (u)
+	add	a, c
+	ld	(u), a
+	cp	32
+	jp	c, objectsXLoop
+
+objectsNext:
+
+	ld	a, (visObjects)
+	dec	a
+	ld	(visObjects), a
+	or	a
+	jp	nz, objectsLoop
+
+	; Interrupts goin' again
+	ei
+
+	ret
+
+
+; ======== ;
+; Draw HUD ;
+; ======== ;
+hud:
+
+	; Blacken out surrounding
+	ld	hl, gbuf
+	ld	ix, gbuf + 10
+	ld	de, 11
+	ld	b, 48
+	ld	a, 255
+
+hudBlacken0:
+	ld	(hl), a
+	ld	(ix), a
+	inc	hl
+	inc	ix
+	ld	(hl), a
+	ld	(ix), a
+	add	hl, de
+	add	ix, de
+	djnz	hudBlacken0
+
+
+	ld	hl, gbuf + 576
+	ld	b, 192
+
+hudBlacken1:
+	ld	(hl), a
+	inc	hl
+	djnz	hudBlacken1
+
+	ld	ix, hudBigSprites + 23
+	ld	hl, gbuf + 481
+	ld	a, (health)
+	srl	a
+	srl	a
+	srl	a
+	or	a
+	jr	z, hudHealthDone
+	ld	b, a
+	ld	de, -11
+
+hudHealth:
+
+	ld	a, (ix)
+	ld	(hl), a
+	dec	ix
+	dec	hl
+	ld	a, (ix)
+	ld	(hl), a
+	dec	ix
+	add	hl, de
+	djnz	hudHealth
+
+hudHealthDone:
+
+	ld	ix, hudBigSprites + 47
+	ld	hl, gbuf + 491
+	ld	a, (armor)
+	srl	a
+	srl	a
+	srl	a
+	or	a
+	jr	z, hudArmorDone
+	ld	b, a
+	ld	de, -11
+
+hudArmor:
+
+	ld	a, (ix)
+	ld	(hl), a
+	dec	ix
+	dec	hl
+	ld	a, (ix)
+	ld	(hl), a
+	dec	ix
+	add	hl, de
+	djnz	hudArmor
+
+hudArmorDone:
+
+	; Keys
+	ld	a, (playerKeys)
+	and	1
+	jr	z, hudKey0Done
+
+	ld	hl, gbuf + 10
+	ld	ix, hudKeys
+	ld	de, 12
+	ld	b, 8
+hudKey0Loop:
+	ld	a, (ix)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudKey0Loop
+hudKey0Done:
+
+	ld	a, (playerKeys)
+	and	2
+	jr	z, hudKey1Done
+
+	ld	hl, gbuf + 106
+	ld	ix, hudKeys + 8
+	ld	de, 12
+	ld	b, 8
+hudKey1Loop:
+	ld	a, (ix)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudKey1Loop
+hudKey1Done:
+
+	ld	a, (playerKeys)
+	and	4
+	jr	z, hudKey2Done
+
+	ld	hl, gbuf + 202
+	ld	ix, hudKeys + 16
+	ld	de, 12
+	ld	b, 8
+hudKey2Loop:
+	ld	a, (ix)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudKey2Loop
+hudKey2Done:
+
+	ld	a, (curWeapon)
+	and	7
+	or	a
+	ret	z				; Knife, no ammo to display
+	dec	a
+	jp	z, hudHandgun	; Draw clips
+	dec	a
+	jp	z, hudShotgun	; Draw shells
+	dec	a
+	jp	z, hudChaingun	; Draw bullets
+
+	; Draw cells
+	ld	a, (cells)
+	or	a
+	ret	z
+	srl	a
+	inc	a
+	ld	c, a
+	ld	hl, gbuf + 624
+
+hudPlasmarifleDraw:
+
+	ld	ix, hudSmallSprites + 40
+	ld	de, 12
+	ld	b, 8
+
+hudPlasmarifleDrawLoop0:
+	ld	a, (ix)
+	and	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudPlasmarifleDrawLoop0
+
+	dec	c
+	ret	z
+
+	ld	de, -96
+	add	hl, de
+	ld	de, 12
+	ld	b, 8
+
+hudPlasmarifleDrawLoop1:
+	ld	a, (ix)
+	and	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudPlasmarifleDrawLoop1
+
+	ld	de, -95
+	add	hl, de
+
+	dec	c
+	jr	nz, hudPlasmarifleDraw
+
+	ret
+
+hudChaingun:
+
+	ld	a, (bullets)
+	or	a
+	ret	z
+	srl	a
+	srl	a
+	srl	a
+	srl	a
+	inc	a
+	ld	c, a
+	ld	hl, gbuf + 624
+
+hudChaingunDraw:
+
+	ld	ix, hudSmallSprites + 24
+	ld	de, 12
+	ld	b, 8
+
+hudChaingunDrawLoop0:
+	ld	a, (ix)
+	and	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudChaingunDrawLoop0
+
+	dec	c
+	ret	z
+
+	ld	de, -96
+	add	hl, de
+	ld	de, 12
+	ld	b, 8
+
+hudChaingunDrawLoop1:
+	ld	a, (ix)
+	and	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudChaingunDrawLoop1
+
+	ld	de, -95
+	add	hl, de
+
+	dec	c
+	jr	nz, hudChaingunDraw
+
+	ret
+
+hudHandgun:
+
+	ld	a, (clips)
+	or	a
+	ret	z
+	ld	c, a
+	ld	hl, gbuf + 624
+
+hudHandgunDraw:
+
+	ld	ix, hudSmallSprites
+	ld	de, 12
+	ld	b, 8
+
+hudHandgunDrawLoop:
+	ld	a, (ix)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudHandgunDrawLoop
+
+	ld	de, -95
+	add	hl, de
+
+	dec	c
+	jr	nz, hudHandgunDraw
+
+	ret
+
+hudShotgun:
+ 
+	ld	a, (shells)
+	ld	b, a
+	ld	a, (slot)
+	add	a, b
+	or	a
+	ret	z
+	ld	c, a
+	ld	hl, gbuf + 624
+
+hudShotgunDraw:
+
+	ld	ix, hudSmallSprites + 8
+	ld	de, 12
+	ld	b, 8
+
+hudShotgunDrawLoop0:
+	ld	a, (ix)
+	and	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudShotgunDrawLoop0
+
+	dec	c
+	ret	z
+
+	ld	de, -96
+	add	hl, de
+	ld	de, 12
+	ld	b, 8
+
+hudShotgunDrawLoop1:
+	ld	a, (ix)
+	and	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+	djnz	hudShotgunDrawLoop1
+
+	ld	de, -95
+	add	hl, de
+
+	dec	c
+	jr	nz, hudShotgunDraw
+
+	ret
+
+
+; ============================== ;
+; Draw player weapon & crosshair ;
+; ============================== ;
+weapon:
+
+	ld	a, (curWeapon)
+	and	7
+	jr	z, weaponKnife
+	dec	a
+	jr	z, weaponHandgun
+	dec	a
+	jr	z, weaponShotgun
+	dec	a
+	jr	z, weaponChaingun
+
+	ld	ix, plasmarifleSprites
+	jr	weaponDecided
+
+weaponChaingun:
+
+	ld	ix, chaingunSprites
+	jr	weaponDecided
+
+weaponKnife:
+
+	ld	ix, knifeSprites
+	jr	weaponDecided
+
+weaponHandgun:
+
+	ld	ix, handgunSprites
+	jr	weaponDecided
+
+weaponShotgun:
+
+	ld	ix, shotgunSprites
+
+weaponDecided:
+
+	; ix = sprite   hl = display   de = mask
+	ld	a, (frame)
+	ld	b, a
+	ld	c, 0
+	sra	b
+	rr	c
+	sla	a
+	sla	a
+	sla	a
+	sla	a
+	ld	h, 0
+	ld	l, a
+	add	hl, bc
+	ex	de, hl
+	add	ix, de
+	push	ix
+	pop	hl
+	ld	bc, 72
+	add	hl, bc
+	ex	de, hl
+	ld	hl, gbuf + 307
+	ld	b, 24
+
+weaponDraw:
+
+	ld	a, (de)
+	and	(hl)
+	or	(ix)
+	ld	(hl), a
+	inc	ix
+	inc	hl
+	inc	de
+
+	ld	a, (de)
+	and	(hl)
+	or	(ix)
+	ld	(hl), a
+	inc	ix
+	inc	hl
+	inc	de
+
+	ld	a, (de)
+	and	(hl)
+	or	(ix)
+	ld	(hl), a
+	inc	ix
+	inc	de
+
+	push	de
+	ld	de, 10
+	add	hl, de
+	pop	de
+
+	djnz	weaponDraw
+
+	; No crosshair for knife
+	ld	a, (curWeapon)
+	and	7
+	ret	z
+	dec	a
+	sla	a
+	sla	a
+	ld	b, 0
+	ld	c, a
+
+	; Crosshair
+	ld	ix, weaponCrosshair
+	add	ix, bc
+	ld	hl, gbuf + 245
+	ld	de, 11
+	ld	b, 8
+
+weaponDrawCrosshair:
+
+	ld	a, (ix)
+	or	(hl)
+	ld	(hl), a
+	inc	ix
+	inc	hl
+
+	ld	a, (ix)
+	or	(hl)
+	ld	(hl), a
+	inc	ix
+	add	hl, de
+
+	djnz	weaponDrawCrosshair
+
+	ret
+
+
+; ============================= ;
+; Update raycasting environment ;
+; ============================= ;
+update:
+
+	; Update doors
+	ld	hl, doors
+	ld	b, 3
+
+updateDoors:
+
+	; Active?
+	ld	a, (hl)
+	or	a
+	jr	z, updateNextDoor
+
+	; Increment timer and fix slider
+	inc	a
+	ld	(hl), a
+	cp	8
+	jr	c, updateDoorOpening	; Door is sliding up
+	cp	$18
+	jr	nc, updateDoorClosing	; Door is sliding shut
+
+	; Door is fully open
+	inc	hl
+	ld	a, 255
+	ld	(hl), a
+	dec	hl
+	jp	updateNextDoor
+
+updateDoorOpening:
+
+	inc	hl
+	rrca
+	rrca
+	rrca
+	ld	(hl), a
+	dec	hl
+	jp	updateNextDoor
+
+updateDoorClosing:
+
+	; Not where the player is?
+	push	hl
+	inc	hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	push	de
+	ld	hl, level
+	ld	a, (playerX + 1)
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (playerY + 1)
+	ld	e, a
+	sla	e
+	sla	e
+	sla	e
+	sla	e
+	rl	d
+	sla	e
+	rl	d
+	add	hl, de
+	pop	de
+	or	a
+	sbc	hl, de
+	pop	hl
+	jr	nz, updateCloseDoor		; Player is not in danger
+
+	; No pancakes!
+	ld	a, $10
+	ld	(hl), a
+	jp	updateNextDoor
+
+updateCloseDoor:
+
+	; Time to totally close and clear the door?
+	ld	a, (hl)
+	and	$1F
+	jr	z, updateClearDoor
+
+	; No, just calculate slider
+	inc	hl
+	ld	d, a
+	ld	a, $1F
+	sub	d
+	rrca
+	rrca
+	rrca
+	ld	(hl), a
+	dec	hl
+	jp	updateNextDoor
+
+updateClearDoor:
+
+	; Clear door
+	xor	a
+	ld	(hl), a
+	inc	hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ex	de, hl
+	ld	a, (hl)
+	and	$9F
+	ld	(hl), a
+	ex	de, hl
+	dec	hl
+	dec	hl
+	dec	hl
+
+updateNextDoor:
+
+	inc	hl
+	inc	hl
+	inc	hl
+	inc	hl
+
+	djnz	updateDoors
+
+	; Update pushable
+	ld	a, (pushable)
+	or	a
+	jr	z, updateNoPushable
+
+	add	a, 8
+	ld	(pushable), a
+	cp	240
+	jr	c, updateNoPushable
+
+	; Pushable reached max, clear pushable in level
+	xor	a
+	ld	(pushable), a
+	ld	hl, (pushable + 1)
+	ld	a, (hl)
+	or	$20
+	ld	(hl), a
+
+updateNoPushable:
+
+	; Get trigs for moving
+	ld	hl, movtbl
+	ld	a, (playerAngle)
+	srl	a
+	srl	a
+	srl	a
+	ld	b, 0
+	ld	c, a
+	add	hl, bc
+	ld	a, (hl)
+	ld	(sin), a
+	ld	c, 8
+	add	hl, bc
+	ld	a, (hl)
+	ld	(cos), a
+
+	; Player wanna quit?
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, Column1
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+	ld	d, a
+
+	; Check immediate exit [CLEAR]
+	and	K_Clear
+	jr	z, updateDontExit
+
+	ld	a, 2
+	ld	(done), a
+	ret
+
+updateDontExit:
+
+	; Quit to main menu immediately?
+	ld	a, d
+	and	K_Power
+	jr	z, updateDontMainMenu
+
+	ld	a, 1
+	ld	(done), a
+	ret
+
+updateDontMainMenu:
+
+	; Check door-opener
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, UpperRow
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+
+	and	K_Del
+	jp	z, updateDontOpen
+
+	; A location in front of the player
+	ld	a, (cos)
+	ld	b, a
+	sla	a
+	add	a, b
+	ld	hl, (playerX)
+	ld	b, 0
+	ld	c, a
+	and	$80
+	jr	z, updateOpenPosX
+	dec	b
+
+updateOpenPosX:
+	add	hl, bc
+	ld	d, h
+
+	ld	a, (sin)
+	ld	b, a
+	sla	a
+	add	a, b
+	ld	hl, (playerY)
+	ld	b, 0
+	ld	c, a
+	and	$80
+	jr	z, updateOpenPosY
+	dec	b
+
+updateOpenPosY:
+	add	hl, bc
+	ld	b, d
+	ld	c, h
+
+	call	checkLevel
+	ld	c, a
+	and	%10000000
+	jr	nz, updateOpenDoor
+	ld	a, c
+	and	%01000000
+	jr	nz, updateOpenPushable
+	jp	updateDontOpen
+
+updateOpenDoor:
+
+	; That's a door alright, already active?
+	ld	a, c
+	and	%01100000
+	jr	nz, updateDontOpen
+
+	; How about door keys?
+	ld	a, c
+	and	%00011000
+	jr	z, updateDoorKeyOK
+
+	srl	a
+	srl	a
+	srl	a
+	ld	b, a
+	ld	a, (playerKeys)
+	dec	b
+	jr	z, updateDoorKeyCheck
+	srl	a
+	dec	b
+	jr	z, updateDoorKeyCheck
+	srl	a
+
+updateDoorKeyCheck:
+
+	; Does the player acrry the key?
+	and	1
+	jr	z, updateDontOpen
+
+updateDoorKeyOK:
+
+	; Find an empty door-data slot
+	push	hl
+	ld	hl, doors
+	ld	de, 4
+	ld	b, 1
+
+updateFindDoorLoop:
+
+	ld	a, (hl)
+	or	a
+	jr	z, updateDoorFound
+
+	add	hl, de
+	inc	b
+
+	jp	updateFindDoorLoop
+
+updateDoorFound:
+
+	; Door data slot now active, no sliding yet
+	inc	(hl)
+	inc	hl
+	xor	a
+	ld	(hl), a
+
+	; Restore level-pointer
+	pop	de
+
+	; Save level-pointer to active-door data
+	inc	hl
+	ld	a, e
+	ld	(hl), a
+	inc	hl
+	ld	a, d
+	ld	(hl), a
+
+	; Save pointer in level
+	ld	h, d
+	ld	l, e
+	ld	a, (hl)
+	rrc	b
+	rrc	b
+	rrc	b
+	or	b
+	ld	(hl), a
+	jp	updateDontOpen
+
+updateOpenPushable:
+
+	; So, the player found a secret, eh?
+	ld	a, (pushable)
+	or	a
+	jr	nz, updateDontOpen
+	ld	ix, secrets
+	inc	(ix)
+	ld	a, 8
+	ld	(pushable), a
+	ld	(pushable + 1), hl
+
+updateDontOpen:
+
+	; Check if we need to reload the current weapon (handgun & shotgun)
+	ld	a, (curWeapon)
+	and	7
+	dec	a
+	jr	z, updateReloadHandgun
+	dec	a
+	; No reload necessary for knife + chaingun + plasmarifle
+	jp	nz, updateNoReload
+
+	; Already reloading shotgun?
+	ld	a, (reload)
+	or	a
+	jr	nz, updateShotgunReloading
+
+	; Empty shotgun slot?
+	ld	a, (slot)
+	or	a
+	jp	nz, updateNoReload
+
+	; Any shells left?
+	ld	a, (shells)
+	or	a
+	jp	z, updateSwitchKnife
+
+updateShotgunReloading:
+
+	; Increase reload counter
+	ld	a, (reload)
+	inc	a
+	ld	(reload), a
+	srl	a
+	cp	16
+	jr	nc, updateReloadShotgunDone
+	and	1
+	inc	a
+	inc	a
+	ld	b, a
+	cp	2
+	jr	nz, updateShotgunNoNewShell
+	ld	a, (frame)
+	cp	3
+	jr	nz, updateShotgunNoNewShell
+
+	; New shell into the slot
+	ld	hl, slot
+	inc	(hl)
+	ld	a, (shells)
+	dec	a
+	ld	(shells), a
+	or	a
+	jr	nz, updateShotgunNoNewShell
+	xor	a
+	ld	(reload), a
+
+updateShotgunNoNewShell:
+
+	ld	a, b
+	ld	(frame), a
+
+	; Allow firing when reloading, but the reloading process will end
+	jp	updateNoReload
+
+updateReloadShotgunDone:
+
+	ld	a, 8
+	ld	(slot), a
+	ld	hl, shells
+	dec	(hl)
+	xor	a
+	ld	(frame), a
+	ld	(reload), a
+
+	jp	updateNoReload
+
+updateReloadHandgun:
+
+	; Empty clip?
+	ld	a, (clip)
+	or	a
+	jr	nz, updateNoReload
+
+	; Any clips left?
+	ld	a, (clips)
+	or	a
+	jp	z, updateSwitchKnife
+
+	; Increase reload counter and set appropriate frame
+	ld	a, (reload)
+	inc	a
+	ld	(reload), a
+	srl	a
+	srl	a
+	inc	a
+	inc	a
+	cp	4
+	jr	nc, updateReloadHandgunDone
+	ld	(frame), a
+
+	; Not attacking
+	xor	a
+	ld	(attacking), a
+
+	; Don't allow firing while reloading handgun!
+	jp	updateWeaponDone
+
+updateReloadHandgunDone:
+
+	xor	a
+	ld	(frame), a
+	ld	(reload), a
+	ld	a, 12
+	ld	(clip), a
+	ld	hl, clips
+	dec	(hl)
+
+updateNoReload:
+
+	; Has the player attacked with the shotgun?
+	ld	a, (attacking)
+	or	a
+	jr	z, updateNoDelay
+	ld	a, (curWeapon)
+	and	7
+	cp	2
+	jr	nz, updateNoShotgunDelay
+
+	xor	a
+	ld	(frame), a
+
+	ld	a, (attacking)
+	inc	a
+	ld	(attacking), a
+	cp	SHOTGUN_DELAY
+	jp	c, updateWeaponDone
+	jp	updateNoDelay
+
+updateNoShotgunDelay:
+
+	; Plasmarifle?
+	cp	4
+	jr	nz, updateNoDelay
+
+	xor	a
+	ld	(frame), a
+
+	ld	a, (attacking)
+	inc	a
+	ld	(attacking), a
+	cp	PLASMARIFLE_DELAY
+	jp	c, updateWeaponDone
+
+updateNoDelay:
+
+	; Violence! Player shoots!
+	in	a, (Keys)
+	cpl
+	ld	d, a
+
+	and	K_2nd
+	jr	nz, updateShoot
+	ld	a, d
+	and	K_Mode
+	jr	nz, updateShoot
+	jp	updateDontShoot
+
+updateShoot:
+
+	; Update correctly, depending on weapon
+	ld	a, (curWeapon)
+	and	7
+	or	a
+	jr	z, updateKnife
+	dec	a
+	jr	z, updateHandgun
+	dec	a
+	jr	z, updateShotgun
+	dec	a
+	jr	z, updateChaingun
+
+	; Update plasma-rifle
+	; Shoot, then wait till the plasma-rifle has "cooled off". Decrease
+	; cells.
+
+	ld	a, (attacking)
+	inc	a
+	ld	(attacking), a
+	cp	1
+	jr	z, updatePlasmarifleAttack
+	xor	a
+	jr	updatePlasmarifleStill
+
+updatePlasmarifleAttack:
+
+	ld	b, a
+	ld	a, (cells)
+	dec	a
+	ld	(cells), a
+	jp	z, updateSwitchKnife
+	ld	a, b
+
+updatePlasmarifleStill:
+
+	ld	(frame), a
+	jp	updateWeaponDone
+
+updateChaingun
+
+	; Update chain-gun
+	; If the player holds down the key, alter between the two attack frames and
+	; decrease ammo. If no ammo is left, switch to knife.
+
+	ld	a, (bullets)
+	or	a
+	jp	z, updateSwitchKnife
+	dec	a
+	ld	(bullets), a
+
+	ld	a, 1
+	ld	(attacking), a
+
+	ld	a, (frame)
+	and	1
+	inc	a
+	ld	(frame), a
+
+	jp	updateWeaponDone
+
+updateKnife:
+
+	; Update knife
+	; This is also simple. This weapon is NOT automatic and needs no ammo :)
+
+	ld	a, (attacking)
+	inc	a
+	ld	(attacking), a
+	cp	1
+	jr	z, updateKnifeAttack
+	xor	a
+
+updateKnifeAttack:
+
+	ld	(frame), a
+	jp	updateWeaponDone
+
+updateHandgun:
+
+	; Update handgun
+	; Semi-automatic handgun, not fully automatic. Got a limited clip of 12.
+
+	ld	a, (attacking)
+	inc	a
+	ld	(attacking), a
+	cp	1
+	jr	z, updateHandgunAttack
+	xor	a
+	jp	updateHandgunStill
+
+updateHandgunAttack:
+
+	ld	hl, clip
+	dec	(hl)
+
+updateHandgunStill:
+
+	ld	(frame), a
+	jp	updateWeaponDone
+
+updateShotgun:
+
+	; Update shotgun
+	; Semi-automatic shotgun, not fully automatic and a little slow. Reloads
+	; after 8 blasts, and this gun may be fired while reloading :D Reloading
+	; process will stop if you do that.
+
+	xor	a
+	ld	(reload), a
+
+	ld	a, (slot)
+	or	a
+	jr	z, updateWeaponDone
+
+	ld	a, (attacking)
+	or	a
+	jr	z, updateShotgunAttack
+	xor	a
+	jp	updateShotgunStill
+
+updateShotgunAttack:
+
+	ld	hl, slot
+	dec	(hl)
+	ld	a, 1
+	ld	(attacking), a
+
+updateShotgunStill:
+
+	ld	(frame), a
+	jp	updateWeaponDone
+
+updateDontShoot:
+
+	; Not attacking
+	xor	a
+	ld	(attacking), a
+
+	; Are we reloading the shotgun?
+	ld	a, (reload)
+	or	a
+	jr	nz, updateWeaponDone
+
+	; Nope, safe to use idle frame
+	xor	a
+	ld	(frame), a
+
+updateWeaponDone:
+
+	; Reset player deltas (DY lies after DX)
+	ld	hl, 0
+	ld	(playerDX), hl
+
+	; Check weapon switch
+	; Is weapon delay done?
+	ld	a, (attacking)
+	or	a
+	jp	nz, updateDontSwitch
+
+	; Check function keys
+	in	a, (Keys)
+	cpl
+	ld	d, a
+
+	and	K_Y
+	jr	nz, updateSwitchKnife
+
+	ld	a, d
+	and	K_Window
+	jr	nz, updateSwitchHandgun
+
+	ld	a, d
+	and	K_Zoom
+	jr	nz, updateSwitchShotgun
+
+	ld	a, d
+	and	K_Trace
+	jr	nz, updateSwitchChaingun
+
+	ld	a, d
+	and	K_Graph
+	jr	nz, updateSwitchPlasmarifle
+
+	jp	updateDontSwitch
+
+updateSwitchKnife:
+
+	ld	a, (curWeapon)
+	and	%1111000
+	ld	(curWeapon), a
+	jp	updateSwitchDone
+
+updateSwitchHandgun:
+
+	ld	a, (clip)
+	ld	b, a
+	ld	a, (clips)
+	or	b
+	jr	z, updateSwitchDone		; Don't switch to empty handgun
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%1000
+	jr	z, updateSwitchDone		; Do we even have a handgun?
+	ld	a, b
+	and	%1111000
+	or	1
+	ld	(curWeapon), a
+	jp	updateSwitchDone
+
+updateSwitchShotgun:
+
+	ld	a, (shells)
+	ld	b, a
+	ld	a, (slot)
+	or	b
+	jr	z, updateSwitchDone			; Any shells?
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%10000
+	jr	z, updateSwitchDone			; A shotgun?
+	ld	a, b
+	and	%1111000
+    or	2
+	ld  (curWeapon), a
+	jp  updateSwitchDone
+
+updateSwitchChaingun:
+
+	ld	a, (bullets)
+	or	a
+	jr	z, updateSwitchDone			; Bullets would be nice
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%100000
+	jr	z, updateSwitchDone			; Some mechanism to use bullets too
+	ld	a, b
+	and	%1111000
+    or	3
+	ld  (curWeapon), a
+	jp	updateSwitchDone
+
+updateSwitchPlasmarifle:
+
+	ld	a, (cells)
+	or	a
+	jr	z, updateSwitchDone			; No cells? Too bad
+	ld	a, (curWeapon)
+	ld	b, a
+	and	%1000000
+	jr	z, updateSwitchDone			; Hey, no plasma-rifle!
+	ld	a, b
+	and	%1111000
+	or	4
+	ld	(curWeapon), a
+
+updateSwitchDone:
+
+	; Clear all reload info (player MUST wait till a weapon has fully
+	; reloaded! Mwahahaha >:D )
+	xor	a
+	ld	(reload), a
+	ld	(frame), a
+
+updateDontSwitch:
+
+	; Sidestepping
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, Column5
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+
+	and	K_Alpha
+	jr	z, updateDontStepLeft
+
+	ld	a, (sin)
+	ld	(playerDX), a
+
+	ld	a, (cos)
+	neg
+	ld	(playerDY), a
+
+updateDontStepLeft:
+
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, Column4
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+
+	and	K_XT
+	jr	z, updateDontStepRight
+
+	ld	a, (sin)
+	ld	b, a
+	ld	a, (playerDX)
+	sub	b
+	ld	(playerDX), a
+
+	ld	a, (cos)
+	ld	b, a
+	ld	a, (playerDY)
+	add	a, b
+	ld	(playerDY), a
+
+updateDontStepRight:
+
+	ld	a, KeysReset
+	out	(Keys), a
+	ld	a, Arrows
+	out	(Keys), a
+	in	a, (Keys)
+	cpl
+	ld	d, a
+
+	and	K_Up
+	jr	z, updateDontForward
+
+	ld	a, (cos)
+	ld	b, a
+	ld	a, (playerDX)
+	add	a, b
+	ld	(playerDX), a
+
+	ld	a, (sin)
+	ld	b, a
+	ld	a, (playerDY)
+	add	a, b
+	ld	(playerDY), a
+
+updateDontForward:
+
+	ld	a, d
+	and	K_Down
+	jr	z, updateDontBackward
+
+	; Update location
+	ld	a, (cos)
+	ld	b, a
+	ld	a, (playerDX)
+	sub	b
+	ld	(playerDX), a
+
+	ld	a, (sin)
+	ld	b, a
+	ld	a, (playerDY)
+	sub	b
+	ld	(playerDY), a
+
+updateDontBackward:
+
+	ld	e, 0
+
+	ld	a, d
+	and	K_Left
+	jr	z, updateDontTurnLeft
+
+	ld	e, -4
+
+updateDontTurnLeft:
+
+	ld	a, d
+	and	K_Right
+	jr	z, updateDontTurnRight
+
+	ld	e, 4
+
+updateDontTurnRight:
+
+	; Did the player turn one way?
+	ld	a, e
+	or	a
+	jr	z, updateTurnSlower
+
+	; Yup, update angle-change
+	ld	a, (playerDis)
+	add	a, e
+
+	; Clamp
+	ld	e, a
+	and	$80
+	ld	a, e
+	jr	z, updateTurnPos
+
+	cp	-8
+	jr	nc, updateTurnSet
+	ld	a, -8
+	jp	updateTurnSet
+
+updateTurnPos:
+
+	cp	8
+	jr	c, updateTurnSet
+	ld	a, 8
+
+updateTurnSet:
+
+	; Set
+	ld	(playerDis), a
+	jp	updateTurn
+
+updateTurnSlower:
+
+	; Nope, check if we need to slow down
+	ld	a, (playerDis)
+	or	a
+	jr	z, updateTurn
+
+	; Cool down turning a little
+	ld	a, (playerDis)
+	ld	e, a
+	and	$80
+	ld	a, e
+	jr	z, updateTurnSlowerPos
+
+	add	a, 4
+	jp	updateTurnSlowerSet
+
+updateTurnSlowerPos:
+
+	sub	4
+
+updateTurnSlowerSet:
+
+	ld	(playerDis), a
+
+updateTurn:
+
+	; Update player turning
+	ld	a, (playerDis)
+	ld	b, a
+	ld	a, (playerAngle)
+	add	a, b
+	ld	(playerAngle), a
+
+updateDontTurn:
+
+	; Create new player coordinates
+
+	ld	hl, (playerX)
+	ld	a, (playerDX)
+	ld	b, 0
+	ld	c, a
+	and	$80
+	jr	z, updatePosDX
+	dec	b
+
+updatePosDX:
+
+	add	hl, bc
+	ld	(newPlayerX), hl
+
+	ld	hl, (playerY)
+	ld	a, (playerDY)
+	ld	b, 0
+	ld	c, a
+	and	$80
+	jr	z, updatePosDY
+	dec	b
+
+updatePosDY:
+
+	add	hl, bc
+	ld	(newPlayerY), hl
+
+	; ================ ;
+	; Check (newX, -Y) ;
+	; ================ ;
+updateXNegY:
+
+	; if dx < 0
+	ld	a, (playerDX)
+	or	a
+	jp	z, updateYNegX
+	and	$80
+	jr	z, updateXNegYDir
+
+	ld	de, -WALL_DIST
+	jp	updateCheckXNegY
+
+updateXNegYDir:
+
+	ld	de, WALL_DIST
+
+updateCheckXNegY:
+
+	ld	hl, (newPlayerX)
+	add	hl, de
+	ld	b, h
+
+	ld	hl, (playerY)
+	ld	de, -WALL_DIST
+	add	hl, de
+	ld	c, h
+
+	call	checkLevel
+	or	a
+	jr	z, updateXPosY
+	ld	c, a
+	and	$80
+	jr	nz, updateXNegYDoor
+	ld	a, c
+	and	$40
+	jr	nz, updateXNegYPushable
+	jp	updateYNegX
+
+updateXNegYDoor:
+
+	; Allow the player to walk "into" the dent
+	ld	a, (playerX + 1)
+	ld	d, a
+	ld	a, (newPlayerX + 1)
+	cp	d
+	jp	z, updateXPosY
+
+	; Active?
+	ld	a, c
+	and	$60
+	jp	z, updateYNegX
+
+	; Open?
+	ld	hl, doors
+	dec	a
+	srl	a
+	srl	a
+	srl	a
+	and	$0C
+	inc	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (hl)
+	cp	255
+	jr	nz, updateYNegX
+	jp	updateXPosY
+
+updateXNegYPushable:
+
+	ld	a, c
+	and	$20
+	jr	z, updateYNegX
+
+	; ================ ;
+	; Check (newX, +Y) ;
+	; ================ ;
+updateXPosY:
+
+	; if dx < 0
+	ld	a, (playerDX)
+	and	$80
+	jr	z, updateXPosYDir
+
+	ld	de, -WALL_DIST
+	jp	updateCheckXPosY
+
+updateXPosYDir:
+
+	ld	de, WALL_DIST
+
+updateCheckXPosY:
+
+	ld	hl, (newPlayerX)
+	add	hl, de
+	ld	b, h
+
+	ld	hl, (playerY)
+	ld	de, WALL_DIST
+	add	hl, de
+	ld	c, h
+
+	call	checkLevel
+	or	a
+	jr	z, updateXYDone
+	ld	c, a
+	and	$80
+	jr	nz, updateXPosYDoor
+	ld	a, c
+	and	$40
+	jr	nz, updateXPosYPushable
+	jp	updateYNegX
+
+updateXPosYDoor:
+
+	ld	a, (playerX + 1)
+	ld	d, a
+	ld	a, (newPlayerX + 1)
+	cp	d
+	jr	z, updateXYDone
+
+	ld	a, c
+	and	$60
+	jr	z, updateYNegX
+
+	ld	hl, doors
+	dec	a
+	srl	a
+	srl	a
+	srl	a
+	and	$0C
+	inc	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (hl)
+	cp	255
+	jr	nz, updateYNegX
+	jp	updateXYDone
+
+updateXPosYPushable:
+
+	ld	a, c
+	and	$20
+	jr	z, updateYNegX
+
+updateXYDone:
+
+	ld	hl, (newPlayerX)
+	ld	(playerX), hl
+
+	ld	a, 1
+	ld	(playerMove), a
+
+	; ================ ;
+	; Check (-X, newY) ;
+	; ================ ;
+updateYNegX:
+
+	; if dy < 0
+	ld	a, (playerDY)
+	or	a
+	ret	z
+	and	$80
+	jr	z, updateYNegXDir
+
+	ld	de, -WALL_DIST
+	jr	updateCheckYNegX
+
+updateYNegXDir:
+
+	ld	de, WALL_DIST
+
+updateCheckYNegX:
+
+	ld	hl, (newPlayerY)
+	add	hl, de
+	ld	c, h
+
+	ld	hl, (playerX)
+	ld	de, -WALL_DIST
+	add	hl, de
+	ld	b, h
+
+	call	checkLevel
+	or	a
+	
+	jr	z, updateYPosX
+	ld	c, a
+	and	$80
+	jr	nz, updateYNegXDoor
+	ld	a, c
+	and	$40
+	jr	nz, updateYNegXPushable
+	ret
+
+updateYNegXDoor:
+
+	ld	a, (playerY + 1)
+	ld	d, a
+	ld	a, (newPlayerY + 1)
+	cp	d
+	jr	z, updateYPosX
+
+	ld	a, c
+	and	$60
+	ret	z
+
+	ld	hl, doors
+	dec	a
+	srl	a
+	srl	a
+	srl	a
+	and	$0C
+	inc	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (hl)
+	cp	255
+	ret	nz
+	jr	updateYPosX
+
+updateYNegXPushable:
+
+	ld	a, c
+	and	20h
+	ret	z
+
+	; ================ ;
+	; Check (+X, newY) ;
+	; ================ ;
+updateYPosX:
+
+	; if dy < 0
+	ld	a, (playerDY)
+	and	$80
+	jr	z, updateYPosXDir
+
+	ld	de, -WALL_DIST
+	jr	updateCheckYPosX
+
+updateYPosXDir:
+
+	ld	de, WALL_DIST
+
+updateCheckYPosX:
+
+	ld	hl, (newPlayerY)
+	add	hl, de
+	ld	c, h
+
+	ld	hl, (playerX)
+	ld	de, WALL_DIST
+	add	hl, de
+	ld	b, h
+
+	call	checkLevel
+	or	a
+	jr	z, updateYXDone
+	ld	c, a
+	and	$80
+	jr	nz, updateYPosXDoor
+	ld	a, c
+	and	40h
+	jr	nz, updateYPosXPushable
+	ret
+
+updateYPosXDoor:
+
+	ld	a, (playerY + 1)
+	ld	d, a
+	ld	a, (newPlayerY + 1)
+	cp	d
+	jr	z, updateYXDone
+
+	ld	a, c
+	and	$60
+	ret	z
+
+	ld	hl, doors
+	dec	a
+	srl	a
+	srl	a
+	srl	a
+	and	0Ch
+	inc	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	a, (hl)
+	cp	255
+	ret	nz
+	jr	updateYXDone
+
+updateYPosXPushable:
+
+	ld	a, c
+	and	$20
+	ret	z
+
+updateYXDone:
+
+	ld	hl, (newPlayerY)
+	ld	(playerY), hl
+
+	ld	a, 1
+	ld	(playerMove), a
+
+	ret
+
+
+; ======= ;
+; The End ;
+; ======= ;
+TheEnd:
+
+	ld	a, 255
+	call	wipe
+	xor	a
+	call	wipe
+	ld	hl, gbuf
+	ld	a, 255
+	ld	b, 192
+TheEndBlackout0:
+	ld  (hl), a
+	inc hl
+	ld  (hl), a
+	inc hl
+	ld  (hl), a
+	inc hl
+	ld  (hl), a
+	inc hl
+	djnz	TheEndBlackout0
+
+	ld	hl, $3A20
+	push	hl
+
+	set	3, (iy + 5)
+	set	7, (iy + 20)
+
+TheEndLoop:
+
+	; Blacken display
+	ld	hl, gbuf
+	ld	a, 255
+	ld	b, 192
+TheEndBlackout1:
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	djnz	TheEndBlackout1
+
+	; Print
+	pop	hl
+	ld	(pencol), hl
+	dec	h
+	push	hl
+	ld	hl, showTheEnd
+	bcall(_vputs)
+
+	call	flip
+
+	pop	hl
+	push	hl
+	ld	a, h
+	cp	$10
+	jr	nc, TheEndLoop
+
+	pop	hl
+
+	ld	hl, $2010
+	ld	(pencol), hl
+	ld	hl, greet0
+	bcall(_vputs)
+
+	ld  hl, $2610
+	ld  (pencol), hl
+	ld  hl, greet1
+	bcall(_vputs)
+
+	ld  hl, $2C10
+	ld  (pencol), hl
+	ld  hl, greet2
+	bcall(_vputs)
+
+	ld  hl, $3810
+	ld  (pencol), hl
+	ld  hl, greet3
+	bcall(_vputs)
+
+	call	flip
+
+	bcall(_getkey)
+
+	res	7, (iy + 20)
+	res	3, (iy + 5)
+
+	ret
+
+
+; ========== ;
+; Clear gbuf ;
+; ========== ;
+clear:
+
+	ld	hl, gbuf
+	xor	a
+	ld	b, 192
+
+clearLoop:
+
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	djnz	clearLoop
+
+	ret
+
+
+; ================================== ;
+; Flip gbuf to display (ionFastCopy) ;
+; ================================== ;
+flip:
+
+	di
+	ld	a, $80
+	out	($10), a
+	ld	hl, gbuf + 755
+	ld	a, $20
+	ld	c, a
+	inc	hl
+	dec	hl
+
+flipLoop:
+
+	ld	b, 64
+	inc	c
+	ld	de, -767
+	out	($10), a
+	add	hl, de
+	ld	de, 10
+
+flipInner:
+
+	add	hl, de
+	inc	hl
+	inc	hl
+	inc	de
+	ld	a, (hl)
+	out	($11), a
+	dec	de
+	djnz	flipInner
+
+	ld	a, c
+	cp	$2C
+	jp	nz, flipLoop
+	ei
+
+	ret
+
+
+; ============================= ;
+; Wipes the screen (a = pixels) ;
+; ============================= ;
+wipe:
+
+	ld	(wipeInner + 1), a
+	ld	c, 23
+
+wipeLoop:
+
+	ld	hl, gbuf
+	ld	a, 23
+	sub	c
+	srl	a
+	ld	d, 0
+	ld	e, a
+	add	hl, de
+	ld	b, 32
+
+wipeInner:
+
+	ld	a, 0
+	ld	(hl), a
+	ld	e, c
+	add	hl, de
+	ld	(hl), a
+	ld	a, 24
+	sub	c
+	ld	e, a
+	add	hl, de
+	djnz	wipeInner
+
+	; The 'flip'-routine is too quick here :)
+	bcall(_grbufcpy)
+
+	dec	c
+	ret	z
+	dec	c
+	jr	wipeLoop
+
+
+; ======================================= ;
+; Random value -> a (simplifed ionRandom) ;
+; ======================================= ;
+random:
+
+	push	hl
+	push	de
+	ld	hl, (randData)
+	ld	a, r
+	ld	d, a
+	ld	e, (hl)
+	add	hl, de
+	add	a, l
+	xor	h
+	ld	(randData), hl
+	pop	de
+	pop	hl
+
+	ret
+
+
+; ======================== ;
+; Multiply a with de -> hl ;
+; ======================== ;
+ade:
+
+	; Prevent negative de
+	ld	b, a
+	ld	c, 0
+	ld	a, d
+	and	$80
+	jr	z, adePositive
+
+	ld	a, e
+	cpl
+	ld	e, a
+	ld	a, d
+	cpl
+	ld	d, a
+	inc	c
+
+adePositive:
+
+	; Start mul
+	ld	a, b
+
+	ld	hl, 0
+
+	rla
+	jp	nc, ade1
+	add	hl, de
+	adc	a, 0
+ade1:
+
+	add	hl, hl
+	rla
+	jp	nc, ade2
+	add	hl, de
+	adc	a, 0
+ade2:
+
+	add	hl, hl
+	rla
+	jp	nc, ade3
+	add	hl, de
+	adc	a, 0
+ade3:
+
+	add	hl, hl
+	rla
+	jp	nc, ade4
+	add	hl, de
+	adc	a, 0
+ade4:
+
+	add	hl, hl
+	rla
+	jp	nc, ade5
+	add	hl, de
+	adc	a, 0
+ade5:
+
+	add	hl, hl
+	rla
+	jp	nc, ade6
+	add	hl, de
+	adc	a, 0
+ade6:
+
+	add	hl, hl
+	rla
+	jp	nc, ade7
+	add	hl, de
+	adc	a, 0
+ade7:
+
+	add	hl, hl
+	rla
+	jp	nc, ade8
+	add	hl, de
+	adc	a, 0
+ade8:
+
+	; Only use upper 16 bits
+	ld	l, h
+	ld	h, a
+
+	; Negative?
+	dec	c
+	ret	nz
+	ld	a, l
+	cpl
+	ld	l, a
+	ld	a, h
+	cpl
+	ld	h, a
+
+	ret
+
+
+; =============== ;
+; Divide hl by de ;
+; =============== ;
+hlde:
+
+	; Prevent negative hl
+	ld	a, h
+	ld	c, 0
+	and	$80
+	jr	z, hldePositive
+	ld	a, h
+	cpl
+	ld	h, a
+	ld	a, l
+	cpl
+	ld	l, a
+	inc	c
+
+hldePositive:
+
+	push	bc
+
+	xor	a
+	sub	e
+	ld	e, a
+	sbc	a, a
+	sub	d
+	ld	d, a
+
+	ld	a, h
+	ld	c, l
+	ld	hl, 0
+
+	ld	b, 8
+	rla
+hlde0:
+	adc	hl, hl
+	add	hl, de
+	jr	c, hlde1
+	sbc	hl, de
+hlde1:
+	rla
+	djnz	hlde0
+
+	ld	b, a
+	ld	a, c
+	ld	c, b
+
+	ld	b, 8
+	rla
+hlde2:
+	adc	hl, hl
+	add	hl, de
+	jr	c, hlde3
+	sbc	hl, de
+hlde3:
+	rla
+	djnz	hlde2
+
+	ex	de, hl
+	ld	h, c
+	ld	l, a
+
+	pop	bc
+	dec	c
+	ret	nz
+	ld	a, h
+	cpl
+	ld	h, a
+	ld	a, l
+	cpl
+	ld	l, a
+
+	ret
+
+
+; ========================== ;
+; Check cell of level (b, c) ;
+; ========================== ;
+checkLevel:
+
+	ld	a, b
+	ld	b, 0
+	sla	c
+	sla	c
+	sla	c
+	sla	c
+	rl	b
+	sla	c
+	rl	b
+	ld	hl, level
+	add	hl, bc
+	ld	b, 0
+	ld	c, a
+	add	hl, bc
+	ld	a, (hl)
+
+	ret
+
+
+; ============================================================= ;
+; Scan a bresenham line to player (0 = success, rest = failure) ;
+; ============================================================= ;
+scanLine:
+
+	; Double coordinates for a lil' finer search
+	ld	hl, (playerX)
+	ld	a, h
+	sla	l
+	rla
+	ld	(xx), a
+	ld	hl, (playerY)
+	ld	a, h
+	sla	l
+	rla
+	ld	(yy), a
+	ld	hl, (objectX)
+	sla	l
+	rl	h
+	ld	b, h
+	ld	hl, (objectY)
+	sla	l
+	rl	h
+	ld	c, h
+
+	; dx = playerX - x
+	ld	a, (xx)
+	sub	b
+	ld	(dx), a
+	or	a
+	ret	z
+	and	$80
+	jr	z, scanLinePosDX
+
+	; dx = -dx, xs = -1
+	ld	a, (dx)
+	neg
+	ld	(dx), a
+	ld	a, $05
+	jp	scanLineNegDX
+
+scanLinePosDX:
+
+	; xs = 1
+	ld	a, $04
+
+scanLineNegDX:
+
+	ld	(scanLineXXS), a
+	ld	(scanLineYXS), a
+
+	; dy = playerY - y
+	ld	a, (yy)
+	sub	c
+	ld	(dy), a
+	or	a
+	ret	z
+	and	$80
+	jr	z, scanLinePosDY
+
+	; dy = -dy, ys = -1
+	ld	a, (dy)
+	neg
+	ld	(dy), a
+	ld	a, $0D
+	jp	scanLineNegDY
+
+scanLinePosDY:
+
+	; ys = 1
+	ld	a, $0C
+
+scanLineNegDY:
+
+	ld	(scanLineXYS), a
+	ld	(scanLineYYS), a
+
+	; dx > dy
+	ld	a, (dx)
+	ld	d, a
+	ld	a, (dy)
+	cp	d
+	jr	nc, scanLineY
+
+	; Scan X major line
+	ld	a, (dx)
+	srl	a
+	ld	(cycle), a
+
+scanLineXLoop:
+
+	; Check current line location
+	ld	hl, level
+	ld	d, 0
+	ld	e, c
+	srl	e
+	sla	e
+	sla	e
+	sla	e
+	sla	e
+	rl	d
+	sla	e
+	rl	d
+	add	hl, de
+	ld	d, 0
+	ld	e, b
+	srl	e
+	add	hl, de
+	ld	a, (hl)
+	ld	d, a
+	and	%10000000
+	jr	nz, scanLineXDoor
+	ld	a, d
+	and	%01000000
+	jr	nz, scanLineXPushable
+	or	d
+	jp	nz, scanLineFail
+	jp	scanLineXPath
+
+scanLineXDoor:
+
+	ld	a, d
+	and	%01100000
+	jp	z, scanLineFail
+	jp	scanLineXPath
+
+scanLineXPushable:
+
+	ld	a, d
+	and	%00100000
+	jp	nz, scanLineFail
+
+scanLineXPath:
+
+	; x += (-)1
+scanLineXXS:
+	inc	b
+
+	ld	a, (cycle)
+	ld	d, a
+	ld	a, (dy)
+	add	a, d
+	ld	d, a
+	ld	a, (dx)
+	cp	d
+	jr	nc, scanLineXCycle
+
+	; cycle -= dx, y += (-)1
+	ld	e, a
+	ld	a, d
+	sub	e
+scanLineXYS:
+	inc	c
+
+scanLineXCycle:
+
+	ld	(cycle), a
+
+	; Is the line done?
+	ld	a, (xx)
+	cp	b
+	jr	nz, scanLineXLoop
+
+	xor	a
+	ret
+
+scanLineY:
+
+	ld	a, (dy)
+	srl	a
+	ld	(cycle), a
+
+scanLineYLoop:
+
+	; Check current line location
+	ld	hl, level
+	ld	d, 0
+	ld	e, c
+	srl	e
+	sla	e
+	sla	e
+	sla	e
+	sla	e
+	rl	d
+	sla	e
+	rl	d
+	add	hl, de
+	ld	d, 0
+	ld	e, b
+	srl	e
+	add	hl, de
+	ld	a, (hl)
+	ld	d, a
+	and	%10000000
+	jr	nz, scanLineYDoor
+	ld	a, d
+	and	%01000000
+	jr	nz, scanLineYPushable
+	or	d
+	jp	nz, scanLineFail
+	jp	scanLineYPath
+
+scanLineYDoor:
+
+	ld	a, d
+	and	%01100000
+	jr	z, scanLineFail
+	jr	nz, scanLineYPath
+
+scanLineYPushable:
+
+	ld	a, d
+	and	%00100000
+	jr	nz, scanLineFail
+
+scanLineYPath:
+
+	; y += (-)1
+scanLineYYS:
+	inc	c
+
+	ld	a, (cycle)
+	ld	d, a
+	ld	a, (dx)
+	add	a, d
+	ld	d, a
+	ld	a, (dy)
+	cp	d
+	jr	nc, scanLineYCycle
+
+	; cycle -= dy, x += (-)1
+	ld	e, a
+	ld	a, d
+	sub	e
+scanLineYXS:
+	inc	b
+
+scanLineYCycle:
+
+	ld	(cycle), a
+
+	; Is the line done?
+	ld	a, (yy + 1)
+	cp	c
+	jr	nz, scanLineYLoop
+
+	xor	a
+	ret
+
+scanLineFail:
+
+	ld	a, 1
+	ret
+
+
+; ========================================= ;
+; Decompress data into 'level' to 'compEnd' ;
+; ========================================= ;
+decompressData:
+
+	ld	de, level
+
+	; Copy first 2 bytes
+	ld	a, (hl)
+	ld	(de), a
+	inc	hl
+	inc	de
+
+	ld	a, (hl)
+	ld	(de), a
+	inc	hl
+	inc	de
+
+decompressLevelLoop:
+
+	ld	a, (hl)
+	inc	hl
+	ld	b, a
+	and	%10000000
+	jr	z, decompressLevelRaw
+
+	; Pattern data
+	ld	a, b
+	and	%01111111
+	inc	a
+	inc	a
+	neg
+	ld	b, 255
+	ld	c, a
+	ld	a, (hl)
+	inc	hl
+	push	hl
+	ld	h, d
+	ld	l, e
+	add	hl, bc
+	ld	b, a
+
+decompressLevelPatternLoop:
+
+	ld	a, (hl)
+	ld	(de), a
+	inc	hl
+	inc	de
+
+	djnz	decompressLevelPatternLoop
+
+	pop	hl
+
+	jp	decompressLevelNext
+
+decompressLevelRaw:
+
+	; Raw data
+	ld	a, (hl)
+	ld	(de), a
+	inc	hl
+	inc	de
+
+decompressLevelNext:
+
+	; Done all unpacking?
+	push	de
+	ex	de, hl
+	ld	bc, (compEnd)
+	xor	a
+	sbc	hl, bc
+	ex	de, hl
+	pop	de
+	jr	c, decompressLevelLoop
+
+	ret
+
+
+; ================= ;
+; Reset level cells ;
+; ================= ;
+resetLevel:
+
+	ld	hl, level
+	ld	bc, 32 * 32
+
+resetLevelLoop:
+
+	ld	a, (hl)
+
+	; Door?
+	ld	d, a
+	and	$80
+	jr	nz, resetDoor
+	; Pushable?
+	ld	a, d
+	and	$40
+	jr	nz, resetPushable
+	; Wall or path, just strip off high nibble
+	ld	a, d
+	and	$0F
+	jp	resetDone
+
+resetDoor:
+
+	; Mask off door pointer
+	ld	a, d
+	and	$9F
+	jp	resetDone
+
+resetPushable:
+
+	; Mask off status bits
+	ld	a, d
+	and	$4F
+
+resetDone:
+
+	ld	(hl), a
+	inc	hl
+
+	dec	bc
+	ld	a, b
+	or	c
+	jr	nz, resetLevelLoop
+
+	; Clear level status slots
+	ld	hl, doors
+	ld	b, 15
+
+resetSlots:
+
+	xor	a
+	ld	(hl), a
+	inc	hl
+	djnz	resetSlots
+
+	ret
+
+
+; ==================== ;
+; Read player settings ;
+; ==================== ;
+resetPlayer:
+
+	ld	hl, (levelData)
+	ld	e, (hl)
+	inc	hl
+	ld	d ,(hl)
+	inc	hl
+	ld	(playerX), de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	inc	hl
+	ld	(playerY), de
+	ld	a, (hl)
+	ld	(playerAngle), a
+	xor	a
+	ld	(playerDis), a
+
+	ret
+
+
+; =================================== ;
+; Clear all previous objects statuses ;
+; =================================== ;
+resetObjects:
+
+	ld	hl, (levelData)
+	ld	de, 5
+	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	(objects), a
+	or	a
+	ret	z
+	ld	(objectData), hl
+	ld	b, a
+
+resetObjectsLoop:
+
+	; Type indicator
+	ld	a, (hl)
+	ld	c, a
+	and	%10000000
+	jr	z, resetObjectsStatic
+
+	; Enemy to reset
+	ld	a, c
+	and	%10111111
+	ld	(hl), a
+	inc	hl
+
+	; Skip distance scratch
+	inc	hl
+	inc	hl
+
+	; Copy X coord
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	inc	hl
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	inc	hl
+
+	; Copy Y coord
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	inc	hl
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	inc	hl
+
+	; Copy health
+	ld	a, (hl)
+	inc	hl
+	ld	(hl), a
+	inc	hl
+
+	; Skip 'AI'-stuff
+	inc	hl
+	inc	hl
+
+	djnz	resetObjectsLoop
+
+	ld	(levelEnd), hl
+
+	ret
+
+resetObjectsStatic:
+
+	; Static object to reset
+	ld	a, c
+	and	%01011111
+	ld	(hl), a
+	ld	de, 7
+	add	hl, de
+
+	djnz	resetObjectsLoop
+
+	ld	(levelEnd), hl
+
+	ret
+
+
+newgame:
+	.db	"New Game", 0
+resume:
+	.db "Resume", 0
+easy:
+	.db	"Easy", 0
+medium:
+	.db	"Medium", 0
+hard:
+	.db	"Hard", 0
+quit:
+	.db "Quit", 0
+author:
+	.db	"by: Hans Tornqvist", 0
+
+askResume:
+	.db	"Do you want to save?", 0
+resumeKeys:
+	.db	"Yes: Y=  No: WINDOW", 0
+
+killsSoFar:
+	.db	"Kills:", 0
+showShots:
+	.db	"Shots:", 0
+showHits:
+	.db	"Hits:", 0
+showPercent:
+	.db	"Percent:", 0
+showSecrets:
+	.db	"Secrets:", 0
+
+showTheEnd:
+	.db	".. THE END ..", 0
+greet0:
+	.db	"YOU rid the earth from", 0
+greet1:
+	.db	"alien scum,", 0
+greet2:
+	.db	"well done, guard!", 0
+greet3:
+	.db	"dismiss...", 0
+
+; All masks, so that we can change difficulties easily
+diffMasks:
+	.db	1, 3, 7, 15, 31, 63, 127
+
+
+; Loads of data... Too much really!
+#include "tbls.inc"
+#include "tex96x16.inc"
+#include "tex32x32.inc"
+#include "tex24x24.inc"
+#include "tex16x16.inc"
+#include "tex16x8.inc"
+#include "tex8x8.inc"
+#include "save.inc"
+#include "levels.inc"
+#include "level.inc"

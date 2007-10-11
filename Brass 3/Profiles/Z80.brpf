@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<brassprofile name="Z80">
+	<plugin file="Z80.dll">
+		<assembler name="Z80" />
+	</plugin>
+</brassprofile>

@@ -1,0 +1,216 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{66020372-54B6-4719-895C-03BC5692292D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Core</RootNamespace>
+    <AssemblyName>Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Directives\Define Page.cs" />
+    <Compile Include="Directives\List.cs" />
+    <Compile Include="Directives\EmptyFill.cs" />
+    <Compile Include="Directives\Org.cs" />
+    <Compile Include="Directives\Struct.cs" />
+    <Compile Include="Directives\Export.cs" />
+    <Compile Include="Directives\Function.cs" />
+    <Compile Include="Directives\Enum.cs" />
+    <Compile Include="Directives\EchoChar.cs" />
+    <Compile Include="Directives\StringEncoder.cs" />
+    <Compile Include="Directives\Page.cs" />
+    <Compile Include="Directives\Undefine.cs" />
+    <Compile Include="Directives\Module.cs" />
+    <Compile Include="Directives\Define.cs" />
+    <Compile Include="Directives\Repetition.cs" />
+    <Compile Include="Directives\Include.cs" />
+    <Compile Include="Directives\Include Binary.cs" />
+    <Compile Include="Directives\Align.cs" />
+    <Compile Include="Directives\Conditional.cs" />
+    <Compile Include="Directives\End.cs" />
+    <Compile Include="Directives\Echo.cs" />
+    <Compile Include="Directives\Endianness.cs" />
+    <Compile Include="Directives\Data.cs" />
+    <Compile Include="Functions\Maths\KB.cs" />
+    <Compile Include="Functions\SizeOf.cs" />
+    <Compile Include="Functions\Line.cs" />
+    <Compile Include="Functions\File Operations\File Size.cs" />
+    <Compile Include="Functions\File Operations\File Close.cs" />
+    <Compile Include="Functions\File Operations\File Seek.cs" />
+    <Compile Include="Functions\File Operations\File Position.cs" />
+    <Compile Include="Functions\File Operations\End of File.cs" />
+    <Compile Include="Functions\File Operations\File Read.cs" />
+    <Compile Include="Functions\File Operations\File Open.cs" />
+    <Compile Include="Functions\User Function.cs" />
+    <Compile Include="Functions\Logic\And.cs" />
+    <Compile Include="Functions\Logic\IsNegInf.cs" />
+    <Compile Include="Functions\Logic\IsPosInf.cs" />
+    <Compile Include="Functions\Logic\IsInf.cs" />
+    <Compile Include="Functions\Logic\IsNaN.cs" />
+    <Compile Include="Functions\Logic\If.cs" />
+    <Compile Include="Functions\Logic\Or.cs" />
+    <Compile Include="Functions\Logic\Defined.cs" />
+    <Compile Include="Functions\Logic\False.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Logic\True.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Abs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ACos.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ASin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ATan.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ATan2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Ceiling.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ConstE.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ConstPi.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Choose.cs" />
+    <Compile Include="Functions\Maths\SeedRand.cs" />
+    <Compile Include="Functions\Maths\Rand.cs" />
+    <Compile Include="Functions\Maths\Cos.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\CosH.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Floor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Ln.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Log.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Log10.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Max.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Min.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Round.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Sign.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Sin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\SinH.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Sqrt.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Tan.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\TanH.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ToDegrees.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\ToRadians.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Maths\Truncate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Listing\Html.cs" />
+    <Compile Include="Listing\Text.cs" />
+    <Compile Include="Listing\No%24Gmb.cs" />
+    <Compile Include="Number Encoding\Byte.cs" />
+    <Compile Include="Number Encoding\Int.cs" />
+    <Compile Include="Number Encoding\Word.cs" />
+    <Compile Include="Output\PagedRaw.cs" />
+    <Compile Include="Output\Intel Hex.cs" />
+    <Compile Include="Output\Raw.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="String Encoding\ASCII.cs" />
+    <Compile Include="String Encoding\UTF-32.cs" />
+    <Compile Include="String Encoding\UTF-16.cs" />
+    <Compile Include="String Encoding\UTF-7.cs" />
+    <Compile Include="String Encoding\UTF-8.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brass 3\Brass 3.csproj">
+      <Project>{75305F27-C13B-4904-9EC4-6FD352230601}</Project>
+      <Name>Brass 3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HtmlListHeader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HtmlListFooter.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(SolutionDir)Brass 3\$(OutDir)$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

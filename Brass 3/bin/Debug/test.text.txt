@@ -1,0 +1,5808 @@
+.include "test/pinball.asm"
+
+.NOLIST
+
+#define TI83P
+
+#include "models.inc"
+
+#ifdef TI83V
+
+#define TI83
+
+#endif
+
+#ifdef TI82C
+
+#define TI82
+
+#define bcall(xxxx) call $8D74 .word xxxx
+
+_vputs .equ $37D4
+
+#endif
+
+#ifdef TI82C196
+
+#define TI82
+
+#define bcall(xxxx) call xxxx
+
+_vputs .equ $390D
+
+#endif
+
+#ifdef TI82S
+
+#define TI82
+
+#define bcall(xxxx) call $8D74 .word xxxx
+
+_vputs .equ $37D4
+
+#endif
+
+#ifdef TI82
+
+PenColRow .equ $8215
+
+VScreen .equ $88B8
+
+VScreenB .equ $8228
+
+Vars .equ $8028
+
+MEMSTART .equ VScreenB+762
+
+MEMEND .equ VScreenB+764
+
+MEMALLOC .equ VScreenB+760
+
+#ifdef TI82S
+
+INSERT_MEM .equ $2258
+
+MEM_FREE .equ $22AE
+
+DEL_MEM .equ $258D
+
+DEL_TMP .equ $3606
+
+CREATE_TMP .equ $38D0
+
+.org ($9445)-39
+
+.byte $3b,$31,$33,$70,$39,$34,$31,$33
+
+.byte $34,$33,$04,$5c,$4b,$10,$31,$39
+
+.byte $2b,$33,$34,$3f,$72,$04,$5c,$4b
+
+.byte $10,$31,$39,$2b,$33,$3f,$e0,$31
+
+.byte $2b,$31,$2b,$2a,$3f,$d9,$3f
+
+#else
+
+.org $9101
+
+.byte $D5,$00,$11
+
+#endif
+
+#endif
+
+#ifdef TI83
+
+#define bcall(xxxx) call xxxx
+
+_vputs .equ $4781
+
+PenColRow .equ $8252
+
+VScreen .equ $8E29
+
+VScreenB .equ $8265
+
+Vars .equ $8039
+
+MEMSTART .equ $930D
+
+MEMEND .equ $9311
+
+#ifdef TI83V
+
+.org $9329
+
+.byte "?9_[V?", 0
+
+#else
+
+.org $9327
+
+ret
+
+#endif
+
+#endif
+
+#ifdef TI83P
+
+#define bcall(xxxx) rst 28h .word xxxx
+
+_vputs .equ $4561
+
+PenColRow .equ $86D7
+
+VScreen .equ $9340
+
+VScreenB .equ $86EC
+
+Vars .equ $8478
+
+MEMSTART .equ $9824
+
+MEMEND .equ $9828
+
+.org $9D93
+
+.byte $BB,$6D
+BB 6D 
+ret
+C9 
+#endif
+
+#ifndef TI82
+
+jr nc,Main
+30 0C 
+#endif
+
+.byte "Acelgoyobis",0
+41 63 65 6C 67 6F 79 6F 62 69 73 00 
+BackupSP .equ Vars
+
+SaveSP .equ Vars+2
+
+FrameCount .equ Vars+4
+
+MenuData .equ Vars+5
+
+MB_Var .equ Vars+5
+
+TableSlope .equ Vars+7
+
+TableData .equ Vars+9
+
+TableFlippers .equ Vars+11
+
+GizmoList .equ Vars+13
+
+TimerList .equ Vars+15
+
+CounterList .equ Vars+17
+
+BounceList .equ Vars+19
+
+BounceNum .equ Vars+21
+
+ObjSrc .equ Vars+22
+
+ObjDst .equ Vars+24
+
+ObjLen .equ Vars+26
+
+BallData .equ Vars+28
+
+TableVars .equ BallData+9
+
+GameVars .equ TableVars+4
+
+__X .equ 0
+
+__Y .equ 2
+
+__VX .equ 4
+
+__VYlow .equ 6
+
+__VY .equ 7
+
+BallX .equ BallData+__X
+
+BallY .equ BallData+__Y
+
+BallVX .equ BallData+__VX
+
+BallVYlow .equ BallData+__VYlow
+
+BallVY .equ BallData+__VY
+
+__LeftFlipper .equ 0
+
+__RightFlipper .equ __LeftFlipper+1
+
+__LeftPushed .equ __LeftFlipper+2
+
+__RightPushed .equ __RightFlipper+2
+
+LeftFlipper .equ TableVars+__LeftFlipper
+
+RightFlipper .equ TableVars+__RightFlipper
+
+LeftPushed .equ TableVars+__LeftPushed
+
+RightPushed .equ TableVars+__RightPushed
+
+__BonusVal .equ 0
+
+__BonusMul .equ 4
+
+__Lives .equ 5
+
+__Score .equ 6
+
+__TiltFrames .equ 10
+
+BonusVal .equ GameVars+__BonusVal
+
+BonusMul .equ GameVars+__BonusMul
+
+Lives .equ GameVars+__Lives
+
+Score .equ GameVars+__Score
+
+TiltFrames .equ GameVars+__TiltFrames
+
+MenuAddress .equ MenuData
+
+MenuItem .equ MenuData+2
+
+MenuItems .equ MenuData+3
+
+MenuCoords .equ MenuData+4
+
+BigSprite .equ MenuData+14
+
+TablePointers .equ MenuData+22
+
+TableMenu .equ VScreenB
+
+Sin_Table .equ VScreenB
+
+RightFlipperSprites .equ VScreenB+256
+
+TableCorrection .equ VScreenB+766
+
+FRAMEDELAY .equ 3
+
+DELAYFACTOR .equ 20
+
+MENULEFT .equ 6
+
+MENURIGHT .equ 12
+
+GRAVITY .equ 6000
+
+FORCEFACTOR .equ 1400
+
+TILTFACTOR .equ 1000
+
+MEMUSED .equ $1300
+
+Main:
+
+#ifdef TI82
+
+#ifdef TI82S
+
+rst 28h
+
+.word DEL_TMP
+
+ld hl,MEMUSED
+
+rst 28h
+
+.word MEM_FREE
+
+jr nc,EnoughMem
+
+rst 28h
+
+.word CREATE_TMP
+
+ret
+
+EnoughMem:
+
+ld hl,MEMUSED
+
+IncreaseMem:
+
+ld (MEMALLOC),hl
+
+ld d,8
+
+add hl,de
+
+push hl
+
+rst 28h
+
+.word MEM_FREE
+
+pop hl
+
+jr nc,IncreaseMem
+
+ld hl,(MEMALLOC)
+
+ld de,LastByte
+
+rst 28h
+
+.word INSERT_MEM
+
+rst 28h
+
+.word CREATE_TMP
+
+ld hl,LastByte
+
+ld (MEMSTART),hl
+
+ld de,(MEMALLOC)
+
+add hl,de
+
+ld (MEMEND),hl
+
+#else
+
+ld hl,LastByte
+
+ld (MEMSTART),hl
+
+ld hl,LastByte+MEMUSED
+
+ld (MEMEND),hl
+
+#endif
+
+#else
+
+ld de,(MEMEND)
+ED 5B 28 98 
+ld hl,(MEMSTART)
+2A 24 98 
+ld bc,MEMUSED
+01 00 13 
+add hl,bc
+09 
+ret c
+D8 
+sbc hl,de
+ED 52 
+ret nc
+D0 
+#endif
+
+CheckTables:
+
+ld de,(MEMSTART)
+ED 5B 24 98 
+ld hl,(MEMEND)
+2A 28 98 
+scf
+37 
+sbc hl,de
+ED 52 
+ld b,h
+44 
+ld c,l
+4D 
+ld h,d
+62 
+ld l,e
+6B 
+inc de
+13 
+ld (hl),0
+36 00 
+ldir
+ED B0 
+ld hl,0
+21 00 00 
+ld (TableCorrection),hl
+22 EA 89 
+ld hl,LastByte-1
+21 3B B0 
+call FindTable
+CD 27 A1 
+ld a,h
+7C 
+cp $f0
+FE F0 
+jr nc,FastExit
+30 28 
+Start:
+
+im 1
+ED 56 
+di
+F3 
+ld (BackupSP),sp
+ED 73 78 84 
+res 3,(iy+5)
+FD CB 05 9E 
+set 7,(iy+20)
+FD CB 14 FE 
+Trunk:
+
+ld hl,0
+21 00 00 
+ld (TableCorrection),hl
+22 EA 89 
+ld hl,MainMenu
+21 9D AE 
+call Menu
+CD C0 A8 
+jr Trunk
+18 F2 
+Exit:
+
+call CorrectChecksum
+CD 70 A1 
+ld sp,(BackupSP)
+ED 7B 78 84 
+res 7,(iy+20)
+FD CB 14 BE 
+FastExit:
+
+#ifdef TI82S
+
+rst 28h
+
+.word DEL_TMP
+
+ld de,(MEMALLOC)
+
+ld hl,LastByte
+
+rst 28h
+
+.word DEL_MEM
+
+rst 28h
+
+.word CREATE_TMP
+
+#endif
+
+#ifdef TI83V
+
+call $475D
+
+call $4775
+
+#endif
+
+ei
+FB 
+ret
+C9 
+DisplayHighScores:
+
+ld hl,VScreen
+21 40 93 
+call ClearScreen
+CD E1 A9 
+ld hl,HighScoreLabel
+21 BA AE 
+ld de,$1206
+11 06 12 
+ld bc,$0805
+01 05 08 
+call SpriteBig
+CD AE AA 
+ld hl,LastByte-1
+21 3B B0 
+ld a,20
+3E 14 
+DHS_Loop:
+
+push af
+F5 
+inc hl
+23 
+call FindTable
+CD 27 A1 
+ld a,h
+7C 
+cp $f0
+FE F0 
+jr nc,DHS_End
+30 29 
+pop bc
+C1 
+push bc
+C5 
+ld c,2
+0E 02 
+ld (PenColRow),bc
+ED 43 D7 86 
+push hl
+E5 
+ld de,6
+11 06 00 
+add hl,de
+19 
+push hl
+E5 
+rst 28h
+EF 
+.word _vputs
+61 45 
+pop de
+D1 
+pop hl
+E1 
+pop bc
+C1 
+push bc
+C5 
+push hl
+E5 
+ex de,hl
+EB 
+DHS_EndName:
+
+xor a
+AF 
+or (hl)
+B6 
+inc hl
+23 
+jr nz,DHS_EndName
+20 FB 
+ld e,b
+58 
+inc e
+1C 
+ld d,50
+16 32 
+call DisplayNumber
+CD EA AA 
+pop hl
+E1 
+pop af
+F1 
+add a,8
+C6 08 
+jr DHS_Loop
+18 CD 
+DHS_End:
+
+pop af
+F1 
+cp 20
+FE 14 
+jr z,Exit
+28 A4 
+ld hl,VScreen
+21 40 93 
+call FlipScreen
+CD FD A9 
+DHS_WaitKey:
+
+call ReadKeyboard
+CD 73 AB 
+call ValidateKeys
+CD 8A AB 
+ld a,(ValidKey+6)
+3A C3 AC 
+and 32
+E6 20 
+jr nz,DHS_WaitKey
+20 F3 
+ret
+C9 
+Game:
+
+call BuildTableMenu
+CD 9E A0 
+ld hl,TableMenu
+21 EC 86 
+jp Menu
+C3 C0 A8 
+GameTableChosen:
+
+call BuildData
+CD 53 A2 
+call FindChosenTable
+CD 11 A1 
+call LoadTable
+CD 80 A1 
+ld a,3
+3E 03 
+ld (Lives),a
+32 A6 84 
+ld hl,0
+21 00 00 
+ld (Score),hl
+22 A7 84 
+ld (Score+2),hl
+22 A9 84 
+call InitTable
+CD 80 9F 
+GameLoop:
+
+call CheckBall
+CD 52 9F 
+call RenderFrame
+CD 4A A4 
+call MoveBall
+CD 2A A6 
+call Interactions
+CD 9E A2 
+call ReadKeyboard
+CD 73 AB 
+call ValidateKeys
+CD 8A AB 
+ld hl,FrameCount
+21 7C 84 
+inc (hl)
+34 
+ld a,(ValidKey+1)
+3A BE AC 
+and 1
+E6 01 
+call z,Tilt
+CC 21 9F 
+ld a,(ValidKey+6)
+3A C3 AC 
+bit 5,a
+CB 6F 
+jr z,GameEnded
+28 38 
+and 4
+E6 04 
+jr nz,GameLoop
+20 D7 
+GamePaused:
+
+ld hl,PausedPicture
+21 00 AF 
+ld de,VScreen+351
+11 9F 94 
+ld b,7
+06 07 
+GP_Loop:
+
+push bc
+C5 
+ld a,(de)
+1A 
+and 254
+E6 FE 
+ld (de),a
+12 
+inc de
+13 
+ldi
+ED A0 
+ldi
+ED A0 
+ldi
+ED A0 
+ldi
+ED A0 
+ex de,hl
+EB 
+ld bc,7
+01 07 00 
+add hl,bc
+09 
+ex de,hl
+EB 
+pop bc
+C1 
+djnz GP_Loop
+10 E9 
+ld hl,VScreen
+21 40 93 
+call FlipScreen
+CD FD A9 
+GP_Wait:
+
+call ReadKeyboard
+CD 73 AB 
+call ValidateKeys
+CD 8A AB 
+ld a,(ValidKey+6)
+3A C3 AC 
+and 4
+E6 04 
+jr nz,GP_Wait
+20 F3 
+jr GameLoop
+18 A3 
+GameEnded:
+
+call DisplayScore
+CD FF 9F 
+ld hl,(TableCorrection)
+2A EA 89 
+inc hl
+23 
+inc hl
+23 
+GE_EndName:
+
+xor a
+AF 
+or (hl)
+B6 
+inc hl
+23 
+jr nz,GE_EndName
+20 FB 
+push hl
+E5 
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld d,(hl)
+56 
+pop ix
+DD E1 
+ld hl,(Score+2)
+2A A9 84 
+or a
+B7 
+sbc hl,de
+ED 52 
+jr c,GE_Finish
+38 1B 
+jr nz,GE_NewScore
+20 07 
+ld hl,(Score)
+2A A7 84 
+sbc hl,bc
+ED 42 
+jr c,GE_Finish
+38 12 
+GE_NewScore:
+
+ld hl,(Score)
+2A A7 84 
+ld (ix),l
+DD 75 00 
+ld (ix+1),h
+DD 74 01 
+ld hl,(Score+2)
+2A A9 84 
+ld (ix+2),l
+DD 75 02 
+ld (ix+3),h
+DD 74 03 
+GE_Finish:
+
+jp CorrectChecksum
+C3 70 A1 
+Tilt:
+
+ld hl,(TiltFrames)
+2A AB 84 
+ld a,h
+7C 
+or l
+B5 
+jr nz,LoseBall
+20 3B 
+ld bc,-8
+01 F8 FF 
+ld a,(Score)
+3A A7 84 
+ld e,a
+5F 
+ld d,0
+16 00 
+ld hl,(BallVX)
+2A 98 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+add hl,bc
+09 
+ld (BallVX),hl
+22 98 84 
+ld a,(BonusVal)
+3A A1 84 
+ld e,a
+5F 
+ld hl,(BallVY)
+2A 9B 84 
+sbc hl,de
+ED 52 
+sbc hl,de
+ED 52 
+sbc hl,de
+ED 52 
+ld (BallVY),hl
+22 9B 84 
+ld hl,TILTFACTOR
+21 E8 03 
+ld (TiltFrames),hl
+22 AB 84 
+ret
+C9 
+CheckBall:
+
+ld hl,(TiltFrames)
+2A AB 84 
+ld a,h
+7C 
+or l
+B5 
+jr z,CB_TiltOK
+28 04 
+dec hl
+2B 
+ld (TiltFrames),hl
+22 AB 84 
+CB_TiltOK:
+
+ld a,(BallY+1)
+3A 97 84 
+cp 163
+FE A3 
+ret c
+D8 
+LoseBall:
+
+ld a,(Lives)
+3A A6 84 
+dec a
+3D 
+jr nz,CB_LivesRemain
+20 04 
+pop hl
+E1 
+jp GameEnded
+C3 E4 9E 
+CB_LivesRemain:
+
+ld (Lives),a
+32 A6 84 
+call DisplayScore
+CD FF 9F 
+ld hl,(ObjSrc)
+2A 8E 84 
+ld de,(ObjDst)
+ED 5B 90 84 
+ld bc,(ObjLen)
+ED 4B 92 84 
+ldir
+ED B0 
+InitTable:
+
+ld hl,$5B00
+21 00 5B 
+ld (BallX),hl
+22 94 84 
+ld hl,$9600
+21 00 96 
+ld (BallY),hl
+22 96 84 
+ld h,l
+65 
+ld (BallVX),hl
+22 98 84 
+ld (BonusVal),hl
+22 A1 84 
+ld (BonusVal+2),hl
+22 A3 84 
+ld (LeftFlipper),hl
+22 9D 84 
+ld (TiltFrames),hl
+22 AB 84 
+ld a,l
+7D 
+ld (BallVYlow),a
+32 9A 84 
+ld a,1
+3E 01 
+ld (BonusMul),a
+32 A5 84 
+call DrawSpring
+CD B8 A5 
+call InitElements
+CD ED A2 
+call ForceRenderFrame
+CD 50 A4 
+IT_StartWaiting:
+
+call ReadKeyboard
+CD 73 AB 
+call ValidateKeys
+CD 8A AB 
+ld a,(KeyPressed)
+3A AF AC 
+and 4
+E6 04 
+jr nz,IT_StartWaiting
+20 F3 
+ld hl,-5000
+21 78 EC 
+IT_WaitSpring:
+
+ld bc,$1000
+01 00 10 
+IT_SpringDelay:
+
+push hl
+E5 
+pop hl
+E1 
+dec bc
+0B 
+ld a,b
+78 
+or c
+B1 
+jr nz,IT_SpringDelay
+20 F9 
+ld ix,VScreen+659
+DD 21 D3 95 
+ld b,11
+06 0B 
+ld de,-12
+11 F4 FF 
+IT_DrawBack:
+
+ld a,(ix-12)
+DD 7E F4 
+ld (ix),a
+DD 77 00 
+add ix,de
+DD 19 
+djnz IT_DrawBack
+10 F6 
+push hl
+E5 
+ld hl,VScreen
+21 40 93 
+call FlipScreen
+CD FD A9 
+call ReadKeyboard
+CD 73 AB 
+pop hl
+E1 
+ld de,-1000
+11 18 FC 
+add hl,de
+19 
+ld a,(KeyPressed)
+3A AF AC 
+and 4
+E6 04 
+jr nz,IT_Release
+20 05 
+ld a,h
+7C 
+cp $d5
+FE D5 
+jr nc,IT_WaitSpring
+30 C8 
+IT_Release:
+
+ld (BallVY),hl
+22 9B 84 
+ld a,255
+3E FF 
+ld (FrameCount),a
+32 7C 84 
+ret
+C9 
+DisplayScore:
+
+call ForceRenderFrame
+CD 50 A4 
+ld hl,VScreen+242
+21 32 94 
+ld a,23
+3E 17 
+DS_ClearLoop:
+
+ld e,0
+1E 00 
+cp 9
+FE 09 
+jr nz,DS_NoBlack
+20 01 
+dec e
+1D 
+DS_NoBlack:
+
+ld b,8
+06 08 
+DS_ClearByte:
+
+ld (hl),e
+73 
+inc hl
+23 
+djnz DS_ClearByte
+10 FC 
+inc hl
+23 
+inc hl
+23 
+inc hl
+23 
+inc hl
+23 
+dec a
+3D 
+jr nz,DS_ClearLoop
+20 EC 
+ld hl,Score
+21 A7 84 
+ld de,$2216
+11 16 22 
+call DisplayNumber
+CD EA AA 
+ld hl,BonusVal
+21 A1 84 
+ld de,$221c
+11 1C 22 
+call DisplayNumber
+CD EA AA 
+ld a,(BonusMul)
+3A A5 84 
+ld b,-1
+06 FF 
+DS_CalcBonus10:
+
+inc b
+04 
+sub 10
+D6 0A 
+jr nc,DS_CalcBonus10
+30 FB 
+push af
+F5 
+ld a,b
+78 
+ld de,$121c
+11 1C 12 
+call DisplayDigit
+CD 50 AB 
+pop af
+F1 
+add a,10
+C6 0A 
+call DisplayDigit
+CD 50 AB 
+ld ix,VScreen+351
+DD 21 9F 94 
+ld a,(ix)
+DD 7E 00 
+or 5
+F6 05 
+ld (ix),a
+DD 77 00 
+ld a,(ix+12)
+DD 7E 0C 
+or 2
+F6 02 
+ld (ix+12),a
+DD 77 0C 
+ld a,(ix+24)
+DD 7E 18 
+or 5
+F6 05 
+ld (ix+24),a
+DD 77 18 
+ld bc,(BonusVal)
+ED 4B A1 84 
+ld de,(BonusVal+2)
+ED 5B A3 84 
+ld ix,(Score)
+DD 2A A7 84 
+ld hl,(Score+2)
+2A A9 84 
+ld a,(BonusMul)
+3A A5 84 
+DS_AddBonus:
+
+add ix,bc
+DD 09 
+adc hl,de
+ED 5A 
+dec a
+3D 
+jr nz,DS_AddBonus
+20 F9 
+ld (Score),ix
+DD 22 A7 84 
+ld (Score+2),hl
+22 A9 84 
+ld hl,Score
+21 A7 84 
+ld de,$2224
+11 24 22 
+call DisplayNumber
+CD EA AA 
+ld hl,VScreen
+21 40 93 
+call FlipScreen
+CD FD A9 
+DS_Wait2nd:
+
+call ReadKeyboard
+CD 73 AB 
+call ValidateKeys
+CD 8A AB 
+ld a,(ValidKey+6)
+3A C3 AC 
+and 32
+E6 20 
+jr nz,DS_Wait2nd
+20 F3 
+ret
+C9 
+BuildTableMenu:
+
+ld hl,LastByte-1
+21 3B B0 
+ld de,TablePointers
+11 93 84 
+xor a
+AF 
+BTM_Loop:
+
+push af
+F5 
+inc hl
+23 
+push de
+D5 
+call FindTable
+CD 27 A1 
+pop de
+D1 
+ld a,h
+7C 
+cp $f0
+FE F0 
+jr nc,BTM_End
+30 0A 
+ld a,l
+7D 
+ld (de),a
+12 
+inc de
+13 
+ld a,h
+7C 
+ld (de),a
+12 
+inc de
+13 
+pop af
+F1 
+inc a
+3C 
+jr BTM_Loop
+18 EA 
+BTM_End:
+
+pop af
+F1 
+or a
+B7 
+jp z,Exit
+CA F4 9D 
+ld hl,TableMenu
+21 EC 86 
+ld (hl),a
+77 
+inc hl
+23 
+ld b,a
+47 
+ld de,GameTableChosen
+11 6D 9E 
+BTM_MenuAddress:
+
+ld (hl),e
+73 
+inc hl
+23 
+ld (hl),d
+72 
+inc hl
+23 
+djnz BTM_MenuAddress
+10 FA 
+push hl
+E5 
+ld hl,VScreen
+21 40 93 
+call ClearScreen
+CD E1 A9 
+ld c,a
+4F 
+ld b,a
+47 
+BTM_Titles:
+
+push bc
+C5 
+ld a,c
+79 
+sub b
+90 
+ld d,0
+16 00 
+add a,a
+87 
+push af
+F5 
+ld e,a
+5F 
+ld hl,TablePointers
+21 93 84 
+add hl,de
+19 
+ld a,(hl)
+7E 
+inc hl
+23 
+ld h,(hl)
+66 
+ld l,a
+6F 
+ld e,6
+1E 06 
+add hl,de
+19 
+pop af
+F1 
+ld b,a
+47 
+add a,a
+87 
+add a,b
+80 
+ld b,a
+47 
+ld c,0
+0E 00 
+ld (PenColRow),bc
+ED 43 D7 86 
+rst 28h
+EF 
+.word _vputs
+61 45 
+pop bc
+C1 
+djnz BTM_Titles
+10 DC 
+pop de
+D1 
+ld hl,VScreen+12
+21 4C 93 
+ld b,c
+41 
+ld a,12
+3E 0C 
+BTM_CopyTitles:
+
+push bc
+C5 
+ld (de),a
+12 
+inc de
+13 
+ld bc,60
+01 3C 00 
+ldir
+ED B0 
+ld c,a
+4F 
+add hl,bc
+09 
+pop bc
+C1 
+djnz BTM_CopyTitles
+10 F3 
+ret
+C9 
+FindChosenTable:
+
+ld hl,0
+21 00 00 
+ld (TableCorrection),hl
+22 EA 89 
+ld a,(MenuItem)
+3A 7F 84 
+ld b,a
+47 
+ld hl,LastByte-1
+21 3B B0 
+FCT_Loop:
+
+push bc
+C5 
+inc hl
+23 
+call FindTable
+CD 27 A1 
+pop bc
+C1 
+djnz FCT_Loop
+10 F8 
+ret
+C9 
+FindTable:
+
+ld a,(hl)
+7E 
+cp 83
+FE 53 
+jr nz,FT_Skip
+20 29 
+ld d,h
+54 
+ld e,l
+5D 
+inc de
+13 
+ld a,(de)
+1A 
+cp 12
+FE 0C 
+jr nz,FT_Skip
+20 21 
+inc de
+13 
+ld a,(de)
+1A 
+cp 217
+FE D9 
+jr nz,FT_Skip
+20 1B 
+inc de
+13 
+ld a,(de)
+1A 
+cp 154
+FE 9A 
+jr nz,FT_Skip
+20 15 
+push hl
+E5 
+ex de,hl
+EB 
+inc hl
+23 
+ld (TableCorrection),hl
+22 EA 89 
+call CalculateChecksum
+CD 5C A1 
+ex de,hl
+EB 
+pop hl
+E1 
+ld a,(de)
+1A 
+xor ixl
+DD AD 
+jr nz,FT_Skip
+20 05 
+inc de
+13 
+ld a,(de)
+1A 
+xor ixh
+DD AC 
+ret z
+C8 
+FT_Skip:
+
+inc hl
+23 
+ld a,h
+7C 
+cp $f0
+FE F0 
+jr c,FindTable
+38 CC 
+ret
+C9 
+CalculateChecksum:
+
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+ld de,0
+11 00 00 
+push de
+D5 
+pop ix
+DD E1 
+CC_Loop:
+
+ld e,(hl)
+5E 
+inc hl
+23 
+add ix,de
+DD 19 
+dec bc
+0B 
+ld a,b
+78 
+or c
+B1 
+jr nz,CC_Loop
+20 F7 
+ret
+C9 
+CorrectChecksum:
+
+ld hl,(TableCorrection)
+2A EA 89 
+ld a,h
+7C 
+or a
+B7 
+ret z
+C8 
+call CalculateChecksum
+CD 5C A1 
+push ix
+DD E5 
+pop de
+D1 
+ld (hl),e
+73 
+inc hl
+23 
+ld (hl),d
+72 
+ret
+C9 
+LoadTable:
+
+ld a,h
+7C 
+cp $f0
+FE F0 
+jr c,LT_Valid
+38 03 
+jp Exit
+C3 F4 9D 
+LT_Valid:
+
+ld de,6
+11 06 00 
+add hl,de
+19 
+LT_EndName:
+
+xor a
+AF 
+or (hl)
+B6 
+inc hl
+23 
+jr nz,LT_EndName
+20 FB 
+ld e,4
+1E 04 
+add hl,de
+19 
+push hl
+E5 
+pop ix
+DD E1 
+add hl,de
+19 
+ld (TableFlippers),hl
+22 83 84 
+ld e,(hl)
+5E 
+add hl,de
+19 
+add hl,de
+19 
+inc hl
+23 
+ld (TableData),hl
+22 81 84 
+ld de,12*160
+11 80 07 
+add hl,de
+19 
+call UncompressTable
+CD 24 A2 
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+ld (ObjSrc),hl
+22 8E 84 
+ld (ObjDst),de
+ED 53 90 84 
+ld (ObjLen),bc
+ED 43 92 84 
+push de
+D5 
+ldir
+ED B0 
+pop hl
+E1 
+ld a,(ix)
+DD 7E 00 
+ld (GizmoList),de
+ED 53 85 84 
+ld (de),a
+12 
+inc de
+13 
+or a
+B7 
+jr z,LT_GizmoOK
+28 19 
+ld b,a
+47 
+LT_GizmoList:
+
+push bc
+C5 
+ld a,l
+7D 
+ld (de),a
+12 
+inc de
+13 
+ld a,h
+7C 
+ld (de),a
+12 
+inc de
+13 
+ld a,(hl)
+7E 
+ld bc,5
+01 05 00 
+rra
+1F 
+jr nc,LT_SpriteOK
+30 03 
+ld bc,13
+01 0D 00 
+LT_SpriteOK:
+
+add hl,bc
+09 
+call SkipEvents
+CD 15 A2 
+pop bc
+C1 
+djnz LT_GizmoList
+10 E8 
+LT_GizmoOK:
+
+ld a,(ix+1)
+DD 7E 01 
+ld (TimerList),de
+ED 53 87 84 
+call LT_TimerCounter
+CD FF A1 
+ld a,(ix+2)
+DD 7E 02 
+ld (CounterList),de
+ED 53 89 84 
+call LT_TimerCounter
+CD FF A1 
+ld a,(ix+3)
+DD 7E 03 
+ld (BounceNum),a
+32 8D 84 
+ld (BounceList),hl
+22 8B 84 
+ret
+C9 
+LT_TimerCounter:
+
+ld (de),a
+12 
+inc de
+13 
+or a
+B7 
+ret z
+C8 
+ld b,a
+47 
+LT_TCList:
+
+push bc
+C5 
+ld a,l
+7D 
+ld (de),a
+12 
+inc de
+13 
+ld a,h
+7C 
+ld (de),a
+12 
+inc de
+13 
+inc hl
+23 
+ld b,0
+06 00 
+call SkipEvents
+CD 15 A2 
+pop bc
+C1 
+djnz LT_TCList
+10 F0 
+ret
+C9 
+SkipEvents:
+
+ld a,(hl)
+7E 
+inc hl
+23 
+or a
+B7 
+ret z
+C8 
+push hl
+E5 
+ld c,a
+4F 
+ld hl,EventLengths-1
+21 F6 AE 
+add hl,bc
+09 
+ld c,(hl)
+4E 
+pop hl
+E1 
+add hl,bc
+09 
+jr SkipEvents
+18 F1 
+UncompressTable:
+
+ld de,(MEMSTART)
+ED 5B 24 98 
+ld (TableSlope),de
+ED 53 7F 84 
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+UCT_Loop:
+
+ld a,(hl)
+7E 
+ldi
+ED A0 
+or a
+B7 
+jr nz,UCT_Counter
+20 0E 
+ld a,(hl)
+7E 
+inc hl
+23 
+dec bc
+0B 
+or a
+B7 
+jr z,UCT_Counter
+28 08 
+push bc
+C5 
+ld b,a
+47 
+xor a
+AF 
+UCT_PutZeros:
+
+ld (de),a
+12 
+inc de
+13 
+djnz UCT_PutZeros
+10 FC 
+pop bc
+C1 
+UCT_Counter:
+
+ld a,b
+78 
+or c
+B1 
+jr nz,UCT_Loop
+20 E8 
+push hl
+E5 
+ld hl,(MEMSTART)
+2A 24 98 
+ld de,3840
+11 00 0F 
+add hl,de
+19 
+ex de,hl
+EB 
+pop hl
+E1 
+ret
+C9 
+BuildData:
+
+ld de,Sin_Table_Source
+11 C4 AD 
+ld hl,Sin_Table
+21 EC 86 
+ld ix,Sin_Table+128
+DD 21 6C 87 
+ld b,64
+06 40 
+BD_SinLoop:
+
+ld a,(de)
+1A 
+inc de
+13 
+ld (hl),a
+77 
+inc hl
+23 
+ld (ix),a
+DD 77 00 
+dec ix
+DD 2B 
+djnz BD_SinLoop
+10 F5 
+ld (hl),a
+77 
+ld de,Sin_Table
+11 EC 86 
+ld hl,Sin_Table+128
+21 6C 87 
+ld b,128
+06 80 
+BD_SinNeg:
+
+ld a,(de)
+1A 
+inc de
+13 
+neg
+ED 44 
+ld (hl),a
+77 
+inc hl
+23 
+djnz BD_SinNeg
+10 F8 
+ld de,LeftFlipperSprites
+11 46 AE 
+ld hl,RightFlipperSprites
+21 EC 87 
+ld b,40
+06 28 
+BD_RFLoop:
+
+push bc
+C5 
+ld a,(de)
+1A 
+ld c,a
+4F 
+inc de
+13 
+ld a,(de)
+1A 
+inc de
+13 
+push de
+D5 
+ld b,8
+06 08 
+BD_RFBits:
+
+rra
+1F 
+rl d
+CB 12 
+rr c
+CB 19 
+rl e
+CB 13 
+djnz BD_RFBits
+10 F7 
+ld (hl),d
+72 
+inc hl
+23 
+ld (hl),e
+73 
+inc hl
+23 
+pop de
+D1 
+pop bc
+C1 
+djnz BD_RFLoop
+10 E6 
+ret
+C9 
+#include "interact.inc"
+
+Interactions:
+
+ld a,(BallX+1)
+3A 95 84 
+ld ixh,a
+DD 67 
+ld a,(BallY+1)
+3A 97 84 
+ld ixl,a
+DD 6F 
+ld hl,(GizmoList)
+2A 85 84 
+ld b,(hl)
+46 
+inc hl
+23 
+IA_Loop:
+
+push bc
+C5 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld d,(hl)
+56 
+inc hl
+23 
+push hl
+E5 
+ld a,(de)
+1A 
+ld c,a
+4F 
+and 4
+E6 04 
+jr z,IA_Skip
+28 2F 
+inc de
+13 
+ld a,(de)
+1A 
+sub 3
+D6 03 
+cp ixh
+DD BC 
+jp p,IA_Skip
+F2 E8 A2 
+inc de
+13 
+ld a,(de)
+1A 
+sub 3
+D6 03 
+cp ixl
+DD BD 
+jp p,IA_Skip
+F2 E8 A2 
+inc de
+13 
+ld a,(de)
+1A 
+add a,2
+C6 02 
+cp ixh
+DD BC 
+jr c,IA_Skip
+38 15 
+inc de
+13 
+ld a,(de)
+1A 
+add a,2
+C6 02 
+cp ixl
+DD BD 
+jr c,IA_Skip
+38 0D 
+ld hl,1
+21 01 00 
+rr c
+CB 19 
+jr nc,IA_NoSprite
+30 02 
+ld l,9
+2E 09 
+IA_NoSprite:
+
+add hl,de
+19 
+call EventHandler
+CD 80 A3 
+IA_Skip:
+
+pop hl
+E1 
+pop bc
+C1 
+djnz IA_Loop
+10 C1 
+ret
+C9 
+InitElements:
+
+ld hl,(TableData)
+2A 81 84 
+ld (Sprite_Address+1),hl
+22 6C AA 
+ld hl,(GizmoList)
+2A 85 84 
+ld b,(hl)
+46 
+inc hl
+23 
+IE_Elements:
+
+push bc
+C5 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld d,(hl)
+56 
+inc hl
+23 
+push hl
+E5 
+ld a,(de)
+1A 
+rra
+1F 
+jr nc,IE_Skip
+30 1B 
+rra
+1F 
+ld hl,WhiteSprite
+21 4D AA 
+jr nc,IE_Colour
+30 03 
+ld hl,Sprite
+21 63 AA 
+IE_Colour:
+
+ld (IE_Hack),hl
+22 1B A3 
+inc de
+13 
+ld a,(de)
+1A 
+inc de
+13 
+ld h,a
+67 
+ld a,(de)
+1A 
+inc de
+13 
+inc de
+13 
+inc de
+13 
+ld l,a
+6F 
+ld a,h
+7C 
+ld b,d
+42 
+ld c,e
+4B 
+IE_Hack = $+1
+
+call Sprite
+CD 63 AA 
+IE_Skip:
+
+pop hl
+E1 
+pop bc
+C1 
+djnz IE_Elements
+10 D7 
+ld hl,VScreen
+21 40 93 
+ld (Sprite_Address+1),hl
+22 6C AA 
+ret
+C9 
+DrawGizmo:
+
+ld hl,(TableData)
+2A 81 84 
+ld (Sprite_Address+1),hl
+22 6C AA 
+ld d,0
+16 00 
+ld hl,(GizmoList)
+2A 85 84 
+inc hl
+23 
+add hl,de
+19 
+add hl,de
+19 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld d,(hl)
+56 
+ld a,(de)
+1A 
+rra
+1F 
+jr nc,DG_Exit
+30 1B 
+ld hl,Sprite
+21 63 AA 
+rra
+1F 
+jr c,DG_Visible
+38 03 
+ld hl,WhiteSprite
+21 4D AA 
+DG_Visible:
+
+ld (DG_Address+1),hl
+22 56 A3 
+inc de
+13 
+ld a,(de)
+1A 
+inc de
+13 
+ld h,a
+67 
+ld a,(de)
+1A 
+inc de
+13 
+inc de
+13 
+inc de
+13 
+ld l,a
+6F 
+ld a,h
+7C 
+ld b,d
+42 
+ld c,e
+4B 
+DG_Address:
+
+call Sprite
+CD 63 AA 
+DG_Exit:
+
+ld hl,VScreen
+21 40 93 
+ld (Sprite_Address+1),hl
+22 6C AA 
+ret
+C9 
+HandleTimers:
+
+ld hl,(TimerList)
+2A 87 84 
+ld a,(hl)
+7E 
+or a
+B7 
+ret z
+C8 
+ld b,a
+47 
+inc hl
+23 
+HT_Loop:
+
+push bc
+C5 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld d,(hl)
+56 
+inc hl
+23 
+push hl
+E5 
+ld a,(de)
+1A 
+or a
+B7 
+jr z,HT_Skip
+28 0A 
+dec a
+3D 
+ld (de),a
+12 
+or a
+B7 
+jr nz,HT_Skip
+20 05 
+ex de,hl
+EB 
+inc hl
+23 
+call EventHandler
+CD 80 A3 
+HT_Skip:
+
+pop hl
+E1 
+pop bc
+C1 
+djnz HT_Loop
+10 E8 
+ret
+C9 
+EventHandler:
+
+ld a,(hl)
+7E 
+or a
+B7 
+ret z
+C8 
+inc hl
+23 
+dec a
+3D 
+jr z,Event_Score
+28 1D 
+dec a
+3D 
+jr z,Event_Bonus
+28 46 
+dec a
+3D 
+jr z,Event_SetFlags
+28 50 
+dec a
+3D 
+jr z,Event_ResetFlags
+28 6C 
+dec a
+3D 
+jr z,Event_Activate
+28 70 
+dec a
+3D 
+jr z,Event_Hide
+28 72 
+dec a
+3D 
+jr z,Event_SetCounter
+28 74 
+dec a
+3D 
+jp z,Event_Decrease
+CA 28 A4 
+dec a
+3D 
+jp z,Event_SetTimer
+CA 42 A4 
+jp Exit
+C3 F4 9D 
+Event_Score:
+
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld d,(hl)
+56 
+inc hl
+23 
+push hl
+E5 
+ld hl,(Score)
+2A A7 84 
+add hl,bc
+09 
+ld (Score),hl
+22 A7 84 
+jr nc,E_S_OK1
+30 07 
+ld hl,(Score+2)
+2A A9 84 
+inc hl
+23 
+ld (Score+2),hl
+22 A9 84 
+E_S_OK1:
+
+ld hl,(BonusVal)
+2A A1 84 
+add hl,de
+19 
+ld (BonusVal),hl
+22 A1 84 
+jr nc,E_S_OK2
+30 07 
+ld hl,(BonusVal+2)
+2A A3 84 
+inc hl
+23 
+ld (BonusVal+2),hl
+22 A3 84 
+E_S_OK2:
+
+pop hl
+E1 
+jr EventHandler
+18 B0 
+Event_Bonus:
+
+ld a,(BonusMul)
+3A A5 84 
+inc a
+3C 
+cp 100
+FE 64 
+jr z,EventHandler
+28 A8 
+ld (BonusMul),a
+32 A5 84 
+jr EventHandler
+18 A3 
+Event_SetFlags:
+
+ld e,(hl)
+5E 
+inc hl
+23 
+ld c,(hl)
+4E 
+EvtSF:
+
+ld a,$b1
+3E B1 
+EvtSF_Cont:
+
+inc hl
+23 
+ld (EvtSF_Op),a
+32 F4 A3 
+push hl
+E5 
+ld d,0
+16 00 
+ld hl,(GizmoList)
+2A 85 84 
+inc hl
+23 
+add hl,de
+19 
+add hl,de
+19 
+ld a,(hl)
+7E 
+inc hl
+23 
+ld h,(hl)
+66 
+ld l,a
+6F 
+ld a,(hl)
+7E 
+EvtSF_Op:
+
+nop
+00 
+ld (hl),a
+77 
+call DrawGizmo
+CD 28 A3 
+pop hl
+E1 
+jr EventHandler
+18 84 
+Event_ResetFlags:
+
+ld e,(hl)
+5E 
+inc hl
+23 
+ld c,(hl)
+4E 
+EvtRF:
+
+ld a,$a1
+3E A1 
+jr EvtSF_Cont
+18 DF 
+Event_Activate:
+
+ld e,(hl)
+5E 
+ld c,6
+0E 06 
+jr EvtSF
+18 D8 
+Event_Hide:
+
+ld e,(hl)
+5E 
+ld c,249
+0E F9 
+jr EvtRF
+18 F2 
+Event_SetCounter:
+
+ld ix,(CounterList)
+DD 2A 89 84 
+inc ix
+DD 23 
+EvtSC:
+
+ld e,(hl)
+5E 
+inc hl
+23 
+ld c,(hl)
+4E 
+inc hl
+23 
+push hl
+E5 
+ld d,0
+16 00 
+push ix
+DD E5 
+pop hl
+E1 
+add hl,de
+19 
+add hl,de
+19 
+ld a,(hl)
+7E 
+inc hl
+23 
+ld h,(hl)
+66 
+ld l,a
+6F 
+ld (hl),c
+71 
+pop hl
+E1 
+jp EventHandler
+C3 80 A3 
+Event_Decrease:
+
+ld e,(hl)
+5E 
+inc hl
+23 
+push hl
+E5 
+ld d,0
+16 00 
+ld hl,(CounterList)
+2A 89 84 
+inc hl
+23 
+add hl,de
+19 
+add hl,de
+19 
+ld a,(hl)
+7E 
+inc hl
+23 
+ld h,(hl)
+66 
+ld l,a
+6F 
+dec (hl)
+35 
+jr nz,EvtDec_OK
+20 04 
+inc hl
+23 
+call EventHandler
+CD 80 A3 
+EvtDec_OK:
+
+pop hl
+E1 
+jp EventHandler
+C3 80 A3 
+Event_SetTimer:
+
+ld ix,(TimerList)
+DD 2A 87 84 
+inc ix
+DD 23 
+jr EvtSC
+18 C9 
+.echo "Interaction engine: "
+
+.echo $-Interactions
+
+.echo "\n"
+
+#include "render.inc"
+
+RenderFrame:
+
+ld a,(FrameCount)
+3A 7C 84 
+cp FRAMEDELAY
+FE 03 
+ret c
+D8 
+ForceRenderFrame:
+
+xor a
+AF 
+ld (FrameCount),a
+32 7C 84 
+inc a
+3C 
+ld (LeftPushed),a
+32 9F 84 
+ld (RightPushed),a
+32 A0 84 
+call MoveLeftFlippers
+CD D5 A4 
+call MoveRightFlippers
+CD EF A4 
+call DrawFlippers
+CD 09 A5 
+ld a,(BallY+1)
+3A 97 84 
+ld d,0
+16 00 
+ld e,a
+5F 
+ld h,d
+62 
+ld l,e
+6B 
+add hl,hl
+29 
+add hl,de
+19 
+srl h
+CB 3C 
+rr l
+CB 1D 
+srl h
+CB 3C 
+rr l
+CB 1D 
+ld a,l
+7D 
+sub 8
+D6 08 
+jr nc,RF_NotNeg
+30 01 
+xor a
+AF 
+RF_NotNeg:
+
+cp 103
+FE 67 
+jr c,RF_NotBig
+38 02 
+ld a,103
+3E 67 
+RF_NotBig:
+
+ld h,d
+62 
+ld l,a
+6F 
+add hl,hl
+29 
+add hl,hl
+29 
+ex de,hl
+EB 
+ld hl,(TableData)
+2A 81 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+ld de,VScreen
+11 40 93 
+ld bc,684
+01 AC 02 
+ldir
+ED B0 
+ld l,a
+6F 
+ld a,(BallY+1)
+3A 97 84 
+sub l
+95 
+sub 2
+D6 02 
+cp 60
+FE 3C 
+jr nc,RF_Flip
+30 16 
+ld l,a
+6F 
+ld a,(BallX+1)
+3A 95 84 
+sub 2
+D6 02 
+ld bc,Ball
+01 04 AE 
+ld h,a
+67 
+push hl
+E5 
+call Sprite
+CD 63 AA 
+pop hl
+E1 
+ld a,h
+7C 
+ld bc,BallWhite
+01 0C AE 
+call WhiteSprite
+CD 4D AA 
+RF_Flip:
+
+call HandleTimers
+CD 5F A3 
+ld hl,VScreen+684
+21 EC 95 
+ld de,VScreen+685
+11 ED 95 
+ld bc,83
+01 53 00 
+ld (hl),0
+36 00 
+ldir
+ED B0 
+ld hl,Score
+21 A7 84 
+ld de,$1B3A
+11 3A 1B 
+call DisplayNumber
+CD EA AA 
+ld hl,VScreen
+21 40 93 
+jp FlipScreen
+C3 FD A9 
+MoveLeftFlippers:
+
+ld a,(KeyPressed+6)
+3A B5 AC 
+and 16
+E6 10 
+ld (LeftPushed),a
+32 9F 84 
+ld a,(LeftFlipper)
+3A 9D 84 
+jr nz,MLF_Released
+20 06 
+cp 4
+FE 04 
+ret nc
+D0 
+inc a
+3C 
+jr MLF_Exit
+18 03 
+MLF_Released:
+
+or a
+B7 
+ret z
+C8 
+dec a
+3D 
+MLF_Exit:
+
+ld (LeftFlipper),a
+32 9D 84 
+ret
+C9 
+MoveRightFlippers:
+
+ld a,(KeyPressed+6)
+3A B5 AC 
+and 1
+E6 01 
+ld (RightPushed),a
+32 A0 84 
+ld a,(RightFlipper)
+3A 9E 84 
+jr nz,MRF_Released
+20 06 
+cp 4
+FE 04 
+ret nc
+D0 
+inc a
+3C 
+jr MRF_Exit
+18 03 
+MRF_Released:
+
+or a
+B7 
+ret z
+C8 
+dec a
+3D 
+MRF_Exit:
+
+ld (RightFlipper),a
+32 9E 84 
+ret
+C9 
+DrawFlippers:
+
+ld hl,(TableFlippers)
+2A 83 84 
+ld b,(hl)
+46 
+inc hl
+23 
+DFs_Loop:
+
+push bc
+C5 
+ld b,(hl)
+46 
+inc hl
+23 
+ld c,(hl)
+4E 
+inc hl
+23 
+push hl
+E5 
+push bc
+C5 
+call DrawFlipper
+CD 21 A5 
+pop bc
+C1 
+call UpdateAngles
+CD D1 A5 
+pop hl
+E1 
+pop bc
+C1 
+djnz DFs_Loop
+10 EE 
+ret
+C9 
+DrawFlipper:
+
+ld a,b
+78 
+add a,a
+87 
+jr nc,DF_ChooseLeft
+30 08 
+ld a,(RightFlipper)
+3A 9E 84 
+ld hl,RightFlipperSprites
+21 EC 87 
+jr DF_Chosen
+18 06 
+DF_ChooseLeft:
+
+ld a,(LeftFlipper)
+3A 9D 84 
+ld hl,LeftFlipperSprites
+21 46 AE 
+DF_Chosen:
+
+add a,a
+87 
+add a,a
+87 
+add a,a
+87 
+add a,a
+87 
+ld d,0
+16 00 
+ld e,a
+5F 
+add hl,de
+19 
+push hl
+E5 
+ld l,c
+69 
+ld h,d
+62 
+add hl,hl
+29 
+add hl,hl
+29 
+ex de,hl
+EB 
+ld hl,(TableData)
+2A 81 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+ld a,b
+78 
+and $7f
+E6 7F 
+srl a
+CB 3F 
+srl a
+CB 3F 
+srl a
+CB 3F 
+ld e,a
+5F 
+ld d,0
+16 00 
+add hl,de
+19 
+pop de
+D1 
+ld a,b
+78 
+and 7
+E6 07 
+jr nz,DF_UnAligned
+20 07 
+ex de,hl
+EB 
+ld bc,$0802
+01 02 08 
+jp AlignSprite
+C3 27 AA 
+DF_UnAligned:
+
+ld (DF_Loop-2),a
+32 96 A5 
+ld c,%10000000
+0E 80 
+dec a
+3D 
+jr z,DF_MaskOK
+28 1B 
+ld c,%11000000
+0E C0 
+dec a
+3D 
+jr z,DF_MaskOK
+28 16 
+ld c,%11100000
+0E E0 
+dec a
+3D 
+jr z,DF_MaskOK
+28 11 
+ld c,%11110000
+0E F0 
+dec a
+3D 
+jr z,DF_MaskOK
+28 0C 
+ld c,%11111000
+0E F8 
+dec a
+3D 
+jr z,DF_MaskOK
+28 07 
+ld c,%11111100
+0E FC 
+dec a
+3D 
+jr z,DF_MaskOK
+28 02 
+ld c,%11111110
+0E FE 
+DF_MaskOK:
+
+ld a,c
+79 
+ld (DF_Mask1+1),a
+32 A4 A5 
+cpl
+2F 
+ld (DF_Mask2+1),a
+32 AC A5 
+ld b,8
+06 08 
+DF_Line:
+
+push bc
+C5 
+ld a,(de)
+1A 
+inc de
+13 
+ld b,a
+47 
+ld a,(de)
+1A 
+inc de
+13 
+push de
+D5 
+ld de,0
+11 00 00 
+DF_Loop:
+
+srl b
+CB 38 
+rra
+1F 
+rr d
+CB 1A 
+dec e
+1D 
+jp nz,DF_Loop
+C2 98 A5 
+ld c,a
+4F 
+ld a,(hl)
+7E 
+DF_Mask1:
+
+and 0
+E6 00 
+or b
+B0 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),c
+71 
+inc hl
+23 
+ld a,(hl)
+7E 
+DF_Mask2:
+
+and 0
+E6 00 
+or d
+B2 
+ld (hl),a
+77 
+ld de,10
+11 0A 00 
+add hl,de
+19 
+pop de
+D1 
+pop bc
+C1 
+djnz DF_Line
+10 D7 
+ret
+C9 
+DrawSpring:
+
+ld hl,(TableData)
+2A 81 84 
+ld de,1835
+11 2B 07 
+add hl,de
+19 
+ld de,Spring
+11 96 AE 
+ld ixl,7
+DD 2E 07 
+ld bc,12
+01 0C 00 
+DS_Bytes:
+
+ld a,(de)
+1A 
+inc de
+13 
+ld (hl),a
+77 
+add hl,bc
+09 
+dec ixl
+DD 2D 
+jr nz,DS_Bytes
+20 F8 
+ret
+C9 
+.echo "Rendering engine: "
+
+.echo $-RenderFrame
+
+.echo "\n"
+
+#include "physics.inc"
+
+UpdateAngles:
+
+ld hl,FlipperAngles
+21 F2 AE 
+ld d,0
+16 00 
+ld a,b
+78 
+add a,a
+87 
+jr nc,UD_ChooseLeft
+30 0A 
+ld a,(RightFlipper)
+3A 9E 84 
+ld e,a
+5F 
+add hl,de
+19 
+ld a,(hl)
+7E 
+neg
+ED 44 
+jr UD_Chosen
+18 06 
+UD_ChooseLeft:
+
+ld a,(LeftFlipper)
+3A 9D 84 
+ld e,a
+5F 
+add hl,de
+19 
+ld a,(hl)
+7E 
+UD_Chosen:
+
+ld d,a
+57 
+ld a,(BallY+1)
+3A 97 84 
+sub 4
+D6 04 
+cp c
+B9 
+ld a,d
+7A 
+jr c,UD_Above
+38 02 
+xor $80
+EE 80 
+UD_Above:
+
+push af
+F5 
+ld a,c
+79 
+srl a
+CB 3F 
+ld h,0
+26 00 
+ld l,a
+6F 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+ex de,hl
+EB 
+ld hl,(TableSlope)
+2A 7F 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+ld a,b
+78 
+and $7f
+E6 7F 
+srl a
+CB 3F 
+ld d,0
+16 00 
+ld e,a
+5F 
+add hl,de
+19 
+pop af
+F1 
+ld de,41
+11 29 00 
+ld b,4
+06 04 
+UD_Line:
+
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+inc hl
+23 
+ld (hl),a
+77 
+add hl,de
+19 
+djnz UD_Line
+10 EE 
+ret
+C9 
+MoveBall:
+
+ld hl,(BallX)
+2A 94 84 
+ld de,(BallVX)
+ED 5B 98 84 
+sra d
+CB 2A 
+rr e
+CB 1B 
+sra d
+CB 2A 
+rr e
+CB 1B 
+sra d
+CB 2A 
+rr e
+CB 1B 
+sra d
+CB 2A 
+rr e
+CB 1B 
+add hl,de
+19 
+ld (BallX),hl
+22 94 84 
+ld hl,(BallY)
+2A 96 84 
+ld de,(BallVY)
+ED 5B 9B 84 
+sra d
+CB 2A 
+rr e
+CB 1B 
+sra d
+CB 2A 
+rr e
+CB 1B 
+sra d
+CB 2A 
+rr e
+CB 1B 
+sra d
+CB 2A 
+rr e
+CB 1B 
+add hl,de
+19 
+ld (BallY),hl
+22 96 84 
+ld hl,(BallVYlow)
+2A 9A 84 
+ld a,(BallVY+1)
+3A 9C 84 
+PARAM_GRAVITY .equ $+1
+
+ld de,GRAVITY
+11 70 17 
+add hl,de
+19 
+adc a,0
+CE 00 
+ld (BallVYlow),hl
+22 9A 84 
+ld (BallVY+1),a
+32 9C 84 
+ld a,(BallX+1)
+3A 95 84 
+cp 2
+FE 02 
+jp p,MB_XLeftOK
+F2 7C A6 
+ld a,2
+3E 02 
+MB_XLeftOK:
+
+cp 94
+FE 5E 
+jr c,MB_XRightOK
+38 02 
+ld a,94
+3E 5E 
+MB_XRightOK:
+
+ld (BallX+1),a
+32 95 84 
+ld bc,$feff
+01 FF FE 
+call MB_Bounce
+CD B2 A6 
+ld bc,$fe01
+01 01 FE 
+call MB_Bounce
+CD B2 A6 
+ld bc,$ff02
+01 02 FF 
+call MB_Bounce
+CD B2 A6 
+ld bc,$0102
+01 02 01 
+call MB_Bounce
+CD B2 A6 
+ld bc,$0201
+01 01 02 
+call MB_Bounce
+CD B2 A6 
+ld bc,$02ff
+01 FF 02 
+call MB_Bounce
+CD B2 A6 
+ld bc,$01fe
+01 FE 01 
+call MB_Bounce
+CD B2 A6 
+ld bc,$fffe
+01 FE FF 
+MB_Bounce:
+
+ld a,(BallY+1)
+3A 97 84 
+add a,b
+80 
+cp 160
+FE A0 
+ret nc
+D0 
+ld (MB_HackY+1),a
+32 E8 A6 
+ld h,0
+26 00 
+ld l,a
+6F 
+add hl,hl
+29 
+add hl,hl
+29 
+ex de,hl
+EB 
+ld hl,(TableData)
+2A 81 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+ld a,(BallX+1)
+3A 95 84 
+add a,c
+81 
+ld (MB_HackX+1),a
+32 FA A6 
+ld d,0
+16 00 
+ld e,a
+5F 
+srl e
+CB 3B 
+srl e
+CB 3B 
+srl e
+CB 3B 
+add hl,de
+19 
+ld c,128
+0E 80 
+and 7
+E6 07 
+jr z,MB_MaskOK
+28 05 
+MB_MaskShift:
+
+srl c
+CB 39 
+dec a
+3D 
+jr nz,MB_MaskShift
+20 FB 
+MB_MaskOK:
+
+ld a,c
+79 
+and (hl)
+A6 
+ret z
+C8 
+MB_HackY:
+
+ld a,0
+3E 00 
+srl a
+CB 3F 
+ld h,0
+26 00 
+ld l,a
+6F 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+ex de,hl
+EB 
+ld hl,(TableSlope)
+2A 7F 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+MB_HackX:
+
+ld a,0
+3E 00 
+srl a
+CB 3F 
+ld d,0
+16 00 
+ld e,a
+5F 
+add hl,de
+19 
+ld a,(hl)
+7E 
+or a
+B7 
+ret z
+C8 
+push hl
+E5 
+ld hl,(BallVX)
+2A 98 84 
+add hl,hl
+29 
+ld b,h
+44 
+ld hl,(BallVY)
+2A 9B 84 
+add hl,hl
+29 
+ld c,h
+4C 
+call ArcTan2_BC
+CD 5E AC 
+pop hl
+E1 
+sub (hl)
+96 
+add a,64
+C6 40 
+ret p
+F0 
+push hl
+E5 
+ld a,(hl)
+7E 
+ld ix,Sin_Table
+DD 21 EC 86 
+ld b,0
+06 00 
+ld c,a
+4F 
+add ix,bc
+DD 09 
+ld a,(ix)
+DD 7E 00 
+ld e,a
+5F 
+add a,a
+87 
+sbc a,a
+9F 
+ld d,a
+57 
+ld (MB_BVX),de
+ED 53 91 A7 
+sra e
+CB 2B 
+ld hl,(BallX)
+2A 94 84 
+add hl,de
+19 
+ld (BallX),hl
+22 94 84 
+ld a,c
+79 
+sub 64
+D6 40 
+ld c,a
+4F 
+ld ix,Sin_Table
+DD 21 EC 86 
+add ix,bc
+DD 09 
+ld a,(ix)
+DD 7E 00 
+ld e,a
+5F 
+add a,a
+87 
+sbc a,a
+9F 
+ld d,a
+57 
+ld (MB_BVY),de
+ED 53 9F A7 
+sra e
+CB 2B 
+ld hl,(BallY)
+2A 96 84 
+add hl,de
+19 
+ld (BallY),hl
+22 96 84 
+ld a,(BallX+1)
+3A 95 84 
+ld d,a
+57 
+ld e,h
+5C 
+ld hl,(BounceList)
+2A 8B 84 
+ld a,(BounceNum)
+3A 8D 84 
+or a
+B7 
+jr z,MB_NoBounce
+28 4A 
+ld b,a
+47 
+ld c,0
+0E 00 
+MB_VBounce:
+
+push hl
+E5 
+ld a,(hl)
+7E 
+sub 3
+D6 03 
+cp d
+BA 
+jp p,MB_SkipB
+F2 85 A7 
+inc hl
+23 
+ld a,(hl)
+7E 
+sub 3
+D6 03 
+cp e
+BB 
+jp p,MB_SkipB
+F2 85 A7 
+inc hl
+23 
+ld a,(hl)
+7E 
+add a,2
+C6 02 
+cp d
+BA 
+jr c,MB_SkipB
+38 09 
+inc hl
+23 
+ld a,(hl)
+7E 
+add a,2
+C6 02 
+cp e
+BB 
+jr c,MB_SkipB
+38 02 
+ld c,1
+0E 01 
+MB_SkipB:
+
+pop hl
+E1 
+inc hl
+23 
+inc hl
+23 
+inc hl
+23 
+inc hl
+23 
+djnz MB_VBounce
+10 D9 
+ld a,c
+79 
+or a
+B7 
+jr z,MB_NoBounce
+28 1C 
+MB_BVX = $+1
+
+ld hl,0
+21 00 00 
+call NegHL32
+CD B3 A8 
+ld de,(BallVX)
+ED 5B 98 84 
+add hl,de
+19 
+ld (BallVX),hl
+22 98 84 
+MB_BVY = $+1
+
+ld hl,0
+21 00 00 
+call NegHL32
+CD B3 A8 
+ld de,(BallVY)
+ED 5B 9B 84 
+add hl,de
+19 
+ld (BallVY),hl
+22 9B 84 
+MB_NoBounce:
+
+pop hl
+E1 
+ld a,(hl)
+7E 
+ld (MB_HackAngle+1),a
+32 4B A8 
+ld e,a
+5F 
+push hl
+E5 
+ld bc,(BallVX)
+ED 4B 98 84 
+call Mul_BC_SinE
+CD 8E A8 
+ld (MB_Var),hl
+22 7D 84 
+pop hl
+E1 
+ld a,(hl)
+7E 
+add a,192
+C6 C0 
+ld e,a
+5F 
+push hl
+E5 
+ld bc,(BallVY)
+ED 4B 9B 84 
+call Mul_BC_SinE
+CD 8E A8 
+ex de,hl
+EB 
+ld hl,(MB_Var)
+2A 7D 84 
+add hl,de
+19 
+add hl,hl
+29 
+ld (MB_Var),hl
+22 7D 84 
+pop hl
+E1 
+ld a,(hl)
+7E 
+add a,128
+C6 80 
+ld e,a
+5F 
+push hl
+E5 
+ld bc,(MB_Var)
+ED 4B 7D 84 
+call Mul_BC_SinE
+CD 8E A8 
+ex de,hl
+EB 
+ld hl,(BallVX)
+2A 98 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+ld (BallVX),hl
+22 98 84 
+pop hl
+E1 
+ld a,(hl)
+7E 
+add a,64
+C6 40 
+ld e,a
+5F 
+push hl
+E5 
+ld bc,(MB_Var)
+ED 4B 7D 84 
+call Mul_BC_SinE
+CD 8E A8 
+ex de,hl
+EB 
+ld hl,(BallVY)
+2A 9B 84 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+ld (BallVY),hl
+22 9B 84 
+pop hl
+E1 
+ld a,(hl)
+7E 
+add a,64
+C6 40 
+and 128
+E6 80 
+rlca
+07 
+ld (MB_HackPush+1),a
+32 6A A8 
+ld hl,(TableFlippers)
+2A 83 84 
+ld b,(hl)
+46 
+inc hl
+23 
+MB_Flippers:
+
+push bc
+C5 
+ld a,(hl)
+7E 
+ld de,LeftFlipper
+11 9D 84 
+ld b,3
+06 03 
+or a
+B7 
+jp p,MB_DirOK
+F2 1E A8 
+inc de
+13 
+ld b,0
+06 00 
+MB_DirOK:
+
+ld (MB_HackDir+1),de
+ED 53 57 A8 
+and $7f
+E6 7F 
+ld d,a
+57 
+ld a,b
+78 
+ld (MB_HackJump+1),a
+32 46 A8 
+pop bc
+C1 
+inc hl
+23 
+ld e,(hl)
+5E 
+inc hl
+23 
+ld a,(BallY+1)
+3A 97 84 
+add a,2
+C6 02 
+sub e
+93 
+jr c,MB_NoFlipper
+38 56 
+cp 12
+FE 0C 
+jr nc,MB_NoFlipper
+30 52 
+ld a,(BallX+1)
+3A 95 84 
+add a,1
+C6 01 
+sub d
+92 
+jr c,MB_NoFlipper
+38 4A 
+cp 18
+FE 12 
+jr nc,MB_NoFlipper
+30 46 
+MB_HackJump:
+
+jr MB_HackAngle
+18 03 
+cpl
+2F 
+add a,19
+C6 13 
+MB_HackAngle:
+
+ld e,0
+1E 00 
+push de
+D5 
+PARAM_FORCEFACTOR = $+1
+
+ld de,FORCEFACTOR
+11 78 05 
+call Mul_A_DE
+CD C4 AB 
+ld b,h
+44 
+ld c,l
+4D 
+pop de
+D1 
+MB_HackDir:
+
+ld hl,0
+21 00 00 
+ld a,(hl)
+7E 
+or a
+B7 
+ret z
+C8 
+cp 4
+FE 04 
+ret z
+C8 
+inc hl
+23 
+inc hl
+23 
+ld a,(hl)
+7E 
+ld h,0
+26 00 
+or a
+B7 
+jr nz,MB_PushOK
+20 01 
+inc h
+24 
+MB_PushOK:
+
+ld a,h
+7C 
+MB_HackPush:
+
+xor 0
+EE 00 
+ret z
+C8 
+push de
+D5 
+push bc
+C5 
+call Mul_BC_SinE
+CD 8E A8 
+ex de,hl
+EB 
+ld hl,(BallVX)
+2A 98 84 
+add hl,de
+19 
+ld (BallVX),hl
+22 98 84 
+pop bc
+C1 
+pop de
+D1 
+ld a,e
+7B 
+add a,192
+C6 C0 
+ld e,a
+5F 
+call Mul_BC_SinE
+CD 8E A8 
+ex de,hl
+EB 
+ld hl,(BallVY)
+2A 9B 84 
+add hl,de
+19 
+ld (BallVY),hl
+22 9B 84 
+ret
+C9 
+MB_NoFlipper:
+
+djnz MB_Flippers
+10 83 
+ret
+C9 
+Mul_BC_SinE:
+
+ld d,0
+16 00 
+ld hl,Sin_Table
+21 EC 86 
+add hl,de
+19 
+ld e,(hl)
+5E 
+ld a,e
+7B 
+add a,a
+87 
+sbc a,a
+9F 
+ld d,a
+57 
+push de
+D5 
+ld a,c
+79 
+call Mul_A_DE
+CD C4 AB 
+pop de
+D1 
+ld c,h
+4C 
+push de
+D5 
+ld a,b
+78 
+call Mul_A_DE
+CD C4 AB 
+ld e,c
+59 
+ld a,e
+7B 
+add a,a
+87 
+sbc a,a
+9F 
+ld d,a
+57 
+add hl,de
+19 
+pop de
+D1 
+ld a,b
+78 
+add a,a
+87 
+ret nc
+D0 
+ld a,h
+7C 
+sub e
+93 
+ld h,a
+67 
+ret
+C9 
+NegHL32:
+
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+NegHL:
+
+ld a,l
+7D 
+cpl
+2F 
+ld l,a
+6F 
+ld a,h
+7C 
+cpl
+2F 
+ld h,a
+67 
+inc hl
+23 
+ret
+C9 
+.echo "Physics code: "
+
+.echo $-UpdateAngles
+
+.echo "\n"
+
+#include "menu.inc"
+
+Menu:
+
+ld (MenuAddress),hl
+22 7D 84 
+ld a,1
+3E 01 
+ld (MenuItem),a
+32 7F 84 
+ld a,(hl)
+7E 
+ld (MenuItems),a
+32 80 84 
+ld b,(hl)
+46 
+ld de,MenuCoords
+11 81 84 
+ld a,MENURIGHT
+3E 0C 
+Menu_ClearX:
+
+ld (de),a
+12 
+inc de
+13 
+djnz Menu_ClearX
+10 FC 
+ld hl,VScreen
+21 40 93 
+call ClearScreen
+CD E1 A9 
+ld hl,LogoData
+21 1C AF 
+ld de,VScreen+12
+11 4C 93 
+ld bc,288
+01 20 01 
+ldir
+ED B0 
+Menu_Loop:
+
+ld a,(FrameCount)
+3A 7C 84 
+inc a
+3C 
+ld (FrameCount),a
+32 7C 84 
+cp DELAYFACTOR
+FE 14 
+jr c,Menu_RenderOK
+38 0A 
+xor a
+AF 
+ld (FrameCount),a
+32 7C 84 
+call UpdateCoordinates
+CD 57 A9 
+call DisplayMenu
+CD 9D A9 
+Menu_RenderOK:
+
+call ReadKeyboard
+CD 73 AB 
+call ValidateKeys
+CD 8A AB 
+call MenuDelay
+CD 1E A9 
+ld a,(ValidKey+6)
+3A C3 AC 
+and 32
+E6 20 
+jr z,Menu_Jump
+28 1D 
+ld a,(ValidKey)
+3A BD AC 
+and 1
+E6 01 
+call z,Menu_Down
+CC 3A A9 
+ld a,(ValidKey)
+3A BD AC 
+and 8
+E6 08 
+call z,Menu_Up
+CC 4A A9 
+jr Menu_Loop
+18 C9 
+MenuDelay:
+
+ld bc,$80
+01 80 00 
+MD_Loop:
+
+push hl
+E5 
+pop hl
+E1 
+dec bc
+0B 
+ld a,b
+78 
+or c
+B1 
+jr nz,MD_Loop
+20 F9 
+ret
+C9 
+Menu_Jump:
+
+ld a,(MenuItem)
+3A 7F 84 
+add a,a
+87 
+dec a
+3D 
+ld d,0
+16 00 
+ld e,a
+5F 
+ld hl,(MenuAddress)
+2A 7D 84 
+add hl,de
+19 
+ld a,(hl)
+7E 
+inc hl
+23 
+ld h,(hl)
+66 
+ld l,a
+6F 
+jp (hl)
+E9 
+Menu_Down:
+
+ld hl,(MenuAddress)
+2A 7D 84 
+ld a,(MenuItem)
+3A 7F 84 
+inc a
+3C 
+cp (hl)
+BE 
+jr c,Menu_Update
+38 0F 
+jr z,Menu_Update
+28 0D 
+ld a,1
+3E 01 
+jr Menu_Update
+18 09 
+Menu_Up:
+
+ld a,(MenuItem)
+3A 7F 84 
+dec a
+3D 
+jr nz,Menu_Update
+20 03 
+ld a,(MenuItems)
+3A 80 84 
+Menu_Update:
+
+ld (MenuItem),a
+32 7F 84 
+ret
+C9 
+UpdateCoordinates:
+
+ld bc,(MenuItem)
+ED 4B 7F 84 
+ld de,MenuCoords
+11 81 84 
+UC_Loop:
+
+ld a,(MenuItems)
+3A 80 84 
+sub b
+90 
+inc a
+3C 
+cp c
+B9 
+ld a,(de)
+1A 
+jr nz,UC_NotCurrent
+20 07 
+cp MENULEFT
+FE 06 
+jr z,UC_EndLoop
+28 09 
+dec a
+3D 
+jr UC_EndUpdate
+18 05 
+UC_NotCurrent:
+
+cp MENURIGHT
+FE 0C 
+jr z,UC_EndLoop
+28 02 
+inc a
+3C 
+UC_EndUpdate:
+
+ld (de),a
+12 
+UC_EndLoop:
+
+inc de
+13 
+djnz UC_Loop
+10 E7 
+ret
+C9 
+FireEffect:
+
+push hl
+E5 
+ld de,12
+11 0C 00 
+add hl,de
+19 
+ex de,hl
+EB 
+pop hl
+E1 
+FE_CHack .equ $+2
+
+ld ix,1000
+DD 21 E8 03 
+FE_Clear:
+
+ld a,(de)
+1A 
+and (ix)
+DD A6 00 
+ld (hl),a
+77 
+inc de
+13 
+inc hl
+23 
+inc ix
+DD 23 
+dec bc
+0B 
+ld a,b
+78 
+or c
+B1 
+jp nz,FE_Clear
+C2 83 A9 
+ld a,ixh
+DD 7C 
+and 37
+E6 25 
+ld ixh,a
+DD 67 
+ld (FE_CHack),ix
+DD 22 81 A9 
+ret
+C9 
+DisplayMenu:
+
+ld hl,VScreen+324
+21 84 94 
+ld bc,360
+01 68 01 
+call FireEffect
+CD 78 A9 
+ld hl,(MenuAddress)
+2A 7D 84 
+ld b,(hl)
+46 
+inc hl
+23 
+ld a,b
+78 
+add a,a
+87 
+ld d,0
+16 00 
+ld e,a
+5F 
+add hl,de
+19 
+ld de,MenuCoords
+11 81 84 
+DM_Loop:
+
+push bc
+C5 
+ld a,(de)
+1A 
+inc de
+13 
+push de
+D5 
+ld d,a
+57 
+ld a,(MenuItems)
+3A 80 84 
+sub b
+90 
+add a,a
+87 
+ld e,a
+5F 
+add a,e
+83 
+add a,e
+83 
+add a,32
+C6 20 
+ld e,a
+5F 
+ld b,(hl)
+46 
+inc hl
+23 
+ld c,5
+0E 05 
+push hl
+E5 
+push bc
+C5 
+call SpriteBig
+CD AE AA 
+pop de
+D1 
+pop hl
+E1 
+ld e,d
+5A 
+ld d,0
+16 00 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+add hl,de
+19 
+pop de
+D1 
+pop bc
+C1 
+djnz DM_Loop
+10 D9 
+ld hl,VScreen
+21 40 93 
+jp FlipScreen
+C3 FD A9 
+.echo "Menu code: "
+
+.echo $-Menu
+
+.echo "\n"
+
+#include "graph.inc"
+
+ClearScreen:
+
+ld (CS_saveSP+1),sp
+ED 73 FA A9 
+CS_hackSize1:
+
+ld de,768
+11 00 03 
+add hl,de
+19 
+ld sp,hl
+F9 
+ld hl,0
+21 00 00 
+CS_hackSize2:
+
+ld b,48
+06 30 
+CS_loop:
+
+push hl
+E5 
+push hl
+E5 
+push hl
+E5 
+push hl
+E5 
+push hl
+E5 
+push hl
+E5 
+push hl
+E5 
+push hl
+E5 
+djnz CS_loop
+10 F6 
+CS_saveSP:
+
+ld sp,0
+31 00 00 
+ret
+C9 
+FlipScreen:
+
+ld a,$80
+3E 80 
+out ($10),a
+D3 10 
+ld de,755
+11 F3 02 
+add hl,de
+19 
+ld a,$20
+3E 20 
+ld c,a
+4F 
+inc hl
+23 
+dec hl
+2B 
+FS_column:
+
+ld b,64
+06 40 
+inc c
+0C 
+ld de,-767
+11 01 FD 
+out ($10),a
+D3 10 
+add hl,de
+19 
+ld de,10
+11 0A 00 
+FS_inner:
+
+add hl,de
+19 
+inc hl
+23 
+inc hl
+23 
+inc de
+13 
+ld a,(hl)
+7E 
+out ($11),a
+D3 11 
+dec de
+1B 
+djnz FS_inner
+10 F6 
+ld a,c
+79 
+cp $2c
+FE 2C 
+jp nz,FS_column
+C2 0A AA 
+ret
+C9 
+AlignSprite:
+
+push bc
+C5 
+ld b,0
+06 00 
+push de
+D5 
+ldir
+ED B0 
+pop de
+D1 
+ld c,12
+0E 0C 
+ex de,hl
+EB 
+add hl,bc
+09 
+ex de,hl
+EB 
+pop bc
+C1 
+djnz AlignSprite
+10 F1 
+ret
+C9 
+AlignMaskedSprite:
+
+push bc
+C5 
+ld b,c
+41 
+push de
+D5 
+AMS_loop:
+
+ld a,(de)
+1A 
+and (hl)
+A6 
+inc hl
+23 
+or (hl)
+B6 
+inc hl
+23 
+ld (de),a
+12 
+inc de
+13 
+djnz AMS_loop
+10 F7 
+pop de
+D1 
+ld c,12
+0E 0C 
+ex de,hl
+EB 
+add hl,bc
+09 
+ex de,hl
+EB 
+pop bc
+C1 
+djnz AlignMaskedSprite
+10 EB 
+ret
+C9 
+WhiteSprite:
+
+ld d,a
+57 
+ld a,$ac
+3E AC 
+ld (S_XORH),a
+32 98 AA 
+inc a
+3C 
+ld (S_XORL),a
+32 A0 AA 
+ld a,d
+7A 
+call Sprite
+CD 63 AA 
+xor a
+AF 
+ld (S_XORH),a
+32 98 AA 
+ld (S_XORL),a
+32 A0 AA 
+ret
+C9 
+Sprite:
+
+ld h,0
+26 00 
+add hl,hl
+29 
+add hl,hl
+29 
+ld d,h
+54 
+ld e,l
+5D 
+add hl,de
+19 
+add hl,de
+19 
+Sprite_Address:
+
+ld de,VScreen
+11 40 93 
+add hl,de
+19 
+ld d,0
+16 00 
+ld e,a
+5F 
+srl e
+CB 3B 
+srl e
+CB 3B 
+srl e
+CB 3B 
+add hl,de
+19 
+push hl
+E5 
+pop ix
+DD E1 
+and 7
+E6 07 
+ld (S_Shift+1),a
+32 8B AA 
+ld d,b
+50 
+ld e,c
+59 
+ld b,8
+06 08 
+S_Loop:
+
+ld a,(de)
+1A 
+inc de
+13 
+ld l,a
+6F 
+ld h,0
+26 00 
+S_Shift:
+
+jr $
+18 FE 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+add hl,hl
+29 
+ld a,h
+7C 
+or (ix)
+DD B6 00 
+S_XORH:
+
+nop
+00 
+ld (ix),a
+DD 77 00 
+ld a,l
+7D 
+or (ix+1)
+DD B6 01 
+S_XORL:
+
+nop
+00 
+ld (ix+1),a
+DD 77 01 
+ex de,hl
+EB 
+ld de,12
+11 0C 00 
+add ix,de
+DD 19 
+ex de,hl
+EB 
+djnz S_Loop
+10 D8 
+ret
+C9 
+SpriteBig:
+
+ld ix,BigSprite
+DD 21 8B 84 
+push bc
+C5 
+ld b,8
+06 08 
+xor a
+AF 
+SB_Clear:
+
+ld (ix),a
+DD 77 00 
+inc ix
+DD 23 
+djnz SB_Clear
+10 F9 
+pop bc
+C1 
+ld a,b
+78 
+ld (SB_Size+1),a
+32 C7 AA 
+SB_Loop:
+
+push bc
+C5 
+push de
+D5 
+push hl
+E5 
+push de
+D5 
+SB_Size:
+
+ld de,0
+11 00 00 
+ld b,c
+41 
+ld ix,BigSprite
+DD 21 8B 84 
+SB_Copy:
+
+ld a,(hl)
+7E 
+add hl,de
+19 
+ld (ix),a
+DD 77 00 
+inc ix
+DD 23 
+djnz SB_Copy
+10 F7 
+pop hl
+E1 
+ld bc,BigSprite
+01 8B 84 
+ld a,h
+7C 
+call Sprite
+CD 63 AA 
+pop hl
+E1 
+inc hl
+23 
+pop de
+D1 
+ld a,d
+7A 
+add a,8
+C6 08 
+ld d,a
+57 
+pop bc
+C1 
+djnz SB_Loop
+10 D9 
+ret
+C9 
+DisplayNumber:
+
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+ld (DN_LoWord),bc
+ED 43 09 AB 
+ld c,(hl)
+4E 
+inc hl
+23 
+ld b,(hl)
+46 
+inc hl
+23 
+ld (DN_HiWord),bc
+ED 43 11 AB 
+ld b,9
+06 09 
+DN_Number:
+
+push bc
+C5 
+push de
+D5 
+ld de,$05f5
+11 F5 05 
+ld bc,$e100
+01 00 E1 
+ld a,-1
+3E FF 
+or a
+B7 
+DN_Digit:
+
+inc a
+3C 
+DN_LoWord = $+1
+
+ld hl,0
+21 00 00 
+sbc hl,bc
+ED 42 
+ld (DN_LoWord),hl
+22 09 AB 
+DN_HiWord = $+1
+
+ld hl,0
+21 00 00 
+sbc hl,de
+ED 52 
+ld (DN_HiWord),hl
+22 11 AB 
+jr nc,DN_Digit
+30 ED 
+ld hl,(DN_LoWord)
+2A 09 AB 
+ld de,(DN_HiWord)
+ED 5B 11 AB 
+add hl,bc
+09 
+ex de,hl
+EB 
+ld bc,$05f5
+01 F5 05 
+adc hl,bc
+ED 4A 
+ex de,hl
+EB 
+add hl,hl
+29 
+ex de,hl
+EB 
+adc hl,hl
+ED 6A 
+ex de,hl
+EB 
+push de
+D5 
+ld b,h
+44 
+ld c,l
+4D 
+add hl,hl
+29 
+ex de,hl
+EB 
+adc hl,hl
+ED 6A 
+ex de,hl
+EB 
+add hl,hl
+29 
+ex de,hl
+EB 
+adc hl,hl
+ED 6A 
+ex de,hl
+EB 
+add hl,bc
+09 
+ex de,hl
+EB 
+pop bc
+C1 
+adc hl,bc
+ED 4A 
+ex de,hl
+EB 
+ld (DN_LoWord),hl
+22 09 AB 
+ld (DN_HiWord),de
+ED 53 11 AB 
+pop de
+D1 
+call DisplayDigit
+CD 50 AB 
+pop bc
+C1 
+djnz DN_Number
+10 AD 
+ret
+C9 
+DisplayDigit:
+
+ld hl,Numbers
+21 14 AE 
+ld b,0
+06 00 
+ld c,a
+4F 
+add a,a
+87 
+add a,a
+87 
+add hl,bc
+09 
+ld c,a
+4F 
+add hl,bc
+09 
+ld b,h
+44 
+ld c,l
+4D 
+ld a,5
+3E 05 
+ld (S_Loop-1),a
+32 84 AA 
+ld a,d
+7A 
+ld l,e
+6B 
+push de
+D5 
+call Sprite
+CD 63 AA 
+pop de
+D1 
+ld a,d
+7A 
+add a,5
+C6 05 
+ld d,a
+57 
+ld a,8
+3E 08 
+ld (S_Loop-1),a
+32 84 AA 
+ret
+C9 
+.echo "Graphics routines: "
+
+.echo $-ClearScreen
+
+.echo "\n"
+
+#include "input.inc"
+
+ReadKeyboard:
+
+ld hl,KeyPressed
+21 AF AC 
+ld b,7
+06 07 
+ld c,$fe
+0E FE 
+RK_Loop:
+
+ld a,$ff
+3E FF 
+out (1),a
+D3 01 
+ld a,c
+79 
+out (1),a
+D3 01 
+in a,(1)
+DB 01 
+ld (hl),a
+77 
+inc hl
+23 
+rlc c
+CB 01 
+djnz RK_Loop
+10 F1 
+ret
+C9 
+ValidateKeys:
+
+ld hl,KeyPressed
+21 AF AC 
+ld de,KeyState
+11 B6 AC 
+ld ix,ValidKey
+DD 21 BD AC 
+ld b,7
+06 07 
+VK_Loop:
+
+ld a,(de)
+1A 
+or (hl)
+B6 
+ld (ix),a
+DD 77 00 
+ld a,(hl)
+7E 
+cpl
+2F 
+ld (de),a
+12 
+inc hl
+23 
+inc de
+13 
+inc ix
+DD 23 
+djnz VK_Loop
+10 F2 
+ret
+C9 
+.echo "Keyboard handling: "
+
+.echo $-ReadKeyboard
+
+.echo "\n"
+
+#include "math.inc"
+
+Mul_B_SinDE:
+
+ld hl,Sin_Table
+21 EC 86 
+add hl,de
+19 
+ld a,(hl)
+7E 
+ld e,a
+5F 
+rla
+17 
+sbc a,a
+9F 
+ld d,a
+57 
+ld a,b
+78 
+cp $80
+FE 80 
+push af
+F5 
+jp c,Mul_Signed_A_DE
+DA B7 AB 
+neg
+ED 44 
+Mul_Signed_A_DE:
+
+call Mul_A_DE
+CD C4 AB 
+pop af
+F1 
+ret c
+D8 
+xor a
+AF 
+sub l
+95 
+ld l,a
+6F 
+ld a,0
+3E 00 
+sbc a,h
+9C 
+ld h,a
+67 
+ret
+C9 
+Mul_A_DE:
+
+ld hl,0
+21 00 00 
+rra
+1F 
+jp nc,$+4
+D2 CC AB 
+add hl,de
+19 
+sla e
+CB 23 
+rl d
+CB 12 
+rra
+1F 
+jp nc,$+4
+D2 D5 AB 
+add hl,de
+19 
+sla e
+CB 23 
+rl d
+CB 12 
+rra
+1F 
+jp nc,$+4
+D2 DE AB 
+add hl,de
+19 
+sla e
+CB 23 
+rl d
+CB 12 
+rra
+1F 
+jp nc,$+4
+D2 E7 AB 
+add hl,de
+19 
+sla e
+CB 23 
+rl d
+CB 12 
+rra
+1F 
+jp nc,$+4
+D2 F0 AB 
+add hl,de
+19 
+sla e
+CB 23 
+rl d
+CB 12 
+rra
+1F 
+jp nc,$+4
+D2 F9 AB 
+add hl,de
+19 
+sla e
+CB 23 
+rl d
+CB 12 
+rra
+1F 
+jp nc,$+4
+D2 02 AC 
+add hl,de
+19 
+rra
+1F 
+ret nc
+D0 
+add hl,de
+19 
+add hl,de
+19 
+ret
+C9 
+Div_Signed_BC_D:
+
+ld a,$f1
+3E F1 
+ld (Div_Ret),a
+32 4F AC 
+ld a,b
+78 
+rla
+17 
+push af
+F5 
+jp nc,Div_BC_D
+D2 19 AC 
+xor a
+AF 
+sub c
+91 
+ld c,a
+4F 
+ld a,0
+3E 00 
+sbc a,b
+98 
+ld b,a
+47 
+Div_BC_D:
+
+ld l,c
+69 
+ld h,b
+60 
+xor a
+AF 
+ld b,3
+06 03 
+Div_BC_D_Loop:
+
+add hl,hl
+29 
+rla
+17 
+cp d
+BA 
+jp c,$+5
+DA 26 AC 
+sub d
+92 
+inc l
+2C 
+add hl,hl
+29 
+rla
+17 
+cp d
+BA 
+jp c,$+5
+DA 2E AC 
+sub d
+92 
+inc l
+2C 
+add hl,hl
+29 
+rla
+17 
+cp d
+BA 
+jp c,$+5
+DA 36 AC 
+sub d
+92 
+inc l
+2C 
+add hl,hl
+29 
+rla
+17 
+cp d
+BA 
+jp c,$+5
+DA 3E AC 
+sub d
+92 
+inc l
+2C 
+add hl,hl
+29 
+rla
+17 
+cp d
+BA 
+jp c,$+5
+DA 46 AC 
+sub d
+92 
+inc l
+2C 
+djnz Div_BC_D_Loop
+10 D6 
+add hl,hl
+29 
+rla
+17 
+cp d
+BA 
+jp c,$+4
+DA 4F AC 
+inc l
+2C 
+Div_Ret:
+
+ret
+C9 
+ld a,$c9
+3E C9 
+ld (Div_Ret),a
+32 4F AC 
+ret nc
+D0 
+xor a
+AF 
+sub l
+95 
+ld l,a
+6F 
+ld a,0
+3E 00 
+sbc a,h
+9C 
+ld h,a
+67 
+ret
+C9 
+ArcTan2_BC:
+
+ld a,b
+78 
+ld d,c
+51 
+ld e,0
+1E 00 
+rl d
+CB 12 
+rra
+1F 
+and $c0
+E6 C0 
+jr z,AT2_LookUp
+28 26 
+cp $80
+FE 80 
+jr z,AT2_0
+28 10 
+cp $40
+FE 40 
+jr z,AT2_180
+28 16 
+ld e,128
+1E 80 
+ld a,b
+78 
+neg
+ED 44 
+ld b,a
+47 
+ld a,c
+79 
+neg
+ED 44 
+ld c,a
+4F 
+jr AT2_LookUp
+18 12 
+AT2_0:
+
+ld e,192
+1E C0 
+ld a,c
+79 
+ld d,b
+50 
+neg
+ED 44 
+ld b,a
+47 
+ld c,d
+4A 
+jr AT2_LookUp
+18 08 
+AT2_180:
+
+ld e,64
+1E 40 
+ld a,b
+78 
+ld d,c
+51 
+neg
+ED 44 
+ld c,a
+4F 
+ld b,d
+42 
+AT2_LookUp:
+
+ld a,b
+78 
+cp 16
+FE 10 
+jr nc,AT2_Shift
+30 05 
+ld a,c
+79 
+cp 16
+FE 10 
+jr c,AT2_ShiftOK
+38 06 
+AT2_Shift:
+
+srl b
+CB 38 
+srl c
+CB 39 
+jr AT2_LookUp
+18 F0 
+AT2_ShiftOK:
+
+ld a,c
+79 
+rlca
+07 
+rlca
+07 
+rlca
+07 
+rlca
+07 
+or b
+B0 
+ld c,a
+4F 
+ld b,0
+06 00 
+ld hl,Angle_Table
+21 C4 AC 
+add hl,bc
+09 
+ld a,(hl)
+7E 
+add a,e
+83 
+ret
+C9 
+.echo "Arithmetics: "
+
+.echo $-Mul_B_SinDE
+
+.echo "\n"
+
+NonExecutable:
+
+#include "miscdata.inc"
+
+KeyPressed:
+
+.byte 255
+FF 
+.byte 255
+FF 
+.byte 255
+FF 
+.byte 255
+FF 
+.byte 255
+FF 
+.byte 255
+FF 
+.byte 255
+FF 
+KeyState:
+
+.byte 0,0,0,0,0,0,0
+00 00 00 00 00 00 00 
+ValidKey:
+
+.byte 255,255,255,255,255,255,255
+FF FF FF FF FF FF FF 
+Angle_Table:
+
+.byte 96,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64
+60 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 
+.byte 128,96,83,77,74,72,71,70,69,69,68,68,67,67,67,67
+80 60 53 4D 4A 48 47 46 45 45 44 44 43 43 43 43 
+.byte 128,109,96,88,83,80,77,75,74,73,72,71,71,70,70,69
+80 6D 60 58 53 50 4D 4B 4A 49 48 47 47 46 46 45 
+.byte 128,115,104,96,90,86,83,80,79,77,76,75,74,73,73,72
+80 73 68 60 5A 56 53 50 4F 4D 4C 4B 4A 49 49 48 
+.byte 128,118,109,102,96,91,88,85,83,81,80,78,77,76,75,75
+80 76 6D 66 60 5B 58 55 53 51 50 4E 4D 4C 4B 4B 
+.byte 128,120,112,106,101,96,92,89,87,85,83,81,80,79,78,77
+80 78 70 6A 65 60 5C 59 57 55 53 51 50 4F 4E 4D 
+.byte 128,121,115,109,104,100,96,93,90,88,86,84,83,82,80,80
+80 79 73 6D 68 64 60 5D 5A 58 56 54 53 52 50 50 
+.byte 128,122,117,112,107,103,99,96,93,91,89,87,86,84,83,82
+80 7A 75 70 6B 67 63 60 5D 5B 59 57 56 54 53 52 
+.byte 128,123,118,113,109,105,102,99,96,94,91,90,88,86,85,84
+80 7B 76 71 6D 69 66 63 60 5E 5B 5A 58 56 55 54 
+.byte 128,123,119,115,111,107,104,101,98,96,94,92,90,89,87,86
+80 7B 77 73 6F 6B 68 65 62 60 5E 5C 5A 59 57 56 
+.byte 128,124,120,116,112,109,106,103,101,98,96,94,92,91,89,88
+80 7C 78 74 70 6D 6A 67 65 62 60 5E 5C 5B 59 58 
+.byte 128,124,121,117,114,111,108,105,102,100,98,96,94,93,91,90
+80 7C 79 75 72 6F 6C 69 66 64 62 60 5E 5D 5B 5A 
+.byte 128,125,121,118,115,112,109,106,104,102,100,98,96,94,93,91
+80 7D 79 76 73 70 6D 6A 68 66 64 62 60 5E 5D 5B 
+.byte 128,125,122,119,116,113,110,108,106,103,101,99,98,96,94,93
+80 7D 7A 77 74 71 6E 6C 6A 67 65 63 62 60 5E 5D 
+.byte 128,125,122,119,117,114,112,109,107,105,103,101,99,98,96,95
+80 7D 7A 77 75 72 70 6D 6B 69 67 65 63 62 60 5F 
+.byte 128,125,123,120,117,115,112,110,108,106,104,102,101,99,97,96
+80 7D 7B 78 75 73 70 6E 6C 6A 68 66 65 63 61 60 
+Sin_Table_Source:
+
+.byte 0,3,6,9,12,16,19,22,25,28,31,34,37,40,43,46
+00 03 06 09 0C 10 13 16 19 1C 1F 22 25 28 2B 2E 
+.byte 49,51,54,57,60,63,65,68,71,73,76,78,81,83,85,88
+31 33 36 39 3C 3F 41 44 47 49 4C 4E 51 53 55 58 
+.byte 90,92,94,96,98,100,102,104,106,107,109,111,112,113,115,116
+5A 5C 5E 60 62 64 66 68 6A 6B 6D 6F 70 71 73 74 
+.byte 117,118,120,121,122,122,123,124,125,125,126,126,126,127,127,127
+75 76 78 79 7A 7A 7B 7C 7D 7D 7E 7E 7E 7F 7F 7F 
+.echo "Misc data: "
+
+.echo $-KeyPressed
+
+.echo "\n"
+
+#include "sprites.inc"
+
+Ball:
+
+.byte %01110000
+70 
+.byte %11111000
+F8 
+.byte %11111000
+F8 
+.byte %11111000
+F8 
+.byte %01110000
+70 
+.byte %00000000
+00 
+.byte %00000000
+00 
+.byte %00000000
+00 
+BallWhite:
+
+.byte %00000000
+00 
+.byte %01100000
+60 
+.byte %01000000
+40 
+.byte %00000000
+00 
+.byte %00000000
+00 
+.byte %00000000
+00 
+.byte %00000000
+00 
+.byte %00000000
+00 
+Numbers:
+
+.byte %11110000
+F0 
+.byte %10010000
+90 
+.byte %10110000
+B0 
+.byte %10110000
+B0 
+.byte %11110000
+F0 
+.byte %00010000
+10 
+.byte %00010000
+10 
+.byte %00110000
+30 
+.byte %00110000
+30 
+.byte %00110000
+30 
+.byte %11110000
+F0 
+.byte %00010000
+10 
+.byte %11110000
+F0 
+.byte %11000000
+C0 
+.byte %11110000
+F0 
+.byte %11110000
+F0 
+.byte %00010000
+10 
+.byte %11110000
+F0 
+.byte %00110000
+30 
+.byte %11110000
+F0 
+.byte %10010000
+90 
+.byte %10010000
+90 
+.byte %11110000
+F0 
+.byte %00110000
+30 
+.byte %00110000
+30 
+.byte %11110000
+F0 
+.byte %10000000
+80 
+.byte %11110000
+F0 
+.byte %00110000
+30 
+.byte %11110000
+F0 
+.byte %11110000
+F0 
+.byte %10000000
+80 
+.byte %11110000
+F0 
+.byte %11010000
+D0 
+.byte %11110000
+F0 
+.byte %11110000
+F0 
+.byte %00010000
+10 
+.byte %00110000
+30 
+.byte %00110000
+30 
+.byte %00110000
+30 
+.byte %11110000
+F0 
+.byte %10010000
+90 
+.byte %11110000
+F0 
+.byte %10110000
+B0 
+.byte %11110000
+F0 
+.byte %11110000
+F0 
+.byte %10010000
+90 
+.byte %11110000
+F0 
+.byte %00110000
+30 
+.byte %11110000
+F0 
+LeftFlipperSprites:
+
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $E0, $00
+E0 00 
+.byte $9C, $00
+9C 00 
+.byte $87, $00
+87 00 
+.byte $63, $C0
+63 C0 
+.byte $1F, $C0
+1F C0 
+.byte $01, $80
+01 80 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $F0, $00
+F0 00 
+.byte $8E, $00
+8E 00 
+.byte $87, $C0
+87 C0 
+.byte $7B, $C0
+7B C0 
+.byte $07, $80
+07 80 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $FF, $E0
+FF E0 
+.byte $83, $E0
+83 E0 
+.byte $87, $E0
+87 E0 
+.byte $78, $00
+78 00 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $07, $80
+07 80 
+.byte $FB, $C0
+FB C0 
+.byte $87, $C0
+87 C0 
+.byte $9E, $00
+9E 00 
+.byte $60, $00
+60 00 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+.byte $01, $80
+01 80 
+.byte $1F, $C0
+1F C0 
+.byte $E3, $C0
+E3 C0 
+.byte $87, $00
+87 00 
+.byte $9C, $00
+9C 00 
+.byte $60, $00
+60 00 
+.byte $00, $00
+00 00 
+.byte $00, $00
+00 00 
+Spring:
+
+.byte %11111111
+FF 
+.byte %10001111
+8F 
+.byte %01011101
+5D 
+.byte %01011101
+5D 
+.byte %01011101
+5D 
+.byte %01011101
+5D 
+.byte %11011111
+DF 
+.echo "Sprites: "
+
+.echo $-Ball
+
+.echo "\n"
+
+MainMenu:
+
+.byte 3
+03 
+.word Game
+64 9E 
+.word DisplayHighScores
+01 9E 
+.word Exit
+F4 9D 
+.byte 4
+04 
+.byte %11111011,%11101111,%10111110,%11111000
+FB EF BE F8 
+.byte %11000000,%11001100,%10110010,%00110000
+C0 CC B2 30 
+.byte %11111000,%11001111,%10111100,%00110000
+F8 CF BC 30 
+.byte %00011000,%11001100,%10110010,%00110000
+18 CC B2 30 
+.byte %11111000,%11001100,%10110010,%00110000
+F8 CC B2 30 
+.byte 8
+08 
+HighScoreLabel:
+
+.byte %11001011,%01111101,%10010000,%11111011,%11101111,%10111110,%11111011,%11100000
+CB 7D 90 FB EF BE FB E0 
+.byte %11001011,%01100001,%10010000,%11000011,%00001100,%10110010,%11000011,%00000000
+CB 61 90 C3 0C B2 C3 00 
+.byte %11111011,%01101101,%11110000,%11111011,%00001100,%10111100,%11110011,%11100000
+FB 6D F0 FB 0C BC F3 E0 
+.byte %11001011,%01100101,%10010000,%00011011,%00001100,%10110010,%11000000,%01100000
+CB 65 90 1B 0C B2 C0 60 
+.byte %11001011,%01111101,%10010000,%11111011,%11101111,%10110010,%11111011,%11100000
+CB 7D 90 FB EF B2 FB E0 
+.byte 3
+03 
+.byte %11111011,%00101101,%11110000
+FB 2D F0 
+.byte %11001011,%00101100,%01100000
+CB 2C 60 
+.byte %11001011,%00101100,%01100000
+CB 2C 60 
+.byte %11011011,%00101100,%01100000
+DB 2C 60 
+.byte %11111011,%11101100,%01100000
+FB EC 60 
+FlipperAngles:
+
+.byte 17, 13, 1, -12, -16
+11 0D 01 F4 F0 
+EventLengths:
+
+.byte 4, 0, 2, 2, 1, 1, 2, 1, 2
+04 00 02 02 01 01 02 01 02 
+PausedPicture:
+
+.byte %00000000,%00000000,%00000000,%00000000
+00 00 00 00 
+.byte %01111101,%11110110,%01011111,%01111100
+7D F6 5F 7C 
+.byte %01100101,%10010110,%01011000,%01100000
+65 96 58 60 
+.byte %01111101,%11110110,%01011111,%01111000
+7D F6 5F 78 
+.byte %01100001,%10010110,%01000011,%01100000
+61 96 43 60 
+.byte %01100001,%10010111,%11011111,%01111100
+61 97 DF 7C 
+.byte %00000000,%00000000,%00000000,%00000000
+00 00 00 00 
+LogoData:
+
+.byte $10, $10, $08, $04, $09, $10, $20, $11, $08, $20, $10, $82
+10 10 08 04 09 10 20 11 08 20 10 82 
+.byte $44, $44, $41, $10, $44, $41, $08, $44, $11, $08, $44, $20
+44 44 41 10 44 41 08 44 11 08 44 20 
+.byte $39, $69, $3C, $9D, $93, $27, $3D, $3A, $6C, $F2, $B1, $8A
+39 69 3C 9D 93 27 3D 3A 6C F2 B1 8A 
+.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+FF FF FF FF FF FF FF FF FF FF FF FF 
+.byte $F0, $78, $1C, $08, $FF, $03, $81, $18, $E0, $60, $27, $03
+F0 78 1C 08 FF 03 81 18 E0 60 27 03 
+.byte $E0, $38, $98, $88, $FE, $23, $11, $18, $C0, $41, $26, $13
+E0 38 98 88 FE 23 11 18 C0 41 26 13 
+.byte $E6, $AB, $F3, $FA, $FC, $FE, $B9, $98, $AC, $C6, $AC, $FF
+E6 AB F3 FA FC FE B9 98 AC C6 AC FF 
+.byte $D7, $77, $F5, $FD, $FD, $7F, $75, $5D, $DD, $57, $75, $7F
+D7 77 F5 FD FD 7F 75 5D DD 57 75 7F 
+.byte $EA, $AB, $FA, $AA, $FE, $D6, $BB, $AA, $AE, $EA, $EE, $AB
+EA AB FA AA FE D6 BB AA AE EA EE AB 
+.byte $D1, $33, $F4, $49, $FC, $4B, $35, $95, $8D, $50, $35, $03
+D1 33 F4 49 FC 4B 35 95 8D 50 35 03 
+.byte $C6, $23, $F1, $F8, $FC, $62, $31, $F8, $8C, $46, $27, $E3
+C6 23 F1 F8 FC 62 31 F8 8C 46 27 E3 
+.byte $C6, $23, $F1, $F8, $FC, $62, $31, $F8, $8C, $46, $27, $E3
+C6 23 F1 F8 FC 62 31 F8 8C 46 27 E3 
+.byte $C6, $23, $F1, $F8, $FC, $62, $31, $F8, $8C, $46, $27, $E3
+C6 23 F1 F8 FC 62 31 F8 8C 46 27 E3 
+.byte $C6, $23, $F1, $F8, $FC, $62, $31, $F8, $8C, $46, $27, $E3
+C6 23 F1 F8 FC 62 31 F8 8C 46 27 E3 
+.byte $C6, $23, $F1, $F8, $FC, $62, $31, $F8, $8C, $46, $27, $E3
+C6 23 F1 F8 FC 62 31 F8 8C 46 27 E3 
+.byte $C6, $20, $10, $0C, $04, $02, $01, $01, $80, $40, $24, $03
+C6 20 10 0C 04 02 01 01 80 40 24 03 
+.byte $C6, $30, $18, $0E, $04, $06, $03, $03, $80, $C0, $64, $07
+C6 30 18 0E 04 06 03 03 80 C0 64 07 
+.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+FF FF FF FF FF FF FF FF FF FF FF FF 
+.byte $39, $69, $3C, $9D, $93, $27, $3D, $3A, $6C, $F2, $B1, $8A
+39 69 3C 9D 93 27 3D 3A 6C F2 B1 8A 
+.byte $44, $44, $41, $10, $44, $41, $08, $44, $11, $08, $44, $20
+44 44 41 10 44 41 08 44 11 08 44 20 
+.byte $10, $10, $08, $04, $09, $D4, $77, $77, $47, $77, $77, $4A
+10 10 08 04 09 D4 77 77 47 77 77 4A 
+.byte $00, $00, $00, $00, $01, $DC, $57, $27, $44, $66, $46, $4E
+00 00 00 00 01 DC 57 27 44 66 46 4E 
+.byte $00, $00, $00, $00, $01, $48, $75, $25, $45, $45, $54, $44
+00 00 00 00 01 48 75 25 45 45 54 44 
+.byte $00, $00, $00, $00, $01, $C8, $45, $25, $47, $75, $77, $74
+00 00 00 00 01 C8 45 25 47 75 77 74 
+LastByte:
+
+.echo "Total executed code: "
+
+.echo NonExecutable-Main
+
+.echo "\n"
+
+.echo "Total data: "
+
+.echo $-NonExecutable
+
+.echo "\n"
+
+#ifdef TI82
+
+#ifndef TI82S
+
+.block MEMUSED
+
+#endif
+
+#endif
+
+.end
+
+END
+

@@ -1,0 +1,9 @@
+obj\Debug\ResolveAssemblyReference.cache
+bin\Debug\Z80.dll
+bin\Debug\Z80.pdb
+bin\Debug\Brass.exe
+bin\Debug\Brass.pdb
+obj\Debug\Z80.dll
+obj\Debug\Z80.pdb
+obj\Debug\Z80.Properties.Resources.resources
+obj\Debug\Z80.csproj.GenerateResource.Cache

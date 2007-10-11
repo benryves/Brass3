@@ -1,0 +1,10 @@
+Recommended Extension: .brassproj
+Format: XML.
+
+Root Element: <brassproject> [One allowed].
+Attributes:
+	version = minimum version of Brass required [current = 3]
+	
+Child Element: <plugins> [One allowed].
+	Child Element: <collection> [Multiple]. Specifies a plugin collection to load.
+		Attributes: source = filename of plugin collection including extension.

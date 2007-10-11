@@ -1,0 +1,860 @@
+;==========================================================
+;Please read the readme.txt included in the zip file 
+;for copyright issues (Chapter 8) and General info.
+;==========================================================
+;- Beta 1.4
+; *Resized the level size, so it can support all the old
+;  slippy levels! Levels are now bigger.
+; *Slippy can now 'transport' from one side to the another, if 
+;  nothing blocks slippy.
+; *Clear Button is now used for reseting the level.
+; *Iceblocks will be 'ereased' when moved 'out of ' the level.
+; *Quit the game with Mode! Yay \o/
+;- Beta 1.3
+;	*Fixed a minor bug causing the icecube to go through
+;	 the walls (was the same as for slippy in 1.2)
+;	*Compressed the levels. Levels are now 60%-70% percent
+;	 smaller.
+;	*Size: 3754 Bytes
+;- Beta 1.2:
+;	*Fixed a minor bug causing slippy to go through the 
+;	 bottom wall.
+;	*Size: 3920 Bytes
+;- Beta 1.1:
+;	*Fixed a bug. After playing the game the ram was 
+;	 corrupted because the program wrote the map after the 
+;  textmem, because the map was to big. Now the maps are
+;	 smaller in size (that means more room =D)
+;	*Size: 3920 Bytes
+;- Beta 1:
+;	*First Release
+;	*Size: 3956 Bytes
+ .nolist
+  #define TI83P
+  #include	"gskeyval.inc"
+  #include        "ion.inc"
+  .list
+DKDown		.equ 254 
+DKLeft		.equ 253 
+DKRight		.equ 251 
+DKUp			.equ 247 
+DKClear		.equ 191
+DK2nd			.equ 223
+DKMode		.equ 191
+
+#ifdef  TI83P
+        .org    progstart-2
+        .db     $BB,$6D
+#else
+        .org    progstart
+#endif
+        ret
+        jr      nc,start_of_program
+        .db     "The Legend of Slippy",0
+
+;saferam3 has 128 bytes free and badly enough Durk uses the big saferam1 =(
+;because of that we have to simulate the borderwalls.
+mapx 	= saferam3
+mapy 	= saferam3+1
+pos		= saferam3+2
+tempx	= saferam3+3
+tempy	= saferam3+4
+temppos = saferam3+5
+slipy   = saferam3+6
+slipx	= saferam3+7
+slippos = saferam3+8
+ladress = saferam3+9  ;16-bit adress of the next map (saferam9-10)
+lcurrent = saferam3+11 ;16-bit adress of the current map (saferam10-11)
+lamount = saferam3+13 ;The amount of levels
+coins   = saferam3+14 ;The amount of coins which have to be collected
+
+start_of_program:
+
+;==========================================================
+; start of program
+;==========================================================
+	call gsClearbuffer
+	call gsEnable
+	call gsSetFreq
+	call gsClearbuffer
+	
+	CALL InitValues
+	CALL FirstAdress
+	CALL LoadLevel	
+	LD  HL,level
+	CALL drawmap
+	CALL gsCopybuffer
+
+mainloop:
+	LD  A,$FF  				;resets the keypad.
+  OUT (1),A
+	LD  A,$BF 
+	OUT (1),A
+	IN  A,(1)
+	CP  DKMode
+	JP  Z,quit
+	LD  A,$FF 					;resets the keypad.
+	OUT (1),A						
+	LD  A,$FE 					;Enable group 1.
+	OUT (1),A 				
+	IN  A,(1) 					;'Required Syntax'
+	CP  dkDown 			
+	JP  Z,goDown
+	CP  dkUp
+	JP  Z,goUp
+	CP  dkRight
+	JP  Z,goRight
+	CP  dkLeft
+	JP  Z,goLeft
+	LD  A,$FF 					;Reset keypad again.
+	OUT (1),A
+	LD  A,$FD 					;Enable group 2.
+	OUT (1),A 
+	IN  A,(1)
+	CP  dkClear
+	JP  Z,Resetlevel
+	JR  mainloop
+
+quit:
+	CALL gsDisable
+	RET
+;==========================================================
+; Checks whether Slippy can be teleported to the other side
+;==========================================================
+goCheckTelDown:
+	ld a,(slippos)
+	sub 144
+	call checkpos
+	OR a
+	jr z,TelDown
+	jp goQuit
+TelDown:
+	ld a,(slippos)
+	sub 144
+	CALL goXY
+	xor a
+	ld (slipY),a
+	JP MovementEnd
+	
+goCheckTelUp:
+	ld a,(slippos)
+	add a,144
+	call checkpos
+	OR a
+	jr z,TelUp
+	jp goQuit
+TelUp:
+	ld a,(slippos)
+	add a,144
+	CALL goXY
+  ld a,54
+	ld (slipY),a
+	JP MovementEnd
+
+goCheckTelLeft:
+	ld a,(slippos)
+	add a,15
+	call checkpos
+	OR a
+	jr z,TelLeft
+	jp goQuit
+TelLeft:
+	ld a,(slippos)
+	add a,15
+	CALL goXY
+	ld a,90
+	ld (slipX),a
+	JR MovementEnd
+	
+goCheckTelRight:
+	ld a,(slippos)
+	sub 15
+	call checkpos
+	OR a
+	jr z,TelRight
+	jp goQuit
+TelRight:
+	ld a,(slippos)
+	sub 15
+	CALL goXY
+	xor a
+	ld (slipX),a
+	JR MovementEnd
+	
+;==========================================================
+; Movement Routines from Slippy
+;==========================================================
+goDown:
+	LD  A,(slipY)
+	CP  54
+	JP  Z,goCheckTelDown
+	ADD A,6	
+	CALL goY	
+	ADD A,16
+	LD  (tempPos),A
+	CALL checkpos
+	CP  3
+	JP  Z,IceCubeDown
+	CALL compare
+	ADD A,16
+	CALL goXY
+	LD  A,(slipY)	
+	ADD A,6
+	LD  (slipY),A	
+	JR MovementEnd
+
+goUp:
+	LD  A,(slipY)
+	OR  A
+	JP  Z,goCheckTelUp
+	SUB 6	
+	CALL goY
+	SUB 16
+	LD  (tempPos),A
+	CALL checkpos
+	CP  3
+	JP  Z,IceCubeUp
+	CALL compare
+	SUB 16
+	CALL goXY
+	LD  A,(slipY)
+	SUB 6
+	LD  (slipY),A	
+	JR  MovementEnd
+
+MovementEnd:	
+	CALL putSlip
+	CALL gsCopybuffer
+goQuit:
+	LD  A,(coins)
+	OR  A
+	JP  Z,Nextlevel
+	LD  B,7
+	CALL DELAY
+	JP mainloop
+	
+goRight:
+	LD  A,(slipX)
+	CP  90
+	JP  Z,goCheckTelRight
+	ADD A,6
+	CALL goX
+	INC A
+	LD  (tempPos),A
+	CALL checkpos
+	CP  3
+	JP  Z,IceCubeRight	
+	CALL compare
+	INC A
+	CALL goXY
+	LD  A,(slipX)
+	ADD A,6
+	LD  (slipX),A
+	JR  MovementEnd
+	
+goLeft:
+	LD  A,(slipX)
+	CP  0
+	JP  Z,goCheckTelLeft
+	SUB 6
+	CALL goX
+	DEC A
+	LD  (tempPos),A
+	CALL checkpos
+	CP  3
+	JP  Z,IceCubeLeft
+	CALL compare
+	DEC A
+	CALL goXY
+	LD  A,(slipX)
+	SUB 6
+	LD  (slipX),A	
+	JR  MovementEnd
+	
+;==========================================================
+; Return the value of pos A in the map
+;==========================================================
+checkpos:
+	LD  E,A
+	LD  D,$00
+	LD  HL,level
+	ADD HL,DE
+	LD  A,(HL)	
+	RET	
+
+;==========================================================
+; Movement Routines from the IceCube
+;==========================================================
+IceCubeLeft:
+	LD  A,(tempX)
+	CP  0
+	JP  Z,EncounterEnd
+	LD  A,(tempPos)
+	DEC A
+	CALL checkpos
+	CP  4
+	JP  Z,EncounterHoleLeft
+	OR  A
+	JP  NZ,goQuit
+	CALL newpos	
+	LD  A,(tempPos)
+	DEC A
+	LD  (tempPos),A	
+	CALL newpos	
+	LD 	B,3	
+IceCubeLeftAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempX)
+	SUB 2
+	LD  (tempX),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	POP BC	
+	DJNZ IceCubeLeftAniLoop	
+	JR IceCubeLeft
+
+IceCubeRight:
+	LD  A,(tempX)
+	CP  90
+	JP  Z,EncounterEnd
+	LD  A,(tempPos)
+	INC A
+	CALL checkpos
+	CP  4
+	JP  Z,EncounterHoleRight
+	OR  A
+	JP  NZ,goQuit
+	CALL newpos	
+	LD  A,(tempPos)
+	INC A
+	LD  (tempPos),A	
+	CALL newpos	
+	LD 	B,3	
+IceCubeRightAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempX)
+	ADD A,2
+	LD  (tempX),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	POP BC	
+	DJNZ IceCubeRightAniLoop	
+	JR IceCubeRight
+
+IceCubeUp:
+	LD  A,(tempY)
+	CP  0
+	JP  Z,EncounterEnd
+	LD  A,(tempPos)
+	SUB 16
+	CALL checkpos
+	CP  4
+	JP  Z,EncounterHoleUp
+	OR  A
+	JP  NZ,goQuit
+	CALL newpos	
+	LD  A,(tempPos)
+	SUB 16
+	LD  (tempPos),A	
+	CALL newpos	
+	LD 	B,3	
+IceCubeUpAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempY)
+	SUB 2
+	LD  (tempY),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	POP BC	
+	DJNZ IceCubeUpAniLoop	
+	JR IceCubeUp
+
+IceCubeDown:
+	LD  A,(tempY)
+	CP  0
+	JP  Z,EncounterEnd
+	LD  A,(tempPos)
+	ADD A,16
+	CALL checkpos
+	CP  4
+	JP  Z,EncounterHoleDown
+	OR  A
+	JP  NZ,goQuit
+	CALL newpos	
+	LD  A,(tempPos)
+	ADD A,16
+	LD  (tempPos),A	
+	CALL newpos	
+	LD 	B,3	
+IceCubeDownAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempY)
+	ADD A,2
+	LD  (tempY),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	POP BC	
+	DJNZ IceCubeDownAniLoop	
+	JR IceCubeDown
+	
+;==========================================================
+; Encounterhole routines
+;==========================================================
+EncounterEnd:
+	CALL putIceCube
+	CALL newpos
+	CALL gsCopybuffer
+	JP goquit
+	
+EncounterholeLeft:
+	LD B,3
+EncounterLeftAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempX)
+	SUB 2
+	LD  (tempX),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	LD  B,5
+	CALL DELAY
+	POP BC	
+	DJNZ EncounterLeftAniLoop
+	CALL putIceCube
+	CALL newpos
+	CALL putHole
+	LD   HL,tempPos
+	DEC  (HL)
+	CALL newpos2
+	CALL gsCopybuffer
+	JP  goquit
+
+EncounterholeRight:
+	LD B,3
+EncounterRightAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempX)
+	ADD A,2
+	LD  (tempX),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	LD  B,5
+	CALL DELAY
+	POP BC	
+	DJNZ EncounterRightAniLoop
+	CALL putIceCube
+	CALL newpos
+	CALL putHole
+	LD   HL,tempPos
+	INC  (HL)
+	CALL newpos2
+	CALL gsCopybuffer
+	JP  goquit
+
+EncounterholeUp:
+	LD B,3
+EncounterUpAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempY)
+	SUB 2
+	LD  (tempY),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	LD  B,5
+	CALL DELAY
+	POP BC	
+	DJNZ EncounterUpAniLoop
+	CALL putIceCube
+	CALL newpos
+	CALL putHole
+	LD   A,(tempPos)	
+	SUB  16
+	LD   (tempPos),A
+	CALL newpos2
+	CALL gsCopybuffer
+	JP  goquit
+
+EncounterholeDown:
+	LD B,3
+EncounterDownAniLoop:
+	PUSH BC
+	CALL putIceCube
+	LD  A,(tempY)
+	ADD A,2
+	LD  (tempY),A	
+	CALL putIceCube
+	CALL gsCopybuffer
+	LD  B,5
+	CALL DELAY
+	POP BC	
+	DJNZ EncounterDownAniLoop
+	CALL putIceCube
+	CALL newpos
+	CALL putHole
+	LD   A,(tempPos)	
+	ADD  A,16
+	LD   (tempPos),A
+	CALL newpos2
+	CALL gsCopybuffer
+	JP  goquit
+
+;==========================================================
+; PutIceCube - Plots the Icecube on the screen
+;==========================================================
+putHole:
+	LD IX,Hole
+	LD A,(tempY)
+	LD L,A
+	LD A,(tempX)
+	LD B,6
+	CALL GsPutSprite
+	RET
+
+;==========================================================
+; EncounterCoin - The routine for when slippy encounters a coin
+;==========================================================
+EncounterCoin:
+	LD  A,(tempPos)
+	LD  E,A
+	LD  D,$00
+	LD  HL,level
+	ADD HL,DE
+	LD  A,(HL)
+	XOR 2
+	LD  (HL),A
+	LD  IX,Coin
+	LD  A,(tempY)
+	LD  L,A
+	LD  A,(tempX)
+	LD  B,6
+	CALL GsPutSprite
+	LD  HL,coins
+	DEC (HL)
+	LD  A,0
+	RET
+
+;==========================================================
+; PutIceCube - Plots the Icecube on the screen
+;==========================================================
+putIceCube:
+	LD IX,IceCube
+	LD A,(tempY)
+	LD L,A
+	LD A,(tempX)
+	LD B,6
+	CALL GsPutSprite
+	RET
+;==========================================================
+; Common Movement - This are the Call's made in the movement 
+; 					routines to safe some bytes ;-)
+;==========================================================
+goY:
+	LD  (tempY),A
+	LD  A,(slipX)
+	LD  (tempX),A
+	LD  A,(slipPos)
+	RET
+goX:
+	LD  (tempX),A
+	LD  A,(slipY)
+	LD  (tempY),A
+	LD  A,(slipPos)
+	RET
+goXY:
+	LD  (slipPos),A
+	CALL putSlip
+	RET	
+compare:
+	CP  2
+	CALL Z,EncounterCoin
+	OR  A
+	JP  NZ,goQuit
+	LD  A,(slipPos)
+	RET
+
+;==========================================================
+; newpos - XOR's the pos to the map
+;==========================================================
+newpos:
+	LD  A,(tempPos)
+	LD  E,A
+	LD  D,$00
+	LD  HL,level
+	ADD HL,DE
+	LD  A,(HL)
+	XOR 3
+	LD  (HL),A
+	RET
+
+newpos2:
+	LD  A,(tempPos)
+	LD  E,A
+	LD  D,$00
+	LD  HL,level
+	ADD HL,DE
+	LD  A,(HL)
+	XOR 4
+	LD  (HL),A
+	RET
+	
+;==========================================================
+; PutSlip - Plots Slippy on the screen
+;==========================================================
+putSlip:
+	LD IX,playertile
+	LD A,(slipY)
+	LD L,A
+	LD A,(slipX)
+	LD B,6
+	CALL GsPutSprite
+	RET
+	
+;==========================================================
+; InitValues - Reset all saferam area's except the levelarea
+;==========================================================
+InitValues:
+	CALL EmptyLevel
+	LD  HL,mapX
+	LD  B,8
+	XOR A
+InitLoop:		
+	LD  (HL),A
+	INC HL
+	DJNZ InitLoop
+	LD  A,-1
+	LD  (pos),A
+	RET	
+
+;==========================================================
+; FirstAdress - Loads the first leveladress
+;==========================================================
+FirstAdress:
+	LD  HL,mapData
+	LD  A,(HL)	
+	LD  (lamount),A
+	INC HL
+	LD  A,H
+	LD  (ladress),A
+	LD  A,L
+	LD  (ladress+1),A
+	RET
+
+;==========================================================
+; Loadlevel - Loads the level into the saferam
+;==========================================================
+LoadLevel:
+	CALL EmptyLevel
+	LD  A,(ladress)
+	LD  (lcurrent),A
+	LD  H,A
+	LD  A,(ladress+1)
+	LD  (lcurrent+1),A
+	LD  L,A
+	LD  A,(HL)	
+	LD  (coins),A
+	LD  DE,level
+	LD  B,$01
+LoadLevelLoop:
+	INC HL
+	LD  A,(HL)
+	CP  254
+	JR  Z,LoadLevel_NextTile
+	PUSH HL
+	LD  L,A
+	LD  H,$00
+	ADD HL,DE
+	LD  (HL),B
+	POP HL
+	JR  LoadLevelLoop
+LoadLevel_NextTile:
+	INC B
+	LD  A,B
+	CP  6
+	JR  Z,quitLoadlevel
+	JR  LoadLevelLoop
+quitLoadlevel:
+	INC HL
+	LD  A,H
+	LD  (ladress),A
+	LD  A,L
+	LD  (ladress+1),A
+	RET
+
+;==========================================================
+; Emptylevel - Clears the level
+;==========================================================
+Emptylevel:
+	LD  HL,level
+	LD  B,160
+	XOR A
+EmptyLevelLoop:		
+	LD  (HL),A
+	INC HL
+	DJNZ EmptyLevelLoop
+	RET	
+
+;==========================================================
+; Resetlevel - Loads the current adress in the next-level adress
+;==========================================================
+Resetlevel:
+	LD  A,(lcurrent)
+	LD  (ladress),A
+	LD  A,(lcurrent+1)
+	LD  (ladress+1),A
+	
+	LD  A,(lamount)
+	INC A
+	LD  (lamount),A
+	
+;==========================================================
+; Nextlevel - Loads the new leveladress and runs loadlevel
+;==========================================================
+Nextlevel:
+	LD  A,(lamount)
+	DEC A
+	LD  (lamount),A
+	OR  A
+	JP  Z,quit
+	CALL InitValues
+	CALL LoadLevel
+	CALL gsClearbuffer
+	LD  HL,level
+	CALL drawmap
+	CALL gsCopybuffer
+	JP Mainloop
+;==========================================================
+; Drawmap - Plots the map to the screen
+;==========================================================
+drawmap:
+	PUSH HL		
+	;First we have to draw the walls...	
+	XOR A
+	LD  (mapX),A
+	LD  (mapY),A
+drawmaploop:
+  LD  HL,pos
+  INC (HL)
+	POP HL
+	LD  A,(HL)
+	CP  5
+	CALL Z,setplayerXY
+	INC HL
+	PUSH HL
+	ADD A,A ;x2
+	ADD A,A ;x4
+	LD  B,A
+	ADD A,A ;x8
+	ADD A,B ;x12
+	LD  E,A
+	LD  D,$00
+	LD  HL,tiledata
+	ADD HL,DE
+	PUSH HL
+	POP IX ;---> IX points to the proper tile
+	LD  A,(mapY)
+	LD  L,A
+	LD  A,(mapX)
+	LD  B,6
+	CALL GsPutSprite
+	LD  A,(mapX)
+	ADD A,6
+	LD  (mapX),A
+	CP  96
+	JR Z,drawmap_newline
+	JR drawmaploop
+drawmap_newline:
+	LD  A,0
+	LD  (mapX),A
+	LD  A,(mapY)
+	ADD A,6
+	LD  (mapY),A
+	CP  60
+	POP HL
+	RET Z
+	PUSH HL
+	JR  drawmaploop
+
+;==========================================================
+; SetplayerXY - Writes the X,Y from the map values to the 
+;               X,Y from the char
+;==========================================================
+setplayerXY:
+	LD  A,(mapX)
+	LD  (slipX),A
+	LD  A,(mapY)
+	LD  (slipY),A
+	LD  A,(pos)
+	LD  (slipPos),A
+	XOR A
+	LD  (HL),A
+	LD  A,5
+	RET
+;==========================================================
+; Delay - Creates a dealy
+;==========================================================
+DELAY:
+	PUSH BC
+	LD B,255
+DELAYLOOP:
+	PUSH BC
+	POP  BC
+	DJNZ DELAYLOOP
+	POP  BC
+	DJNZ DELAY
+	RET
+	
+;==========================================================
+; grayscale include file
+;==========================================================
+; comment these defines in or out to activate/deactivate them
+
+;#DEFINE NODOUBLEBUFFER	;when on,routines write directly to screen (faster and smaller)
+;#DEFINE 3LEVELGRAY	;makes it 3-level grayscale (a bit faster)
+#DEFINE XORSPRITE	;includes gsPutSprite
+;#DEFINE LARGESPRITE	;includes gsLargeSprite
+;#DEFINE ALIGNEDSPRITE	;includes gsAlignedsprite
+;#DEFINE ALIGNEDMASKEDSPRITE
+
+#include "graylib.inc"
+
+level:
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+
+tileData:
+ ;Tile 0
+ .db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+Walltile:
+ ;Tile 1
+ .db $78,$D4,$A4,$D4,$A4,$78,$78,$AC,$DC,$AC,$DC,$78
+Coin:
+ ;Tile 2
+ .db $00,$78,$48,$58,$70,$00,$00,$78,$78,$78,$70,$00
+IceCube:
+ ;Tile 3
+ .db $00,$00,$00,$00,$00,$00,$78,$E4,$F4,$FC,$FC,$78
+Hole:
+ ;Tile 4
+ .db $FC,$FC,$FC,$FC,$FC,$FC,$00,$78,$78,$78,$78,$00
+playertile:
+ ;Tile 5
+ .db $30,$48,$30,$48,$CC,$30,$30,$78,$00,$48,$CC,$78
+
+#include "levels.asm"
+
+.end
+END

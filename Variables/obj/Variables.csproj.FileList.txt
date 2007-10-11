@@ -1,0 +1,7 @@
+bin\Debug\Variables.dll
+bin\Debug\Variables.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Variables.dll
+obj\Debug\Variables.pdb
+bin\Debug\Brass.exe
+bin\Debug\Brass.pdb

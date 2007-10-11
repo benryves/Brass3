@@ -1,0 +1,1317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<title>List file for Connect4.z80 (01/10/2007 7:20:48pm)</title>
+</head>
+<body>
+<style>
+h1, h2, h3, h4, p { font-family: trebuchet ms, verdana, tahoma, sans serif; text-align: center; }
+#asmout, #ascii { border-collapse: collapse; border: 1px solid black; margin-left: auto; margin-right: auto; }
+#asmout td, #asmout th, #ascii td, #ascii th { vertical-align: top; padding: 3px; margin: 0px; border-left: 1px solid #333333; border-right: 1px solid #333333; font-family: consolas, lucida console, courier new, monospace; font-size: 10pt; }
+*.r0 { background-color: #DDDDDD; }
+*.r1 { background-color: #CCCCCC; }
+#asmout td.f { background-color: #9999FF; text-align: center; border: 1px solid #333333; }
+#asmout td.p { background-color: #99FF99; text-align: center; border: 1px solid #333333; }
+#asmout td.j { background-color: #FF9999; text-align: center; border: 1px solid #333333; }
+#asmout td.l { background-color: #CCCCFF; text-align: center; border: 1px solid #333333; }
+#asmout td.c { text-align: center; }
+#asmout th, #ascii th { font-weight: bold; text-align: center; background-color: black; color: white;}
+#ascii td { text-align: center; width: 24px; } #unused { color: #999999; }
+</style>
+<h1>General Information</h1>
+<table id="asmout">
+<th>Field</th><th>Value</th>
+<tr class="r0"><td>Brass Version</td><td>1.0.4.11</td></tr>
+<tr class="r1"><td>Source File</td><td>D:\Documents\Documents\Visual Studio 2005\Projects\!Old\Brass\Brass\bin\Test\Connect4.z80</td></tr>
+<tr class="r0"><td>Total Source Files</td><td>4</td></tr>
+<tr class="r1"><td>Page Count</td><td>1</td></tr>
+</table>
+<h1>Output</h1>
+<table id="asmout">
+<tr><th>Address</th><th>Output</th><th>Source</th></tr>
+<tr><td class="f" colspan="4">D:\Documents\Documents\Visual Studio 2005\Projects\!Old\Brass\Brass\bin\Test\Connect4.z80</td></tr>
+<tr><td class="p" colspan="4">Page 0</td></tr>
+<tr class="r0"><td class="c">9D93</td><td>BB</td><td>.db $BB,$6D</td></tr>
+<tr class="r1"><td class="c">9D94</td><td>6D</td><td>.db $BB,$6D</td></tr>
+<tr class="r0"><td class="c">9D95</td><td>C9</td><td>&#9;ret</td></tr>
+<tr class="r1"><td class="c">9D96</td><td>01</td><td>.db 1</td></tr>
+<tr class="r0"><td class="c">9D97</td><td>00&nbsp;00</td><td>.db %00000000, %00000000</td></tr>
+<tr class="r1"><td class="c">9D99</td><td>06&nbsp;00</td><td>.db %00000110, %00000000</td></tr>
+<tr class="r0"><td class="c">9D9B</td><td>0B&nbsp;00</td><td>.db %00001011, %00000000</td></tr>
+<tr class="r1"><td class="c">9D9D</td><td>0F&nbsp;00</td><td>.db %00001111, %00000000</td></tr>
+<tr class="r0"><td class="c">9D9F</td><td>06&nbsp;18</td><td>.db %00000110, %00011000</td></tr>
+<tr class="r1"><td class="c">9DA1</td><td>09&nbsp;24</td><td>.db %00001001, %00100100</td></tr>
+<tr class="r0"><td class="c">9DA3</td><td>0B&nbsp;2C</td><td>.db %00001011, %00101100</td></tr>
+<tr class="r1"><td class="c">9DA5</td><td>06&nbsp;D8</td><td>.db %00000110, %11011000</td></tr>
+<tr class="r0"><td class="c">9DA7</td><td>09&nbsp;6C</td><td>.db %00001001, %01101100</td></tr>
+<tr class="r1"><td class="c">9DA9</td><td>0B&nbsp;FC</td><td>.db %00001011, %11111100</td></tr>
+<tr class="r0"><td class="c">9DAB</td><td>36&nbsp;D8</td><td>.db %00110110, %11011000</td></tr>
+<tr class="r1"><td class="c">9DAD</td><td>5B&nbsp;24</td><td>.db %01011011, %00100100</td></tr>
+<tr class="r0"><td class="c">9DAF</td><td>7F&nbsp;6C</td><td>.db %01111111, %01101100</td></tr>
+<tr class="r1"><td class="c">9DB1</td><td>36&nbsp;D8</td><td>.db %00110110, %11011000</td></tr>
+<tr class="r0"><td class="c">9DB3</td><td>00&nbsp;00</td><td>.db %00000000, %00000000</td></tr>
+<tr><td class="l" colspan="4">Description</td></tr>
+<tr class="r1"><td class="c">9DB5</td><td>43&nbsp;6F&nbsp;6E&nbsp;6E&nbsp;65&nbsp;63&nbsp;74&nbsp;20&nbsp;<br />34&nbsp;20&nbsp;2D&nbsp;20&nbsp;42&nbsp;65&nbsp;6E&nbsp;20&nbsp;<br />52&nbsp;79&nbsp;76&nbsp;65&nbsp;73&nbsp;00</td><td>.db &quot;Connect 4 - Ben Ryves&quot;,0</td></tr>
+<tr><td class="l" colspan="4">Init_All</td></tr>
+<tr class="r0"><td class="c">9DCB</td><td>ED&nbsp;73&nbsp;90&nbsp;9A</td><td>&#9;ld (                 AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1),sp</td></tr>
+<tr><td class="l" colspan="4">Start</td></tr>
+<tr><td class="l" colspan="4">Redraw_Menu</td></tr>
+<tr class="r1"><td class="c">9DCF</td><td>21&nbsp;AB&nbsp;A6</td><td>&#9;ld hl,img_Title</td></tr>
+<tr class="r0"><td class="c">9DD2</td><td>11&nbsp;40&nbsp;93</td><td>&#9;ld de,PlotsScreen</td></tr>
+<tr class="r1"><td class="c">9DD5</td><td>01&nbsp;00&nbsp;03</td><td>&#9;ld bc,768</td></tr>
+<tr class="r0"><td class="c">9DD8</td><td>CD&nbsp;64&nbsp;A8</td><td>&#9;call RLE</td></tr>
+<tr class="r1"><td class="c">9DDB</td><td>3A&nbsp;36&nbsp;A9</td><td>&#9;ld a,(Player_1)</td></tr>
+<tr class="r0"><td class="c">9DDE</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9DDF</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">9DE1</td><td>11&nbsp;A6&nbsp;A8</td><td>&#9;ld de,Players</td></tr>
+<tr class="r1"><td class="c">9DE4</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">9DE5</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">9DE6</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">9DE7</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">9DE8</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">9DE9</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r1"><td class="c">9DEA</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">9DEB</td><td>DD&nbsp;E1</td><td>&#9;pop ix</td></tr>
+<tr class="r1"><td class="c">9DED</td><td>3E&nbsp;1D</td><td>&#9;ld a,29</td></tr>
+<tr class="r0"><td class="c">9DEF</td><td>2E&nbsp;1C</td><td>&#9;ld l,28</td></tr>
+<tr class="r1"><td class="c">9DF1</td><td>06&nbsp;0F</td><td>&#9;ld b,15</td></tr>
+<tr class="r0"><td class="c">9DF3</td><td>0E&nbsp;02</td><td>&#9;ld c,2</td></tr>
+<tr class="r1"><td class="c">9DF5</td><td>CD&nbsp;8C&nbsp;40</td><td>&#9;call ionLargeSprite</td></tr>
+<tr class="r0"><td class="c">9DF8</td><td>3A&nbsp;37&nbsp;A9</td><td>&#9;ld a,(Player_2)</td></tr>
+<tr class="r1"><td class="c">9DFB</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">9DFC</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r1"><td class="c">9DFE</td><td>11&nbsp;A6&nbsp;A8</td><td>&#9;ld de,Players</td></tr>
+<tr class="r0"><td class="c">9E01</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">9E02</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">9E03</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">9E04</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">9E05</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">9E06</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">9E07</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">9E08</td><td>DD&nbsp;E1</td><td>&#9;pop ix</td></tr>
+<tr class="r0"><td class="c">9E0A</td><td>3E&nbsp;36</td><td>&#9;ld a,54</td></tr>
+<tr class="r1"><td class="c">9E0C</td><td>2E&nbsp;15</td><td>&#9;ld l,21</td></tr>
+<tr class="r0"><td class="c">9E0E</td><td>06&nbsp;0F</td><td>&#9;ld b,15</td></tr>
+<tr class="r1"><td class="c">9E10</td><td>0E&nbsp;02</td><td>&#9;ld c,2</td></tr>
+<tr class="r0"><td class="c">9E12</td><td>CD&nbsp;8C&nbsp;40</td><td>&#9;call ionLargeSprite</td></tr>
+<tr class="r1"><td class="c">9E15</td><td>3A&nbsp;26&nbsp;99</td><td>&#9;ld a,(    AppBackupScreen+(16*10)+16+4)</td></tr>
+<tr class="r0"><td class="c">9E18</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r1"><td class="c">9E19</td><td>32&nbsp;26&nbsp;99</td><td>&#9;ld (    AppBackupScreen+(16*10)+16+4),a</td></tr>
+<tr class="r0"><td class="c">9E1C</td><td>CB&nbsp;67</td><td>&#9;bit 4,a</td></tr>
+<tr class="r1"><td class="c">9E1E</td><td>CA&nbsp;74&nbsp;9E</td><td>&#9;jp z,Skip_Drawing_Arrows</td></tr>
+<tr class="r0"><td class="c">9E21</td><td>3A&nbsp;38&nbsp;A9</td><td>&#9;ld a,(Player_Setting)</td></tr>
+<tr class="r1"><td class="c">9E24</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9E25</td><td>20&nbsp;14</td><td>&#9;jr nz,Setting_P_2_LR</td></tr>
+<tr class="r1"><td class="c">9E27</td><td>DD&nbsp;21&nbsp;31&nbsp;A9</td><td>&#9;ld ix,spr_Right</td></tr>
+<tr class="r0"><td class="c">9E2B</td><td>3E&nbsp;21</td><td>&#9;ld a,33</td></tr>
+<tr class="r1"><td class="c">9E2D</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">9E30</td><td>3E&nbsp;18</td><td>&#9;ld a,24</td></tr>
+<tr class="r1"><td class="c">9E32</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">9E35</td><td>3E&nbsp;2B</td><td>&#9;ld a,43</td></tr>
+<tr class="r1"><td class="c">9E37</td><td>2E&nbsp;21</td><td>&#9;ld l,33</td></tr>
+<tr class="r0"><td class="c">9E39</td><td>18&nbsp;12</td><td>&#9;jr Setting_P_1_LR</td></tr>
+<tr><td class="l" colspan="4">Setting_P_2_LR</td></tr>
+<tr class="r1"><td class="c">9E3B</td><td>DD&nbsp;21&nbsp;2C&nbsp;A9</td><td>&#9;ld ix,spr_Left</td></tr>
+<tr class="r0"><td class="c">9E3F</td><td>3E&nbsp;3A</td><td>&#9;ld a,58</td></tr>
+<tr class="r1"><td class="c">9E41</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">9E44</td><td>3E&nbsp;11</td><td>&#9;ld a,17</td></tr>
+<tr class="r1"><td class="c">9E46</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">9E49</td><td>3E&nbsp;32</td><td>&#9;ld a,50</td></tr>
+<tr class="r1"><td class="c">9E4B</td><td>2E&nbsp;1A</td><td>&#9;ld l,26</td></tr>
+<tr><td class="l" colspan="4">Setting_P_1_LR</td></tr>
+<tr class="r0"><td class="c">9E4D</td><td>06&nbsp;05</td><td>&#9;ld b,5</td></tr>
+<tr class="r1"><td class="c">9E4F</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r0"><td class="c">9E52</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">9E55</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">9E56</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">9E59</td><td>DD&nbsp;21&nbsp;26&nbsp;A9</td><td>&#9;ld ix,spr_Up</td></tr>
+<tr class="r0"><td class="c">9E5D</td><td>06&nbsp;03</td><td>&#9;ld b,3</td></tr>
+<tr class="r1"><td class="c">9E5F</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r0"><td class="c">9E62</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">9E65</td><td>C6&nbsp;14</td><td>&#9;add a,20</td></tr>
+<tr class="r0"><td class="c">9E67</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9E68</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9E6B</td><td>DD&nbsp;21&nbsp;29&nbsp;A9</td><td>&#9;ld ix,spr_Down</td></tr>
+<tr class="r1"><td class="c">9E6F</td><td>06&nbsp;03</td><td>&#9;ld b,3</td></tr>
+<tr class="r0"><td class="c">9E71</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr><td class="l" colspan="4">Skip_Drawing_Arrows</td></tr>
+<tr class="r1"><td class="c">9E74</td><td>3A&nbsp;38&nbsp;A9</td><td>&#9;ld a,(Player_Setting)</td></tr>
+<tr class="r0"><td class="c">9E77</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9E78</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">9E7A</td><td>11&nbsp;36&nbsp;A9</td><td>&#9;ld de,Player_1</td></tr>
+<tr class="r1"><td class="c">9E7D</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">9E7E</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">9E7F</td><td>3A&nbsp;26&nbsp;99</td><td>&#9;ld a,(    AppBackupScreen+(16*10)+16+4)</td></tr>
+<tr class="r0"><td class="c">9E82</td><td>CB&nbsp;67</td><td>&#9;bit 4,a</td></tr>
+<tr class="r1"><td class="c">9E84</td><td>CA&nbsp;B4&nbsp;9E</td><td>&#9;jp z,Skip_Drawing_Arrows_2</td></tr>
+<tr class="r0"><td class="c">9E87</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">9E88</td><td>FE&nbsp;00</td><td>&#9;cp 0</td></tr>
+<tr class="r0"><td class="c">9E8A</td><td>20&nbsp;12</td><td>&#9;jr nz,Not_At_Top</td></tr>
+<tr class="r1"><td class="c">9E8C</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">9E8F</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9E90</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9E93</td><td>DD&nbsp;21&nbsp;26&nbsp;A9</td><td>&#9;ld ix,spr_Up</td></tr>
+<tr class="r1"><td class="c">9E97</td><td>06&nbsp;03</td><td>&#9;ld b,3</td></tr>
+<tr class="r0"><td class="c">9E99</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r1"><td class="c">9E9C</td><td>18&nbsp;16</td><td>&#9;jr Not_At_Bottom</td></tr>
+<tr><td class="l" colspan="4">Not_At_Top</td></tr>
+<tr class="r0"><td class="c">9E9E</td><td>FE&nbsp;03</td><td>&#9;cp 3</td></tr>
+<tr class="r1"><td class="c">9EA0</td><td>20&nbsp;12</td><td>&#9;jr nz,Not_At_Bottom</td></tr>
+<tr class="r0"><td class="c">9EA2</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">9EA5</td><td>C6&nbsp;14</td><td>&#9;add a,20</td></tr>
+<tr class="r0"><td class="c">9EA7</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9EA8</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9EAB</td><td>DD&nbsp;21&nbsp;29&nbsp;A9</td><td>&#9;ld ix,spr_Down</td></tr>
+<tr class="r1"><td class="c">9EAF</td><td>06&nbsp;03</td><td>&#9;ld b,3</td></tr>
+<tr class="r0"><td class="c">9EB1</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr><td class="l" colspan="4">Not_At_Bottom</td></tr>
+<tr><td class="l" colspan="4">Skip_Drawing_Arrows_2</td></tr>
+<tr class="r1"><td class="c">9EB4</td><td>CD&nbsp;92&nbsp;40</td><td>&#9;call ionFastCopy</td></tr>
+<tr class="r0"><td class="c">9EB7</td><td>DD&nbsp;E1</td><td>&#9;pop ix</td></tr>
+<tr class="r1"><td class="c">9EB9</td><td>3A&nbsp;38&nbsp;A9</td><td>&#9;ld a,(Player_Setting)</td></tr>
+<tr class="r0"><td class="c">9EBC</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9EBD</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">9EBF</td><td>11&nbsp;36&nbsp;A9</td><td>&#9;ld de,Player_1</td></tr>
+<tr class="r1"><td class="c">9EC2</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">9EC3</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">9EC4</td><td>DD&nbsp;E1</td><td>&#9;pop ix</td></tr>
+<tr class="r0"><td class="c">9EC6</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r1"><td class="c">9EC9</td><td>FE&nbsp;36</td><td>&#9;cp sk2nd</td></tr>
+<tr class="r0"><td class="c">9ECB</td><td>28&nbsp;45</td><td>&#9;jr z,Start_Game</td></tr>
+<tr class="r1"><td class="c">9ECD</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r0"><td class="c">9ECF</td><td>C8</td><td>&#9;ret z</td></tr>
+<tr class="r1"><td class="c">9ED0</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr class="r0"><td class="c">9ED1</td><td>FE&nbsp;02</td><td>&#9;cp skLeft</td></tr>
+<tr class="r1"><td class="c">9ED3</td><td>20&nbsp;05</td><td>&#9;jr nz,M_Not_Left</td></tr>
+<tr class="r0"><td class="c">9ED5</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r1"><td class="c">9ED6</td><td>32&nbsp;38&nbsp;A9</td><td>&#9;ld (Player_Setting),a</td></tr>
+<tr class="r0"><td class="c">9ED9</td><td>78</td><td>&#9;ld a,b</td></tr>
+<tr><td class="l" colspan="4">M_Not_Left</td></tr>
+<tr class="r1"><td class="c">9EDA</td><td>FE&nbsp;03</td><td>&#9;cp skRight</td></tr>
+<tr class="r0"><td class="c">9EDC</td><td>20&nbsp;06</td><td>&#9;jr nz,M_Not_Right</td></tr>
+<tr class="r1"><td class="c">9EDE</td><td>3E&nbsp;01</td><td>&#9;ld a,1</td></tr>
+<tr class="r0"><td class="c">9EE0</td><td>32&nbsp;38&nbsp;A9</td><td>&#9;ld (Player_Setting),a</td></tr>
+<tr class="r1"><td class="c">9EE3</td><td>78</td><td>&#9;ld a,b</td></tr>
+<tr><td class="l" colspan="4">M_Not_Right</td></tr>
+<tr class="r0"><td class="c">9EE4</td><td>FE&nbsp;04</td><td>&#9;cp skUp</td></tr>
+<tr class="r1"><td class="c">9EE6</td><td>20&nbsp;07</td><td>&#9;jr nz,M_Not_Up</td></tr>
+<tr class="r0"><td class="c">9EE8</td><td>DD&nbsp;35&nbsp;00</td><td>&#9;dec (ix+0)</td></tr>
+<tr class="r1"><td class="c">9EEB</td><td>CD&nbsp;FD&nbsp;9E</td><td>&#9;call Clip_A</td></tr>
+<tr class="r0"><td class="c">9EEE</td><td>78</td><td>&#9;ld a,b</td></tr>
+<tr><td class="l" colspan="4">M_Not_Up</td></tr>
+<tr class="r1"><td class="c">9EEF</td><td>FE&nbsp;01</td><td>&#9;cp skDown</td></tr>
+<tr class="r0"><td class="c">9EF1</td><td>20&nbsp;07</td><td>&#9;jr nz,M_Not_Down</td></tr>
+<tr class="r1"><td class="c">9EF3</td><td>DD&nbsp;34&nbsp;00</td><td>&#9;inc (ix+0)</td></tr>
+<tr class="r0"><td class="c">9EF6</td><td>CD&nbsp;FD&nbsp;9E</td><td>&#9;call Clip_A</td></tr>
+<tr class="r1"><td class="c">9EF9</td><td>78</td><td>&#9;ld a,b</td></tr>
+<tr><td class="l" colspan="4">M_Not_Down</td></tr>
+<tr class="r0"><td class="c">9EFA</td><td>C3&nbsp;CF&nbsp;9D</td><td>&#9;jp Redraw_Menu</td></tr>
+<tr><td class="l" colspan="4">Clip_A</td></tr>
+<tr class="r1"><td class="c">9EFD</td><td>DD&nbsp;7E&nbsp;00</td><td>&#9;ld a,(ix+0)</td></tr>
+<tr class="r0"><td class="c">9F00</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">9F02</td><td>20&nbsp;05</td><td>&#9;jr nz,Not_M1</td></tr>
+<tr class="r0"><td class="c">9F04</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r1"><td class="c">9F05</td><td>DD&nbsp;77&nbsp;00</td><td>&#9;ld (ix+0),a</td></tr>
+<tr class="r0"><td class="c">9F08</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Not_M1</td></tr>
+<tr class="r1"><td class="c">9F09</td><td>FE&nbsp;04</td><td>&#9;cp 4</td></tr>
+<tr class="r0"><td class="c">9F0B</td><td>C0</td><td>&#9;ret nz</td></tr>
+<tr class="r1"><td class="c">9F0C</td><td>3E&nbsp;03</td><td>&#9;ld a,3</td></tr>
+<tr class="r0"><td class="c">9F0E</td><td>DD&nbsp;77&nbsp;00</td><td>&#9;ld (ix+0),a</td></tr>
+<tr class="r1"><td class="c">9F11</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Start_Game</td></tr>
+<tr class="r0"><td class="c">9F12</td><td>21&nbsp;C7&nbsp;99</td><td>&#9;ld hl,      AppBackupScreen+(16*10)+16+4+1+(16*10)</td></tr>
+<tr class="r1"><td class="c">9F15</td><td>3E&nbsp;10</td><td>&#9;ld a,16</td></tr>
+<tr><td class="l" colspan="4">Fill_In_Random</td></tr>
+<tr class="r0"><td class="c">9F17</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r1"><td class="c">9F18</td><td>77</td><td>&#9;ld (hl),a</td></tr>
+<tr class="r0"><td class="c">9F19</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r1"><td class="c">9F1A</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9F1B</td><td>20&nbsp;FA</td><td>&#9;jr nz,Fill_In_Random</td></tr>
+<tr class="r1"><td class="c">9F1D</td><td>3E&nbsp;01</td><td>&#9;ld a,1</td></tr>
+<tr class="r0"><td class="c">9F1F</td><td>32&nbsp;8B&nbsp;9A</td><td>&#9;ld (            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1),a</td></tr>
+<tr class="r1"><td class="c">9F22</td><td>21&nbsp;72&nbsp;98</td><td>&#9;ld hl, AppBackupScreen</td></tr>
+<tr class="r0"><td class="c">9F25</td><td>01&nbsp;A0&nbsp;00</td><td>&#9;ld bc,16*10</td></tr>
+<tr class="r1"><td class="c">9F28</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r0"><td class="c">9F29</td><td>EF&nbsp;33&nbsp;4C</td><td>&#9;&#9;RST 28h\ .dw _memset</td></tr>
+<tr class="r1"><td class="c">9F2C</td><td>21&nbsp;12&nbsp;99</td><td>&#9;ld hl,  AppBackupScreen+(16*10)</td></tr>
+<tr class="r0"><td class="c">9F2F</td><td>01&nbsp;10&nbsp;00</td><td>&#9;ld bc,16</td></tr>
+<tr class="r1"><td class="c">9F32</td><td>3E&nbsp;09</td><td>&#9;ld a,9</td></tr>
+<tr class="r0"><td class="c">9F34</td><td>EF&nbsp;33&nbsp;4C</td><td>&#9;&#9;RST 28h\ .dw _memset</td></tr>
+<tr class="r1"><td class="c">9F37</td><td>3E&nbsp;08</td><td>&#9;ld a,8</td></tr>
+<tr class="r0"><td class="c">9F39</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">9F3C</td><td>32&nbsp;8A&nbsp;9A</td><td>&#9;ld (           AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2),a</td></tr>
+<tr class="r0"><td class="c">9F3F</td><td>3E&nbsp;05</td><td>&#9;ld a, 5</td></tr>
+<tr class="r1"><td class="c">9F41</td><td>32&nbsp;26&nbsp;99</td><td>&#9;ld (    AppBackupScreen+(16*10)+16+4),a</td></tr>
+<tr><td class="l" colspan="4">ReRenderLoop</td></tr>
+<tr class="r0"><td class="c">9F44</td><td>CD&nbsp;76&nbsp;A2</td><td>&#9;call Render_Grid</td></tr>
+<tr class="r1"><td class="c">9F47</td><td>CD&nbsp;22&nbsp;A8</td><td>&#9;call PlotsToSave</td></tr>
+<tr class="r0"><td class="c">9F4A</td><td>3A&nbsp;8B&nbsp;9A</td><td>&#9;ld a,(            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1)</td></tr>
+<tr class="r1"><td class="c">9F4D</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">9F4E</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9F4F</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">9F51</td><td>11&nbsp;36&nbsp;A9</td><td>&#9;ld de,Player_1</td></tr>
+<tr class="r1"><td class="c">9F54</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">9F55</td><td>7E</td><td>&#9;ld a,(hl)&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">9F56</td><td>32&nbsp;8D&nbsp;9A</td><td>&#9;ld (              AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1),a</td></tr>
+<tr class="r0"><td class="c">9F59</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">9F5A</td><td>20&nbsp;08</td><td>&#9;jr nz,Is_AI</td></tr>
+<tr class="r0"><td class="c">9F5C</td><td>3A&nbsp;8B&nbsp;9A</td><td>&#9;ld a,(            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1)</td></tr>
+<tr class="r1"><td class="c">9F5F</td><td>CD&nbsp;85&nbsp;9F</td><td>&#9;call Manual</td></tr>
+<tr class="r0"><td class="c">9F62</td><td>18&nbsp;06</td><td>&#9;jr Done_Move</td></tr>
+<tr><td class="l" colspan="4">Is_AI</td></tr>
+<tr class="r1"><td class="c">9F64</td><td>3A&nbsp;8B&nbsp;9A</td><td>&#9;ld a,(            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1)</td></tr>
+<tr class="r0"><td class="c">9F67</td><td>CD&nbsp;47&nbsp;A0</td><td>&#9;call AI</td></tr>
+<tr><td class="l" colspan="4">Done_Move</td></tr>
+<tr class="r1"><td class="c">9F6A</td><td>3A&nbsp;8B&nbsp;9A</td><td>&#9;ld a,(            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1)</td></tr>
+<tr class="r0"><td class="c">9F6D</td><td>CD&nbsp;C7&nbsp;A2</td><td>&#9;call Drop_Piece</td></tr>
+<tr class="r1"><td class="c">9F70</td><td>3A&nbsp;8B&nbsp;9A</td><td>&#9;ld a,(            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1)</td></tr>
+<tr class="r0"><td class="c">9F73</td><td>CD&nbsp;7D&nbsp;A3</td><td>&#9;call Connect_4</td></tr>
+<tr class="r1"><td class="c">9F76</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9F77</td><td>C2&nbsp;D1&nbsp;A4</td><td>&#9;jp nz,Display_Winner</td></tr>
+<tr class="r1"><td class="c">9F7A</td><td>3A&nbsp;8B&nbsp;9A</td><td>&#9;ld a,(            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1)</td></tr>
+<tr class="r0"><td class="c">9F7D</td><td>EE&nbsp;03</td><td>&#9;xor 3</td></tr>
+<tr class="r1"><td class="c">9F7F</td><td>32&nbsp;8B&nbsp;9A</td><td>&#9;ld (            AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">9F82</td><td>C3&nbsp;44&nbsp;9F</td><td>&#9;jp ReRenderLoop</td></tr>
+<tr><td class="l" colspan="4">Manual</td></tr>
+<tr class="r1"><td class="c">9F85</td><td>32&nbsp;8C&nbsp;9A</td><td>&#9;ld (             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">9F88</td><td>32&nbsp;8C&nbsp;9A</td><td>&#9;ld (             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">9F8B</td><td>3A&nbsp;8A&nbsp;9A</td><td>&#9;ld a,(           AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2)</td></tr>
+<tr class="r0"><td class="c">9F8E</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Put_Piece_Loop</td></tr>
+<tr class="r1"><td class="c">9F91</td><td>CD&nbsp;2A&nbsp;A8</td><td>&#9;call SaveToPlots</td></tr>
+<tr class="r0"><td class="c">9F94</td><td>DD&nbsp;21&nbsp;7E&nbsp;A8</td><td>&#9;ld ix,spr_Black</td></tr>
+<tr class="r1"><td class="c">9F98</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9F9B</td><td>FE&nbsp;01</td><td>&#9;cp 1</td></tr>
+<tr class="r1"><td class="c">9F9D</td><td>28&nbsp;04</td><td>&#9;jr z,Keep_Black_Piece</td></tr>
+<tr class="r0"><td class="c">9F9F</td><td>DD&nbsp;21&nbsp;82&nbsp;A8</td><td>&#9;ld ix,spr_White</td></tr>
+<tr><td class="l" colspan="4">Keep_Black_Piece</td></tr>
+<tr class="r1"><td class="c">9FA3</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9FA6</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">9FA8</td><td>20&nbsp;01</td><td>&#9;jr nz,Not_Off_Left</td></tr>
+<tr class="r0"><td class="c">9FAA</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr><td class="l" colspan="4">Not_Off_Left</td></tr>
+<tr class="r1"><td class="c">9FAB</td><td>FE&nbsp;10</td><td>&#9;cp 16</td></tr>
+<tr class="r0"><td class="c">9FAD</td><td>20&nbsp;02</td><td>&#9;jr nz,Not_Off_Right</td></tr>
+<tr class="r1"><td class="c">9FAF</td><td>3E&nbsp;0F</td><td>&#9;ld a,15</td></tr>
+<tr><td class="l" colspan="4">Not_Off_Right</td></tr>
+<tr class="r0"><td class="c">9FB1</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">9FB4</td><td>32&nbsp;8A&nbsp;9A</td><td>&#9;ld (           AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2),a</td></tr>
+<tr class="r0"><td class="c">9FB7</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r1"><td class="c">9FBA</td><td>C6&nbsp;0F</td><td>&#9;add a, 15</td></tr>
+<tr class="r0"><td class="c">9FBC</td><td>2E&nbsp;04</td><td>&#9;ld l, 11-7</td></tr>
+<tr class="r1"><td class="c">9FBE</td><td>06&nbsp;04</td><td>&#9;ld b,4</td></tr>
+<tr class="r0"><td class="c">9FC0</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r1"><td class="c">9FC3</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9FC6</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9FC7</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r0"><td class="c">9FCA</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">9FCC</td><td>28&nbsp;17</td><td>&#9;jr z,No_Draw_Drop</td></tr>
+<tr class="r0"><td class="c">9FCE</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r1"><td class="c">9FD1</td><td>C6&nbsp;0B</td><td>&#9;add a, 11</td></tr>
+<tr class="r0"><td class="c">9FD3</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9FD4</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">9FD7</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r1"><td class="c">9FDA</td><td>C6&nbsp;0F</td><td>&#9;add a, 15</td></tr>
+<tr class="r0"><td class="c">9FDC</td><td>06&nbsp;04</td><td>&#9;ld b,4</td></tr>
+<tr class="r1"><td class="c">9FDE</td><td>DD&nbsp;21&nbsp;86&nbsp;A8</td><td>&#9;ld ix,spr_Drop</td></tr>
+<tr class="r0"><td class="c">9FE2</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr><td class="l" colspan="4">No_Draw_Drop</td></tr>
+<tr class="r1"><td class="c">9FE5</td><td>CD&nbsp;92&nbsp;40</td><td>&#9;call ionFastCopy</td></tr>
+<tr class="r0"><td class="c">9FE8</td><td>3A&nbsp;26&nbsp;99</td><td>&#9;ld a,(    AppBackupScreen+(16*10)+16+4)</td></tr>
+<tr class="r1"><td class="c">9FEB</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">9FEC</td><td>32&nbsp;26&nbsp;99</td><td>&#9;ld (    AppBackupScreen+(16*10)+16+4),a</td></tr>
+<tr class="r1"><td class="c">9FEF</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9FF0</td><td>20&nbsp;26</td><td>&#9;jr nz,Not_Animate</td></tr>
+<tr class="r1"><td class="c">9FF2</td><td>21&nbsp;86&nbsp;A8</td><td>&#9;ld hl,spr_Drop</td></tr>
+<tr class="r0"><td class="c">9FF5</td><td>11&nbsp;22&nbsp;99</td><td>&#9;ld de,   AppBackupScreen+(16*10)+16</td></tr>
+<tr class="r1"><td class="c">9FF8</td><td>01&nbsp;04&nbsp;00</td><td>&#9;ld bc,4</td></tr>
+<tr class="r0"><td class="c">9FFB</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">9FFD</td><td>21&nbsp;8A&nbsp;A8</td><td>&#9;ld hl,spr_Drop+4</td></tr>
+<tr class="r0"><td class="c">A000</td><td>11&nbsp;86&nbsp;A8</td><td>&#9;ld de,spr_Drop</td></tr>
+<tr class="r1"><td class="c">A003</td><td>01&nbsp;1C&nbsp;00</td><td>&#9;ld bc,4*7</td></tr>
+<tr class="r0"><td class="c">A006</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">A008</td><td>21&nbsp;22&nbsp;99</td><td>&#9;ld hl,   AppBackupScreen+(16*10)+16</td></tr>
+<tr class="r0"><td class="c">A00B</td><td>11&nbsp;A2&nbsp;A8</td><td>&#9;ld de,spr_Drop+(4*7)</td></tr>
+<tr class="r1"><td class="c">A00E</td><td>01&nbsp;04&nbsp;00</td><td>&#9;ld bc,4</td></tr>
+<tr class="r0"><td class="c">A011</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">A013</td><td>3E&nbsp;05</td><td>&#9;ld a, 5</td></tr>
+<tr class="r0"><td class="c">A015</td><td>32&nbsp;26&nbsp;99</td><td>&#9;ld (    AppBackupScreen+(16*10)+16+4),a</td></tr>
+<tr><td class="l" colspan="4">Not_Animate</td></tr>
+<tr class="r1"><td class="c">A018</td><td>DD&nbsp;21&nbsp;94&nbsp;9A</td><td>&#9;ld ix,                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1</td></tr>
+<tr class="r0"><td class="c">A01C</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r1"><td class="c">A01F</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r0"><td class="c">A021</td><td>20&nbsp;04</td><td>&#9;jr nz,Not_Cancel</td></tr>
+<tr class="r1"><td class="c">A023</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r0"><td class="c">A024</td><td>C3&nbsp;CF&nbsp;9D</td><td>&#9;jp Start</td></tr>
+<tr><td class="l" colspan="4">Not_Cancel</td></tr>
+<tr class="r1"><td class="c">A027</td><td>FE&nbsp;02</td><td>&#9;cp skLeft</td></tr>
+<tr class="r0"><td class="c">A029</td><td>20&nbsp;03</td><td>&#9;jr nz,Not_Left</td></tr>
+<tr class="r1"><td class="c">A02B</td><td>DD&nbsp;35&nbsp;00</td><td>&#9;dec (ix+0)</td></tr>
+<tr><td class="l" colspan="4">Not_Left</td></tr>
+<tr class="r0"><td class="c">A02E</td><td>FE&nbsp;03</td><td>&#9;cp skRight</td></tr>
+<tr class="r1"><td class="c">A030</td><td>20&nbsp;03</td><td>&#9;jr nz,Not_Right</td></tr>
+<tr class="r0"><td class="c">A032</td><td>DD&nbsp;34&nbsp;00</td><td>&#9;inc (ix+0)</td></tr>
+<tr><td class="l" colspan="4">Not_Right</td></tr>
+<tr class="r1"><td class="c">A035</td><td>FE&nbsp;36</td><td>&#9;cp sk2nd</td></tr>
+<tr class="r0"><td class="c">A037</td><td>C2&nbsp;91&nbsp;9F</td><td>&#9;jp nz,Put_Piece_Loop</td></tr>
+<tr class="r1"><td class="c">A03A</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A03D</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A03E</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r0"><td class="c">A041</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">A043</td><td>CA&nbsp;91&nbsp;9F</td><td>&#9;jp z,Put_Piece_Loop&#9;</td></tr>
+<tr class="r0"><td class="c">A046</td><td>C9</td><td>&#9;ret&#9;</td></tr>
+<tr><td class="l" colspan="4">AI</td></tr>
+<tr class="r1"><td class="c">A047</td><td>32&nbsp;8C&nbsp;9A</td><td>&#9;ld (             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">A04A</td><td>CD&nbsp;69&nbsp;A3</td><td>&#9;call Backup_Grid</td></tr>
+<tr class="r1"><td class="c">A04D</td><td>3E&nbsp;10</td><td>&#9;ld a,16</td></tr>
+<tr class="r0"><td class="c">A04F</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Scan_For_Win</td></tr>
+<tr class="r1"><td class="c">A052</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid&#9;</td></tr>
+<tr class="r0"><td class="c">A055</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A058</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A059</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A05C</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">A05D</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r1"><td class="c">A060</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r0"><td class="c">A062</td><td>28&nbsp;16</td><td>&#9;jr z,Not_Possible_Win</td></tr>
+<tr class="r1"><td class="c">A064</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A067</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A06A</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A06D</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;call Write_Grid</td></tr>
+<tr class="r1"><td class="c">A070</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A073</td><td>CD&nbsp;7D&nbsp;A3</td><td>&#9;call Connect_4</td></tr>
+<tr class="r1"><td class="c">A076</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A077</td><td>C2&nbsp;9A&nbsp;A1</td><td>&#9;jp nz,Calc_Can_Win</td></tr>
+<tr><td class="l" colspan="4">Not_Possible_Win</td></tr>
+<tr class="r1"><td class="c">A07A</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r0"><td class="c">A07D</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r1"><td class="c">A07E</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr class="r0"><td class="c">A081</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A082</td><td>20&nbsp;CE</td><td>&#9;jr nz,Scan_For_Win</td></tr>
+<tr class="r0"><td class="c">A084</td><td>3E&nbsp;10</td><td>&#9;ld a,16</td></tr>
+<tr class="r1"><td class="c">A086</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Scan_For_Block</td></tr>
+<tr class="r0"><td class="c">A089</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid&#9;</td></tr>
+<tr class="r1"><td class="c">A08C</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r0"><td class="c">A08F</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r1"><td class="c">A090</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">A093</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A094</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r0"><td class="c">A097</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">A099</td><td>28&nbsp;1A</td><td>&#9;jr z,Not_Possible_Block</td></tr>
+<tr class="r0"><td class="c">A09B</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r1"><td class="c">A09E</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A0A1</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A0A4</td><td>EE&nbsp;03</td><td>&#9;xor 3&#9;&#9;&#9;</td></tr>
+<tr class="r0"><td class="c">A0A6</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;call Write_Grid</td></tr>
+<tr class="r1"><td class="c">A0A9</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A0AC</td><td>EE&nbsp;03</td><td>&#9;xor 3&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A0AE</td><td>CD&nbsp;7D&nbsp;A3</td><td>&#9;call Connect_4</td></tr>
+<tr class="r0"><td class="c">A0B1</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A0B2</td><td>C2&nbsp;9A&nbsp;A1</td><td>&#9;jp nz,Calc_Can_Win</td></tr>
+<tr><td class="l" colspan="4">Not_Possible_Block</td></tr>
+<tr class="r0"><td class="c">A0B5</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A0B8</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A0B9</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr class="r1"><td class="c">A0BC</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A0BD</td><td>20&nbsp;CA</td><td>&#9;jr nz,Scan_For_Block</td></tr>
+<tr class="r1"><td class="c">A0BF</td><td>3A&nbsp;8D&nbsp;9A</td><td>&#9;ld a,(              AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1)</td></tr>
+<tr class="r0"><td class="c">A0C2</td><td>FE&nbsp;02</td><td>&#9;cp 2</td></tr>
+<tr class="r1"><td class="c">A0C4</td><td>DA&nbsp;D3&nbsp;A0</td><td>&#9;jp c,Dont_try_premonition_Block</td></tr>
+<tr class="r0"><td class="c">A0C7</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A0CA</td><td>CD&nbsp;BC&nbsp;A1</td><td>&#9;call Premonition</td></tr>
+<tr class="r0"><td class="c">A0CD</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A0CE</td><td>28&nbsp;03</td><td>&#9;jr z,Dont_try_premonition_Block</td></tr>
+<tr class="r0"><td class="c">A0D0</td><td>C3&nbsp;9A&nbsp;A1</td><td>&#9;jp Calc_can_win</td></tr>
+<tr><td class="l" colspan="4">Dont_try_premonition_Block</td></tr>
+<tr class="r1"><td class="c">A0D3</td><td>3A&nbsp;8D&nbsp;9A</td><td>&#9;ld a,(              AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1)</td></tr>
+<tr class="r0"><td class="c">A0D6</td><td>FE&nbsp;03</td><td>&#9;cp 3</td></tr>
+<tr class="r1"><td class="c">A0D8</td><td>C2&nbsp;11&nbsp;A1</td><td>&#9;jp nz,Dont_try_premonition_Win</td></tr>
+<tr class="r0"><td class="c">A0DB</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A0DE</td><td>EE&nbsp;03</td><td>&#9;xor 3</td></tr>
+<tr class="r0"><td class="c">A0E0</td><td>CD&nbsp;BC&nbsp;A1</td><td>&#9;call Premonition</td></tr>
+<tr class="r1"><td class="c">A0E3</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A0E4</td><td>28&nbsp;2B</td><td>&#9;jr z,Dont_try_premonition_Win</td></tr>
+<tr class="r1"><td class="c">A0E6</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid</td></tr>
+<tr class="r0"><td class="c">A0E9</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A0EC</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A0ED</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A0F0</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">A0F1</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r1"><td class="c">A0F4</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A0F5</td><td>28&nbsp;17</td><td>&#9;jr z,P_W_Fine</td></tr>
+<tr class="r1"><td class="c">A0F7</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A0F8</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r1"><td class="c">A0FB</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A0FE</td><td>EE&nbsp;03</td><td>&#9;xor 3</td></tr>
+<tr class="r1"><td class="c">A100</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;call Write_Grid</td></tr>
+<tr class="r0"><td class="c">A103</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A106</td><td>EE&nbsp;03</td><td>&#9;xor 3</td></tr>
+<tr class="r0"><td class="c">A108</td><td>CD&nbsp;7D&nbsp;A3</td><td>&#9;call Connect_4</td></tr>
+<tr class="r1"><td class="c">A10B</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A10C</td><td>20&nbsp;03</td><td>&#9;jr nz,Dont_try_premonition_Win</td></tr>
+<tr><td class="l" colspan="4">P_W_Fine</td></tr>
+<tr class="r1"><td class="c">A10E</td><td>C3&nbsp;9A&nbsp;A1</td><td>&#9;jp Calc_can_win</td></tr>
+<tr><td class="l" colspan="4">Dont_try_premonition_Win</td></tr>
+<tr class="r0"><td class="c">A111</td><td>3A&nbsp;8D&nbsp;9A</td><td>&#9;ld a,(              AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A114</td><td>FE&nbsp;01</td><td>&#9;cp 1</td></tr>
+<tr class="r0"><td class="c">A116</td><td>D2&nbsp;84&nbsp;A1</td><td>&#9;jp nc,Dont_try_win_allow</td></tr>
+<tr class="r1"><td class="c">A119</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid</td></tr>
+<tr class="r0"><td class="c">A11C</td><td>06&nbsp;14</td><td>&#9;ld b,20</td></tr>
+<tr class="r1"><td class="c">A11E</td><td>CD&nbsp;86&nbsp;40</td><td>&#9;call ionRandom</td></tr>
+<tr class="r0"><td class="c">A121</td><td>3C</td><td>&#9;inc a&#9;</td></tr>
+<tr><td class="l" colspan="4">Shuffle_Again</td></tr>
+<tr class="r1"><td class="c">A122</td><td>F5</td><td>&#9;push af</td></tr>
+<tr class="r0"><td class="c">A123</td><td>21&nbsp;C8&nbsp;99</td><td>&#9;ld hl,      AppBackupScreen+(16*10)+16+4+1+(16*10)+1</td></tr>
+<tr class="r1"><td class="c">A126</td><td>11&nbsp;C7&nbsp;99</td><td>&#9;ld de,      AppBackupScreen+(16*10)+16+4+1+(16*10)</td></tr>
+<tr class="r0"><td class="c">A129</td><td>1A</td><td>&#9;ld a,(de)</td></tr>
+<tr class="r1"><td class="c">A12A</td><td>01&nbsp;0F&nbsp;00</td><td>&#9;ld bc,15</td></tr>
+<tr class="r0"><td class="c">A12D</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">A12F</td><td>12</td><td>&#9;ld (de),a</td></tr>
+<tr class="r0"><td class="c">A130</td><td>F1</td><td>&#9;pop af</td></tr>
+<tr class="r1"><td class="c">A131</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A132</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A133</td><td>20&nbsp;ED</td><td>&#9;jr nz,Shuffle_Again</td></tr>
+<tr class="r0"><td class="c">A135</td><td>21&nbsp;C7&nbsp;99</td><td>&#9;ld hl,      AppBackupScreen+(16*10)+16+4+1+(16*10)</td></tr>
+<tr class="r1"><td class="c">A138</td><td>22&nbsp;88&nbsp;9A</td><td>&#9;ld (          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1),hl</td></tr>
+<tr><td class="l" colspan="4">Try_Next_Column</td></tr>
+<tr class="r0"><td class="c">A13B</td><td>2A&nbsp;88&nbsp;9A</td><td>&#9;ld hl,(          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1)</td></tr>
+<tr class="r1"><td class="c">A13E</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">A13F</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A140</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r0"><td class="c">A143</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r1"><td class="c">A144</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A147</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r1"><td class="c">A148</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A149</td><td>28&nbsp;27</td><td>&#9;jr z,Not_Here_Stupid&#9;</td></tr>
+<tr class="r1"><td class="c">A14B</td><td>2A&nbsp;88&nbsp;9A</td><td>&#9;ld hl,(          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1)</td></tr>
+<tr class="r0"><td class="c">A14E</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">A14F</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">A152</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A155</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A158</td><td>EE&nbsp;03</td><td>&#9;xor 3</td></tr>
+<tr class="r1"><td class="c">A15A</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;call Write_Grid</td></tr>
+<tr class="r0"><td class="c">A15D</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A160</td><td>EE&nbsp;03</td><td>&#9;xor 3</td></tr>
+<tr class="r0"><td class="c">A162</td><td>CD&nbsp;7D&nbsp;A3</td><td>&#9;call Connect_4</td></tr>
+<tr class="r1"><td class="c">A165</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A166</td><td>20&nbsp;0A</td><td>&#9;jr nz,Not_Here_Stupid&#9;</td></tr>
+<tr class="r1"><td class="c">A168</td><td>2A&nbsp;88&nbsp;9A</td><td>&#9;ld hl,(          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1)</td></tr>
+<tr class="r0"><td class="c">A16B</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">A16C</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r0"><td class="c">A16D</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr class="r1"><td class="c">A170</td><td>18&nbsp;28</td><td>&#9;jr Calc_Can_Win</td></tr>
+<tr><td class="l" colspan="4">Not_Here_Stupid</td></tr>
+<tr class="r0"><td class="c">A172</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid</td></tr>
+<tr class="r1"><td class="c">A175</td><td>2A&nbsp;88&nbsp;9A</td><td>&#9;ld hl,(          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1)</td></tr>
+<tr class="r0"><td class="c">A178</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r1"><td class="c">A179</td><td>22&nbsp;88&nbsp;9A</td><td>&#9;ld (          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1),hl</td></tr>
+<tr class="r0"><td class="c">A17C</td><td>11&nbsp;98&nbsp;9A</td><td>&#9;ld de,          AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+16</td></tr>
+<tr class="r1"><td class="c">A17F</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r0"><td class="c">A182</td><td>20&nbsp;B7</td><td>&#9;jr nz,Try_Next_Column</td></tr>
+<tr><td class="l" colspan="4">Dont_try_win_allow</td></tr>
+<tr><td class="l" colspan="4">Invalid_Placement</td></tr>
+<tr class="r1"><td class="c">A184</td><td>06&nbsp;10</td><td>&#9;ld b,16</td></tr>
+<tr class="r0"><td class="c">A186</td><td>CD&nbsp;86&nbsp;40</td><td>&#9;call ionRandom</td></tr>
+<tr class="r1"><td class="c">A189</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">A18C</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A18D</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r0"><td class="c">A190</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A191</td><td>28&nbsp;F1</td><td>&#9;jr z,Invalid_Placement</td></tr>
+<tr class="r0"><td class="c">A193</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A196</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r0"><td class="c">A197</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Calc_Can_Win</td></tr>
+<tr class="r1"><td class="c">A19A</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid</td></tr>
+<tr class="r0"><td class="c">A19D</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A1A0</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A1A1</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A1A4</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Premonition_Add</td></tr>
+<tr class="r0"><td class="c">A1A5</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A1A8</td><td>CD&nbsp;B3&nbsp;A1</td><td>&#9;call Inc_Chances</td></tr>
+<tr class="r0"><td class="c">A1AB</td><td>3A&nbsp;8F&nbsp;9A</td><td>&#9;ld a,(                AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A1AE</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A1AF</td><td>CD&nbsp;B3&nbsp;A1</td><td>&#9;call Inc_Chances&#9;</td></tr>
+<tr class="r1"><td class="c">A1B2</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Inc_Chances</td></tr>
+<tr class="r0"><td class="c">A1B3</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A1B4</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">A1B6</td><td>11&nbsp;77&nbsp;9A</td><td>&#9;ld de,        AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)</td></tr>
+<tr class="r1"><td class="c">A1B9</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">A1BA</td><td>34</td><td>&#9;inc (hl)</td></tr>
+<tr class="r1"><td class="c">A1BB</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Premonition</td></tr>
+<tr class="r0"><td class="c">A1BC</td><td>32&nbsp;92&nbsp;9A</td><td>&#9;ld (                  AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2),a</td></tr>
+<tr class="r1"><td class="c">A1BF</td><td>21&nbsp;77&nbsp;9A</td><td>&#9;ld hl,        AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)</td></tr>
+<tr class="r0"><td class="c">A1C2</td><td>01&nbsp;10&nbsp;00</td><td>&#9;ld bc,16</td></tr>
+<tr class="r1"><td class="c">A1C5</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r0"><td class="c">A1C6</td><td>EF&nbsp;33&nbsp;4C</td><td>&#9;&#9;RST 28h\ .dw _memset</td></tr>
+<tr class="r1"><td class="c">A1C9</td><td>3E&nbsp;10</td><td>&#9;ld a,16</td></tr>
+<tr class="r0"><td class="c">A1CB</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Scan_For_Block_2</td></tr>
+<tr class="r1"><td class="c">A1CE</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid&#9;</td></tr>
+<tr class="r0"><td class="c">A1D1</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A1D4</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A1D5</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A1D8</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">A1D9</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;call Get_Height</td></tr>
+<tr class="r1"><td class="c">A1DC</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r0"><td class="c">A1DE</td><td>28&nbsp;5C</td><td>&#9;jr z,Not_Possible_Block_2&#9;</td></tr>
+<tr class="r1"><td class="c">A1E0</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A1E3</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A1E6</td><td>3A&nbsp;92&nbsp;9A</td><td>&#9;ld a,(                  AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2)</td></tr>
+<tr class="r0"><td class="c">A1E9</td><td>EE&nbsp;03</td><td>&#9;xor 3&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A1EB</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;call Write_Grid</td></tr>
+<tr class="r0"><td class="c">A1EE</td><td>21&nbsp;72&nbsp;98</td><td>&#9;&#9;ld hl, AppBackupScreen</td></tr>
+<tr class="r1"><td class="c">A1F1</td><td>11&nbsp;D7&nbsp;99</td><td>&#9;&#9;ld de,       AppBackupScreen+(16*10)+16+4+1+(16*10)+16</td></tr>
+<tr class="r0"><td class="c">A1F4</td><td>01&nbsp;A0&nbsp;00</td><td>&#9;&#9;ld bc,16*10</td></tr>
+<tr class="r1"><td class="c">A1F7</td><td>ED&nbsp;B0</td><td>&#9;&#9;ldir</td></tr>
+<tr class="r0"><td class="c">A1F9</td><td>3E&nbsp;10</td><td>&#9;&#9;ld a,16</td></tr>
+<tr class="r1"><td class="c">A1FB</td><td>32&nbsp;8F&nbsp;9A</td><td>&#9;&#9;ld (                AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Premonition_Loop</td></tr>
+<tr class="r0"><td class="c">A1FE</td><td>21&nbsp;D7&nbsp;99</td><td>&#9;&#9;ld hl,       AppBackupScreen+(16*10)+16+4+1+(16*10)+16</td></tr>
+<tr class="r1"><td class="c">A201</td><td>11&nbsp;72&nbsp;98</td><td>&#9;&#9;ld de, AppBackupScreen</td></tr>
+<tr class="r0"><td class="c">A204</td><td>01&nbsp;A0&nbsp;00</td><td>&#9;&#9;ld bc,16*10</td></tr>
+<tr class="r1"><td class="c">A207</td><td>ED&nbsp;B0</td><td>&#9;&#9;ldir</td></tr>
+<tr class="r0"><td class="c">A209</td><td>3A&nbsp;8F&nbsp;9A</td><td>&#9;&#9;ld a,(                AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A20C</td><td>3D</td><td>&#9;&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A20D</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A210</td><td>6F</td><td>&#9;&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">A211</td><td>CD&nbsp;58&nbsp;A3</td><td>&#9;&#9;call Get_Height</td></tr>
+<tr class="r1"><td class="c">A214</td><td>FE&nbsp;FF</td><td>&#9;&#9;cp -1</td></tr>
+<tr class="r0"><td class="c">A216</td><td>28&nbsp;1A</td><td>&#9;&#9;jr z,Not_Valid_Premonition</td></tr>
+<tr class="r1"><td class="c">A218</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A21B</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A21E</td><td>3A&nbsp;92&nbsp;9A</td><td>&#9;&#9;ld a,(                  AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2)</td></tr>
+<tr class="r0"><td class="c">A221</td><td>EE&nbsp;03</td><td>&#9;&#9;xor 3&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A223</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;&#9;call Write_Grid</td></tr>
+<tr class="r0"><td class="c">A226</td><td>3A&nbsp;92&nbsp;9A</td><td>&#9;&#9;ld a,(                  AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2)</td></tr>
+<tr class="r1"><td class="c">A229</td><td>EE&nbsp;03</td><td>&#9;&#9;xor 3</td></tr>
+<tr class="r0"><td class="c">A22B</td><td>CD&nbsp;7D&nbsp;A3</td><td>&#9;&#9;call Connect_4</td></tr>
+<tr class="r1"><td class="c">A22E</td><td>B7</td><td>&#9;&#9;or a</td></tr>
+<tr class="r0"><td class="c">A22F</td><td>C4&nbsp;A5&nbsp;A1</td><td>&#9;&#9;call nz,Premonition_Add</td></tr>
+<tr><td class="l" colspan="4">Not_Valid_Premonition</td></tr>
+<tr class="r1"><td class="c">A232</td><td>3A&nbsp;8F&nbsp;9A</td><td>&#9;&#9;ld a,(                AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1)</td></tr>
+<tr class="r0"><td class="c">A235</td><td>3D</td><td>&#9;&#9;dec a</td></tr>
+<tr class="r1"><td class="c">A236</td><td>32&nbsp;8F&nbsp;9A</td><td>&#9;&#9;ld (                AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1),a</td></tr>
+<tr class="r0"><td class="c">A239</td><td>B7</td><td>&#9;&#9;or a</td></tr>
+<tr class="r1"><td class="c">A23A</td><td>20&nbsp;C2</td><td>&#9;&#9;jr nz,Premonition_Loop</td></tr>
+<tr><td class="l" colspan="4">Not_Possible_Block_2</td></tr>
+<tr class="r0"><td class="c">A23C</td><td>3A&nbsp;8E&nbsp;9A</td><td>&#9;ld a,(               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A23F</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A240</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr class="r1"><td class="c">A243</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A244</td><td>20&nbsp;88</td><td>&#9;jr nz,Scan_For_Block_2</td></tr>
+<tr class="r1"><td class="c">A246</td><td>CD&nbsp;71&nbsp;A3</td><td>&#9;call Restore_Grid</td></tr>
+<tr class="r0"><td class="c">A249</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r1"><td class="c">A24A</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r0"><td class="c">A24D</td><td>11&nbsp;77&nbsp;9A</td><td>&#9;ld de,        AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)</td></tr>
+<tr class="r1"><td class="c">A250</td><td>01&nbsp;00&nbsp;00</td><td>&#9;ld bc,0&#9;&#9;</td></tr>
+<tr><td class="l" colspan="4">Get_Good_Chance</td></tr>
+<tr class="r0"><td class="c">A253</td><td>68</td><td>&#9;ld l,b</td></tr>
+<tr class="r1"><td class="c">A254</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">A256</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r1"><td class="c">A257</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">A258</td><td>B9</td><td>&#9;cp c</td></tr>
+<tr class="r1"><td class="c">A259</td><td>38&nbsp;05</td><td>&#9;jr c,Not_Better_Chance</td></tr>
+<tr class="r0"><td class="c">A25B</td><td>4F</td><td>&#9;ld c,a</td></tr>
+<tr class="r1"><td class="c">A25C</td><td>78</td><td>&#9;ld a,b</td></tr>
+<tr class="r0"><td class="c">A25D</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr><td class="l" colspan="4">Not_Better_Chance</td></tr>
+<tr class="r1"><td class="c">A260</td><td>04</td><td>&#9;inc b</td></tr>
+<tr class="r0"><td class="c">A261</td><td>78</td><td>&#9;ld a,b</td></tr>
+<tr class="r1"><td class="c">A262</td><td>FE&nbsp;10</td><td>&#9;cp 16</td></tr>
+<tr class="r0"><td class="c">A264</td><td>20&nbsp;ED</td><td>&#9;jr nz,Get_Good_Chance</td></tr>
+<tr class="r1"><td class="c">A266</td><td>79</td><td>&#9;ld a,c</td></tr>
+<tr class="r0"><td class="c">A267</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A268</td><td>28&nbsp;0A</td><td>&#9;jr z,Dont_try_premonitions</td></tr>
+<tr class="r0"><td class="c">A26A</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A26D</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r0"><td class="c">A26E</td><td>32&nbsp;8E&nbsp;9A</td><td>&#9;ld (               AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1),a</td></tr>
+<tr class="r1"><td class="c">A271</td><td>3E&nbsp;01</td><td>&#9;ld a,1</td></tr>
+<tr class="r0"><td class="c">A273</td><td>C9</td><td>&#9;ret&#9;</td></tr>
+<tr><td class="l" colspan="4">Dont_try_premonitions</td></tr>
+<tr class="r1"><td class="c">A274</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r0"><td class="c">A275</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Render_Grid</td></tr>
+<tr class="r1"><td class="c">A276</td><td>21&nbsp;43&nbsp;A5</td><td>&#9;ld hl,img_Back</td></tr>
+<tr class="r0"><td class="c">A279</td><td>11&nbsp;40&nbsp;93</td><td>&#9;ld de,PlotsScreen</td></tr>
+<tr class="r1"><td class="c">A27C</td><td>01&nbsp;00&nbsp;03</td><td>&#9;ld bc,768</td></tr>
+<tr class="r0"><td class="c">A27F</td><td>CD&nbsp;64&nbsp;A8</td><td>&#9;call RLE</td></tr>
+<tr class="r1"><td class="c">A282</td><td>21&nbsp;0B&nbsp;0F</td><td>&#9;ld hl,(256* 15)+ 11</td></tr>
+<tr class="r0"><td class="c">A285</td><td>22&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),hl</td></tr>
+<tr class="r1"><td class="c">A288</td><td>21&nbsp;71&nbsp;98</td><td>&#9;ld hl, AppBackupScreen-1</td></tr>
+<tr class="r0"><td class="c">A28B</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr><td class="l" colspan="4">Next_Piece_X</td></tr>
+<tr class="r1"><td class="c">A28C</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r0"><td class="c">A28D</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r1"><td class="c">A28E</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A28F</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">A290</td><td>87</td><td>&#9;add a,a</td></tr>
+<tr class="r0"><td class="c">A291</td><td>87</td><td>&#9;add a,a</td></tr>
+<tr class="r1"><td class="c">A292</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">A293</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r1"><td class="c">A295</td><td>11&nbsp;7A&nbsp;A8</td><td>&#9;ld de,spr_Blank</td></tr>
+<tr class="r0"><td class="c">A298</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r1"><td class="c">A299</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A29A</td><td>DD&nbsp;E1</td><td>&#9;pop ix</td></tr>
+<tr class="r1"><td class="c">A29C</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A29F</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A2A0</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A2A3</td><td>06&nbsp;04</td><td>&#9;ld b,4</td></tr>
+<tr class="r1"><td class="c">A2A5</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r0"><td class="c">A2A8</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A2AB</td><td>C6&nbsp;05</td><td>&#9;add a,5</td></tr>
+<tr class="r0"><td class="c">A2AD</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A2B0</td><td>FE&nbsp;5F</td><td>&#9;cp 80+ 15</td></tr>
+<tr class="r0"><td class="c">A2B2</td><td>20&nbsp;D8</td><td>&#9;jr nz,Next_Piece_X</td></tr>
+<tr class="r1"><td class="c">A2B4</td><td>3E&nbsp;0F</td><td>&#9;ld a, 15</td></tr>
+<tr class="r0"><td class="c">A2B6</td><td>32&nbsp;94&nbsp;9A</td><td>&#9;ld (                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1),a</td></tr>
+<tr class="r1"><td class="c">A2B9</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A2BC</td><td>C6&nbsp;05</td><td>&#9;add a,5</td></tr>
+<tr class="r1"><td class="c">A2BE</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A2C1</td><td>FE&nbsp;3D</td><td>&#9;cp 50+ 11</td></tr>
+<tr class="r1"><td class="c">A2C3</td><td>20&nbsp;C7</td><td>&#9;jr nz,Next_Piece_X</td></tr>
+<tr class="r0"><td class="c">A2C5</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A2C6</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Drop_Piece</td></tr>
+<tr class="r0"><td class="c">A2C7</td><td>FE&nbsp;01</td><td>&#9;cp 1</td></tr>
+<tr class="r1"><td class="c">A2C9</td><td>20&nbsp;05</td><td>&#9;jr nz,Is_White</td></tr>
+<tr class="r0"><td class="c">A2CB</td><td>21&nbsp;7E&nbsp;A8</td><td>&#9;ld hl,spr_Black</td></tr>
+<tr class="r1"><td class="c">A2CE</td><td>18&nbsp;03</td><td>&#9;jr Is_Black</td></tr>
+<tr><td class="l" colspan="4">Is_White</td></tr>
+<tr class="r0"><td class="c">A2D0</td><td>21&nbsp;82&nbsp;A8</td><td>&#9;ld hl,spr_White</td></tr>
+<tr><td class="l" colspan="4">Is_Black</td></tr>
+<tr class="r1"><td class="c">A2D3</td><td>22&nbsp;FC&nbsp;A2</td><td>&#9;ld (d_w_sprite+2),hl</td></tr>
+<tr class="r0"><td class="c">A2D6</td><td>32&nbsp;27&nbsp;A3</td><td>&#9;ld (d_w_player+1),a</td></tr>
+<tr class="r1"><td class="c">A2D9</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r0"><td class="c">A2DA</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr><td class="l" colspan="4">Drop_Piece_Loop</td></tr>
+<tr class="r1"><td class="c">A2DD</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A2E0</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r1"><td class="c">A2E3</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A2E4</td><td>20&nbsp;36</td><td>&#9;jr nz,Found_Resting_Place</td></tr>
+<tr class="r1"><td class="c">A2E6</td><td>CD&nbsp;2A&nbsp;A8</td><td>&#9;call SaveToPlots</td></tr>
+<tr class="r0"><td class="c">A2E9</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A2EC</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r0"><td class="c">A2EF</td><td>C6&nbsp;0B</td><td>&#9;add a, 11</td></tr>
+<tr class="r1"><td class="c">A2F1</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r0"><td class="c">A2F2</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A2F5</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r0"><td class="c">A2F8</td><td>C6&nbsp;0F</td><td>&#9;add a, 15</td></tr>
+<tr><td class="l" colspan="4">d_w_sprite</td></tr>
+<tr class="r1"><td class="c">A2FA</td><td>DD&nbsp;21&nbsp;7E&nbsp;A8</td><td>&#9;ld ix,spr_Black</td></tr>
+<tr class="r0"><td class="c">A2FE</td><td>06&nbsp;04</td><td>&#9;ld b,4</td></tr>
+<tr class="r1"><td class="c">A300</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r0"><td class="c">A303</td><td>CD&nbsp;92&nbsp;40</td><td>&#9;call ionFastCopy</td></tr>
+<tr class="r1"><td class="c">A306</td><td>21&nbsp;10&nbsp;27</td><td>&#9;ld hl,10000</td></tr>
+<tr><td class="l" colspan="4">Drop_Delay</td></tr>
+<tr class="r0"><td class="c">A309</td><td>00</td><td>&#9;nop</td></tr>
+<tr class="r1"><td class="c">A30A</td><td>2B</td><td>&#9;dec hl</td></tr>
+<tr class="r0"><td class="c">A30B</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r1"><td class="c">A30C</td><td>B5</td><td>&#9;or l</td></tr>
+<tr class="r0"><td class="c">A30D</td><td>20&nbsp;FA</td><td>&#9;jr nz,Drop_Delay</td></tr>
+<tr class="r1"><td class="c">A30F</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A312</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r1"><td class="c">A313</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A316</td><td>FE&nbsp;0A</td><td>&#9;cp 10</td></tr>
+<tr class="r1"><td class="c">A318</td><td>28&nbsp;02</td><td>&#9;jr z,Found_Resting_Place</td></tr>
+<tr class="r0"><td class="c">A31A</td><td>18&nbsp;C1</td><td>&#9;jr Drop_Piece_Loop</td></tr>
+<tr><td class="l" colspan="4">Found_Resting_Place</td></tr>
+<tr class="r1"><td class="c">A31C</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A31F</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r1"><td class="c">A320</td><td>32&nbsp;93&nbsp;9A</td><td>&#9;ld (                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1),a</td></tr>
+<tr class="r0"><td class="c">A323</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr><td class="l" colspan="4">d_w_player</td></tr>
+<tr class="r1"><td class="c">A326</td><td>3E&nbsp;01</td><td>&#9;ld a,1</td></tr>
+<tr class="r0"><td class="c">A328</td><td>CD&nbsp;3F&nbsp;A3</td><td>&#9;call Write_Grid</td></tr>
+<tr class="r1"><td class="c">A32B</td><td>3A&nbsp;94&nbsp;9A</td><td>&#9;ld a,(                    AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1+1)</td></tr>
+<tr class="r0"><td class="c">A32E</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A32F</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A332</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r1"><td class="c">A333</td><td>CD&nbsp;5D&nbsp;A3</td><td>&#9;call Set_Height</td></tr>
+<tr class="r0"><td class="c">A336</td><td>CD&nbsp;22&nbsp;A8</td><td>&#9;call PlotsToSave</td></tr>
+<tr class="r1"><td class="c">A339</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Read_Grid</td></tr>
+<tr class="r0"><td class="c">A33A</td><td>CD&nbsp;44&nbsp;A3</td><td>&#9;call Get_Grid_Number</td></tr>
+<tr class="r1"><td class="c">A33D</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">A33E</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Write_Grid</td></tr>
+<tr class="r1"><td class="c">A33F</td><td>CD&nbsp;44&nbsp;A3</td><td>&#9;call Get_Grid_Number</td></tr>
+<tr class="r0"><td class="c">A342</td><td>77</td><td>&#9;ld (hl),a</td></tr>
+<tr class="r1"><td class="c">A343</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Get_Grid_Number</td></tr>
+<tr class="r0"><td class="c">A344</td><td>5C</td><td>&#9;ld e,h</td></tr>
+<tr class="r1"><td class="c">A345</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">A347</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">A348</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">A349</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r1"><td class="c">A34A</td><td>29</td><td>&#9;add hl,hl</td></tr>
+<tr class="r0"><td class="c">A34B</td><td>16&nbsp;00</td><td>&#9;ld d,0</td></tr>
+<tr class="r1"><td class="c">A34D</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">A34E</td><td>11&nbsp;72&nbsp;98</td><td>&#9;ld de, AppBackupScreen</td></tr>
+<tr class="r1"><td class="c">A351</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">A352</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Mul_5</td></tr>
+<tr class="r1"><td class="c">A353</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr class="r0"><td class="c">A354</td><td>87</td><td>&#9;add a,a</td></tr>
+<tr class="r1"><td class="c">A355</td><td>87</td><td>&#9;add a,a</td></tr>
+<tr class="r0"><td class="c">A356</td><td>80</td><td>&#9;add a,b</td></tr>
+<tr class="r1"><td class="c">A357</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Get_Height</td></tr>
+<tr class="r0"><td class="c">A358</td><td>CD&nbsp;62&nbsp;A3</td><td>&#9;call Get_Height_Number</td></tr>
+<tr class="r1"><td class="c">A35B</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">A35C</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Set_Height</td></tr>
+<tr class="r1"><td class="c">A35D</td><td>CD&nbsp;62&nbsp;A3</td><td>&#9;call Get_Height_Number</td></tr>
+<tr class="r0"><td class="c">A360</td><td>77</td><td>&#9;ld (hl),a</td></tr>
+<tr class="r1"><td class="c">A361</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Get_Height_Number</td></tr>
+<tr class="r0"><td class="c">A362</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r1"><td class="c">A364</td><td>11&nbsp;12&nbsp;99</td><td>&#9;ld de,  AppBackupScreen+(16*10)</td></tr>
+<tr class="r0"><td class="c">A367</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r1"><td class="c">A368</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Backup_Grid</td></tr>
+<tr class="r0"><td class="c">A369</td><td>21&nbsp;72&nbsp;98</td><td>&#9;ld hl, AppBackupScreen</td></tr>
+<tr class="r1"><td class="c">A36C</td><td>11&nbsp;27&nbsp;99</td><td>&#9;ld de,     AppBackupScreen+(16*10)+16+4+1</td></tr>
+<tr class="r0"><td class="c">A36F</td><td>18&nbsp;06</td><td>&#9;jr Copy_Grid</td></tr>
+<tr><td class="l" colspan="4">Restore_Grid</td></tr>
+<tr class="r1"><td class="c">A371</td><td>21&nbsp;27&nbsp;99</td><td>&#9;ld hl,     AppBackupScreen+(16*10)+16+4+1</td></tr>
+<tr class="r0"><td class="c">A374</td><td>11&nbsp;72&nbsp;98</td><td>&#9;ld de, AppBackupScreen</td></tr>
+<tr><td class="l" colspan="4">Copy_Grid</td></tr>
+<tr class="r1"><td class="c">A377</td><td>01&nbsp;A0&nbsp;00</td><td>&#9;ld bc,16*10</td></tr>
+<tr class="r0"><td class="c">A37A</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">A37C</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Connect_4</td></tr>
+<tr class="r0"><td class="c">A37D</td><td>32&nbsp;87&nbsp;9A</td><td>&#9;ld (         AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16),a</td></tr>
+<tr class="r1"><td class="c">A380</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r0"><td class="c">A383</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r1"><td class="c">A385</td><td>20&nbsp;07</td><td>&#9;jr nz,Clear_Not_Pressed</td></tr>
+<tr class="r0"><td class="c">A387</td><td>ED&nbsp;7B&nbsp;90&nbsp;9A</td><td>&#9;ld sp,(                 AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1)</td></tr>
+<tr class="r1"><td class="c">A38B</td><td>C3&nbsp;CF&nbsp;9D</td><td>&#9;jp Redraw_Menu</td></tr>
+<tr><td class="l" colspan="4">Clear_Not_Pressed</td></tr>
+<tr class="r0"><td class="c">A38E</td><td>CD&nbsp;36&nbsp;A8</td><td>&#9;call Clear_Win_Buffer</td></tr>
+<tr class="r1"><td class="c">A391</td><td>DD&nbsp;21&nbsp;42&nbsp;A8</td><td>&#9;ld ix,Win_Buffer</td></tr>
+<tr class="r0"><td class="c">A395</td><td>3A&nbsp;93&nbsp;9A</td><td>&#9;ld a,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A398</td><td>FE&nbsp;07</td><td>&#9;cp 7</td></tr>
+<tr class="r0"><td class="c">A39A</td><td>30&nbsp;1D</td><td>&#9;jr nc,Not_Vertical</td></tr>
+<tr class="r1"><td class="c">A39C</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A39F</td><td>3A&nbsp;87&nbsp;9A</td><td>&#9;ld a,(         AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16)</td></tr>
+<tr class="r1"><td class="c">A3A2</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr class="r0"><td class="c">A3A3</td><td>0E&nbsp;04</td><td>&#9;ld c,4</td></tr>
+<tr><td class="l" colspan="4">Vertical_Scan</td></tr>
+<tr class="r1"><td class="c">A3A5</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r0"><td class="c">A3A8</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">A3A9</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r0"><td class="c">A3AC</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A3AD</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r0"><td class="c">A3AE</td><td>20&nbsp;09</td><td>&#9;jr nz,Not_Vertical</td></tr>
+<tr class="r1"><td class="c">A3B0</td><td>2C</td><td>&#9;inc l</td></tr>
+<tr class="r0"><td class="c">A3B1</td><td>0D</td><td>&#9;dec c</td></tr>
+<tr class="r1"><td class="c">A3B2</td><td>79</td><td>&#9;ld a,c</td></tr>
+<tr class="r0"><td class="c">A3B3</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A3B4</td><td>20&nbsp;EF</td><td>&#9;jr nz,Vertical_Scan&#9;</td></tr>
+<tr class="r0"><td class="c">A3B6</td><td>C3&nbsp;CE&nbsp;A4</td><td>&#9;jp Win</td></tr>
+<tr><td class="l" colspan="4">Not_Vertical</td></tr>
+<tr class="r1"><td class="c">A3B9</td><td>CD&nbsp;36&nbsp;A8</td><td>&#9;call Clear_Win_Buffer</td></tr>
+<tr class="r0"><td class="c">A3BC</td><td>DD&nbsp;21&nbsp;42&nbsp;A8</td><td>&#9;ld ix,Win_Buffer</td></tr>
+<tr class="r1"><td class="c">A3C0</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r0"><td class="c">A3C3</td><td>3A&nbsp;87&nbsp;9A</td><td>&#9;ld a,(         AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16)</td></tr>
+<tr class="r1"><td class="c">A3C6</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr><td class="l" colspan="4">Scan_To_Start_Horizontal</td></tr>
+<tr class="r0"><td class="c">A3C7</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r1"><td class="c">A3C8</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">A3C9</td><td>28&nbsp;0C</td><td>&#9;jr z,Found_Start_Horizontal</td></tr>
+<tr class="r1"><td class="c">A3CB</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A3CC</td><td>25</td><td>&#9;dec h</td></tr>
+<tr class="r1"><td class="c">A3CD</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r0"><td class="c">A3D0</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A3D1</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r0"><td class="c">A3D2</td><td>20&nbsp;03</td><td>&#9;jr nz,Found_Start_Horizontal</td></tr>
+<tr class="r1"><td class="c">A3D4</td><td>25</td><td>&#9;dec h</td></tr>
+<tr class="r0"><td class="c">A3D5</td><td>18&nbsp;F0</td><td>&#9;jr Scan_To_Start_Horizontal</td></tr>
+<tr><td class="l" colspan="4">Found_Start_Horizontal</td></tr>
+<tr class="r1"><td class="c">A3D7</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A3D8</td><td>FE&nbsp;0D</td><td>&#9;cp 13</td></tr>
+<tr class="r1"><td class="c">A3DA</td><td>30&nbsp;2B</td><td>&#9;jr nc,Not_Horizontal</td></tr>
+<tr class="r0"><td class="c">A3DC</td><td>0E&nbsp;04</td><td>&#9;ld c,4</td></tr>
+<tr><td class="l" colspan="4">Horizontal_Scan</td></tr>
+<tr class="r1"><td class="c">A3DE</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r0"><td class="c">A3E1</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">A3E2</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r0"><td class="c">A3E5</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A3E6</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r0"><td class="c">A3E7</td><td>20&nbsp;1E</td><td>&#9;jr nz,Not_Horizontal</td></tr>
+<tr class="r1"><td class="c">A3E9</td><td>24</td><td>&#9;inc h</td></tr>
+<tr class="r0"><td class="c">A3EA</td><td>0D</td><td>&#9;dec c</td></tr>
+<tr class="r1"><td class="c">A3EB</td><td>79</td><td>&#9;ld a,c</td></tr>
+<tr class="r0"><td class="c">A3EC</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A3ED</td><td>20&nbsp;EF</td><td>&#9;jr nz,Horizontal_Scan</td></tr>
+<tr><td class="l" colspan="4">How_Far_Does_It_Go_H</td></tr>
+<tr class="r0"><td class="c">A3EF</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">A3F0</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r0"><td class="c">A3F3</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A3F4</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r0"><td class="c">A3F5</td><td>C2&nbsp;CE&nbsp;A4</td><td>&#9;jp nz,Win</td></tr>
+<tr class="r1"><td class="c">A3F8</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r0"><td class="c">A3FB</td><td>24</td><td>&#9;inc h</td></tr>
+<tr class="r1"><td class="c">A3FC</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A3FD</td><td>FE&nbsp;10</td><td>&#9;cp 16</td></tr>
+<tr class="r1"><td class="c">A3FF</td><td>CA&nbsp;CE&nbsp;A4</td><td>&#9;jp z,Win</td></tr>
+<tr class="r0"><td class="c">A402</td><td>18&nbsp;EB</td><td>&#9;jr How_Far_Does_It_Go_H</td></tr>
+<tr class="r1"><td class="c">A404</td><td>C3&nbsp;CE&nbsp;A4</td><td>&#9;jp Win</td></tr>
+<tr><td class="l" colspan="4">Not_Horizontal</td></tr>
+<tr class="r0"><td class="c">A407</td><td>CD&nbsp;36&nbsp;A8</td><td>&#9;call Clear_Win_Buffer</td></tr>
+<tr class="r1"><td class="c">A40A</td><td>DD&nbsp;21&nbsp;42&nbsp;A8</td><td>&#9;ld ix,Win_Buffer</td></tr>
+<tr class="r0"><td class="c">A40E</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A411</td><td>3A&nbsp;87&nbsp;9A</td><td>&#9;ld a,(         AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16)</td></tr>
+<tr class="r0"><td class="c">A414</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr><td class="l" colspan="4">Scan_To_Start_Diagonal_1</td></tr>
+<tr class="r1"><td class="c">A415</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A416</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A417</td><td>28&nbsp;13</td><td>&#9;jr z,Found_Start_Diagonal_1&#9;</td></tr>
+<tr class="r0"><td class="c">A419</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r1"><td class="c">A41A</td><td>FE&nbsp;09</td><td>&#9;cp 9</td></tr>
+<tr class="r0"><td class="c">A41C</td><td>28&nbsp;0E</td><td>&#9;jr z,Found_Start_Diagonal_1&#9;</td></tr>
+<tr class="r1"><td class="c">A41E</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A41F</td><td>25</td><td>&#9;dec h</td></tr>
+<tr class="r1"><td class="c">A420</td><td>2C</td><td>&#9;inc l</td></tr>
+<tr class="r0"><td class="c">A421</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r1"><td class="c">A424</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r0"><td class="c">A425</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r1"><td class="c">A426</td><td>20&nbsp;04</td><td>&#9;jr nz,Found_Start_Diagonal_1</td></tr>
+<tr class="r0"><td class="c">A428</td><td>25</td><td>&#9;dec h</td></tr>
+<tr class="r1"><td class="c">A429</td><td>2C</td><td>&#9;inc l</td></tr>
+<tr class="r0"><td class="c">A42A</td><td>18&nbsp;E9</td><td>&#9;jr Scan_To_Start_Diagonal_1</td></tr>
+<tr><td class="l" colspan="4">Found_Start_Diagonal_1</td></tr>
+<tr class="r1"><td class="c">A42C</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A42D</td><td>FE&nbsp;0D</td><td>&#9;cp 13</td></tr>
+<tr class="r1"><td class="c">A42F</td><td>30&nbsp;38</td><td>&#9;jr nc,Not_Diagonal_1&#9;</td></tr>
+<tr class="r0"><td class="c">A431</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r1"><td class="c">A432</td><td>FE&nbsp;03</td><td>&#9;cp 3</td></tr>
+<tr class="r0"><td class="c">A434</td><td>38&nbsp;33</td><td>&#9;jr c,Not_Diagonal_1&#9;</td></tr>
+<tr class="r1"><td class="c">A436</td><td>0E&nbsp;04</td><td>&#9;ld c,4</td></tr>
+<tr><td class="l" colspan="4">Diagonal_1_Scan</td></tr>
+<tr class="r0"><td class="c">A438</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r1"><td class="c">A43B</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A43C</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r1"><td class="c">A43F</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r0"><td class="c">A440</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r1"><td class="c">A441</td><td>20&nbsp;26</td><td>&#9;jr nz,Not_Diagonal_1</td></tr>
+<tr class="r0"><td class="c">A443</td><td>24</td><td>&#9;inc h</td></tr>
+<tr class="r1"><td class="c">A444</td><td>2D</td><td>&#9;dec l</td></tr>
+<tr class="r0"><td class="c">A445</td><td>0D</td><td>&#9;dec c</td></tr>
+<tr class="r1"><td class="c">A446</td><td>79</td><td>&#9;ld a,c</td></tr>
+<tr class="r0"><td class="c">A447</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A448</td><td>20&nbsp;EE</td><td>&#9;jr nz,Diagonal_1_Scan</td></tr>
+<tr><td class="l" colspan="4">How_Far_Does_It_Go_D1</td></tr>
+<tr class="r0"><td class="c">A44A</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">A44B</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r0"><td class="c">A44E</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A44F</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r0"><td class="c">A450</td><td>C2&nbsp;CE&nbsp;A4</td><td>&#9;jp nz,Win</td></tr>
+<tr class="r1"><td class="c">A453</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r0"><td class="c">A456</td><td>24</td><td>&#9;inc h</td></tr>
+<tr class="r1"><td class="c">A457</td><td>2D</td><td>&#9;dec l</td></tr>
+<tr class="r0"><td class="c">A458</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r1"><td class="c">A459</td><td>FE&nbsp;10</td><td>&#9;cp 16</td></tr>
+<tr class="r0"><td class="c">A45B</td><td>CA&nbsp;CE&nbsp;A4</td><td>&#9;jp z,Win</td></tr>
+<tr class="r1"><td class="c">A45E</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r0"><td class="c">A45F</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">A461</td><td>CA&nbsp;CE&nbsp;A4</td><td>&#9;jp z,Win</td></tr>
+<tr class="r0"><td class="c">A464</td><td>18&nbsp;E4</td><td>&#9;jr How_Far_Does_It_Go_D1</td></tr>
+<tr class="r1"><td class="c">A466</td><td>C3&nbsp;CE&nbsp;A4</td><td>&#9;jp Win</td></tr>
+<tr><td class="l" colspan="4">Not_Diagonal_1</td></tr>
+<tr class="r0"><td class="c">A469</td><td>CD&nbsp;36&nbsp;A8</td><td>&#9;call Clear_Win_Buffer</td></tr>
+<tr class="r1"><td class="c">A46C</td><td>DD&nbsp;21&nbsp;42&nbsp;A8</td><td>&#9;ld ix,Win_Buffer</td></tr>
+<tr class="r0"><td class="c">A470</td><td>2A&nbsp;93&nbsp;9A</td><td>&#9;ld hl,(                   AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1+1+1+1+1+2+1)</td></tr>
+<tr class="r1"><td class="c">A473</td><td>3A&nbsp;87&nbsp;9A</td><td>&#9;ld a,(         AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16)</td></tr>
+<tr class="r0"><td class="c">A476</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr><td class="l" colspan="4">Scan_To_Start_Diagonal_2</td></tr>
+<tr class="r1"><td class="c">A477</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A478</td><td>FE&nbsp;0F</td><td>&#9;cp 15</td></tr>
+<tr class="r1"><td class="c">A47A</td><td>28&nbsp;13</td><td>&#9;jr z,Found_Start_Diagonal_2&#9;</td></tr>
+<tr class="r0"><td class="c">A47C</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r1"><td class="c">A47D</td><td>FE&nbsp;09</td><td>&#9;cp 9</td></tr>
+<tr class="r0"><td class="c">A47F</td><td>28&nbsp;0E</td><td>&#9;jr z,Found_Start_Diagonal_2&#9;</td></tr>
+<tr class="r1"><td class="c">A481</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A482</td><td>24</td><td>&#9;inc h</td></tr>
+<tr class="r1"><td class="c">A483</td><td>2C</td><td>&#9;inc l</td></tr>
+<tr class="r0"><td class="c">A484</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r1"><td class="c">A487</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r0"><td class="c">A488</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r1"><td class="c">A489</td><td>20&nbsp;04</td><td>&#9;jr nz,Found_Start_Diagonal_2</td></tr>
+<tr class="r0"><td class="c">A48B</td><td>24</td><td>&#9;inc h</td></tr>
+<tr class="r1"><td class="c">A48C</td><td>2C</td><td>&#9;inc l</td></tr>
+<tr class="r0"><td class="c">A48D</td><td>18&nbsp;E8</td><td>&#9;jr Scan_To_Start_Diagonal_2</td></tr>
+<tr><td class="l" colspan="4">Found_Start_Diagonal_2</td></tr>
+<tr class="r1"><td class="c">A48F</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A490</td><td>FE&nbsp;03</td><td>&#9;cp 3</td></tr>
+<tr class="r1"><td class="c">A492</td><td>38&nbsp;38</td><td>&#9;jr c,Not_Diagonal_2</td></tr>
+<tr class="r0"><td class="c">A494</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r1"><td class="c">A495</td><td>FE&nbsp;03</td><td>&#9;cp 3</td></tr>
+<tr class="r0"><td class="c">A497</td><td>38&nbsp;33</td><td>&#9;jr c,Not_Diagonal_2</td></tr>
+<tr class="r1"><td class="c">A499</td><td>0E&nbsp;04</td><td>&#9;ld c,4</td></tr>
+<tr><td class="l" colspan="4">Diagonal_2_Scan</td></tr>
+<tr class="r0"><td class="c">A49B</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r1"><td class="c">A49E</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r0"><td class="c">A49F</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r1"><td class="c">A4A2</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r0"><td class="c">A4A3</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r1"><td class="c">A4A4</td><td>20&nbsp;26</td><td>&#9;jr nz,Not_Diagonal_2</td></tr>
+<tr class="r0"><td class="c">A4A6</td><td>25</td><td>&#9;dec h</td></tr>
+<tr class="r1"><td class="c">A4A7</td><td>2D</td><td>&#9;dec l</td></tr>
+<tr class="r0"><td class="c">A4A8</td><td>0D</td><td>&#9;dec c</td></tr>
+<tr class="r1"><td class="c">A4A9</td><td>79</td><td>&#9;ld a,c</td></tr>
+<tr class="r0"><td class="c">A4AA</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A4AB</td><td>20&nbsp;EE</td><td>&#9;jr nz,Diagonal_2_Scan</td></tr>
+<tr><td class="l" colspan="4">How_Far_Does_It_Go_D2</td></tr>
+<tr class="r0"><td class="c">A4AD</td><td>E5</td><td>&#9;push hl</td></tr>
+<tr class="r1"><td class="c">A4AE</td><td>CD&nbsp;3A&nbsp;A3</td><td>&#9;call Read_Grid</td></tr>
+<tr class="r0"><td class="c">A4B1</td><td>E1</td><td>&#9;pop hl</td></tr>
+<tr class="r1"><td class="c">A4B2</td><td>B8</td><td>&#9;cp b</td></tr>
+<tr class="r0"><td class="c">A4B3</td><td>C2&nbsp;CE&nbsp;A4</td><td>&#9;jp nz,Win</td></tr>
+<tr class="r1"><td class="c">A4B6</td><td>CD&nbsp;30&nbsp;A5</td><td>&#9;call Write_to_Win</td></tr>
+<tr class="r0"><td class="c">A4B9</td><td>25</td><td>&#9;dec h</td></tr>
+<tr class="r1"><td class="c">A4BA</td><td>2D</td><td>&#9;dec l</td></tr>
+<tr class="r0"><td class="c">A4BB</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r1"><td class="c">A4BC</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r0"><td class="c">A4BE</td><td>CA&nbsp;CE&nbsp;A4</td><td>&#9;jp z,Win</td></tr>
+<tr class="r1"><td class="c">A4C1</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r0"><td class="c">A4C2</td><td>FE&nbsp;FF</td><td>&#9;cp -1</td></tr>
+<tr class="r1"><td class="c">A4C4</td><td>CA&nbsp;CE&nbsp;A4</td><td>&#9;jp z,Win</td></tr>
+<tr class="r0"><td class="c">A4C7</td><td>18&nbsp;E4</td><td>&#9;jr How_Far_Does_It_Go_D2</td></tr>
+<tr class="r1"><td class="c">A4C9</td><td>C3&nbsp;CE&nbsp;A4</td><td>&#9;jp Win</td></tr>
+<tr><td class="l" colspan="4">Not_Diagonal_2</td></tr>
+<tr class="r0"><td class="c">A4CC</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r1"><td class="c">A4CD</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Win</td></tr>
+<tr class="r0"><td class="c">A4CE</td><td>3E&nbsp;01</td><td>&#9;ld a,1</td></tr>
+<tr class="r1"><td class="c">A4D0</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Display_Winner</td></tr>
+<tr class="r0"><td class="c">A4D1</td><td>3A&nbsp;8C&nbsp;9A</td><td>&#9;ld a,(             AppBackupScreen+(16*10)+16+4+1+(16*10)+16+(16*10)+16+1+2+1+1)</td></tr>
+<tr class="r1"><td class="c">A4D4</td><td>FE&nbsp;02</td><td>&#9;cp 2</td></tr>
+<tr class="r0"><td class="c">A4D6</td><td>28&nbsp;05</td><td>&#9;jr z,Calc_Has_Won</td></tr>
+<tr><td class="l" colspan="4">Player_Has_Won</td></tr>
+<tr class="r1"><td class="c">A4D8</td><td>21&nbsp;7E&nbsp;A8</td><td>&#9;ld hl,spr_Black</td></tr>
+<tr class="r0"><td class="c">A4DB</td><td>18&nbsp;03</td><td>&#9;jr Disp_Won</td></tr>
+<tr><td class="l" colspan="4">Calc_Has_Won</td></tr>
+<tr class="r1"><td class="c">A4DD</td><td>21&nbsp;82&nbsp;A8</td><td>&#9;ld hl,spr_White</td></tr>
+<tr><td class="l" colspan="4">Disp_Won</td></tr>
+<tr class="r0"><td class="c">A4E0</td><td>22&nbsp;03&nbsp;A5</td><td>&#9;ld (d_i_sprite+2),hl</td></tr>
+<tr><td class="l" colspan="4">Flash_Winner</td></tr>
+<tr class="r1"><td class="c">A4E3</td><td>DD&nbsp;21&nbsp;42&nbsp;A8</td><td>&#9;ld ix,Win_Buffer</td></tr>
+<tr><td class="l" colspan="4">Invert_Loop</td></tr>
+<tr class="r0"><td class="c">A4E7</td><td>DD&nbsp;7E&nbsp;00</td><td>&#9;ld a,(ix+0)</td></tr>
+<tr class="r1"><td class="c">A4EA</td><td>FE&nbsp;80</td><td>&#9;cp 128</td></tr>
+<tr class="r0"><td class="c">A4EC</td><td>28&nbsp;24</td><td>&#9;jr z,Inverted_Done</td></tr>
+<tr class="r1"><td class="c">A4EE</td><td>DD&nbsp;7E&nbsp;00</td><td>&#9;ld a,(ix+0)</td></tr>
+<tr class="r0"><td class="c">A4F1</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r1"><td class="c">A4F4</td><td>C6&nbsp;0B</td><td>&#9;add a, 11</td></tr>
+<tr class="r0"><td class="c">A4F6</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">A4F7</td><td>DD&nbsp;7E&nbsp;01</td><td>&#9;ld a,(ix+1)</td></tr>
+<tr class="r0"><td class="c">A4FA</td><td>CD&nbsp;53&nbsp;A3</td><td>&#9;call Mul_5</td></tr>
+<tr class="r1"><td class="c">A4FD</td><td>C6&nbsp;0F</td><td>&#9;add a, 15</td></tr>
+<tr class="r0"><td class="c">A4FF</td><td>DD&nbsp;E5</td><td>&#9;push ix</td></tr>
+<tr><td class="l" colspan="4">d_i_sprite</td></tr>
+<tr class="r1"><td class="c">A501</td><td>DD&nbsp;21&nbsp;7E&nbsp;A8</td><td>&#9;ld ix,spr_Black</td></tr>
+<tr class="r0"><td class="c">A505</td><td>06&nbsp;04</td><td>&#9;ld b,4</td></tr>
+<tr class="r1"><td class="c">A507</td><td>CD&nbsp;89&nbsp;40</td><td>&#9;call ionPutSprite</td></tr>
+<tr class="r0"><td class="c">A50A</td><td>DD&nbsp;E1</td><td>&#9;pop ix</td></tr>
+<tr class="r1"><td class="c">A50C</td><td>DD&nbsp;23</td><td>&#9;inc ix</td></tr>
+<tr class="r0"><td class="c">A50E</td><td>DD&nbsp;23</td><td>&#9;inc ix</td></tr>
+<tr class="r1"><td class="c">A510</td><td>18&nbsp;D5</td><td>&#9;jr Invert_Loop&#9;</td></tr>
+<tr><td class="l" colspan="4">Inverted_Done</td></tr>
+<tr class="r0"><td class="c">A512</td><td>3E&nbsp;14</td><td>&#9;ld a,20</td></tr>
+<tr><td class="l" colspan="4">Flash_Delay_Loop</td></tr>
+<tr class="r1"><td class="c">A514</td><td>F5</td><td>&#9;push af</td></tr>
+<tr class="r0"><td class="c">A515</td><td>CD&nbsp;92&nbsp;40</td><td>&#9;call ionFastCopy</td></tr>
+<tr class="r1"><td class="c">A518</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r0"><td class="c">A51B</td><td>FE&nbsp;36</td><td>&#9;cp sk2nd</td></tr>
+<tr class="r1"><td class="c">A51D</td><td>CA&nbsp;2C&nbsp;A5</td><td>&#9;jp z,Return_To_Start</td></tr>
+<tr class="r0"><td class="c">A520</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r1"><td class="c">A522</td><td>CA&nbsp;2C&nbsp;A5</td><td>&#9;jp z,Return_To_Start</td></tr>
+<tr class="r0"><td class="c">A525</td><td>F1</td><td>&#9;pop af</td></tr>
+<tr class="r1"><td class="c">A526</td><td>3D</td><td>&#9;dec a</td></tr>
+<tr class="r0"><td class="c">A527</td><td>20&nbsp;EB</td><td>&#9;jr nz,Flash_Delay_Loop</td></tr>
+<tr class="r1"><td class="c">A529</td><td>18&nbsp;B8</td><td>&#9;jr Flash_Winner</td></tr>
+<tr class="r0"><td class="c">A52B</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Return_To_Start</td></tr>
+<tr class="r1"><td class="c">A52C</td><td>F1</td><td>&#9;pop af</td></tr>
+<tr class="r0"><td class="c">A52D</td><td>C3&nbsp;CF&nbsp;9D</td><td>&#9;jp Start</td></tr>
+<tr><td class="l" colspan="4">Write_to_Win</td></tr>
+<tr class="r1"><td class="c">A530</td><td>7C</td><td>&#9;ld a,h</td></tr>
+<tr class="r0"><td class="c">A531</td><td>FE&nbsp;10</td><td>&#9;cp 16</td></tr>
+<tr class="r1"><td class="c">A533</td><td>D0</td><td>&#9;ret nc</td></tr>
+<tr class="r0"><td class="c">A534</td><td>7D</td><td>&#9;ld a,l</td></tr>
+<tr class="r1"><td class="c">A535</td><td>FE&nbsp;0A</td><td>&#9;cp 10</td></tr>
+<tr class="r0"><td class="c">A537</td><td>D0</td><td>&#9;ret nc</td></tr>
+<tr class="r1"><td class="c">A538</td><td>DD&nbsp;75&nbsp;00</td><td>&#9;ld (ix+0),l</td></tr>
+<tr class="r0"><td class="c">A53B</td><td>DD&nbsp;74&nbsp;01</td><td>&#9;ld (ix+1),h</td></tr>
+<tr class="r1"><td class="c">A53E</td><td>DD&nbsp;23</td><td>&#9;inc ix</td></tr>
+<tr class="r0"><td class="c">A540</td><td>DD&nbsp;23</td><td>&#9;inc ix</td></tr>
+<tr class="r1"><td class="c">A542</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">img_Back</td></tr>
+<tr class="r0"><td class="c">A543</td><td>91&nbsp;00&nbsp;18&nbsp;91&nbsp;FF&nbsp;0C&nbsp;80&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $91,$00,$18,$91,$FF,$0C,$80,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A54F</td><td>BF&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A0&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BF,$F4,$91,$00,$09,$01,$A0,$04,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A55B</td><td>AE&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;AA&nbsp;94&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $AE,$F4,$91,$00,$09,$01,$AA,$94,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A567</td><td>AE&nbsp;94&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A0&nbsp;06&nbsp;<br />91&nbsp;AA&nbsp;09&nbsp;AB</td><td>.db $AE,$94,$91,$00,$09,$01,$A0,$06,$91,$AA,$09,$AB</td></tr>
+<tr class="r0"><td class="c">A573</td><td>BF&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;80&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BF,$F4,$91,$00,$09,$01,$80,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A57F</td><td>BD&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A5&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BD,$F4,$91,$00,$09,$01,$A5,$04,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A58B</td><td>A5&nbsp;C4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;81&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A5,$C4,$91,$00,$09,$01,$81,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A597</td><td>BD&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A0&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BD,$F4,$91,$00,$09,$01,$A0,$04,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A5A3</td><td>AF&nbsp;E4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A1&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $AF,$E4,$91,$00,$09,$01,$A1,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A5AF</td><td>BD&nbsp;44&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;81&nbsp;44&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BD,$44,$91,$00,$09,$01,$81,$44,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A5BB</td><td>A1&nbsp;44&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A0&nbsp;44&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A1,$44,$91,$00,$09,$01,$A0,$44,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A5C7</td><td>BF&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;80&nbsp;44&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BF,$F4,$91,$00,$09,$01,$80,$44,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A5D3</td><td>80&nbsp;44&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;80&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $80,$44,$91,$00,$09,$01,$80,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A5DF</td><td>FF&nbsp;FC&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;80&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $FF,$FC,$91,$00,$09,$01,$80,$04,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A5EB</td><td>A3&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A2&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A3,$F4,$91,$00,$09,$01,$A2,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A5F7</td><td>BA&nbsp;74&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;AA&nbsp;54&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BA,$74,$91,$00,$09,$01,$AA,$54,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A603</td><td>BB&nbsp;54&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;82&nbsp;54&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BB,$54,$91,$00,$09,$01,$82,$54,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A60F</td><td>BA&nbsp;54&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A2&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $BA,$54,$91,$00,$09,$01,$A2,$04,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A61B</td><td>AB&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A8&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $AB,$F4,$91,$00,$09,$01,$A8,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A627</td><td>A9&nbsp;54&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;AF&nbsp;54&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A9,$54,$91,$00,$09,$01,$AF,$54,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A633</td><td>81&nbsp;24&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;B7&nbsp;04&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $81,$24,$91,$00,$09,$01,$B7,$04,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A63F</td><td>A0&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;BE&nbsp;84&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A0,$F4,$91,$00,$09,$01,$BE,$84,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A64B</td><td>A0&nbsp;F4&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;BE&nbsp;14&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A0,$F4,$91,$00,$09,$01,$BE,$14,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A657</td><td>80&nbsp;14&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;BF&nbsp;F4&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $80,$14,$91,$00,$09,$01,$BF,$F4,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A663</td><td>80&nbsp;04&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;FF&nbsp;FC&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $80,$04,$91,$00,$09,$01,$FF,$FC,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A66F</td><td>80&nbsp;04&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;B7&nbsp;54&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $80,$04,$91,$00,$09,$01,$B7,$54,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A67B</td><td>95&nbsp;54&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;97&nbsp;74&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $95,$54,$91,$00,$09,$01,$97,$74,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A687</td><td>B0&nbsp;14&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;A7&nbsp;D4&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $B0,$14,$91,$00,$09,$01,$A7,$D4,$91,$00,$09,$01</td></tr>
+<tr class="r0"><td class="c">A693</td><td>A4&nbsp;54&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;B7&nbsp;D4&nbsp;<br />91&nbsp;00&nbsp;09&nbsp;01</td><td>.db $A4,$54,$91,$00,$09,$01,$B7,$D4,$91,$00,$09,$01</td></tr>
+<tr class="r1"><td class="c">A69F</td><td>80&nbsp;04&nbsp;91&nbsp;00&nbsp;09&nbsp;01&nbsp;91&nbsp;FF&nbsp;<br />0C&nbsp;91&nbsp;00&nbsp;18</td><td>.db $80,$04,$91,$00,$09,$01,$91,$FF,$0C,$91,$00,$18</td></tr>
+<tr><td class="l" colspan="4">img_Title</td></tr>
+<tr class="r0"><td class="c">A6AB</td><td>91&nbsp;00&nbsp;0C&nbsp;7F&nbsp;91&nbsp;FF&nbsp;03&nbsp;80&nbsp;<br />91&nbsp;00&nbsp;07&nbsp;40</td><td>.db $91,$00,$0C,$7F,$91,$FF,$03,$80,$91,$00,$07,$40</td></tr>
+<tr class="r1"><td class="c">A6B7</td><td>91&nbsp;00&nbsp;03&nbsp;FB&nbsp;B5&nbsp;91&nbsp;00&nbsp;06&nbsp;<br />40&nbsp;91&nbsp;00&nbsp;03</td><td>.db $91,$00,$03,$FB,$B5,$91,$00,$06,$40,$91,$00,$03</td></tr>
+<tr class="r0"><td class="c">A6C3</td><td>80&nbsp;91&nbsp;00&nbsp;07&nbsp;40&nbsp;91&nbsp;00&nbsp;03&nbsp;<br />80&nbsp;91&nbsp;00&nbsp;07</td><td>.db $80,$91,$00,$07,$40,$91,$00,$03,$80,$91,$00,$07</td></tr>
+<tr class="r1"><td class="c">A6CF</td><td>47&nbsp;81&nbsp;E2&nbsp;10&nbsp;80&nbsp;91&nbsp;00&nbsp;07&nbsp;<br />44&nbsp;01&nbsp;02&nbsp;10</td><td>.db $47,$81,$E2,$10,$80,$91,$00,$07,$44,$01,$02,$10</td></tr>
+<tr class="r0"><td class="c">A6DB</td><td>80&nbsp;91&nbsp;00&nbsp;07&nbsp;45&nbsp;DD&nbsp;82&nbsp;10&nbsp;<br />80&nbsp;91&nbsp;00&nbsp;07</td><td>.db $80,$91,$00,$07,$45,$DD,$82,$10,$80,$91,$00,$07</td></tr>
+<tr class="r1"><td class="c">A6E7</td><td>45&nbsp;55&nbsp;02&nbsp;10&nbsp;80&nbsp;91&nbsp;00&nbsp;07&nbsp;<br />45&nbsp;D5&nbsp;E2&nbsp;10</td><td>.db $45,$55,$02,$10,$80,$91,$00,$07,$45,$D5,$E2,$10</td></tr>
+<tr class="r0"><td class="c">A6F3</td><td>80&nbsp;91&nbsp;00&nbsp;07&nbsp;44&nbsp;00&nbsp;02&nbsp;10&nbsp;<br />80&nbsp;91&nbsp;00&nbsp;07</td><td>.db $80,$91,$00,$07,$44,$00,$02,$10,$80,$91,$00,$07</td></tr>
+<tr class="r1"><td class="c">A6FF</td><td>47&nbsp;F7&nbsp;7B&nbsp;F8&nbsp;80&nbsp;91&nbsp;00&nbsp;07&nbsp;<br />40&nbsp;05&nbsp;40&nbsp;10</td><td>.db $47,$F7,$7B,$F8,$80,$91,$00,$07,$40,$05,$40,$10</td></tr>
+<tr class="r0"><td class="c">A70B</td><td>80&nbsp;91&nbsp;00&nbsp;07&nbsp;40&nbsp;05&nbsp;5F&nbsp;C0&nbsp;<br />80&nbsp;91&nbsp;00&nbsp;07</td><td>.db $80,$91,$00,$07,$40,$05,$5F,$C0,$80,$91,$00,$07</td></tr>
+<tr class="r1"><td class="c">A717</td><td>40&nbsp;00&nbsp;42&nbsp;00&nbsp;80&nbsp;91&nbsp;00&nbsp;07&nbsp;<br />7F&nbsp;C0&nbsp;7A&nbsp;00</td><td>.db $40,$00,$42,$00,$80,$91,$00,$07,$7F,$C0,$7A,$00</td></tr>
+<tr class="r0"><td class="c">A723</td><td>80&nbsp;91&nbsp;00&nbsp;07&nbsp;20&nbsp;40&nbsp;02&nbsp;00&nbsp;<br />80&nbsp;91&nbsp;00&nbsp;07</td><td>.db $80,$91,$00,$07,$20,$40,$02,$00,$80,$91,$00,$07</td></tr>
+<tr class="r1"><td class="c">A72F</td><td>20&nbsp;40&nbsp;02&nbsp;3F&nbsp;80&nbsp;91&nbsp;00&nbsp;07&nbsp;<br />20&nbsp;40&nbsp;00&nbsp;20</td><td>.db $20,$40,$02,$3F,$80,$91,$00,$07,$20,$40,$00,$20</td></tr>
+<tr class="r0"><td class="c">A73B</td><td>91&nbsp;00&nbsp;08&nbsp;20&nbsp;7F&nbsp;FF&nbsp;E0&nbsp;91&nbsp;<br />00&nbsp;14&nbsp;20&nbsp;91</td><td>.db $91,$00,$08,$20,$7F,$FF,$E0,$91,$00,$14,$20,$91</td></tr>
+<tr class="r1"><td class="c">A747</td><td>00&nbsp;0B&nbsp;20&nbsp;91&nbsp;00&nbsp;0B&nbsp;20&nbsp;91&nbsp;<br />00&nbsp;17&nbsp;20&nbsp;91</td><td>.db $00,$0B,$20,$91,$00,$0B,$20,$91,$00,$17,$20,$91</td></tr>
+<tr class="r0"><td class="c">A753</td><td>00&nbsp;0B&nbsp;20&nbsp;91&nbsp;00&nbsp;17&nbsp;20&nbsp;91&nbsp;<br />00&nbsp;0A&nbsp;04&nbsp;91</td><td>.db $00,$0B,$20,$91,$00,$17,$20,$91,$00,$0A,$04,$91</td></tr>
+<tr class="r1"><td class="c">A75F</td><td>00&nbsp;0C&nbsp;20&nbsp;91&nbsp;00&nbsp;0A&nbsp;04&nbsp;91&nbsp;<br />00&nbsp;17&nbsp;04&nbsp;91</td><td>.db $00,$0C,$20,$91,$00,$0A,$04,$91,$00,$17,$04,$91</td></tr>
+<tr class="r0"><td class="c">A76B</td><td>00&nbsp;0B&nbsp;04&nbsp;91&nbsp;00&nbsp;17&nbsp;04&nbsp;91&nbsp;<br />00&nbsp;0B&nbsp;04&nbsp;91</td><td>.db $00,$0B,$04,$91,$00,$17,$04,$91,$00,$0B,$04,$91</td></tr>
+<tr class="r1"><td class="c">A777</td><td>00&nbsp;0B&nbsp;04&nbsp;91&nbsp;00&nbsp;17&nbsp;04&nbsp;91&nbsp;<br />00&nbsp;0B&nbsp;04&nbsp;91</td><td>.db $00,$0B,$04,$91,$00,$17,$04,$91,$00,$0B,$04,$91</td></tr>
+<tr class="r0"><td class="c">A783</td><td>00&nbsp;0B&nbsp;04&nbsp;91&nbsp;00&nbsp;0B&nbsp;04&nbsp;91&nbsp;<br />00&nbsp;0A&nbsp;7F&nbsp;FE</td><td>.db $00,$0B,$04,$91,$00,$0B,$04,$91,$00,$0A,$7F,$FE</td></tr>
+<tr class="r1"><td class="c">A78F</td><td>91&nbsp;00&nbsp;0A&nbsp;40&nbsp;02&nbsp;91&nbsp;00&nbsp;0A&nbsp;<br />40&nbsp;02&nbsp;91&nbsp;00</td><td>.db $91,$00,$0A,$40,$02,$91,$00,$0A,$40,$02,$91,$00</td></tr>
+<tr class="r0"><td class="c">A79B</td><td>07&nbsp;1F&nbsp;FF&nbsp;FF&nbsp;C0&nbsp;02&nbsp;91&nbsp;00&nbsp;<br />07&nbsp;10&nbsp;00&nbsp;00</td><td>.db $07,$1F,$FF,$FF,$C0,$02,$91,$00,$07,$10,$00,$00</td></tr>
+<tr class="r1"><td class="c">A7A7</td><td>07&nbsp;E2&nbsp;91&nbsp;00&nbsp;07&nbsp;10&nbsp;00&nbsp;00&nbsp;<br />04&nbsp;02&nbsp;91&nbsp;00</td><td>.db $07,$E2,$91,$00,$07,$10,$00,$00,$04,$02,$91,$00</td></tr>
+<tr class="r0"><td class="c">A7B3</td><td>07&nbsp;10&nbsp;00&nbsp;00&nbsp;04&nbsp;E2&nbsp;91&nbsp;00&nbsp;<br />07&nbsp;11&nbsp;00&nbsp;00</td><td>.db $07,$10,$00,$00,$04,$E2,$91,$00,$07,$11,$00,$00</td></tr>
+<tr class="r1"><td class="c">A7BF</td><td>06&nbsp;82&nbsp;91&nbsp;00&nbsp;07&nbsp;11&nbsp;00&nbsp;1C&nbsp;<br />54&nbsp;E2&nbsp;91&nbsp;00</td><td>.db $06,$82,$91,$00,$07,$11,$00,$1C,$54,$E2,$91,$00</td></tr>
+<tr class="r0"><td class="c">A7CB</td><td>07&nbsp;11&nbsp;DF&nbsp;90&nbsp;54&nbsp;22&nbsp;91&nbsp;00&nbsp;<br />07&nbsp;11&nbsp;50&nbsp;15</td><td>.db $07,$11,$DF,$90,$54,$22,$91,$00,$07,$11,$50,$15</td></tr>
+<tr class="r1"><td class="c">A7D7</td><td>57&nbsp;22&nbsp;91&nbsp;00&nbsp;07&nbsp;11&nbsp;D3&nbsp;95&nbsp;<br />50&nbsp;22&nbsp;91&nbsp;00</td><td>.db $57,$22,$91,$00,$07,$11,$D3,$95,$50,$22,$91,$00</td></tr>
+<tr class="r0"><td class="c">A7E3</td><td>07&nbsp;10&nbsp;1A&nbsp;97&nbsp;27&nbsp;E2&nbsp;91&nbsp;00&nbsp;<br />07&nbsp;10&nbsp;12&nbsp;81</td><td>.db $07,$10,$1A,$97,$27,$E2,$91,$00,$07,$10,$12,$81</td></tr>
+<tr class="r1"><td class="c">A7EF</td><td>00&nbsp;02&nbsp;91&nbsp;00&nbsp;07&nbsp;10&nbsp;10&nbsp;01&nbsp;<br />00&nbsp;02&nbsp;91&nbsp;00</td><td>.db $00,$02,$91,$00,$07,$10,$10,$01,$00,$02,$91,$00</td></tr>
+<tr class="r0"><td class="c">A7FB</td><td>07&nbsp;1F&nbsp;1F&nbsp;BF&nbsp;00&nbsp;02&nbsp;91&nbsp;00&nbsp;<br />07&nbsp;01&nbsp;00&nbsp;00</td><td>.db $07,$1F,$1F,$BF,$00,$02,$91,$00,$07,$01,$00,$00</td></tr>
+<tr class="r1"><td class="c">A807</td><td>1F&nbsp;FE&nbsp;91&nbsp;00&nbsp;07&nbsp;01&nbsp;00&nbsp;00&nbsp;<br />10&nbsp;91&nbsp;00&nbsp;07</td><td>.db $1F,$FE,$91,$00,$07,$01,$00,$00,$10,$91,$00,$07</td></tr>
+<tr class="r0"><td class="c">A813</td><td>AD&nbsp;DF&nbsp;00&nbsp;00&nbsp;10&nbsp;91&nbsp;00&nbsp;08&nbsp;<br />01&nbsp;FF&nbsp;FF&nbsp;F0</td><td>.db $AD,$DF,$00,$00,$10,$91,$00,$08,$01,$FF,$FF,$F0</td></tr>
+<tr class="r1"><td class="c">A81F</td><td>91&nbsp;00&nbsp;0D</td><td>.db $91,$00,$0D</td></tr>
+<tr><td class="l" colspan="4">PlotsToSave</td></tr>
+<tr class="r0"><td class="c">A822</td><td>21&nbsp;40&nbsp;93</td><td>&#9;ld hl,PlotsScreen</td></tr>
+<tr class="r1"><td class="c">A825</td><td>11&nbsp;EC&nbsp;86</td><td>&#9;ld de,SavesScreen</td></tr>
+<tr class="r0"><td class="c">A828</td><td>18&nbsp;06</td><td>&#9;jr PS_Swap_Copy</td></tr>
+<tr><td class="l" colspan="4">SaveToPlots</td></tr>
+<tr class="r1"><td class="c">A82A</td><td>11&nbsp;40&nbsp;93</td><td>&#9;ld de,PlotsScreen</td></tr>
+<tr class="r0"><td class="c">A82D</td><td>21&nbsp;EC&nbsp;86</td><td>&#9;ld hl,SavesScreen</td></tr>
+<tr><td class="l" colspan="4">PS_Swap_Copy</td></tr>
+<tr class="r1"><td class="c">A830</td><td>01&nbsp;00&nbsp;03</td><td>&#9;ld bc,768</td></tr>
+<tr class="r0"><td class="c">A833</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">A835</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Clear_Win_Buffer</td></tr>
+<tr class="r0"><td class="c">A836</td><td>21&nbsp;42&nbsp;A8</td><td>&#9;ld hl,Win_Buffer</td></tr>
+<tr class="r1"><td class="c">A839</td><td>01&nbsp;22&nbsp;00</td><td>&#9;ld bc,34</td></tr>
+<tr class="r0"><td class="c">A83C</td><td>3E&nbsp;80</td><td>&#9;ld a,128</td></tr>
+<tr class="r1"><td class="c">A83E</td><td>EF&nbsp;33&nbsp;4C</td><td>&#9;&#9;RST 28h\ .dw _memset</td></tr>
+<tr class="r0"><td class="c">A841</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Win_Buffer</td></tr>
+<tr class="r1"><td class="c">A842</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A844</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A846</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A848</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A84A</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A84C</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A84E</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A850</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A852</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A854</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A856</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A858</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A85A</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A85C</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A85E</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r0"><td class="c">A860</td><td>00&nbsp;00</td><td>&#9;.db 0,0</td></tr>
+<tr class="r1"><td class="c">A862</td><td>80&nbsp;80</td><td>&#9;.db 128,128</td></tr>
+<tr><td class="l" colspan="4">RLE</td></tr>
+<tr><td class="l" colspan="4">noname._DispRLEL</td></tr>
+<tr class="r0"><td class="c">A864</td><td>7E</td><td>ld a, (hl)</td></tr>
+<tr class="r1"><td class="c">A865</td><td>FE&nbsp;91</td><td>cp $91</td></tr>
+<tr class="r0"><td class="c">A867</td><td>28&nbsp;05</td><td>jr z, _DispRLERun</td></tr>
+<tr class="r1"><td class="c">A869</td><td>ED&nbsp;A0</td><td>ldi</td></tr>
+<tr><td class="l" colspan="4">noname._DispRLEC</td></tr>
+<tr class="r0"><td class="c">A86B</td><td>E0</td><td>ret po</td></tr>
+<tr class="r1"><td class="c">A86C</td><td>18&nbsp;F6</td><td>jr _DispRLEL</td></tr>
+<tr><td class="l" colspan="4">noname._DispRLERun</td></tr>
+<tr class="r0"><td class="c">A86E</td><td>23</td><td>inc hl</td></tr>
+<tr class="r1"><td class="c">A86F</td><td>23</td><td>inc hl</td></tr>
+<tr class="r0"><td class="c">A870</td><td>7E</td><td>ld a, (hl)</td></tr>
+<tr><td class="l" colspan="4">noname._DispRLERunL</td></tr>
+<tr class="r1"><td class="c">A871</td><td>2B</td><td>dec hl</td></tr>
+<tr class="r0"><td class="c">A872</td><td>3D</td><td>dec a</td></tr>
+<tr class="r1"><td class="c">A873</td><td>ED&nbsp;A0</td><td>ldi</td></tr>
+<tr class="r0"><td class="c">A875</td><td>20&nbsp;FA</td><td>jr nz, _DispRLERunL</td></tr>
+<tr class="r1"><td class="c">A877</td><td>23</td><td>inc hl</td></tr>
+<tr class="r0"><td class="c">A878</td><td>18&nbsp;F1</td><td>jr _DispRLEC</td></tr>
+<tr><td class="f" colspan="4">D:\Documents\Documents\Visual Studio 2005\Projects\!Old\Brass\Brass\bin\Test\c4sprites.inc</td></tr>
+<tr><td class="l" colspan="4">spr_Blank</td></tr>
+<tr class="r1"><td class="c">A87A</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A87B</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r1"><td class="c">A87C</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A87D</td><td>00</td><td>.db %00000000</td></tr>
+<tr><td class="l" colspan="4">spr_Black</td></tr>
+<tr class="r1"><td class="c">A87E</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r0"><td class="c">A87F</td><td>F0</td><td>.db %11110000</td></tr>
+<tr class="r1"><td class="c">A880</td><td>F0</td><td>.db %11110000</td></tr>
+<tr class="r0"><td class="c">A881</td><td>60</td><td>.db %01100000</td></tr>
+<tr><td class="l" colspan="4">spr_White</td></tr>
+<tr class="r1"><td class="c">A882</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r0"><td class="c">A883</td><td>90</td><td>.db %10010000</td></tr>
+<tr class="r1"><td class="c">A884</td><td>90</td><td>.db %10010000</td></tr>
+<tr class="r0"><td class="c">A885</td><td>60</td><td>.db %01100000</td></tr>
+<tr><td class="l" colspan="4">spr_Drop</td></tr>
+<tr class="r1"><td class="c">A886</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r0"><td class="c">A887</td><td>10</td><td>.db %00010000</td></tr>
+<tr class="r1"><td class="c">A888</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A889</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r1"><td class="c">A88A</td><td>20</td><td>.db %00100000</td></tr>
+<tr class="r0"><td class="c">A88B</td><td>10</td><td>.db %00010000</td></tr>
+<tr class="r1"><td class="c">A88C</td><td>10</td><td>.db %00010000</td></tr>
+<tr class="r0"><td class="c">A88D</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r1"><td class="c">A88E</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A88F</td><td>10</td><td>.db %00010000</td></tr>
+<tr class="r1"><td class="c">A890</td><td>10</td><td>.db %00010000</td></tr>
+<tr class="r0"><td class="c">A891</td><td>20</td><td>.db %00100000</td></tr>
+<tr class="r1"><td class="c">A892</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A893</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r1"><td class="c">A894</td><td>10</td><td>.db %00010000</td></tr>
+<tr class="r0"><td class="c">A895</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r1"><td class="c">A896</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A897</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r1"><td class="c">A898</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r0"><td class="c">A899</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r1"><td class="c">A89A</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A89B</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r1"><td class="c">A89C</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r0"><td class="c">A89D</td><td>40</td><td>.db %01000000</td></tr>
+<tr class="r1"><td class="c">A89E</td><td>40</td><td>.db %01000000</td></tr>
+<tr class="r0"><td class="c">A89F</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r1"><td class="c">A8A0</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r0"><td class="c">A8A1</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r1"><td class="c">A8A2</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r0"><td class="c">A8A3</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r1"><td class="c">A8A4</td><td>00</td><td>.db %00000000</td></tr>
+<tr class="r0"><td class="c">A8A5</td><td>00</td><td>.db %00000000</td></tr>
+<tr><td class="l" colspan="4">Players</td></tr>
+<tr class="r1"><td class="c">A8A6</td><td>0F&nbsp;80</td><td>.db %00001111, %10000000</td></tr>
+<tr class="r0"><td class="c">A8A8</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r1"><td class="c">A8AA</td><td>7F&nbsp;F0</td><td>.db %01111111, %11110000</td></tr>
+<tr class="r0"><td class="c">A8AC</td><td>75&nbsp;70</td><td>.db %01110101, %01110000</td></tr>
+<tr class="r1"><td class="c">A8AE</td><td>E0&nbsp;38</td><td>.db %11100000, %00111000</td></tr>
+<tr class="r0"><td class="c">A8B0</td><td>C0&nbsp;18</td><td>.db %11000000, %00011000</td></tr>
+<tr class="r1"><td class="c">A8B2</td><td>9D&nbsp;C8</td><td>.db %10011101, %11001000</td></tr>
+<tr class="r0"><td class="c">A8B4</td><td>88&nbsp;88</td><td>.db %10001000, %10001000</td></tr>
+<tr class="r1"><td class="c">A8B6</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r0"><td class="c">A8B8</td><td>45&nbsp;10</td><td>.db %01000101, %00010000</td></tr>
+<tr class="r1"><td class="c">A8BA</td><td>42&nbsp;10</td><td>.db %01000010, %00010000</td></tr>
+<tr class="r0"><td class="c">A8BC</td><td>48&nbsp;90</td><td>.db %01001000, %10010000</td></tr>
+<tr class="r1"><td class="c">A8BE</td><td>27&nbsp;20</td><td>.db %00100111, %00100000</td></tr>
+<tr class="r0"><td class="c">A8C0</td><td>10&nbsp;40</td><td>.db %00010000, %01000000</td></tr>
+<tr class="r1"><td class="c">A8C2</td><td>0F&nbsp;80</td><td>.db %00001111, %10000000</td></tr>
+<tr class="r0"><td class="c">A8C4</td><td>00&nbsp;00</td><td>.db %00000000, %00000000</td></tr>
+<tr class="r1"><td class="c">A8C6</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r0"><td class="c">A8C8</td><td>40&nbsp;10</td><td>.db %01000000, %00010000</td></tr>
+<tr class="r1"><td class="c">A8CA</td><td>5F&nbsp;D0</td><td>.db %01011111, %11010000</td></tr>
+<tr class="r0"><td class="c">A8CC</td><td>5D&nbsp;D0</td><td>.db %01011101, %11010000</td></tr>
+<tr class="r1"><td class="c">A8CE</td><td>5D&nbsp;D0</td><td>.db %01011101, %11010000</td></tr>
+<tr class="r0"><td class="c">A8D0</td><td>5D&nbsp;D0</td><td>.db %01011101, %11010000</td></tr>
+<tr class="r1"><td class="c">A8D2</td><td>5F&nbsp;D0</td><td>.db %01011111, %11010000</td></tr>
+<tr class="r0"><td class="c">A8D4</td><td>40&nbsp;10</td><td>.db %01000000, %00010000</td></tr>
+<tr class="r1"><td class="c">A8D6</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r0"><td class="c">A8D8</td><td>08&nbsp;80</td><td>.db %00001000, %10000000</td></tr>
+<tr class="r1"><td class="c">A8DA</td><td>FF&nbsp;F8</td><td>.db %11111111, %11111000</td></tr>
+<tr class="r0"><td class="c">A8DC</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r1"><td class="c">A8DE</td><td>AA&nbsp;A8</td><td>.db %10101010, %10101000</td></tr>
+<tr class="r0"><td class="c">A8E0</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r1"><td class="c">A8E2</td><td>FF&nbsp;F8</td><td>.db %11111111, %11111000</td></tr>
+<tr class="r0"><td class="c">A8E4</td><td>00&nbsp;00</td><td>.db %00000000, %00000000</td></tr>
+<tr class="r1"><td class="c">A8E6</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r0"><td class="c">A8E8</td><td>40&nbsp;10</td><td>.db %01000000, %00010000</td></tr>
+<tr class="r1"><td class="c">A8EA</td><td>5F&nbsp;D0</td><td>.db %01011111, %11010000</td></tr>
+<tr class="r0"><td class="c">A8EC</td><td>5A&nbsp;D0</td><td>.db %01011010, %11010000</td></tr>
+<tr class="r1"><td class="c">A8EE</td><td>5A&nbsp;D0</td><td>.db %01011010, %11010000</td></tr>
+<tr class="r0"><td class="c">A8F0</td><td>5A&nbsp;D0</td><td>.db %01011010, %11010000</td></tr>
+<tr class="r1"><td class="c">A8F2</td><td>5F&nbsp;D0</td><td>.db %01011111, %11010000</td></tr>
+<tr class="r0"><td class="c">A8F4</td><td>40&nbsp;10</td><td>.db %01000000, %00010000</td></tr>
+<tr class="r1"><td class="c">A8F6</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r0"><td class="c">A8F8</td><td>08&nbsp;80</td><td>.db %00001000, %10000000</td></tr>
+<tr class="r1"><td class="c">A8FA</td><td>FF&nbsp;F8</td><td>.db %11111111, %11111000</td></tr>
+<tr class="r0"><td class="c">A8FC</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r1"><td class="c">A8FE</td><td>AA&nbsp;A8</td><td>.db %10101010, %10101000</td></tr>
+<tr class="r0"><td class="c">A900</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r1"><td class="c">A902</td><td>FF&nbsp;F8</td><td>.db %11111111, %11111000</td></tr>
+<tr class="r0"><td class="c">A904</td><td>00&nbsp;00</td><td>.db %00000000, %00000000</td></tr>
+<tr class="r1"><td class="c">A906</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r0"><td class="c">A908</td><td>40&nbsp;10</td><td>.db %01000000, %00010000</td></tr>
+<tr class="r1"><td class="c">A90A</td><td>5F&nbsp;D0</td><td>.db %01011111, %11010000</td></tr>
+<tr class="r0"><td class="c">A90C</td><td>55&nbsp;50</td><td>.db %01010101, %01010000</td></tr>
+<tr class="r1"><td class="c">A90E</td><td>55&nbsp;50</td><td>.db %01010101, %01010000</td></tr>
+<tr class="r0"><td class="c">A910</td><td>55&nbsp;50</td><td>.db %01010101, %01010000</td></tr>
+<tr class="r1"><td class="c">A912</td><td>5F&nbsp;D0</td><td>.db %01011111, %11010000</td></tr>
+<tr class="r0"><td class="c">A914</td><td>40&nbsp;10</td><td>.db %01000000, %00010000</td></tr>
+<tr class="r1"><td class="c">A916</td><td>3F&nbsp;E0</td><td>.db %00111111, %11100000</td></tr>
+<tr class="r0"><td class="c">A918</td><td>08&nbsp;80</td><td>.db %00001000, %10000000</td></tr>
+<tr class="r1"><td class="c">A91A</td><td>FF&nbsp;F8</td><td>.db %11111111, %11111000</td></tr>
+<tr class="r0"><td class="c">A91C</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r1"><td class="c">A91E</td><td>AA&nbsp;A8</td><td>.db %10101010, %10101000</td></tr>
+<tr class="r0"><td class="c">A920</td><td>80&nbsp;08</td><td>.db %10000000, %00001000</td></tr>
+<tr class="r1"><td class="c">A922</td><td>FF&nbsp;F8</td><td>.db %11111111, %11111000</td></tr>
+<tr class="r0"><td class="c">A924</td><td>00&nbsp;00</td><td>.db %00000000, %00000000</td></tr>
+<tr><td class="l" colspan="4">spr_Up</td></tr>
+<tr class="r1"><td class="c">A926</td><td>20</td><td>.db %00100000</td></tr>
+<tr class="r0"><td class="c">A927</td><td>70</td><td>.db %01110000</td></tr>
+<tr class="r1"><td class="c">A928</td><td>F8</td><td>.db %11111000</td></tr>
+<tr><td class="l" colspan="4">spr_Down</td></tr>
+<tr class="r0"><td class="c">A929</td><td>F8</td><td>.db %11111000</td></tr>
+<tr class="r1"><td class="c">A92A</td><td>70</td><td>.db %01110000</td></tr>
+<tr class="r0"><td class="c">A92B</td><td>20</td><td>.db %00100000</td></tr>
+<tr><td class="l" colspan="4">spr_Left</td></tr>
+<tr class="r1"><td class="c">A92C</td><td>20</td><td>.db %00100000</td></tr>
+<tr class="r0"><td class="c">A92D</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r1"><td class="c">A92E</td><td>E0</td><td>.db %11100000</td></tr>
+<tr class="r0"><td class="c">A92F</td><td>60</td><td>.db %01100000</td></tr>
+<tr class="r1"><td class="c">A930</td><td>20</td><td>.db %00100000</td></tr>
+<tr><td class="l" colspan="4">spr_Right</td></tr>
+<tr class="r0"><td class="c">A931</td><td>80</td><td>.db %10000000</td></tr>
+<tr class="r1"><td class="c">A932</td><td>C0</td><td>.db %11000000</td></tr>
+<tr class="r0"><td class="c">A933</td><td>E0</td><td>.db %11100000</td></tr>
+<tr class="r1"><td class="c">A934</td><td>C0</td><td>.db %11000000</td></tr>
+<tr class="r0"><td class="c">A935</td><td>80</td><td>.db %10000000</td></tr>
+<tr><td class="f" colspan="4">D:\Documents\Documents\Visual Studio 2005\Projects\!Old\Brass\Brass\bin\Test\Connect4.z80</td></tr>
+<tr><td class="l" colspan="4">Player_1</td></tr>
+<tr class="r1"><td class="c">A936</td><td>00</td><td>Player_1:&#9;.db 0</td></tr>
+<tr><td class="l" colspan="4">Player_2</td></tr>
+<tr class="r0"><td class="c">A937</td><td>01</td><td>Player_2:&#9;.db 1</td></tr>
+<tr><td class="l" colspan="4">Player_Setting</td></tr>
+<tr class="r1"><td class="c">A938</td><td>00</td><td>Player_Setting:&#9;.db 0</td></tr>
+</table>
+</body></html>

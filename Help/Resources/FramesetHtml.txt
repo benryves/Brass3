@@ -1,0 +1,10 @@
+<html>
+	<head>
+		<title>Brass 3 Help</title>
+	</head>
+
+	<frameset cols="250,*">
+		<frame src="help/contents.html" name="contents" target="viewer">
+		<frame name="viewer"/>
+	</frameset>
+</html>

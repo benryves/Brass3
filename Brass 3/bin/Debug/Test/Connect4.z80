@@ -1,0 +1,1656 @@
+;                  ___________            _______       __     __
+;                 / _________/\          / _____/\     / /\   / /\
+;                / /\ _______\/______   / /_ ___\/    / / /  / / /
+;               / / // __  /\ / __  /\ / __/\        / / /  / / /
+;              / / // /_/ / // /\/ / // /__\/       / / /  / / /
+;             / / //_____/ //_/ /_/ //______/\     / / /  / / /
+;            / /_/_\_____\/_\_\/\_\/ \______\/    / / /  / / /
+;           /_______________/\ ______   ______   / /_/__/ /_/_
+;           \_______________\// __  /\ / ____/\ /______  ____/\
+;                            / /\/ / // /\___\/ \_____/ /\___\/
+;                           /_/ /_/ // / / _______   / / /
+;                           \_\/\_\// / / /__  __/\ /_/ /
+;                                  / /_/_ \_/ /\_\/ \_\/
+;                                 /_____/\ / / /
+;                                 \_____\//_/ /
+;                                         \_\/
+;     _____   ______   _______   _______   ______   _____  _______   __  __
+;    / ___/\ / __  /\ / ___  /\ / ___  /\ / ____/\ / ___/\/__  __/\ / /_/ /\
+;   / /\__\// /\/ / // /\_/ / // /\_/ / // ___/\\// /\__\/\_/ /\_\//__   / /
+;  /____/\ /_____/ //_/ //_/ //_/ //_/ //_____/\ /____/\   /_/ /   \_/__/ /
+;  \____\/ \_____\/ \_\/ \_\/ \_\/ \_\/ \_____\/ \____\/   \_\/      \__\/
+;
+;                                                   -- a game by Ben Ryves
+;
+;--------------------------------------------------------------------------
+
+
+
+
+;Compile options:
+
+#define TI83M
+
+; ==================================================================================================
+; Headers - Sorts out the game header (really?)
+; ==================================================================================================
+
+#define equ .equ
+#define EQU .equ
+#define END .end
+
+; ==================================================================================================
+; TI-83 Ion
+; ==================================================================================================
+
+#ifdef TI83I
+
+.org 9327h
+	ret
+	jr nc,Init_All
+#include "ti83asm.inc"
+#include "tokens.inc"
+#include "ion83.inc"
+
+;TI-83 Plus compatibility issues:
+
+#define	bcall(label)	call label
+_zeroop1		.equ		_zerooop1     
+
+AppBackupScreen	=858Fh 	;Smaller than TI-83Plus version : be careful!
+
+#endif
+
+; ==================================================================================================
+; TI-83 Plus Ion
+; ==================================================================================================
+
+#ifdef TI83P
+#define	bcall(label)	RST 28h \ .dw label
+.org 9D93h
+.db $BB,$6D
+	ret
+	jr nc,Init_All
+#include "ti83plus.inc"
+#include "ion8X.inc"
+#endif
+
+; ==================================================================================================
+; TI-83 Plus MirageOS
+; ==================================================================================================
+
+#ifdef TI83M
+#define	bcall(label)	RST 28h \ .dw label
+.org 9D93h
+.db $BB,$6D
+	ret
+.db 1
+.db %00000000, %00000000
+.db %00000110, %00000000
+.db %00001011, %00000000
+.db %00001111, %00000000
+.db %00000110, %00011000
+.db %00001001, %00100100
+.db %00001011, %00101100
+.db %00000110, %11011000
+.db %00001001, %01101100
+.db %00001011, %11111100
+.db %00110110, %11011000
+.db %01011011, %00100100
+.db %01111111, %01101100
+.db %00110110, %11011000
+.db %00000000, %00000000
+#include "ti83plus.inc"
+#include "mirage.inc"
+#endif
+
+
+Description:
+.db "Connect 4 - Ben Ryves",0
+
+
+;Variables:
+#define Piece_Grid AppBackupScreen		;16*10 buffer which holds the data for the current grid.
+#define Height_Tbl Piece_Grid+(16*10)		;16 long buffer that holds the heigh of each column.
+#define Animation Height_Tbl+16			;4 long buffer to hold dropped animation frame
+#define Ani_Delay Animation+4			;1b
+#define Piece_Grid_2 Ani_Delay+1		;16*10 buffer (backup).
+#define Random_List Piece_Grid_2+(16*10)	;16 long buffer.
+#define Piece_Grid_3 Random_List+16		;16*10 buffer (backup).
+#define Chances Piece_Grid_3+(16*10)		;16 long buffer
+#define Piece_Num Chances+16
+#define Rand_List_Pos Piece_Num+1	;2
+#define Last_Move Rand_List_Pos+2
+#define Cur_Player Last_Move+1
+#define Player_Num Cur_Player+1
+#define AI_Skill Player_Num+1
+#define Scan_X AI_Skill+1
+#define Scan_X_2 Scan_X+1
+#define Stack_Saved Scan_X_2+1		;2
+#define tmpPlayer_Num Stack_Saved+2
+#define Piece_Y tmpPlayer_Num+1
+#define Piece_X Piece_Y+1
+
+;Constants:
+#define Grid_X 15
+#define Grid_Y 11
+
+#define Animation_Delay 5
+
+
+Init_All:
+	ld (Stack_Saved),sp
+Start:
+	;Menu:
+Redraw_Menu:
+	ld hl,img_Title
+	ld de,PlotsScreen
+	ld bc,768
+	call RLE
+
+	;Draw the player sprites:
+
+	ld a,(Player_1)
+	ld l,a
+	ld h,0
+	ld de,Players
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,de
+	push hl
+	pop ix
+	ld a,29
+	ld l,28
+	ld b,15
+	ld c,2
+	call ionLargeSprite
+
+	ld a,(Player_2)
+	ld l,a
+	ld h,0
+	ld de,Players
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,de
+	push hl
+	pop ix
+	ld a,54
+	ld l,21
+	ld b,15
+	ld c,2
+	call ionLargeSprite
+
+	;Draw the arrows:
+
+	ld a,(Ani_Delay)
+	inc a
+	ld (Ani_Delay),a
+
+
+	bit 4,a
+	jp z,Skip_Drawing_Arrows
+
+	ld a,(Player_Setting)
+	or a
+	jr nz,Setting_P_2_LR
+	ld ix,spr_Right
+	ld a,33
+	ld (Piece_X),a
+	ld a,24
+	ld (Piece_Y),a
+	ld a,43
+	ld l,33
+
+	jr Setting_P_1_LR
+Setting_P_2_LR:
+	ld ix,spr_Left
+	ld a,58
+	ld (Piece_X),a
+	ld a,17
+	ld (Piece_Y),a
+	ld a,50
+	ld l,26
+Setting_P_1_LR:
+	ld b,5
+	call ionPutSprite
+
+	;Draw the up/down arrows:
+
+
+	ld a,(Piece_Y)
+	ld l,a
+	ld a,(Piece_X)
+	ld ix,spr_Up
+	ld b,3
+	call ionPutSprite
+
+	ld a,(Piece_Y)
+	add a,20
+	ld l,a
+	ld a,(Piece_X)
+	ld ix,spr_Down
+	ld b,3
+	call ionPutSprite
+
+Skip_Drawing_Arrows:
+
+	ld a,(Player_Setting)
+	ld l,a
+	ld h,0
+	ld de,Player_1
+	add hl,de
+	push hl
+
+	ld a,(Ani_Delay)
+	bit 4,a
+	jp z,Skip_Drawing_Arrows_2
+	
+	ld a,(hl)
+	cp 0
+	jr nz,Not_At_Top
+
+	ld a,(Piece_Y)
+	ld l,a
+	ld a,(Piece_X)
+	ld ix,spr_Up
+	ld b,3
+	call ionPutSprite
+
+	jr Not_At_Bottom
+Not_At_Top:
+	cp 3
+	jr nz,Not_At_Bottom
+
+	ld a,(Piece_Y)
+	add a,20
+	ld l,a
+	ld a,(Piece_X)
+	ld ix,spr_Down
+	ld b,3
+	call ionPutSprite
+
+Not_At_Bottom:
+	
+Skip_Drawing_Arrows_2:
+	
+	call ionFastCopy
+
+
+	pop ix
+	ld a,(Player_Setting)
+	ld l,a
+	ld h,0
+	ld de,Player_1
+	add hl,de
+	push hl
+	pop ix
+
+	bcall(_getcsc)
+	cp sk2nd
+	jr z,Start_Game
+	cp skClear
+	ret z
+
+	ld b,a
+	cp skLeft
+	jr nz,M_Not_Left
+	xor a
+	ld (Player_Setting),a
+	ld a,b
+M_Not_Left:
+	cp skRight
+	jr nz,M_Not_Right
+	ld a,1
+	ld (Player_Setting),a
+	ld a,b
+M_Not_Right:
+	cp skUp
+	jr nz,M_Not_Up
+
+	dec (ix+0)
+	call Clip_A
+	ld a,b
+
+M_Not_Up:
+	cp skDown
+	jr nz,M_Not_Down
+
+	inc (ix+0)
+	call Clip_A
+	ld a,b
+
+M_Not_Down:
+
+	jp Redraw_Menu
+
+Clip_A:
+	ld a,(ix+0)
+	cp -1
+	jr nz,Not_M1
+	xor a
+	ld (ix+0),a
+	ret
+Not_M1:
+	cp 4
+	ret nz
+	ld a,3
+	ld (ix+0),a
+	ret
+
+
+; ==================================================================================================
+; Main game
+; ==================================================================================================
+
+
+Start_Game:
+
+	;Fill in "random" buffer:
+
+	ld hl,Random_List
+	ld a,16
+Fill_In_Random:
+	dec a
+	ld (hl),a
+	inc hl
+	or a
+	jr nz,Fill_In_Random
+	
+
+
+	ld a,1
+	ld (Cur_Player),a
+
+	;Clear the grid:
+	ld hl,Piece_Grid
+	ld bc,16*10
+	xor a
+	bcall(_memset)
+
+	;Clear the height table:
+	ld hl,Height_Tbl
+	ld bc,16
+	ld a,9
+	bcall(_memset)
+
+	ld a,8
+	ld (Piece_X),a
+	ld (Last_Move),a
+
+	ld a,Animation_Delay
+	ld (Ani_Delay),a
+
+ReRenderLoop:
+	call Render_Grid
+	call PlotsToSave
+
+	ld a,(Cur_Player)
+	dec a
+	ld l,a
+	ld h,0
+	ld de,Player_1
+	add hl,de
+	ld a,(hl)		;a=player type.
+	ld (AI_Skill),a
+
+	or a
+	jr nz,Is_AI
+
+	ld a,(Cur_Player)
+	call Manual
+	jr Done_Move
+Is_AI:
+	ld a,(Cur_Player)
+	call AI
+
+Done_Move:
+	ld a,(Cur_Player)
+	call Drop_Piece
+	ld a,(Cur_Player)
+	call Connect_4
+	or a
+	jp nz,Display_Winner
+
+	ld a,(Cur_Player)
+	xor 3
+	ld (Cur_Player),a
+
+	jp ReRenderLoop
+
+; ==================================================================================================
+; Manual - in=a, player number (1 or 2). out=Piece_X  where to drop piece.
+; ==================================================================================================
+
+Manual:
+
+	ld (Player_Num),a
+
+	ld (Player_Num),a
+	ld a,(Last_Move)
+	ld (Piece_X),a
+
+Put_Piece_Loop:
+	call SaveToPlots
+
+	;Get sprite #:
+
+	ld ix,spr_Black
+	ld a,(Player_Num)
+	cp 1
+	jr z,Keep_Black_Piece
+	ld ix,spr_White
+Keep_Black_Piece:
+
+
+	ld a,(Piece_X)
+
+	;Clip it:
+
+	cp -1
+	jr nz,Not_Off_Left
+	xor a
+Not_Off_Left:
+	cp 16
+	jr nz,Not_Off_Right
+	ld a,15
+Not_Off_Right:
+
+	ld (Piece_X),a
+	ld (Last_Move),a
+	call Mul_5
+	add a,Grid_X
+	ld l,Grid_Y-7
+	ld b,4
+
+	call ionPutSprite
+	ld a,(Piece_X)
+	ld l,a
+	call Get_Height
+	cp -1
+	jr z,No_Draw_Drop
+	call Mul_5
+	add a,Grid_Y
+	ld l,a
+	ld a,(Piece_X)
+	call Mul_5
+	add a,Grid_X
+	ld b,4
+	ld ix,spr_Drop
+	call ionPutSprite
+
+No_Draw_Drop:
+	call ionFastCopy
+
+	;Animate drop icon:
+
+	ld a,(Ani_Delay)
+	dec a
+	ld (Ani_Delay),a
+	or a
+	jr nz,Not_Animate
+
+	ld hl,spr_Drop
+	ld de,Animation
+	ld bc,4
+	ldir
+
+	ld hl,spr_Drop+4
+	ld de,spr_Drop
+	ld bc,4*7
+	ldir
+
+	ld hl,Animation
+	ld de,spr_Drop+(4*7)
+	ld bc,4
+	ldir
+
+
+	ld a,Animation_Delay
+	ld (Ani_Delay),a
+
+Not_Animate:
+	ld ix,Piece_X
+
+	bcall(_getcsc)
+	cp skClear
+	jr nz,Not_Cancel
+
+	pop hl
+	jp Start
+
+Not_Cancel:
+	cp skLeft
+	jr nz,Not_Left
+	dec (ix+0)
+Not_Left:
+	cp skRight
+	jr nz,Not_Right
+	inc (ix+0)
+Not_Right:
+	cp sk2nd
+	jp nz,Put_Piece_Loop
+	
+
+;#bookmark Drop the piece:
+
+	ld a,(Piece_X)
+	ld l,a
+	call Get_Height
+	cp -1
+	jp z,Put_Piece_Loop	;This column is full!
+	ret	;Done!
+	
+
+; ==================================================================================================
+; A.I. - stupid, but it works ;) - in=a, player number (1 or 2). out=Piece_X  where to drop piece.
+; ==================================================================================================
+
+AI:
+	ld (Player_Num),a
+
+	;AI step 1- can I win?
+
+	call Backup_Grid
+
+	ld a,16
+	ld (Scan_X),a
+
+Scan_For_Win:
+	call Restore_Grid	;Start with original grid.
+	ld a,(Scan_X)
+	dec a
+	ld (Piece_X),a
+	ld l,a
+	call Get_Height
+	cp -1
+	jr z,Not_Possible_Win
+	ld (Piece_Y),a
+	ld hl,(Piece_Y)
+
+	ld a,(Player_Num)
+	call Write_Grid
+	ld a,(Player_Num)
+	call Connect_4
+
+	;Have we won?
+	or a
+	jp nz,Calc_Can_Win
+
+	;Nope!
+	
+Not_Possible_Win:
+	ld a,(Scan_X)
+	dec a
+	ld (Scan_X),a
+	or a
+	jr nz,Scan_For_Win
+
+	;We can't win!
+
+	;AI step 2- can I block his win?
+
+	ld a,16
+	ld (Scan_X),a
+
+
+
+
+Scan_For_Block:
+	call Restore_Grid	;Start with original grid.
+	ld a,(Scan_X)
+	dec a
+	ld (Piece_X),a
+	ld l,a
+	call Get_Height
+	cp -1
+	jr z,Not_Possible_Block
+	ld (Piece_Y),a
+	ld hl,(Piece_Y)
+	ld a,(Player_Num)
+	xor 3			;If 2->1, If 1->2.
+	call Write_Grid
+
+	ld a,(Player_Num)
+	xor 3			;If 2->1, If 1->2.
+	call Connect_4
+
+	;Has he won?
+	or a
+	jp nz,Calc_Can_Win
+
+	;Nope!
+	
+Not_Possible_Block:
+	ld a,(Scan_X)
+	dec a
+	ld (Scan_X),a
+	or a
+	jr nz,Scan_For_Block
+
+
+	;Double-blockage!
+	ld a,(AI_Skill)
+	cp 2
+	jp c,Dont_try_premonition_Block
+
+	ld a,(Player_Num)
+	call Premonition
+	or a
+	jr z,Dont_try_premonition_Block
+	jp Calc_can_win
+Dont_try_premonition_Block:
+
+
+	;Double-winage!
+	ld a,(AI_Skill)
+	cp 3
+	jp nz,Dont_try_premonition_Win
+
+	ld a,(Player_Num)
+	xor 3
+	call Premonition
+	or a
+	jr z,Dont_try_premonition_Win
+
+	;Only problem: will placing a piece here make the other guy win?
+	call Restore_Grid
+	ld a,(Scan_X)
+	dec a
+	ld (Piece_X),a
+	ld l,a
+	call Get_Height
+	or a
+	jr z,P_W_Fine
+	dec a
+
+	ld (Piece_Y),a
+	ld a,(Player_Num)
+	xor 3
+	call Write_Grid
+	ld a,(Player_Num)
+	xor 3
+	call Connect_4
+	or a
+	jr nz,Dont_try_premonition_Win
+	
+P_W_Fine:
+	jp Calc_can_win
+Dont_try_premonition_Win:
+
+
+; ====================================================================================================
+; Tricky bit of coding here - let's go for a random. If this allows the other player to win, try again
+; ====================================================================================================
+
+	ld a,(AI_Skill)
+	cp 1
+	jp nc,Dont_try_win_allow
+
+	call Restore_Grid
+
+	;First, "shuffle" random numbers:
+
+
+	ld b,20
+	call ionRandom
+	inc a	
+
+Shuffle_Again:
+	push af
+	ld hl,Random_List+1
+	ld de,Random_List
+	ld a,(de)
+	ld bc,15
+	ldir
+	ld (de),a
+	pop af
+
+	dec a
+	or a
+	jr nz,Shuffle_Again
+
+
+	ld hl,Random_List
+	ld (Rand_List_Pos),hl
+
+Try_Next_Column:
+	ld hl,(Rand_List_Pos)
+	ld a,(hl)
+	ld l,a
+	call Get_Height
+	dec a
+	ld (Piece_Y),a
+	inc a
+	or a
+	jr z,Not_Here_Stupid	;Not enough room to check.
+
+	;This'll do!
+	ld hl,(Rand_List_Pos)
+	ld a,(hl)
+
+	ld (Piece_X),a
+
+	;Now, will this place make the enemy win?
+	ld hl,(Piece_Y)
+	ld a,(Player_Num)
+	xor 3
+	call Write_Grid
+	ld a,(Player_Num)
+	xor 3
+	call Connect_4
+	or a
+	jr nz,Not_Here_Stupid	;It'll make him win! Not here, by all means!
+
+	ld hl,(Rand_List_Pos)
+	ld a,(hl)
+	inc a
+	ld (Scan_X),a
+	
+	jr Calc_Can_Win
+
+Not_Here_Stupid:
+	call Restore_Grid
+	ld hl,(Rand_List_Pos)
+	inc hl
+	ld (Rand_List_Pos),hl
+	ld de,Rand_List_Pos+16
+	bcall(_cphlde)
+	jr nz,Try_Next_Column
+Dont_try_win_allow:
+
+
+	;Now we're screwed!
+	;It's gotta be random...
+Invalid_Placement:
+	ld b,16
+	call ionRandom
+	ld (Piece_X),a
+	ld l,a
+	call Get_Height
+	or a
+	jr z,Invalid_Placement
+	ld a,(Piece_X)
+	inc a
+	ld (Scan_X),a
+
+Calc_Can_Win:			;Jump here if a sensible move can be made - you need (Scan_X) to be the column+1
+
+	call Restore_Grid
+
+	ld a,(Scan_X)
+	dec a
+	ld (Piece_X),a
+	ret
+
+
+
+
+; ==================================================================================================
+; Premonition Add - Adds a "funny feeling" to the "funny feeling" array ;)
+; ==================================================================================================
+
+Premonition_Add:
+	ld a,(Piece_X)
+	call Inc_Chances
+	ld a,(Scan_X_2)
+	dec a
+	call Inc_Chances	
+	ret
+
+Inc_Chances:
+	ld l,a
+	ld h,0
+	ld de,Chances
+	add hl,de
+	inc (hl)
+	ret
+
+; ==================================================================================================
+; "Premonition" code (looks 2 moves ahead).
+; ==================================================================================================
+
+;Double layered block:
+Premonition:
+
+	ld (tmpPlayer_Num),a
+
+	;This is even cooler ;)
+	;This tries to block, but 2 moves ahead.
+
+	ld hl,Chances
+	ld bc,16
+	xor a
+	bcall(_memset)
+
+	ld a,16
+	ld (Scan_X),a
+
+Scan_For_Block_2:
+	call Restore_Grid	;Start with original grid.
+	ld a,(Scan_X)
+	dec a
+	ld (Piece_X),a
+	ld l,a
+	call Get_Height
+	cp -1
+	jr z,Not_Possible_Block_2	;Useless!
+	ld (Piece_Y),a
+	ld hl,(Piece_Y)
+	ld a,(tmpPlayer_Num)
+	xor 3			;If 2->1, If 1->2.
+	call Write_Grid
+
+
+	;OK, so we have placed the first: Now scan from 15->0 again!
+
+		ld hl,Piece_Grid
+		ld de,Piece_Grid_3
+		ld bc,16*10
+		ldir
+
+		ld a,16
+		ld (Scan_X_2),a
+Premonition_Loop:
+		ld hl,Piece_Grid_3
+		ld de,Piece_Grid
+		ld bc,16*10
+		ldir
+	
+		ld a,(Scan_X_2)
+		dec a
+		ld (Piece_X),a
+		ld l,a
+		call Get_Height
+		cp -1
+		jr z,Not_Valid_Premonition
+		ld (Piece_Y),a
+		ld hl,(Piece_Y)
+		ld a,(tmpPlayer_Num)
+		xor 3			;If 2->1, If 1->2.
+		call Write_Grid
+		ld a,(tmpPlayer_Num)
+		xor 3
+		call Connect_4
+		or a
+		call nz,Premonition_Add
+
+
+Not_Valid_Premonition:
+		ld a,(Scan_X_2)
+		dec a
+		ld (Scan_X_2),a
+		or a
+		jr nz,Premonition_Loop
+
+	;Nope!
+	
+Not_Possible_Block_2:
+	ld a,(Scan_X)
+	dec a
+	ld (Scan_X),a
+	or a
+	jr nz,Scan_For_Block_2
+	call Restore_Grid
+
+	;Now, see if there are any good premonitions:
+
+	xor a
+	ld (Piece_X),a
+
+	ld de,Chances
+	ld bc,0		;B = piece position, C = "largest chance register".
+
+Get_Good_Chance:
+	ld l,b
+	ld h,0
+	add hl,de
+	ld a,(hl)
+	cp c
+	jr c,Not_Better_Chance
+	
+	ld c,a
+
+
+	ld a,b
+	ld (Piece_X),a
+
+Not_Better_Chance:
+	inc b
+	ld a,b
+	cp 16
+	jr nz,Get_Good_Chance
+	
+	;Now Piece_X holds the best chance:
+	ld a,c
+	or a
+	jr z,Dont_try_premonitions
+
+	ld a,(Piece_X)
+	inc a
+	ld (Scan_X),a
+	ld a,1
+	ret	
+
+Dont_try_premonitions:
+	xor a
+	ret
+
+; ==================================================================================================
+; Render the grid of pieces to PlotsScreen
+; ==================================================================================================
+
+;#bookmark Render the grid of pieces.
+Render_Grid:
+	ld hl,img_Back
+	ld de,PlotsScreen
+	ld bc,768
+	call RLE
+
+	ld hl,(256*Grid_X)+Grid_Y
+	ld (Piece_Y),hl
+
+	ld hl,Piece_Grid-1
+	push hl
+
+Next_Piece_X:
+	pop hl
+	inc hl
+	push hl
+	ld a,(hl)
+	add a,a
+	add a,a
+	ld l,a
+	ld h,0
+	ld de,spr_Blank
+	add hl,de
+	push hl
+	pop ix
+	ld a,(Piece_Y)
+	ld l,a
+	ld a,(Piece_X)
+	ld b,4
+	call ionPutSprite
+
+	ld a,(Piece_X)
+	add a,5
+	ld (Piece_X),a
+	cp 80+Grid_X
+	jr nz,Next_Piece_X
+
+	ld a,Grid_X
+	ld (Piece_X),a
+
+	ld a,(Piece_Y)
+	add a,5
+	ld (Piece_Y),a
+	cp 50+Grid_Y
+	jr nz,Next_Piece_X
+	pop hl
+	ret
+	
+
+
+; ==================================================================================================
+; Drop the piece: in: (Piece_X), a=1 or 2 (player). 
+; ==================================================================================================
+
+
+Drop_Piece:
+
+	cp 1
+	jr nz,Is_White
+	ld hl,spr_Black
+	jr Is_Black
+Is_White:
+	ld hl,spr_White
+Is_Black:
+
+	ld (d_w_sprite+2),hl
+	ld (d_w_player+1),a
+
+	xor a
+	ld (Piece_Y),a
+Drop_Piece_Loop:
+	ld hl,(Piece_Y)
+	call Read_Grid
+	or a
+	jr nz,Found_Resting_Place
+	
+
+	;Draw the piece dropping:
+	call SaveToPlots
+	ld a,(Piece_Y)
+	call Mul_5
+	add a,Grid_Y
+	ld l,a
+	ld a,(Piece_X)
+	call Mul_5
+	add a,Grid_X
+d_w_sprite:
+	ld ix,spr_Black
+	ld b,4
+	call ionPutSprite
+	call ionFastCopy
+
+	;Do a little delay:
+	ld hl,10000
+Drop_Delay:
+	nop
+	dec hl
+	ld a,h
+	or l
+	jr nz,Drop_Delay
+
+
+
+	ld a,(Piece_Y)
+	inc a
+	ld (Piece_Y),a
+	cp 10
+	jr z,Found_Resting_Place
+
+	jr Drop_Piece_Loop
+
+
+Found_Resting_Place:
+	ld a,(Piece_Y)
+	dec a
+	ld (Piece_Y),a
+	ld hl,(Piece_Y)
+
+d_w_player:
+	ld a,1
+	call Write_Grid
+	ld a,(Piece_X)
+	ld l,a
+	ld a,(Piece_Y)
+	dec a
+	call Set_Height
+
+	call PlotsToSave
+
+	ret
+
+
+; ==================================================================================================
+; Grid Read/Write functions
+; ==================================================================================================
+
+
+Read_Grid:
+	call Get_Grid_Number
+	ld a,(hl)
+	ret
+Write_Grid:
+	call Get_Grid_Number
+	ld (hl),a
+	ret
+Get_Grid_Number:	;in: (h,l) out: (hl)
+	ld e,h
+	ld h,0
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	ld d,0
+	add hl,de
+	ld de,Piece_Grid
+	add hl,de
+	ret
+
+; ==================================================================================================
+; Mul_5: a = a*5
+; ==================================================================================================
+
+Mul_5:
+	ld b,a
+	add a,a
+	add a,a
+	add a,b
+	ret
+
+; ==================================================================================================
+; Height table Read/Write functions
+; ==================================================================================================
+
+Get_Height:
+	call Get_Height_Number
+	ld a,(hl)
+	ret
+Set_Height:
+	call Get_Height_Number
+	ld (hl),a
+	ret
+Get_Height_Number:
+	ld h,0
+	ld de,Height_Tbl
+	add hl,de
+	ret
+
+; ==================================================================================================
+; Backup/Restore of grid
+; ==================================================================================================
+
+Backup_Grid:
+	ld hl,Piece_Grid
+	ld de,Piece_Grid_2
+	jr Copy_Grid
+Restore_Grid:
+	ld hl,Piece_Grid_2
+	ld de,Piece_Grid
+Copy_Grid:
+	ld bc,16*10
+	ldir
+	ret
+
+; ==================================================================================================
+; Connect 4: for detecting wins. Helps a lot in the AI too...
+; ==================================================================================================
+
+
+Connect_4:
+
+	ld (Piece_Num),a
+
+	bcall(_getcsc)
+	cp skClear
+	jr nz,Clear_Not_Pressed
+
+
+	;Get the stack back!
+	ld sp,(Stack_Saved)
+	jp Redraw_Menu
+
+Clear_Not_Pressed:
+
+	call Clear_Win_Buffer
+	ld ix,Win_Buffer
+
+
+	;First, do a check for a vertical:
+	ld a,(Piece_Y)
+	cp 7
+	jr nc,Not_Vertical
+
+	;So, it's high enough: but are all the pieces there?
+	ld hl,(Piece_Y)
+
+
+	ld a,(Piece_Num)
+	ld b,a
+	ld c,4
+Vertical_Scan:
+	call Write_to_Win
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Not_Vertical
+	inc l
+	dec c
+	ld a,c
+	or a
+	jr nz,Vertical_Scan	
+
+	;So, it's a vertical win!
+	jp Win
+Not_Vertical:
+
+	;2nd, check for horizontal.
+	;This is slightly harder. First we must scan to the beginning of the horizontal:
+
+	call Clear_Win_Buffer
+	ld ix,Win_Buffer
+	ld hl,(Piece_Y)
+
+	ld a,(Piece_Num)
+	ld b,a
+Scan_To_Start_Horizontal:
+	ld a,h
+	or a
+	jr z,Found_Start_Horizontal
+	push hl
+	dec h
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Found_Start_Horizontal
+	dec h
+	jr Scan_To_Start_Horizontal
+
+Found_Start_Horizontal:		;We've found the start!
+
+	ld a,h
+	cp 13
+	jr nc,Not_Horizontal
+
+
+	ld c,4
+Horizontal_Scan:
+	call Write_to_Win
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Not_Horizontal
+	inc h
+	dec c
+	ld a,c
+	or a
+	jr nz,Horizontal_Scan
+
+How_Far_Does_It_Go_H:
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jp nz,Win
+	call Write_to_Win
+	inc h
+	ld a,h
+	cp 16
+	jp z,Win
+	jr How_Far_Does_It_Go_H
+	jp Win
+
+Not_Horizontal:
+
+; ==================================================================================================
+
+	;3rd, check for diagonal /
+	call Clear_Win_Buffer
+	ld ix,Win_Buffer
+	ld hl,(Piece_Y)
+
+	ld a,(Piece_Num)
+	ld b,a
+Scan_To_Start_Diagonal_1:
+	ld a,h
+	or a
+	jr z,Found_Start_Diagonal_1	;Hit the left
+	ld a,l
+	cp 9
+	jr z,Found_Start_Diagonal_1	;Hit the top
+	push hl
+	dec h
+	inc l
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Found_Start_Diagonal_1
+	dec h
+	inc l
+	jr Scan_To_Start_Diagonal_1
+
+Found_Start_Diagonal_1:		;We've found the start!
+
+	ld a,h
+	cp 13
+	jr nc,Not_Diagonal_1	;Is is far away enough from the right?
+	ld a,l
+	cp 3
+	jr c,Not_Diagonal_1	;Is it far away enough from the top?
+	ld c,4
+Diagonal_1_Scan:
+
+	call Write_to_Win
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Not_Diagonal_1
+	inc h
+	dec l
+	dec c
+	ld a,c
+	or a
+	jr nz,Diagonal_1_Scan
+
+	;We've got all 4 required -- by how far does the diagonal actually go?
+
+How_Far_Does_It_Go_D1:
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jp nz,Win
+	call Write_to_Win
+	inc h
+	dec l
+	ld a,h
+	cp 16
+	jp z,Win
+	ld a,l
+	cp -1
+	jp z,Win
+	jr How_Far_Does_It_Go_D1
+	jp Win
+
+Not_Diagonal_1:
+
+; ==================================================================================================
+
+	;4th, check for diagonal \
+	call Clear_Win_Buffer
+	ld ix,Win_Buffer
+	ld hl,(Piece_Y)
+
+	ld a,(Piece_Num)
+	ld b,a
+Scan_To_Start_Diagonal_2:
+	ld a,h
+	cp 15
+	jr z,Found_Start_Diagonal_2	;Hit the right
+	ld a,l
+	cp 9
+	jr z,Found_Start_Diagonal_2	;Hit the top
+	push hl
+	inc h
+	inc l
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Found_Start_Diagonal_2
+	inc h
+	inc l
+	jr Scan_To_Start_Diagonal_2
+
+Found_Start_Diagonal_2:		;We've found the start!
+
+	ld a,h
+	cp 3
+	jr c,Not_Diagonal_2
+	ld a,l
+	cp 3
+	jr c,Not_Diagonal_2
+
+	ld c,4
+Diagonal_2_Scan:
+	call Write_to_Win
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jr nz,Not_Diagonal_2
+	dec h
+	dec l
+	dec c
+	ld a,c
+	or a
+	jr nz,Diagonal_2_Scan
+
+How_Far_Does_It_Go_D2:
+	push hl
+	call Read_Grid
+	pop hl
+	cp b
+	jp nz,Win
+	call Write_to_Win
+	dec h
+	dec l
+	ld a,h
+	cp -1
+	jp z,Win
+	ld a,l
+	cp -1
+	jp z,Win
+	jr How_Far_Does_It_Go_D2
+	jp Win
+
+
+
+Not_Diagonal_2:
+
+
+	xor a
+	ret
+
+Win:
+	ld a,1
+	ret
+	
+
+
+
+
+
+Display_Winner:
+	ld a,(Player_Num)
+	cp 2
+	jr z,Calc_Has_Won
+Player_Has_Won:
+	ld hl,spr_Black
+	jr Disp_Won
+Calc_Has_Won:
+	ld hl,spr_White
+Disp_Won:
+	ld (d_i_sprite+2),hl
+
+
+Flash_Winner:
+	ld ix,Win_Buffer
+Invert_Loop:	
+
+	ld a,(ix+0)
+	cp 128
+	jr z,Inverted_Done
+	
+	ld a,(ix+0)
+	call Mul_5
+	add a,Grid_Y
+	ld l,a
+
+	ld a,(ix+1)
+	call Mul_5
+	add a,Grid_X
+
+	push ix
+
+
+d_i_sprite:
+	ld ix,spr_Black
+	ld b,4
+	call ionPutSprite
+	pop ix
+	inc ix
+	inc ix
+	jr Invert_Loop	
+
+
+
+Inverted_Done:
+
+	ld a,20
+Flash_Delay_Loop:
+	push af
+	call ionFastCopy
+	bcall(_getcsc)
+	cp sk2nd
+	jp z,Return_To_Start
+	cp skClear
+	jp z,Return_To_Start
+	pop af
+	dec a
+	jr nz,Flash_Delay_Loop
+	jr Flash_Winner
+
+	ret
+Return_To_Start:
+	pop af
+	jp Start
+
+Write_to_Win:
+	ld a,h
+	cp 16
+	ret nc
+	ld a,l
+	cp 10
+	ret nc
+	ld (ix+0),l
+	ld (ix+1),h
+	inc ix
+	inc ix
+	ret
+
+img_Back:
+ .db $91,$00,$18,$91,$FF,$0C,$80,$04,$91,$00,$09,$01
+ .db $BF,$F4,$91,$00,$09,$01,$A0,$04,$91,$00,$09,$01
+ .db $AE,$F4,$91,$00,$09,$01,$AA,$94,$91,$00,$09,$01
+ .db $AE,$94,$91,$00,$09,$01,$A0,$06,$91,$AA,$09,$AB
+ .db $BF,$F4,$91,$00,$09,$01,$80,$04,$91,$00,$09,$01
+ .db $BD,$F4,$91,$00,$09,$01,$A5,$04,$91,$00,$09,$01
+ .db $A5,$C4,$91,$00,$09,$01,$81,$04,$91,$00,$09,$01
+ .db $BD,$F4,$91,$00,$09,$01,$A0,$04,$91,$00,$09,$01
+ .db $AF,$E4,$91,$00,$09,$01,$A1,$04,$91,$00,$09,$01
+ .db $BD,$44,$91,$00,$09,$01,$81,$44,$91,$00,$09,$01
+ .db $A1,$44,$91,$00,$09,$01,$A0,$44,$91,$00,$09,$01
+ .db $BF,$F4,$91,$00,$09,$01,$80,$44,$91,$00,$09,$01
+ .db $80,$44,$91,$00,$09,$01,$80,$04,$91,$00,$09,$01
+ .db $FF,$FC,$91,$00,$09,$01,$80,$04,$91,$00,$09,$01
+ .db $A3,$F4,$91,$00,$09,$01,$A2,$04,$91,$00,$09,$01
+ .db $BA,$74,$91,$00,$09,$01,$AA,$54,$91,$00,$09,$01
+ .db $BB,$54,$91,$00,$09,$01,$82,$54,$91,$00,$09,$01
+ .db $BA,$54,$91,$00,$09,$01,$A2,$04,$91,$00,$09,$01
+ .db $AB,$F4,$91,$00,$09,$01,$A8,$04,$91,$00,$09,$01
+ .db $A9,$54,$91,$00,$09,$01,$AF,$54,$91,$00,$09,$01
+ .db $81,$24,$91,$00,$09,$01,$B7,$04,$91,$00,$09,$01
+ .db $A0,$F4,$91,$00,$09,$01,$BE,$84,$91,$00,$09,$01
+ .db $A0,$F4,$91,$00,$09,$01,$BE,$14,$91,$00,$09,$01
+ .db $80,$14,$91,$00,$09,$01,$BF,$F4,$91,$00,$09,$01
+ .db $80,$04,$91,$00,$09,$01,$FF,$FC,$91,$00,$09,$01
+ .db $80,$04,$91,$00,$09,$01,$B7,$54,$91,$00,$09,$01
+ .db $95,$54,$91,$00,$09,$01,$97,$74,$91,$00,$09,$01
+ .db $B0,$14,$91,$00,$09,$01,$A7,$D4,$91,$00,$09,$01
+ .db $A4,$54,$91,$00,$09,$01,$B7,$D4,$91,$00,$09,$01
+ .db $80,$04,$91,$00,$09,$01,$91,$FF,$0C,$91,$00,$18
+
+
+img_Title:
+ .db $91,$00,$0C,$7F,$91,$FF,$03,$80,$91,$00,$07,$40
+ .db $91,$00,$03,$FB,$B5,$91,$00,$06,$40,$91,$00,$03
+ .db $80,$91,$00,$07,$40,$91,$00,$03,$80,$91,$00,$07
+ .db $47,$81,$E2,$10,$80,$91,$00,$07,$44,$01,$02,$10
+ .db $80,$91,$00,$07,$45,$DD,$82,$10,$80,$91,$00,$07
+ .db $45,$55,$02,$10,$80,$91,$00,$07,$45,$D5,$E2,$10
+ .db $80,$91,$00,$07,$44,$00,$02,$10,$80,$91,$00,$07
+ .db $47,$F7,$7B,$F8,$80,$91,$00,$07,$40,$05,$40,$10
+ .db $80,$91,$00,$07,$40,$05,$5F,$C0,$80,$91,$00,$07
+ .db $40,$00,$42,$00,$80,$91,$00,$07,$7F,$C0,$7A,$00
+ .db $80,$91,$00,$07,$20,$40,$02,$00,$80,$91,$00,$07
+ .db $20,$40,$02,$3F,$80,$91,$00,$07,$20,$40,$00,$20
+ .db $91,$00,$08,$20,$7F,$FF,$E0,$91,$00,$14,$20,$91
+ .db $00,$0B,$20,$91,$00,$0B,$20,$91,$00,$17,$20,$91
+ .db $00,$0B,$20,$91,$00,$17,$20,$91,$00,$0A,$04,$91
+ .db $00,$0C,$20,$91,$00,$0A,$04,$91,$00,$17,$04,$91
+ .db $00,$0B,$04,$91,$00,$17,$04,$91,$00,$0B,$04,$91
+ .db $00,$0B,$04,$91,$00,$17,$04,$91,$00,$0B,$04,$91
+ .db $00,$0B,$04,$91,$00,$0B,$04,$91,$00,$0A,$7F,$FE
+ .db $91,$00,$0A,$40,$02,$91,$00,$0A,$40,$02,$91,$00
+ .db $07,$1F,$FF,$FF,$C0,$02,$91,$00,$07,$10,$00,$00
+ .db $07,$E2,$91,$00,$07,$10,$00,$00,$04,$02,$91,$00
+ .db $07,$10,$00,$00,$04,$E2,$91,$00,$07,$11,$00,$00
+ .db $06,$82,$91,$00,$07,$11,$00,$1C,$54,$E2,$91,$00
+ .db $07,$11,$DF,$90,$54,$22,$91,$00,$07,$11,$50,$15
+ .db $57,$22,$91,$00,$07,$11,$D3,$95,$50,$22,$91,$00
+ .db $07,$10,$1A,$97,$27,$E2,$91,$00,$07,$10,$12,$81
+ .db $00,$02,$91,$00,$07,$10,$10,$01,$00,$02,$91,$00
+ .db $07,$1F,$1F,$BF,$00,$02,$91,$00,$07,$01,$00,$00
+ .db $1F,$FE,$91,$00,$07,$01,$00,$00,$10,$91,$00,$07
+ .db $AD,$DF,$00,$00,$10,$91,$00,$08,$01,$FF,$FF,$F0
+ .db $91,$00,$0D
+
+PlotsToSave:
+	ld hl,PlotsScreen
+	ld de,SavesScreen
+	jr PS_Swap_Copy
+SaveToPlots:
+	ld de,PlotsScreen
+	ld hl,SavesScreen
+PS_Swap_Copy:
+	ld bc,768
+	ldir
+	ret
+
+Clear_Win_Buffer:
+	ld hl,Win_Buffer
+	ld bc,34
+	ld a,128
+	bcall(_memset)
+	ret
+
+
+Win_Buffer:
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 0,0
+	.db 128,128
+
+RLE:
+_DispRLEL:
+    ld a, (hl)          ; get the next byte
+    cp $91              ; is it a run?
+    jr z, _DispRLERun    ; then we need to decode the run
+    ldi                 ; copy the byte, and update counters
+_DispRLEC:
+    ret po              ; ret if bc hit 0
+    jr _DispRLEL         ; otherwise do next byte
+_DispRLERun:
+    inc hl
+    inc hl              ; move to the run count
+    ld a, (hl)          ; get the run count
+_DispRLERunL:
+    dec hl              ; go back to run value
+    dec a               ; decrease run counter
+    ldi                 ; copy byte, dec bc, inc de, inc hl
+    jr nz, _DispRLERunL  ; if we're not done, then loop
+    inc hl              ; advance the source pointer
+    jr _DispRLEC         ; check to see if we should loop
+
+#ifdef TI83I
+
+;_memset: not the most efficient, but seems to work fully like the TI-83 Plus version.
+
+_MemSet:
+	push hl
+	pop de
+_MemSet_Loop:
+	ld (de),a
+	inc de
+	dec bc
+	ld h,a
+	ld a,b
+	or c
+	ret z
+	ld a,h
+	jr _MemSet_Loop
+	ret
+
+#endif
+
+#include "c4sprites.inc"
+
+Player_1:	.db 0
+Player_2:	.db 1
+Player_Setting:	.db 0
+
+
+.end

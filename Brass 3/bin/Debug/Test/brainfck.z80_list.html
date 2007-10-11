@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<title>List file for brainfck.z80 (01/10/2007 7:20:46pm)</title>
+</head>
+<body>
+<style>
+h1, h2, h3, h4, p { font-family: trebuchet ms, verdana, tahoma, sans serif; text-align: center; }
+#asmout, #ascii { border-collapse: collapse; border: 1px solid black; margin-left: auto; margin-right: auto; }
+#asmout td, #asmout th, #ascii td, #ascii th { vertical-align: top; padding: 3px; margin: 0px; border-left: 1px solid #333333; border-right: 1px solid #333333; font-family: consolas, lucida console, courier new, monospace; font-size: 10pt; }
+*.r0 { background-color: #DDDDDD; }
+*.r1 { background-color: #CCCCCC; }
+#asmout td.f { background-color: #9999FF; text-align: center; border: 1px solid #333333; }
+#asmout td.p { background-color: #99FF99; text-align: center; border: 1px solid #333333; }
+#asmout td.j { background-color: #FF9999; text-align: center; border: 1px solid #333333; }
+#asmout td.l { background-color: #CCCCFF; text-align: center; border: 1px solid #333333; }
+#asmout td.c { text-align: center; }
+#asmout th, #ascii th { font-weight: bold; text-align: center; background-color: black; color: white;}
+#ascii td { text-align: center; width: 24px; } #unused { color: #999999; }
+</style>
+<h1>General Information</h1>
+<table id="asmout">
+<th>Field</th><th>Value</th>
+<tr class="r0"><td>Brass Version</td><td>1.0.4.11</td></tr>
+<tr class="r1"><td>Source File</td><td>D:\Documents\Documents\Visual Studio 2005\Projects\!Old\Brass\Brass\bin\Test\brainfck.z80</td></tr>
+<tr class="r0"><td>Total Source Files</td><td>3</td></tr>
+<tr class="r1"><td>Page Count</td><td>1</td></tr>
+</table>
+<h1>Output</h1>
+<table id="asmout">
+<tr><th>Address</th><th>Output</th><th>Source</th></tr>
+<tr><td class="f" colspan="4">D:\Documents\Documents\Visual Studio 2005\Projects\!Old\Brass\Brass\bin\Test\brainfck.z80</td></tr>
+<tr><td class="p" colspan="4">Page 0</td></tr>
+<tr class="r0"><td class="c">9D93</td><td>BB</td><td>.db $BB,$6D</td></tr>
+<tr class="r1"><td class="c">9D94</td><td>6D</td><td>.db $BB,$6D</td></tr>
+<tr class="r0"><td class="c">9D95</td><td>C9</td><td>&#9;ret</td></tr>
+<tr class="r1"><td class="c">9D96</td><td>30&nbsp;16</td><td>&#9;jr nc,Init_All</td></tr>
+<tr><td class="l" colspan="4">Description</td></tr>
+<tr class="r0"><td class="c">9D98</td><td>42&nbsp;72&nbsp;61&nbsp;69&nbsp;6E&nbsp;66&nbsp;75&nbsp;63&nbsp;<br />6B&nbsp;20&nbsp;49&nbsp;6E&nbsp;74&nbsp;65&nbsp;72&nbsp;70&nbsp;<br />72&nbsp;65&nbsp;74&nbsp;65&nbsp;72&nbsp;00</td><td>.db &quot;Brainfuck Interpreter&quot;,0</td></tr>
+<tr><td class="l" colspan="4">Init_All</td></tr>
+<tr class="r1"><td class="c">9DAE</td><td>ED&nbsp;56</td><td>&#9;im 1</td></tr>
+<tr class="r0"><td class="c">9DB0</td><td>FD&nbsp;CB&nbsp;0D&nbsp;D6</td><td>&#9;set appAutoScroll, (IY + appFlags)</td></tr>
+<tr class="r1"><td class="c">9DB4</td><td>EF&nbsp;E5&nbsp;42</td><td>&#9;&#9;RST 28h\ .dw _memchk</td></tr>
+<tr class="r0"><td class="c">9DB7</td><td>11&nbsp;10&nbsp;27</td><td>&#9;ld de,10000</td></tr>
+<tr class="r1"><td class="c">9DBA</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r0"><td class="c">9DBD</td><td>D8</td><td>&#9;ret c</td></tr>
+<tr class="r1"><td class="c">9DBE</td><td>EF&nbsp;C5&nbsp;41</td><td>&#9;&#9;RST 28h\ .dw _zeroop1</td></tr>
+<tr class="r0"><td class="c">9DC1</td><td>21&nbsp;DE&nbsp;A0</td><td>&#9;ld hl,pageName</td></tr>
+<tr class="r1"><td class="c">9DC4</td><td>11&nbsp;78&nbsp;84</td><td>&#9;ld de,op1</td></tr>
+<tr class="r0"><td class="c">9DC7</td><td>01&nbsp;06&nbsp;00</td><td>&#9;ld bc,6</td></tr>
+<tr class="r1"><td class="c">9DCA</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r0"><td class="c">9DCC</td><td>21&nbsp;0F&nbsp;27</td><td>&#9;ld hl,9999</td></tr>
+<tr class="r1"><td class="c">9DCF</td><td>EF&nbsp;39&nbsp;43</td><td>&#9;&#9;RST 28h\ .dw _createprog</td></tr>
+<tr class="r0"><td class="c">9DD2</td><td>13</td><td>&#9;inc de</td></tr>
+<tr class="r1"><td class="c">9DD3</td><td>13</td><td>&#9;inc de</td></tr>
+<tr class="r0"><td class="c">9DD4</td><td>ED&nbsp;53&nbsp;FC&nbsp;86</td><td>&#9;ld (pagePointer),de</td></tr>
+<tr class="r1"><td class="c">9DD8</td><td>21&nbsp;0F&nbsp;27</td><td>&#9;ld hl,9999</td></tr>
+<tr class="r0"><td class="c">9DDB</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r1"><td class="c">9DDC</td><td>22&nbsp;FE&nbsp;86</td><td>&#9;ld (pageEnd),hl</td></tr>
+<tr><td class="l" colspan="4">LoopedFiles</td></tr>
+<tr class="r0"><td class="c">9DDF</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r1"><td class="c">9DE0</td><td>32&nbsp;F7&nbsp;86</td><td>&#9;ld (fileNameMem+8),a</td></tr>
+<tr class="r0"><td class="c">9DE3</td><td>32&nbsp;EE&nbsp;86</td><td>&#9;ld (foundFile),a</td></tr>
+<tr class="r1"><td class="c">9DE6</td><td>EF&nbsp;C5&nbsp;41</td><td>&#9;&#9;RST 28h\ .dw _zeroop1</td></tr>
+<tr class="r0"><td class="c">9DE9</td><td>3E&nbsp;05</td><td>&#9;ld a,progobj</td></tr>
+<tr class="r1"><td class="c">9DEB</td><td>32&nbsp;78&nbsp;84</td><td>&#9;ld (op1),a</td></tr>
+<tr class="r0"><td class="c">9DEE</td><td>EF&nbsp;44&nbsp;4A</td><td>&#9;&#9;RST 28h\ .dw _findalphaup</td></tr>
+<tr><td class="l" colspan="4">Check_Next_Prog</td></tr>
+<tr class="r1"><td class="c">9DF1</td><td>EF&nbsp;F1&nbsp;42</td><td>&#9;&#9;RST 28h\ .dw _chkfindsym</td></tr>
+<tr class="r0"><td class="c">9DF4</td><td>DA&nbsp;09&nbsp;A0</td><td>&#9;jp c,Quit_All</td></tr>
+<tr class="r1"><td class="c">9DF7</td><td>1A</td><td>&#9;ld a,(de)</td></tr>
+<tr class="r0"><td class="c">9DF8</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9DF9</td><td>13</td><td>&#9;inc de</td></tr>
+<tr class="r0"><td class="c">9DFA</td><td>1A</td><td>&#9;ld a,(de)</td></tr>
+<tr class="r1"><td class="c">9DFB</td><td>67</td><td>&#9;ld h,a</td></tr>
+<tr class="r0"><td class="c">9DFC</td><td>13</td><td>&#9;inc de</td></tr>
+<tr class="r1"><td class="c">9DFD</td><td>ED&nbsp;53&nbsp;EC&nbsp;86</td><td>&#9;ld (fileL),de</td></tr>
+<tr class="r0"><td class="c">9E01</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r1"><td class="c">9E02</td><td>22&nbsp;00&nbsp;87</td><td>&#9;ld (fileEnd),hl</td></tr>
+<tr class="r0"><td class="c">9E05</td><td>21&nbsp;D7&nbsp;A0</td><td>&#9;ld hl,scanFileName</td></tr>
+<tr class="r1"><td class="c">9E08</td><td>06&nbsp;06</td><td>&#9;ld b,6&#9;</td></tr>
+<tr><td class="l" colspan="4">Check_Next_Char</td></tr>
+<tr class="r0"><td class="c">9E0A</td><td>1A</td><td>&#9;ld a,(de)</td></tr>
+<tr class="r1"><td class="c">9E0B</td><td>AE</td><td>&#9;xor (hl)</td></tr>
+<tr class="r0"><td class="c">9E0C</td><td>20&nbsp;06</td><td>&#9;jr nz,Find_Next_File</td></tr>
+<tr class="r1"><td class="c">9E0E</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r0"><td class="c">9E0F</td><td>13</td><td>&#9;inc de</td></tr>
+<tr class="r1"><td class="c">9E10</td><td>10&nbsp;F8</td><td>&#9;djnz Check_Next_Char</td></tr>
+<tr class="r0"><td class="c">9E12</td><td>18&nbsp;0E</td><td>&#9;jr Found_Match</td></tr>
+<tr><td class="l" colspan="4">Find_Next_File</td></tr>
+<tr class="r1"><td class="c">9E14</td><td>EF&nbsp;44&nbsp;4A</td><td>&#9;&#9;RST 28h\ .dw _findalphaup</td></tr>
+<tr class="r0"><td class="c">9E17</td><td>30&nbsp;D8</td><td>&#9;jr nc,Check_Next_Prog</td></tr>
+<tr class="r1"><td class="c">9E19</td><td>3A&nbsp;EE&nbsp;86</td><td>&#9;ld a,(foundFile)</td></tr>
+<tr class="r0"><td class="c">9E1C</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">9E1D</td><td>CA&nbsp;09&nbsp;A0</td><td>&#9;jp z,Quit_All</td></tr>
+<tr class="r0"><td class="c">9E20</td><td>18&nbsp;BD</td><td>&#9;jr LoopedFiles</td></tr>
+<tr><td class="l" colspan="4">Found_Match</td></tr>
+<tr class="r1"><td class="c">9E22</td><td>13</td><td>&#9;inc de</td></tr>
+<tr class="r0"><td class="c">9E23</td><td>ED&nbsp;53&nbsp;02&nbsp;87</td><td>&#9;ld (fileStart),de</td></tr>
+<tr class="r1"><td class="c">9E27</td><td>3E&nbsp;01</td><td>&#9;ld a,1</td></tr>
+<tr class="r0"><td class="c">9E29</td><td>32&nbsp;EE&nbsp;86</td><td>&#9;ld (foundFile),a</td></tr>
+<tr class="r1"><td class="c">9E2C</td><td>21&nbsp;79&nbsp;84</td><td>&#9;ld hl,op1+1</td></tr>
+<tr class="r0"><td class="c">9E2F</td><td>11&nbsp;EF&nbsp;86</td><td>&#9;ld de,fileNameMem</td></tr>
+<tr class="r1"><td class="c">9E32</td><td>01&nbsp;08&nbsp;00</td><td>&#9;ld bc,8</td></tr>
+<tr class="r0"><td class="c">9E35</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r1"><td class="c">9E37</td><td>FD&nbsp;CB&nbsp;14&nbsp;FE</td><td>&#9;set textwrite, (iy+sGrFlags)</td></tr>
+<tr class="r0"><td class="c">9E3B</td><td>EF&nbsp;D0&nbsp;4B</td><td>&#9;&#9;RST 28h\ .dw _grbufclr</td></tr>
+<tr class="r1"><td class="c">9E3E</td><td>21&nbsp;65&nbsp;A0</td><td>&#9;ld hl,txt_title</td></tr>
+<tr class="r0"><td class="c">9E41</td><td>11&nbsp;01&nbsp;00&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*yp) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r1"><td class="c">9E4B</td><td>11&nbsp;01&nbsp;07&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*(yp+7)) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r0"><td class="c">9E55</td><td>11&nbsp;01&nbsp;0E&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*(yp+14)) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r1"><td class="c">9E5F</td><td>11&nbsp;01&nbsp;1C&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*28) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r0"><td class="c">9E69</td><td>21&nbsp;EF&nbsp;86</td><td>&#9;ld hl,fileNameMem</td></tr>
+<tr class="r1"><td class="c">9E6C</td><td>EF&nbsp;61&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r0"><td class="c">9E6F</td><td>21&nbsp;A9&nbsp;A0</td><td>&#9;ld hl,txt_title_2</td></tr>
+<tr class="r1"><td class="c">9E72</td><td>11&nbsp;01&nbsp;2B&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*yp2) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r0"><td class="c">9E7C</td><td>11&nbsp;01&nbsp;32&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*(yp2+7)) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r1"><td class="c">9E86</td><td>11&nbsp;01&nbsp;39&nbsp;ED&nbsp;53&nbsp;D7&nbsp;86&nbsp;EF&nbsp;<br />61&nbsp;45</td><td>&#9;ld de,1+(256*(yp2+14)) \ ld (penCol),de \ &#9;RST 28h\ .dw _vputs</td></tr>
+<tr class="r0"><td class="c">9E90</td><td>CD&nbsp;CD&nbsp;96</td><td>&#9;call ionFastCopy</td></tr>
+<tr class="r1"><td class="c">9E93</td><td>FD&nbsp;CB&nbsp;14&nbsp;BE</td><td>&#9;res textwrite, (iy+sgrFlags)</td></tr>
+<tr><td class="l" colspan="4">Key_Find_Loop</td></tr>
+<tr class="r0"><td class="c">9E97</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r1"><td class="c">9E9A</td><td>FE&nbsp;30</td><td>&#9;cp skAlpha</td></tr>
+<tr class="r0"><td class="c">9E9C</td><td>CA&nbsp;14&nbsp;9E</td><td>&#9;jp z,Find_Next_File</td></tr>
+<tr class="r1"><td class="c">9E9F</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r0"><td class="c">9EA1</td><td>CA&nbsp;09&nbsp;A0</td><td>&#9;jp z,Quit_All</td></tr>
+<tr class="r1"><td class="c">9EA4</td><td>FE&nbsp;36</td><td>&#9;cp sk2nd</td></tr>
+<tr class="r0"><td class="c">9EA6</td><td>20&nbsp;EF</td><td>&#9;jr nz,Key_Find_Loop</td></tr>
+<tr class="r1"><td class="c">9EA8</td><td>EF&nbsp;40&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _clrlcdfull</td></tr>
+<tr class="r0"><td class="c">9EAB</td><td>EF&nbsp;58&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _homeup</td></tr>
+<tr class="r1"><td class="c">9EAE</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r0"><td class="c">9EAF</td><td>32&nbsp;04&nbsp;87</td><td>&#9;ld (charMode),a</td></tr>
+<tr class="r1"><td class="c">9EB2</td><td>2A&nbsp;FC&nbsp;86</td><td>&#9;ld hl,(pagePointer)</td></tr>
+<tr class="r0"><td class="c">9EB5</td><td>22&nbsp;FA&nbsp;86</td><td>&#9;ld (progPointer),hl</td></tr>
+<tr class="r1"><td class="c">9EB8</td><td>01&nbsp;0F&nbsp;27</td><td>&#9;ld bc,9999</td></tr>
+<tr class="r0"><td class="c">9EBB</td><td>EF&nbsp;33&nbsp;4C</td><td>&#9;&#9;RST 28h\ .dw _memset</td></tr>
+<tr class="r1"><td class="c">9EBE</td><td>2A&nbsp;02&nbsp;87</td><td>&#9;ld hl,(fileStart)</td></tr>
+<tr class="r0"><td class="c">9EC1</td><td>22&nbsp;F8&nbsp;86</td><td>&#9;ld (filePointer),hl</td></tr>
+<tr><td class="l" colspan="4">Next_Program_Code</td></tr>
+<tr class="r1"><td class="c">9EC4</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r0"><td class="c">9EC7</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r1"><td class="c">9EC9</td><td>20&nbsp;06</td><td>&#9;jr nz,No_Interrupt</td></tr>
+<tr class="r0"><td class="c">9ECB</td><td>21&nbsp;4C&nbsp;A0</td><td>&#9;ld hl,err_Break</td></tr>
+<tr class="r1"><td class="c">9ECE</td><td>C3&nbsp;F2&nbsp;9F</td><td>&#9;jp Quit_Error</td></tr>
+<tr><td class="l" colspan="4">No_Interrupt</td></tr>
+<tr class="r0"><td class="c">9ED1</td><td>2A&nbsp;F8&nbsp;86</td><td>&#9;ld hl,(filePointer)</td></tr>
+<tr class="r1"><td class="c">9ED4</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">9ED5</td><td>2A&nbsp;FA&nbsp;86</td><td>&#9;ld hl,(progPointer)</td></tr>
+<tr class="r1"><td class="c">9ED8</td><td>FE&nbsp;6C&nbsp;CA&nbsp;16&nbsp;9F</td><td>&#9;cp tGT \ jp z,PointerInc</td></tr>
+<tr class="r0"><td class="c">9EDD</td><td>FE&nbsp;6B&nbsp;CA&nbsp;29&nbsp;9F</td><td>&#9;cp tLT \ jp z,PointerDec</td></tr>
+<tr class="r1"><td class="c">9EE2</td><td>FE&nbsp;70&nbsp;CA&nbsp;3D&nbsp;9F</td><td>&#9;cp tAdd \ jp z,ByteInc</td></tr>
+<tr class="r0"><td class="c">9EE7</td><td>FE&nbsp;71&nbsp;CA&nbsp;40&nbsp;9F</td><td>&#9;cp tSub \ jp z,ByteDec</td></tr>
+<tr class="r1"><td class="c">9EEC</td><td>FE&nbsp;3A&nbsp;CA&nbsp;43&nbsp;9F</td><td>&#9;cp tDecPt \ jp z,ByteOut</td></tr>
+<tr class="r0"><td class="c">9EF1</td><td>FE&nbsp;2B&nbsp;CA&nbsp;56&nbsp;9F</td><td>&#9;cp tComma \ jp z,ByteInKeyLoop</td></tr>
+<tr class="r1"><td class="c">9EF6</td><td>FE&nbsp;06&nbsp;CA&nbsp;AB&nbsp;9F</td><td>&#9;cp tLBrack \ jp z,JumpForw</td></tr>
+<tr class="r0"><td class="c">9EFB</td><td>FE&nbsp;07&nbsp;CA&nbsp;CF&nbsp;9F</td><td>&#9;cp tRBrack \ jp z,JumpBack</td></tr>
+<tr><td class="l" colspan="4">Executed_Instruction</td></tr>
+<tr class="r1"><td class="c">9F00</td><td>2A&nbsp;F8&nbsp;86</td><td>&#9;ld hl,(filePointer)</td></tr>
+<tr class="r0"><td class="c">9F03</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r1"><td class="c">9F04</td><td>22&nbsp;F8&nbsp;86</td><td>&#9;ld (filePointer),hl</td></tr>
+<tr class="r0"><td class="c">9F07</td><td>ED&nbsp;5B&nbsp;00&nbsp;87</td><td>&#9;ld de,(fileEnd)</td></tr>
+<tr class="r1"><td class="c">9F0B</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r0"><td class="c">9F0E</td><td>38&nbsp;B4</td><td>&#9;jr c,Next_Program_Code</td></tr>
+<tr class="r1"><td class="c">9F10</td><td>21&nbsp;57&nbsp;A0</td><td>&#9;ld hl,end_File</td></tr>
+<tr class="r0"><td class="c">9F13</td><td>C3&nbsp;F2&nbsp;9F</td><td>&#9;jp Quit_Error</td></tr>
+<tr><td class="l" colspan="4">PointerInc</td></tr>
+<tr class="r1"><td class="c">9F16</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r0"><td class="c">9F17</td><td>22&nbsp;FA&nbsp;86</td><td>&#9;ld (progPointer),hl</td></tr>
+<tr class="r1"><td class="c">9F1A</td><td>ED&nbsp;5B&nbsp;FE&nbsp;86</td><td>&#9;ld de,(pageEnd)</td></tr>
+<tr class="r0"><td class="c">9F1E</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r1"><td class="c">9F21</td><td>20&nbsp;DD</td><td>&#9;jr nz,Executed_Instruction</td></tr>
+<tr class="r0"><td class="c">9F23</td><td>21&nbsp;21&nbsp;A0</td><td>&#9;ld hl,err_Pointer_Overflow</td></tr>
+<tr class="r1"><td class="c">9F26</td><td>C3&nbsp;F2&nbsp;9F</td><td>&#9;jp Quit_Error</td></tr>
+<tr><td class="l" colspan="4">PointerDec</td></tr>
+<tr class="r0"><td class="c">9F29</td><td>2B</td><td>&#9;dec hl</td></tr>
+<tr class="r1"><td class="c">9F2A</td><td>22&nbsp;FA&nbsp;86</td><td>&#9;ld (progPointer),hl</td></tr>
+<tr class="r0"><td class="c">9F2D</td><td>ED&nbsp;5B&nbsp;FC&nbsp;86</td><td>&#9;ld de,(pagePointer)</td></tr>
+<tr class="r1"><td class="c">9F31</td><td>1B</td><td>&#9;dec de</td></tr>
+<tr class="r0"><td class="c">9F32</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r1"><td class="c">9F35</td><td>20&nbsp;C9</td><td>&#9;jr nz,Executed_Instruction</td></tr>
+<tr class="r0"><td class="c">9F37</td><td>21&nbsp;21&nbsp;A0</td><td>&#9;ld hl,err_Pointer_Overflow</td></tr>
+<tr class="r1"><td class="c">9F3A</td><td>C3&nbsp;F2&nbsp;9F</td><td>&#9;jp Quit_Error</td></tr>
+<tr><td class="l" colspan="4">ByteInc</td></tr>
+<tr class="r0"><td class="c">9F3D</td><td>34</td><td>&#9;inc (hl)</td></tr>
+<tr class="r1"><td class="c">9F3E</td><td>18&nbsp;C0</td><td>&#9;jr Executed_Instruction</td></tr>
+<tr><td class="l" colspan="4">ByteDec</td></tr>
+<tr class="r0"><td class="c">9F40</td><td>35</td><td>&#9;dec (hl)</td></tr>
+<tr class="r1"><td class="c">9F41</td><td>18&nbsp;BD</td><td>&#9;jr Executed_Instruction</td></tr>
+<tr><td class="l" colspan="4">ByteOut</td></tr>
+<tr class="r0"><td class="c">9F43</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">9F44</td><td>FE&nbsp;0A</td><td>&#9;cp 10</td></tr>
+<tr class="r0"><td class="c">9F46</td><td>28&nbsp;05</td><td>&#9;jr z,ByteNewline</td></tr>
+<tr class="r1"><td class="c">9F48</td><td>EF&nbsp;04&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _putc</td></tr>
+<tr class="r0"><td class="c">9F4B</td><td>18&nbsp;B3</td><td>&#9;jr Executed_Instruction</td></tr>
+<tr><td class="l" colspan="4">ByteNewline</td></tr>
+<tr class="r1"><td class="c">9F4D</td><td>EF&nbsp;2E&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _newline</td></tr>
+<tr class="r0"><td class="c">9F50</td><td>18&nbsp;AE</td><td>&#9;jr Executed_Instruction</td></tr>
+<tr><td class="l" colspan="4">ByteIn</td></tr>
+<tr class="r1"><td class="c">9F52</td><td>AF</td><td>&#9;xor a</td></tr>
+<tr class="r0"><td class="c">9F53</td><td>32&nbsp;04&nbsp;87</td><td>&#9;ld (charMode),a</td></tr>
+<tr><td class="l" colspan="4">ByteInKeyLoop</td></tr>
+<tr class="r1"><td class="c">9F56</td><td>3A&nbsp;04&nbsp;87</td><td>&#9;ld a,(charMode)</td></tr>
+<tr class="r0"><td class="c">9F59</td><td>6F</td><td>&#9;ld l,a</td></tr>
+<tr class="r1"><td class="c">9F5A</td><td>26&nbsp;00</td><td>&#9;ld h,0</td></tr>
+<tr class="r0"><td class="c">9F5C</td><td>11&nbsp;1E&nbsp;A0</td><td>&#9;ld de,txt_cursors</td></tr>
+<tr class="r1"><td class="c">9F5F</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">9F60</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">9F61</td><td>EF&nbsp;01&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _putmap&#9;</td></tr>
+<tr class="r0"><td class="c">9F64</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r1"><td class="c">9F67</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9F68</td><td>28&nbsp;EC</td><td>&#9;jr z,ByteInKeyLoop</td></tr>
+<tr class="r1"><td class="c">9F6A</td><td>21&nbsp;4C&nbsp;A0</td><td>&#9;ld hl,err_Break</td></tr>
+<tr class="r0"><td class="c">9F6D</td><td>FE&nbsp;0F</td><td>&#9;cp skClear</td></tr>
+<tr class="r1"><td class="c">9F6F</td><td>CA&nbsp;F2&nbsp;9F</td><td>&#9;jp z,Quit_Error</td></tr>
+<tr class="r0"><td class="c">9F72</td><td>FE&nbsp;30</td><td>&#9;cp skAlpha</td></tr>
+<tr class="r1"><td class="c">9F74</td><td>20&nbsp;0D</td><td>&#9;jr nz,GotKeyInput</td></tr>
+<tr class="r0"><td class="c">9F76</td><td>3A&nbsp;04&nbsp;87</td><td>&#9;ld a,(charMode)</td></tr>
+<tr class="r1"><td class="c">9F79</td><td>3C</td><td>&#9;inc a</td></tr>
+<tr class="r0"><td class="c">9F7A</td><td>32&nbsp;04&nbsp;87</td><td>&#9;ld (charMode),a</td></tr>
+<tr class="r1"><td class="c">9F7D</td><td>FE&nbsp;03</td><td>&#9;cp 3</td></tr>
+<tr class="r0"><td class="c">9F7F</td><td>20&nbsp;D5</td><td>&#9;jr nz,ByteInKeyLoop</td></tr>
+<tr class="r1"><td class="c">9F81</td><td>18&nbsp;CF</td><td>&#9;jr ByteIn</td></tr>
+<tr><td class="l" colspan="4">GotKeyInput</td></tr>
+<tr class="r0"><td class="c">9F83</td><td>21&nbsp;E5&nbsp;A0</td><td>&#9;ld hl,scancodes</td></tr>
+<tr class="r1"><td class="c">9F86</td><td>01&nbsp;20&nbsp;00</td><td>&#9;ld bc,endofscancodes-scancodes</td></tr>
+<tr class="r0"><td class="c">9F89</td><td>ED&nbsp;B1</td><td>&#9;cpir</td></tr>
+<tr class="r1"><td class="c">9F8B</td><td>20&nbsp;C9</td><td>&#9;jr nz,ByteInKeyLoop</td></tr>
+<tr class="r0"><td class="c">9F8D</td><td>01&nbsp;1F&nbsp;00</td><td>&#9;ld bc,chr_nmbr-scancodes-1</td></tr>
+<tr class="r1"><td class="c">9F90</td><td>09</td><td>&#9;add hl,bc</td></tr>
+<tr class="r0"><td class="c">9F91</td><td>11&nbsp;20&nbsp;00</td><td>&#9;ld de,chr_caps-chr_nmbr</td></tr>
+<tr class="r1"><td class="c">9F94</td><td>3A&nbsp;04&nbsp;87</td><td>&#9;ld a,(charMode)</td></tr>
+<tr class="r0"><td class="c">9F97</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">9F98</td><td>28&nbsp;04</td><td>&#9;jr z,Found_Char</td></tr>
+<tr class="r0"><td class="c">9F9A</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr><td class="l" colspan="4">Set_Offset_Char</td></tr>
+<tr class="r1"><td class="c">9F9B</td><td>19</td><td>&#9;add hl,de</td></tr>
+<tr class="r0"><td class="c">9F9C</td><td>10&nbsp;FD</td><td>&#9;djnz Set_Offset_Char</td></tr>
+<tr><td class="l" colspan="4">Found_Char</td></tr>
+<tr class="r1"><td class="c">9F9E</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">9F9F</td><td>2A&nbsp;FA&nbsp;86</td><td>&#9;ld hl,(progPointer)</td></tr>
+<tr class="r1"><td class="c">9FA2</td><td>77</td><td>&#9;ld (hl),a</td></tr>
+<tr class="r0"><td class="c">9FA3</td><td>3E&nbsp;20</td><td>&#9;ld a,' '</td></tr>
+<tr class="r1"><td class="c">9FA5</td><td>EF&nbsp;01&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _putmap</td></tr>
+<tr class="r0"><td class="c">9FA8</td><td>C3&nbsp;00&nbsp;9F</td><td>&#9;jp Executed_Instruction</td></tr>
+<tr><td class="l" colspan="4">JumpForw</td></tr>
+<tr class="r1"><td class="c">9FAB</td><td>47</td><td>&#9;ld b,a</td></tr>
+<tr class="r0"><td class="c">9FAC</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">9FAD</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9FAE</td><td>C2&nbsp;00&nbsp;9F</td><td>&#9;jp nz,Executed_Instruction</td></tr>
+<tr class="r1"><td class="c">9FB1</td><td>2A&nbsp;F8&nbsp;86</td><td>&#9;ld hl,(filePointer)</td></tr>
+<tr><td class="l" colspan="4">Scan_For_Right</td></tr>
+<tr class="r0"><td class="c">9FB4</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r1"><td class="c">9FB5</td><td>ED&nbsp;5B&nbsp;00&nbsp;87</td><td>&#9;ld de,(fileEnd)</td></tr>
+<tr class="r0"><td class="c">9FB9</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r1"><td class="c">9FBC</td><td>28&nbsp;0C</td><td>&#9;jr z,Out_Of_File</td></tr>
+<tr class="r0"><td class="c">9FBE</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">9FBF</td><td>FE&nbsp;07</td><td>&#9;cp tRBrack</td></tr>
+<tr class="r0"><td class="c">9FC1</td><td>20&nbsp;F1</td><td>&#9;jr nz,Scan_For_Right</td></tr>
+<tr class="r1"><td class="c">9FC3</td><td>23</td><td>&#9;inc hl</td></tr>
+<tr class="r0"><td class="c">9FC4</td><td>22&nbsp;F8&nbsp;86</td><td>&#9;ld (filePointer),hl</td></tr>
+<tr class="r1"><td class="c">9FC7</td><td>C3&nbsp;C4&nbsp;9E</td><td>&#9;jp Next_Program_Code</td></tr>
+<tr><td class="l" colspan="4">Out_Of_File</td></tr>
+<tr class="r0"><td class="c">9FCA</td><td>21&nbsp;2E&nbsp;A0</td><td>&#9;ld hl,err_No_Right_Brace</td></tr>
+<tr class="r1"><td class="c">9FCD</td><td>18&nbsp;23</td><td>&#9;jr Quit_Error</td></tr>
+<tr><td class="l" colspan="4">JumpBack</td></tr>
+<tr class="r0"><td class="c">9FCF</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r1"><td class="c">9FD0</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r0"><td class="c">9FD1</td><td>CA&nbsp;00&nbsp;9F</td><td>&#9;jp z,Executed_Instruction</td></tr>
+<tr class="r1"><td class="c">9FD4</td><td>2A&nbsp;F8&nbsp;86</td><td>&#9;ld hl,(filePointer)</td></tr>
+<tr><td class="l" colspan="4">Scan_For_Left</td></tr>
+<tr class="r0"><td class="c">9FD7</td><td>2B</td><td>&#9;dec hl</td></tr>
+<tr class="r1"><td class="c">9FD8</td><td>ED&nbsp;5B&nbsp;02&nbsp;87</td><td>&#9;ld de,(fileStart)</td></tr>
+<tr class="r0"><td class="c">9FDC</td><td>1B</td><td>&#9;dec de</td></tr>
+<tr class="r1"><td class="c">9FDD</td><td>EF&nbsp;0C&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _cphlde</td></tr>
+<tr class="r0"><td class="c">9FE0</td><td>28&nbsp;0B</td><td>&#9;jr z,Out_Of_File_Left</td></tr>
+<tr class="r1"><td class="c">9FE2</td><td>7E</td><td>&#9;ld a,(hl)</td></tr>
+<tr class="r0"><td class="c">9FE3</td><td>FE&nbsp;06</td><td>&#9;cp tLBrack</td></tr>
+<tr class="r1"><td class="c">9FE5</td><td>20&nbsp;F0</td><td>&#9;jr nz,Scan_For_Left</td></tr>
+<tr class="r0"><td class="c">9FE7</td><td>22&nbsp;F8&nbsp;86</td><td>&#9;ld (filePointer),hl</td></tr>
+<tr class="r1"><td class="c">9FEA</td><td>C3&nbsp;C4&nbsp;9E</td><td>&#9;jp Next_Program_Code</td></tr>
+<tr><td class="l" colspan="4">Out_Of_File_Left</td></tr>
+<tr class="r0"><td class="c">9FED</td><td>21&nbsp;3D&nbsp;A0</td><td>&#9;ld hl,err_No_Left_Brace</td></tr>
+<tr class="r1"><td class="c">9FF0</td><td>18&nbsp;00</td><td>&#9;jr Quit_Error</td></tr>
+<tr><td class="l" colspan="4">Quit_Error</td></tr>
+<tr class="r0"><td class="c">9FF2</td><td>11&nbsp;07&nbsp;00</td><td>&#9;ld de,7</td></tr>
+<tr class="r1"><td class="c">9FF5</td><td>ED&nbsp;53&nbsp;4B&nbsp;84</td><td>&#9;ld (curRow),de</td></tr>
+<tr class="r0"><td class="c">9FF9</td><td>EF&nbsp;0A&nbsp;45</td><td>&#9;&#9;RST 28h\ .dw _puts</td></tr>
+<tr class="r1"><td class="c">9FFC</td><td>CD&nbsp;02&nbsp;A0</td><td>&#9;call Wait_Key</td></tr>
+<tr class="r0"><td class="c">9FFF</td><td>C3&nbsp;DF&nbsp;9D</td><td>&#9;jp LoopedFiles</td></tr>
+<tr><td class="l" colspan="4">Wait_Key</td></tr>
+<tr class="r1"><td class="c">A002</td><td>EF&nbsp;18&nbsp;40</td><td>&#9;&#9;RST 28h\ .dw _getcsc</td></tr>
+<tr class="r0"><td class="c">A005</td><td>B7</td><td>&#9;or a</td></tr>
+<tr class="r1"><td class="c">A006</td><td>28&nbsp;FA</td><td>&#9;jr z,Wait_Key</td></tr>
+<tr class="r0"><td class="c">A008</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">Quit_All</td></tr>
+<tr class="r1"><td class="c">A009</td><td>EF&nbsp;C5&nbsp;41</td><td>&#9;&#9;RST 28h\ .dw _zeroop1</td></tr>
+<tr class="r0"><td class="c">A00C</td><td>21&nbsp;DE&nbsp;A0</td><td>&#9;ld hl,pageName</td></tr>
+<tr class="r1"><td class="c">A00F</td><td>11&nbsp;78&nbsp;84</td><td>&#9;ld de,op1</td></tr>
+<tr class="r0"><td class="c">A012</td><td>01&nbsp;06&nbsp;00</td><td>&#9;ld bc,6</td></tr>
+<tr class="r1"><td class="c">A015</td><td>ED&nbsp;B0</td><td>&#9;ldir</td></tr>
+<tr class="r0"><td class="c">A017</td><td>EF&nbsp;F1&nbsp;42</td><td>&#9;&#9;RST 28h\ .dw _chkfindsym</td></tr>
+<tr class="r1"><td class="c">A01A</td><td>EF&nbsp;51&nbsp;43</td><td>&#9;&#9;RST 28h\ .dw _delvar</td></tr>
+<tr class="r0"><td class="c">A01D</td><td>C9</td><td>&#9;ret</td></tr>
+<tr><td class="l" colspan="4">txt_cursors</td></tr>
+<tr class="r1"><td class="c">A01E</td><td>E0&nbsp;E2&nbsp;E3</td><td>&#9;.db LcurO,LcurOcapA,LcurOa</td></tr>
+<tr><td class="l" colspan="4">err_Pointer_Overflow</td></tr>
+<tr class="r0"><td class="c">A021</td><td>45&nbsp;52&nbsp;52&nbsp;3A&nbsp;20&nbsp;50&nbsp;6F&nbsp;69&nbsp;<br />6E&nbsp;74&nbsp;65&nbsp;72&nbsp;00</td><td>&#9;.db &quot;ERR: Pointer&quot;,0</td></tr>
+<tr><td class="l" colspan="4">err_No_Right_Brace</td></tr>
+<tr class="r1"><td class="c">A02E</td><td>45&nbsp;52&nbsp;52&nbsp;3A&nbsp;20&nbsp;4D&nbsp;69&nbsp;73&nbsp;<br />73&nbsp;69&nbsp;6E&nbsp;67&nbsp;20&nbsp;5D&nbsp;00</td><td>&#9;.db &quot;ERR: Missing ]&quot;,0</td></tr>
+<tr><td class="l" colspan="4">err_No_Left_Brace</td></tr>
+<tr class="r0"><td class="c">A03D</td><td>45&nbsp;52&nbsp;52&nbsp;3A&nbsp;20&nbsp;4D&nbsp;69&nbsp;73&nbsp;<br />73&nbsp;69&nbsp;6E&nbsp;67&nbsp;20&nbsp;C1&nbsp;00</td><td>&#9;.db &quot;ERR: Missing &quot;,LlBrack,0</td></tr>
+<tr><td class="l" colspan="4">err_Break</td></tr>
+<tr class="r1"><td class="c">A04C</td><td>45&nbsp;52&nbsp;52&nbsp;3A&nbsp;20&nbsp;42&nbsp;72&nbsp;65&nbsp;<br />61&nbsp;6B&nbsp;00</td><td>&#9;.db &quot;ERR: Break&quot;,0</td></tr>
+<tr><td class="l" colspan="4">end_File</td></tr>
+<tr class="r0"><td class="c">A057</td><td>50&nbsp;72&nbsp;65&nbsp;73&nbsp;73&nbsp;20&nbsp;61&nbsp;6E&nbsp;<br />79&nbsp;20&nbsp;6B&nbsp;65&nbsp;79&nbsp;00</td><td>&#9;.db &quot;Press any key&quot;,0</td></tr>
+<tr><td class="l" colspan="4">txt_title</td></tr>
+<tr class="r1"><td class="c">A065</td><td>42&nbsp;72&nbsp;61&nbsp;69&nbsp;6E&nbsp;66&nbsp;75&nbsp;63&nbsp;<br />6B&nbsp;20&nbsp;49&nbsp;6E&nbsp;74&nbsp;65&nbsp;72&nbsp;70&nbsp;<br />72&nbsp;65&nbsp;74&nbsp;65&nbsp;72&nbsp;00</td><td>&#9;.db &quot;Brainfuck Interpreter&quot;,0</td></tr>
+<tr class="r0"><td class="c">A07B</td><td>42&nbsp;65&nbsp;6E&nbsp;20&nbsp;52&nbsp;79&nbsp;76&nbsp;65&nbsp;<br />73&nbsp;20&nbsp;32&nbsp;30&nbsp;30&nbsp;34&nbsp;00</td><td>&#9;.db &quot;Ben Ryves 2004&quot;,0</td></tr>
+<tr class="r1"><td class="c">A08A</td><td>68&nbsp;74&nbsp;74&nbsp;70&nbsp;3A&nbsp;2F&nbsp;2F&nbsp;77&nbsp;<br />77&nbsp;77&nbsp;2E&nbsp;62&nbsp;65&nbsp;6E&nbsp;72&nbsp;79&nbsp;<br />76&nbsp;65&nbsp;73&nbsp;2E&nbsp;63&nbsp;6F&nbsp;6D&nbsp;00</td><td>&#9;.db &quot;http://www.benryves.com&quot;,0</td></tr>
+<tr class="r0"><td class="c">A0A2</td><td>46&nbsp;69&nbsp;6C&nbsp;65&nbsp;3A&nbsp;20&nbsp;00</td><td>&#9;.db &quot;File: &quot;,0</td></tr>
+<tr><td class="l" colspan="4">txt_title_2</td></tr>
+<tr class="r1"><td class="c">A0A9</td><td>41&nbsp;6C&nbsp;70&nbsp;68&nbsp;61&nbsp;3A&nbsp;20&nbsp;4E&nbsp;<br />65&nbsp;78&nbsp;74&nbsp;20&nbsp;66&nbsp;69&nbsp;6C&nbsp;65&nbsp;<br />00</td><td>&#9;.db &quot;Alpha: Next file&quot;,0</td></tr>
+<tr class="r0"><td class="c">A0BA</td><td>32&nbsp;6E&nbsp;64&nbsp;3A&nbsp;20&nbsp;52&nbsp;75&nbsp;6E&nbsp;<br />20&nbsp;70&nbsp;72&nbsp;6F&nbsp;67&nbsp;72&nbsp;61&nbsp;6D&nbsp;<br />00</td><td>&#9;.db &quot;2nd: Run program&quot;,0</td></tr>
+<tr class="r1"><td class="c">A0CB</td><td>43&nbsp;6C&nbsp;65&nbsp;61&nbsp;72&nbsp;3A&nbsp;20&nbsp;51&nbsp;<br />75&nbsp;69&nbsp;74&nbsp;00</td><td>&#9;.db &quot;Clear: Quit&quot;,0</td></tr>
+<tr><td class="l" colspan="4">scanFileName</td></tr>
+<tr class="r0"><td class="c">A0D7</td><td>42&nbsp;46&nbsp;50&nbsp;52&nbsp;4F&nbsp;47&nbsp;3F</td><td>&#9;.db &quot;BFPROG&quot;,tEnter</td></tr>
+<tr><td class="l" colspan="4">pageName</td></tr>
+<tr class="r1"><td class="c">A0DE</td><td>05&nbsp;62&nbsp;66&nbsp;74&nbsp;6D&nbsp;70&nbsp;00</td><td>&#9;.db progobj,&quot;bftmp&quot;,0</td></tr>
+<tr><td class="l" colspan="4">scancodes</td></tr>
+<tr class="r0"><td class="c">A0E5</td><td>2F&nbsp;27&nbsp;1F</td><td>&#9;.db skMath,$27,skPrgm&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A0E8</td><td>2E&nbsp;26&nbsp;1E</td><td>&#9;.db skRecip,skSin,skCos&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r0"><td class="c">A0EB</td><td>16&nbsp;0E&nbsp;2D</td><td>&#9;.db skTan,skPower,$2D&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A0EE</td><td>25&nbsp;1D&nbsp;15</td><td>&#9;.db skComma,skLParen,skRParen&#9;&#9;&#9;</td></tr>
+<tr class="r0"><td class="c">A0F1</td><td>0D&nbsp;2C&nbsp;24</td><td>&#9;.db skDiv,skLog,sk7&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A0F4</td><td>1C&nbsp;14&nbsp;0C</td><td>&#9;.db sk8,sk9,skMul&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r0"><td class="c">A0F7</td><td>2B&nbsp;23&nbsp;1B</td><td>&#9;.db skLn,sk4,sk5&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A0FA</td><td>13&nbsp;0B&nbsp;2A</td><td>&#9;.db sk6,skSub,SkStore&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r0"><td class="c">A0FD</td><td>22&nbsp;1A</td><td>&#9;.db sk1,sk2&#9;&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r1"><td class="c">A0FF</td><td>12&nbsp;0A&nbsp;21</td><td>&#9;.db sk3,skAdd,sk0&#9;&#9;&#9;&#9;</td></tr>
+<tr class="r0"><td class="c">A102</td><td>19&nbsp;11&nbsp;09</td><td>&#9;.db skDecPnt,skChs,skEnter&#9;&#9;&#9;</td></tr>
+<tr><td class="l" colspan="4">endofscancodes</td></tr>
+<tr><td class="l" colspan="4">chr_nmbr</td></tr>
+<tr class="r1"><td class="c">A105</td><td>41&nbsp;42&nbsp;43&nbsp;44&nbsp;45&nbsp;46&nbsp;47&nbsp;5E&nbsp;<br />49&nbsp;2C&nbsp;28&nbsp;29&nbsp;2F&nbsp;4E&nbsp;37&nbsp;38&nbsp;<br />39&nbsp;2A&nbsp;53&nbsp;34&nbsp;35&nbsp;36&nbsp;2D&nbsp;58&nbsp;<br />31&nbsp;32&nbsp;33&nbsp;2B&nbsp;30&nbsp;2E&nbsp;D2&nbsp;0A</td><td>chr_nmbr: .db &quot;ABCDEFG^I,()/N789*S456-X123+0.&quot; \.db Lhyphen,10</td></tr>
+<tr><td class="l" colspan="4">chr_caps</td></tr>
+<tr class="r0"><td class="c">A125</td><td>41&nbsp;42&nbsp;43&nbsp;44&nbsp;45&nbsp;46&nbsp;47&nbsp;48&nbsp;<br />49&nbsp;4A&nbsp;4B&nbsp;4C&nbsp;4D&nbsp;4E&nbsp;4F&nbsp;50&nbsp;<br />51&nbsp;52&nbsp;53&nbsp;54&nbsp;55&nbsp;56&nbsp;57&nbsp;58&nbsp;<br />59&nbsp;5A&nbsp;5B&nbsp;22&nbsp;20&nbsp;3A&nbsp;3F&nbsp;0A</td><td>chr_caps: .db &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ[&quot;,Lquote \ .db &quot; :?&quot;,10</td></tr>
+<tr><td class="l" colspan="4">chr_lowr</td></tr>
+<tr class="r1"><td class="c">A145</td><td>61&nbsp;62&nbsp;63&nbsp;64&nbsp;65&nbsp;66&nbsp;67&nbsp;68&nbsp;<br />69&nbsp;6A&nbsp;6B&nbsp;6C&nbsp;6D&nbsp;6E&nbsp;6F&nbsp;70&nbsp;<br />71&nbsp;72&nbsp;73&nbsp;74&nbsp;75&nbsp;76&nbsp;77&nbsp;78&nbsp;<br />79&nbsp;7A&nbsp;5B&nbsp;27&nbsp;20&nbsp;3A&nbsp;21&nbsp;0A</td><td>chr_lowr: .db &quot;abcdefghijklmnopqrstuvwxyz[&quot;,Lapostrophe \ .db &quot; :!&quot;,10</td></tr>
+</table>
+</body></html>

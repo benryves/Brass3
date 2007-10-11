@@ -1,0 +1,113 @@
+body, body * {
+	font-family: verdana;
+	font-size: 8pt;
+}
+p {
+	padding: 0px 0px 10px 0px;
+	margin: 0px;
+}
+ul {
+	margin: 0px 0px 0px 20px;
+	padding: 0px;
+}
+h1, h2 {
+	margin: 0px;
+	padding: 6px 0px;
+}
+html, body {
+	padding: 0px;
+	margin: 0px;
+	background-color: white;
+}
+div.header {
+	background-color: #D4DFFF;
+	border-bottom: 1px solid #C8CDDE;
+	padding: 2px 8px;
+}
+div.header p.plugincollection {
+	font-size: 7pt;
+	color: #039;
+	padding-top: 6px;
+	padding-bottom: 2px;
+}
+div.header h1 {
+	padding-top: 0px;
+	color: #039;
+	font-size: 11pt;
+	font-weight: bold;
+}
+div.content {
+	padding: 16px;
+}
+tt, tt *, pre, pre * {
+	font-family: consolas, "courier new", monospace;
+}
+pre.syntax, pre.example, div.warning {
+	background-color: #F7F7FF;
+	padding: 8px;
+	border-bottom: 1px solid #D5D5D3;
+	margin: 5px 0px;
+}
+h3.example, h2.warning {
+	padding: 3px;
+	background-color: #EFEFF7;
+	border-bottom: 1px solid #D5D5D3;
+	margin: 5px 0px -4px 0px;
+}
+h3.example, h3.example *, h2.warning, h2.warning * {
+	color: #006;
+	font-size: 8pt;
+}
+h2.warning {
+	background-image: url('WarningImgUrl');
+	padding-left: 22px;
+	background-position: 2px center;
+	background-repeat: no-repeat;
+}
+pre.example a {
+	text-decoration: none;
+}
+pre.example a:hover {
+	text-decoration: underline;
+}
+pre.example span.comment {
+	color: #060;
+}
+pre.example span.string {
+	color: #900;
+}
+pre.example span.directive {
+	color: #009;
+}
+pre.example span.function {
+	color: #069;
+}
+a {
+	color: #009;
+}
+p.undocumented {
+	color: #999;
+}
+table {
+	width: 100%;
+}
+table td, table th {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	padding: 5px 5px 0px 5px;
+	margin: 1px;
+	text-align: left;
+	vertical-align: top;	
+}
+table td {
+	background-color: #F7F7FF;
+	border-bottom-color: #D5D5D3;
+}
+table th {
+	background-color: #EFEFF7;
+	border-bottom-color: #C8CDDE;
+}
+table th, table th * {
+	color: #006;
+	text-decoration: none;
+}

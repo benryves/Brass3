@@ -1,0 +1,118 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{75305F27-C13B-4904-9EC4-6FD352230601}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brass3</RootNamespace>
+    <AssemblyName>Brass</AssemblyName>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Brass\Attributes\CodeExampleAttribute.cs" />
+    <Compile Include="Brass\Attributes\SatisfiesAssignmentRequirementAttribute.cs" />
+    <Compile Include="Brass\Attributes\ParseBehaviourChangeAttribute.cs" />
+    <Compile Include="Brass\Attributes\SeeAlsoAttribute.cs" />
+    <Compile Include="Brass\Attributes\RemarksAttribute.cs" />
+    <Compile Include="Brass\Attributes\SyntaxAttribute.cs" />
+    <Compile Include="Brass\Compiler\Compile Process.cs" />
+    <Compile Include="Brass\AliasedPluginCollection.cs" />
+    <Compile Include="Brass\Compiler\Output Data Filtering.cs" />
+    <Compile Include="Brass\Compiler\Public Methods\Messages.cs" />
+    <Compile Include="Brass\Compiler\Reset State.cs" />
+    <Compile Include="Brass\Compiler\Public Methods\Data Structures.cs" />
+    <Compile Include="Brass\Compiler\Source Statement.cs" />
+    <Compile Include="Brass\Compiler\Events.cs" />
+    <Compile Include="Brass\Compiler\Project.cs" />
+    <Compile Include="Brass\Compiler\Properties.cs" />
+    <Compile Include="Brass\Compiler\Public Methods\Flow Control.cs" />
+    <Compile Include="Brass\Compiler\Public Methods\Data Output.cs" />
+    <Compile Include="Brass\Compiler\Public Methods\Plugin Management.cs" />
+    <Compile Include="Brass\Compiler\Defined.cs" />
+    <Compile Include="Brass\Default String Encoder.cs" />
+    <Compile Include="Brass\FunctionCollection.cs" />
+    <Compile Include="Brass\Exceptions\CompilerExpection.cs" />
+    <Compile Include="Brass\Exceptions\DirectiveArgumentException.cs" />
+    <Compile Include="Brass\Exceptions\ParseErrorException.cs" />
+    <Compile Include="Brass\Exceptions\LabelException.cs" />
+    <Compile Include="Brass\Exceptions\ExpressionSyntaxException.cs" />
+    <Compile Include="Brass\Exceptions\LabelNotFoundException.cs" />
+    <Compile Include="Brass\Parsing\Data Structure.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Constructor.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Arguments.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Syntax Colours.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Manipulation.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Strings.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Operator.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Evaluation.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\Token.cs" />
+    <Compile Include="Brass\Plugins\IDataStructure.cs" />
+    <Compile Include="Brass\Plugins\IListingWriter.cs" />
+    <Compile Include="Brass\Plugins\INumberEncoding.cs" />
+    <Compile Include="Brass\Plugins\IStringEncoding.cs" />
+    <Compile Include="Brass\Plugins\IOutputModifier.cs" />
+    <Compile Include="Brass\Plugins\IOutputWriter.cs" />
+    <Compile Include="Brass\Plugins\IAliasedPlugin.cs" />
+    <Compile Include="Brass\Plugins\IFunction.cs" />
+    <Compile Include="Brass\Plugins\IPlugin.cs" />
+    <Compile Include="Brass\Plugins\IAssembler.cs" />
+    <Compile Include="Brass\Compiler\Compiler.cs" />
+    <Compile Include="Brass\Plugins\IDirective.cs" />
+    <Compile Include="Brass\NamedPluginCollection.cs" />
+    <Compile Include="Brass\General.cs" />
+    <Compile Include="Brass\Label.cs" />
+    <Compile Include="Brass\LabelCollection.cs" />
+    <Compile Include="Brass\Compiler\Output Data.cs" />
+    <Compile Include="Brass\Attributes\WarningAttribute.cs" />
+    <Compile Include="Brass\Parsing\Tokenised Source\TokenisedSource.cs" />
+    <Compile Include="Brass\Parsing\Assembly Reader.cs" />
+    <Compile Include="Brass\Project.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\test.txt" />
+    <Content Include="Documentation\Directives.txt" />
+    <Content Include="Documentation\Expressions.txt" />
+    <Content Include="Documentation\Project Format.txt" />
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\Test.brassproj" />
+    <None Include="Profiles\Classic.brpf" />
+    <None Include="Profiles\Z80.brpf" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

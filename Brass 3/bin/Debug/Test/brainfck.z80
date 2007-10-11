@@ -1,0 +1,417 @@
+#define TI83P
+
+; ==================================================================================================
+; Headers
+; ==================================================================================================
+
+#define equ .equ
+#define EQU .equ
+#define END .end
+
+; ==================================================================================================
+; TI-83 Plus Ion
+; ==================================================================================================
+
+#ifdef TI83P
+#define	bcall(label)	RST 28h \ .dw label
+.org 9D93h
+.db $BB,$6D
+	ret
+	jr nc,Init_All
+#include "ti83plus.inc"	;not included in download - you should have it!
+#include "ion8X.inc"
+#endif
+
+; ==================================================================================================
+; Variables
+; ==================================================================================================
+
+
+#define m savesscreen
+fileL = m+0
+foundFile = m+2
+fileNameMem = m+3
+filePointer = m+12
+progPointer = m+14
+pagePointer = m+16
+pageEnd	 = m+18
+fileEnd = m+20
+fileStart = m+22
+charMode = m+24
+Description:
+.db "Brainfuck Interpreter",0
+
+Init_All:
+	im 1
+	set appAutoScroll, (IY + appFlags)
+	bcall(_memchk)
+	ld de,10000
+	bcall(_cphlde)
+	ret c
+
+	bcall(_zeroop1)
+	ld hl,pageName
+	ld de,op1
+	ld bc,6
+	ldir
+	ld hl,9999
+	bcall(_createprog)
+	inc de
+	inc de
+	ld (pagePointer),de
+	ld hl,9999
+	add hl,de
+	ld (pageEnd),hl
+
+LoopedFiles:
+	xor a
+	ld (fileNameMem+8),a
+	ld (foundFile),a
+	bcall(_zeroop1)
+	ld a,progobj
+	ld (op1),a
+
+	bcall(_findalphaup)
+	;This gets the 1st variable
+
+Check_Next_Prog:
+	bcall(_chkfindsym)
+	jp c,Quit_All
+
+	ld a,(de)
+	ld l,a
+	inc de
+	ld a,(de)
+	ld h,a
+	inc de
+	ld (fileL),de
+	add hl,de
+	ld (fileEnd),hl
+	ld hl,scanFileName
+	ld b,6	;2 chars to check
+Check_Next_Char:
+	ld a,(de)
+	xor (hl)
+	jr nz,Find_Next_File
+	inc hl
+	inc de
+	djnz Check_Next_Char
+	;OK, so we've found a match!
+	jr Found_Match
+
+Find_Next_File:
+	bcall(_findalphaup)
+	jr nc,Check_Next_Prog
+
+	;At this point, we've run off the end of the table.
+	ld a,(foundFile)
+	or a
+	jp z,Quit_All
+	jr LoopedFiles
+
+Found_Match:
+	inc de
+	ld (fileStart),de
+	ld a,1
+	ld (foundFile),a
+	ld hl,op1+1
+	ld de,fileNameMem
+	ld bc,8
+	ldir
+
+	set textwrite, (iy+sGrFlags)
+
+	bcall(_grbufclr)
+
+	ld hl,txt_title
+yp EQU 0
+	ld de,1+(256*yp) \ ld (penCol),de \ bcall(_vputs)
+	ld de,1+(256*(yp+7)) \ ld (penCol),de \ bcall(_vputs)
+	ld de,1+(256*(yp+14)) \ ld (penCol),de \ bcall(_vputs)
+
+	ld de,1+(256*28) \ ld (penCol),de \ bcall(_vputs)
+
+	ld hl,fileNameMem
+	bcall(_vputs)
+
+yp2 EQU 43
+
+	ld hl,txt_title_2
+	ld de,1+(256*yp2) \ ld (penCol),de \ bcall(_vputs)
+	ld de,1+(256*(yp2+7)) \ ld (penCol),de \ bcall(_vputs)
+	ld de,1+(256*(yp2+14)) \ ld (penCol),de \ bcall(_vputs)
+
+	call ionFastCopy
+
+	res textwrite, (iy+sgrFlags)
+
+
+Key_Find_Loop:
+	bcall(_getcsc)
+	cp skAlpha
+	jp z,Find_Next_File
+	cp skClear
+	jp z,Quit_All
+	cp sk2nd
+	jr nz,Key_Find_Loop
+
+;Load and execute the BF program!
+
+
+	bcall(_clrlcdfull)
+	bcall(_homeup)
+	xor a
+	ld (charMode),a
+	ld hl,(pagePointer)
+	ld (progPointer),hl
+	ld bc,9999
+	bcall(_memset)
+
+	ld hl,(fileStart)
+	ld (filePointer),hl
+
+Next_Program_Code:
+
+	bcall(_getcsc)
+	cp skClear
+	jr nz,No_Interrupt
+	ld hl,err_Break
+	jp Quit_Error
+No_Interrupt:
+	ld hl,(filePointer)
+	ld a,(hl)
+
+	ld hl,(progPointer)
+	cp tGT \ jp z,PointerInc
+	cp tLT \ jp z,PointerDec
+	cp tAdd \ jp z,ByteInc
+	cp tSub \ jp z,ByteDec
+	cp tDecPt \ jp z,ByteOut
+	cp tComma \ jp z,ByteInKeyLoop
+	cp tLBrack \ jp z,JumpForw
+	cp tRBrack \ jp z,JumpBack
+	
+
+
+Executed_Instruction:
+	; No instruction!
+
+	ld hl,(filePointer)
+	inc hl
+	ld (filePointer),hl
+	ld de,(fileEnd)
+	bcall(_cphlde)
+	jr c,Next_Program_Code
+
+	;we've run out of code!
+	ld hl,end_File
+	jp Quit_Error
+	
+PointerInc:
+	inc hl
+	ld (progPointer),hl
+	ld de,(pageEnd)
+	bcall(_cphlde)
+	jr nz,Executed_Instruction
+
+	ld hl,err_Pointer_Overflow
+	jp Quit_Error
+PointerDec:
+	dec hl
+	ld (progPointer),hl
+	ld de,(pagePointer)
+	dec de
+	bcall(_cphlde)
+	jr nz,Executed_Instruction
+	ld hl,err_Pointer_Overflow
+	jp Quit_Error
+ByteInc:
+	inc (hl)
+	jr Executed_Instruction
+ByteDec:
+	dec (hl)
+	jr Executed_Instruction
+ByteOut:
+	ld a,(hl)
+	cp 10
+	jr z,ByteNewline
+	bcall(_putc)
+	jr Executed_Instruction
+ByteNewline:
+	bcall(_newline)
+	jr Executed_Instruction
+
+ByteIn:
+	;The hardest instruction to deal with.
+	xor a
+	ld (charMode),a
+ByteInKeyLoop:
+	ld a,(charMode)
+	ld l,a
+	ld h,0
+	ld de,txt_cursors
+	add hl,de
+	ld a,(hl)
+	bcall(_putmap)	
+	bcall(_getcsc)
+	or a
+	jr z,ByteInKeyLoop
+	ld hl,err_Break
+	cp skClear
+	jp z,Quit_Error
+	
+	cp skAlpha
+	jr nz,GotKeyInput
+	ld a,(charMode)
+	inc a
+	ld (charMode),a
+	cp 3
+	jr nz,ByteInKeyLoop
+	jr ByteIn
+GotKeyInput:
+	;Woo. At this point we've been thrown a keypress.
+
+	ld hl,scancodes
+	ld bc,endofscancodes-scancodes
+
+	cpir
+	jr nz,ByteInKeyLoop
+
+	ld bc,chr_nmbr-scancodes-1
+	add hl,bc
+
+
+	ld de,chr_caps-chr_nmbr
+	ld a,(charMode)
+	or a
+	jr z,Found_Char
+	ld b,a
+Set_Offset_Char:
+	add hl,de
+	djnz Set_Offset_Char
+Found_Char:
+	ld a,(hl)
+	ld hl,(progPointer)
+	ld (hl),a
+	ld a,' '
+	bcall(_putmap)
+	jp Executed_Instruction
+JumpForw:
+	ld b,a
+	ld a,(hl)
+	or a
+	jp nz,Executed_Instruction
+	; Now we need to advance to find the matching ]
+
+	ld hl,(filePointer)
+Scan_For_Right:
+	inc hl
+	ld de,(fileEnd)
+	bcall(_cphlde)
+	jr z,Out_Of_File
+	ld a,(hl)
+	cp tRBrack
+	jr nz,Scan_For_Right
+	;We've hit the rightmost bracket.
+	inc hl
+	ld (filePointer),hl
+	jp Next_Program_Code
+		
+Out_Of_File:
+	ld hl,err_No_Right_Brace
+	jr Quit_Error
+
+JumpBack:
+	ld a,(hl)
+	or a
+	jp z,Executed_Instruction
+
+	ld hl,(filePointer)
+Scan_For_Left:
+	dec hl
+	ld de,(fileStart)
+	dec de
+	bcall(_cphlde)
+	jr z,Out_Of_File_Left
+	ld a,(hl)
+	cp tLBrack
+	jr nz,Scan_For_Left
+	;We've hit the leftmost bracket.
+	ld (filePointer),hl
+	jp Next_Program_Code
+Out_Of_File_Left:
+	ld hl,err_No_Left_Brace
+	jr Quit_Error
+
+
+Quit_Error:
+	ld de,7
+	ld (curRow),de
+	bcall(_puts)
+	call Wait_Key
+	jp LoopedFiles
+
+Wait_Key:
+	bcall(_getcsc)
+	or a
+	jr z,Wait_Key
+	ret
+
+Quit_All:
+	bcall(_zeroop1)
+	ld hl,pageName
+	ld de,op1
+	ld bc,6
+	ldir
+	bcall(_chkfindsym)
+	bcall(_delvar)
+	ret
+txt_cursors:
+	.db LcurO,LcurOcapA,LcurOa
+err_Pointer_Overflow:
+	.db "ERR: Pointer",0
+err_No_Right_Brace:
+	.db "ERR: Missing ]",0
+err_No_Left_Brace:
+	.db "ERR: Missing ",LlBrack,0
+err_Break:
+	.db "ERR: Break",0
+end_File:
+	.db "Press any key",0
+
+txt_title:
+	.db "Brainfuck Interpreter",0
+	.db "Ben Ryves 2004",0
+	.db "http://www.benryves.com",0
+	.db "File: ",0
+txt_title_2:
+	.db "Alpha: Next file",0
+	.db "2nd: Run program",0
+	.db "Clear: Quit",0
+scanFileName:
+	.db "BFPROG",tEnter
+pageName:
+	.db progobj,"bftmp",0
+
+scancodes:
+	.db skMath,$27,skPrgm				; ABC
+	.db skRecip,skSin,skCos				; DEF
+	.db skTan,skPower,$2D				; GHI
+	.db skComma,skLParen,skRParen			; JKL
+	.db skDiv,skLog,sk7				; MNO
+	.db sk8,sk9,skMul				; PQR
+	.db skLn,sk4,sk5				; STU
+	.db sk6,skSub,SkStore				; VWX
+	.db sk1,sk2					; YZ
+	.db sk3,skAdd,sk0				; theta " ' '
+	.db skDecPnt,skChs,skEnter			; : ? CR
+endofscancodes:
+
+chr_nmbr: .db "ABCDEFG^I,()/N789*S456-X123+0." \.db Lhyphen,10
+chr_caps: .db "ABCDEFGHIJKLMNOPQRSTUVWXYZ[",Lquote \ .db " :?",10
+chr_lowr: .db "abcdefghijklmnopqrstuvwxyz[",Lapostrophe \ .db " :!",10
+
+.end
+END
+
+

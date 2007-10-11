@@ -1,0 +1,17 @@
+bin\Debug\Help.exe
+bin\Debug\Help.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Help.HelpInterface.resources
+obj\Debug\Help.HelpViewer.resources
+obj\Debug\Help.Properties.Resources.resources
+obj\Debug\Help.csproj.GenerateResource.Cache
+obj\Debug\Help.exe
+obj\Debug\Help.pdb
+bin\Debug\Brass.exe
+bin\Debug\Brass.pdb
+..\bin\Debug\Help.exe
+..\bin\Debug\Help.pdb
+..\Brass3\bin\Debug\Help.exe
+..\Brass3\bin\Debug\Help.pdb
+..\Brass 3\bin\Debug\Help.exe
+..\Brass 3\bin\Debug\Help.pdb

@@ -1,0 +1,658 @@
+#define TI83P
+
+; ==================================================================================================
+; Headers
+; ==================================================================================================
+
+#define equ .equ
+#define EQU .equ
+#define END .end
+
+; ==================================================================================================
+; TI-83 Plus Ion
+; ==================================================================================================
+
+#ifdef TI83P
+#define	bcall(label)	RST 28h \ .dw label
+.org 9D93h
+.db $BB,$6D
+	ret
+	jr nc,Init_All
+#include "ti83plus.inc"
+#include "ion8X.inc"
+#endif
+
+; ==================================================================================================
+; TI-83 Plus MirageOS
+; ==================================================================================================
+
+#ifdef TI83M
+#define	bcall(label)	RST 28h \ .dw label
+#include "ti83plus.inc"
+#include "mirage.inc"
+	.org 9D93h
+	.db $BB,$6D
+	ret
+.db 1
+.db %00000000, %00000000
+.db %00110000, %00000000
+.db %01001110, %11111100
+.db %00000000, %00000000
+.db %01111111, %11111100
+.db %11011010, %10110110
+.db %01000010, %10000100
+.db %00111100, %01111000
+.db %00000000, %00000000
+.db %11111111, %11111110
+.db %00010101, %00010000
+.db %01110101, %11010100
+.db %00110101, %10110000
+.db %01110111, %01110100
+.db %00010001, %00010100
+#endif
+
+; ==================================================================================================
+; TI-83 Ion
+; ==================================================================================================
+
+#ifdef TI83I
+.org 9327h
+	ret
+	jr nc,Init_All
+#include "ti83asm.inc"
+#include "tokens.inc"
+#include "ion83.inc"
+
+;TI-83 Plus compatibility issues:
+#define	bcall(label)	call label
+#endif
+
+; ==================================================================================================
+; Variables
+; ==================================================================================================
+
+EMem		.equ	SavesScreen
+inputPos	.equ	EMem+0		;2
+queryPos	.equ	EMem+2		;2
+wordToFind	.equ	EMem+4		;2
+wordToFindTemp	.equ	EMem+6		;2
+inputAfterKey	.equ	EMem+8		;2
+conjugateLook	.equ	EMem+10		;2
+colCount	.equ	EMem+12		;1
+charTemp	.equ	EMem+13		;2
+conjugateWord	.equ	EMem+015
+displayWord	.equ	EMem+165
+scanWord	.equ	EMem+315
+inputBuffer	.equ	EMem+465
+
+
+; ==================================================================================================
+; Description
+; ==================================================================================================
+
+Description:
+.db "Eliza - Ben Ryves",0
+
+; ==================================================================================================
+; Program Code
+; ==================================================================================================
+
+Init_All:
+	ld hl,inputBuffer
+	ld bc,150
+	xor a
+	bcall(_memset)
+
+	set appAutoScroll, (IY + appFlags)
+	set textWrite, (IY+sgrflags)
+	ld hl,2+(256*1)
+	ld (pencol),hl
+	ld a,' '
+	ld (inputBuffer),a
+	ld hl,txt_Start
+	call Put_Line
+Start_Input:
+	call ionFastCopy
+	call New_Line
+	ld hl,inputBuffer+1
+	ld a,-1
+	ld (inputBuffer+149),a
+	ld (inputPos),hl
+Await_Input:
+
+	ld hl,(inputPos)
+	ld a,(hl)
+	cp -1
+	jr z,Entered_Text
+	ld a,'_'
+	call Put_Char
+	ld a,(penCol)
+	sub 4
+	ld (penCol),a
+	call Get_Key
+
+	cp skClear
+	ret z
+
+	cp skDel
+	jr nz,Not_Delete_Key
+	
+	ld hl,(inputPos)
+	ld de,inputBuffer+1
+	bcall(_cphlde)
+	jr z,Await_Input
+
+	dec hl
+	ld (inputPos),hl
+
+	ld a,(penCol)
+	cp 2
+	jr nz,Not_Deleting_First_On_Line
+
+	ld a,' '
+	call Put_Char
+
+	ld a,(penRow)
+	sub 6
+	ld (penRow),a
+
+	ld a,2+(4*23)
+	ld (penCol),a
+
+Not_Deleting_First_On_Line:
+	ld hl,(penCol)
+	push hl
+	ld a,' '
+	call Put_Char
+	pop hl
+	ld (penCol),hl
+	ld a,(penCol)
+	sub 4
+	ld (penCol),a
+
+	jr Await_Input
+	 
+
+Not_Delete_Key:
+	cp skEnter
+	jr z,Entered_Text
+
+	ld hl,scancodes
+	ld bc,endofscancodes-scancodes
+	cpir
+	jr nz,Await_Input
+	ld bc,chr_caps-scancodes-1
+	add hl,bc
+	ld a,(hl)
+	ld hl,(inputPos)
+	ld (hl),a
+	inc hl
+	ld (inputPos),hl
+	call Put_Char
+	jp Await_Input
+
+Entered_Text:
+
+	ld hl,(inputPos)
+	ld de,inputBuffer+1
+	bcall(_cphlde)
+	jp z,Await_Input
+
+	ld a,' '
+	call Put_Char
+	call New_Line
+	ld hl,(inputPos)
+	ld a,' '
+	ld (hl),a
+	inc hl
+	xor a
+	ld (hl),a
+	
+
+	; Check keywords.
+
+	ld hl,ReplyIndex
+	ld (queryPos),hl
+
+Check_Next_Query:
+	ld hl,(queryPos)
+	ld e,(hl)
+	inc hl
+	ld d,(hl)
+	ld hl,0
+	bcall(_cphlde)
+	jp z,No_Matches
+
+	; DE is now pointer to first query check
+
+Find_Next_Word_Query_Group:
+	ld (wordToFind),de
+	ld hl,inputBuffer
+	call Find_Word
+	ld (inputAfterKey),hl
+
+	jr z,Found_Match
+
+	ld de,(wordToFind)
+	call Scan_To_End_Find_Word
+	ld a,(de)
+	cp -1
+	jr nz,Find_Next_Word_Query_Group
+	
+
+	ld hl,(queryPos)
+	ld de,6
+	add hl,de
+	ld (queryPos),hl
+	jr Check_Next_Query
+
+No_Matches:
+	ld hl,(queryPos)
+	ld de,-6
+	add hl,de
+	ld (queryPos),hl
+Found_Match:
+	ld hl,(queryPos)
+	inc hl
+	inc hl
+	ld e,(hl)
+	inc hl
+	ld d,(hl)
+
+	push de
+
+Skip_Stars_When_Cycling:
+	call Scan_To_End_Find_Word
+	ld a,(de)
+	cp '*'
+	jr z,Skip_Stars_When_Cycling
+	cp -1
+	jr nz,Not_End_Group
+	inc hl
+	ld e,(hl)
+	inc hl
+	ld d,(hl)
+	dec hl
+	dec hl
+
+Not_End_Group:
+	ld (hl),d
+	dec hl
+	ld (hl),e
+		
+	pop hl
+	call Put_Line
+
+	ld a,(hl)
+	cp '*'
+	jp nz,Start_Input
+
+	; At this point, I need to conjugate the remnants of the string
+
+	ld hl,(inputAfterKey)
+
+conj_Word_Loop:
+
+	ld de,conjugateWord
+
+cycle_Word_Loop:
+	ld a,(hl)
+	cp ' '
+	jr z,Hit_Space
+	or a
+	jr z,Hit_Space
+	ld (de),a
+	inc de
+	inc hl
+	jr cycle_Word_Loop
+
+Hit_Space:
+	xor a
+	ld (de),a
+
+	push hl
+
+	; Now we need to see if there is a valid conjugation;
+	ld de,Conjugates
+
+	ld (conjugateLook),de
+
+Check_Next_Conjugation:
+	ld de,(conjugateLook)
+	ld hl,conjugateWord
+
+Check_Conjugate_Match:
+	ld a,(de)
+	ld b,a
+	ld a,(hl)
+	cp b
+	jr nz,Not_Conjugate_Match
+	or a
+	jr z,Found_Conjugation
+	inc hl
+	inc de
+	jr Check_Conjugate_Match
+
+Found_Conjugation:
+	ex de,hl
+	inc hl
+	jr Done_Conjugation
+
+Not_Conjugate_Match:
+
+	ld de,(conjugateLook)
+	call Scan_To_End_Find_Word
+	call Scan_To_End_Find_Word
+	ld (conjugateLook),de
+	ld a,(de)
+	cp -1
+	jr nz,Check_Next_Conjugation
+	ld hl,conjugateWord
+
+Done_Conjugation:
+
+	call Put_Line
+	pop hl
+
+	ld a,(hl)
+	or a
+	jp z,Start_Input
+	inc hl
+	jr conj_Word_Loop
+
+	
+Put_Char:
+	push hl
+
+	push af
+	ld a,(penCol)
+	push af
+
+	ld b,3
+Clear_Char_Loop:
+	ld a,' '
+	bcall(_vputmap)
+	djnz Clear_Char_Loop
+	pop af
+	ld (penCol),a
+	pop af
+
+	ld hl,charTemp
+	ld (hl),a
+	inc hl
+	xor a
+	ld (hl),a
+	dec hl
+	call Put_Word
+	pop hl
+	ret
+
+Put_Line:
+	ld de,displayWord
+
+Put_Line_Select_Word_Loop:
+	ld a,(hl)
+	ld (de),a
+	cp ' '
+	jr z,Found_Space_Drawing_Line
+	or a
+	jr z,Found_Space_Drawing_Line
+	inc hl
+	inc de
+	jr Put_Line_Select_Word_Loop
+Found_Space_Drawing_Line:
+	ld a,' '
+	ld (de),a
+	inc de
+	xor a
+	ld (de),a
+	push hl
+	ld hl,displayWord
+	call Put_Word
+	pop hl
+	ld a,(hl)
+	or a
+	jr z,Done_Line
+	inc hl
+	jr Put_Line
+Done_Line:
+	inc hl
+	ret
+
+Put_Word:
+	push hl
+
+	ld a,(penCol)
+	ld b,a
+Scan_Word_Length:
+	ld a,(hl)
+	or a
+	jr z,Found_Line_Length
+	inc hl
+	inc b
+	inc b
+	inc b
+	inc b
+	jr Scan_Word_Length
+Found_Line_Length:
+
+	ld a,b
+	cp 96
+	call nc,New_Line
+
+	pop hl
+
+Put_Text_Loop:
+	ld a,(penCol)
+	ld (colCount),a
+	ld a,(hl)
+	or a
+	jr z,Done_Word
+	bcall(_vputmap)
+	ld a,(colCount)
+	add a,4
+	ld (penCol),a
+	inc hl
+	jr Put_Text_Loop
+Done_Word:
+	inc hl
+	push hl
+	call ionFastCopy
+	pop hl
+	ret
+
+New_Line:
+	ld a,2
+	ld (penCol),a
+	ld a,(penRow)
+	add a,6
+	ld (penRow),a
+	cp 61
+	jr nz,Draw_Borders
+	ld a,55
+	ld (penRow),a
+	ld hl,PlotsScreen+(7*12)
+	ld de,PlotsScreen+12
+	ld bc,768-(10*12)
+	ldir
+	ld hl,PlotsScreen+768-(9*12)
+	xor a
+	ld bc,6*12
+	bcall(_memset)
+Draw_Borders:
+	; Draw borders.
+	ld hl,PlotsScreen
+	ld bc,12
+	ld a,$FF
+	bcall(_memset)
+	ld hl,PlotsScreen+(768-24)
+	ld bc,24
+	ld a,$FF
+	bcall(_memset)
+
+	
+
+	ld c,%10000000
+	ld hl,PlotsScreen
+	ld de,12
+	ld b,62
+	call Draw_Vert_Borders
+
+	ld c,%00000011
+	ld hl,PlotsScreen+11
+	ld de,12
+	ld b,62
+	call Draw_Vert_Borders
+
+	; Funny corners:
+	ld a,%11111110
+	ld (PlotsScreen+11),a
+	ld a,%01111111
+	ld (PlotsScreen+(12*63)),a
+
+	call ionFastCopy
+	ret
+
+Draw_Vert_Borders:
+	ld a,c
+	or (hl)
+	ld (hl),a
+	add hl,de
+	djnz Draw_Vert_Borders
+	ret
+
+Get_Key:
+	bcall(_getcsc)
+	or a
+	jr z,Get_Key
+	ret
+
+Scan_To_End_Find_Word:
+	inc de
+	ld a,(de)
+	or a
+	jr nz,Scan_To_End_Find_Word
+	inc de
+	ret
+
+Find_Word:		;  an INSTR-like that returns z=1 if string is found @ de in hl, z=0 if not.
+	push hl
+
+	ld hl,scanWord
+	ld a,' '
+	ld (hl),a
+	inc hl
+Copy_Bloat_Word:
+	ld a,(de)
+	or a
+	jr z,Hit_End_Bloat_Word
+	ld (hl),a
+	inc hl
+	inc de
+	jr Copy_Bloat_Word
+Hit_End_Bloat_Word:
+	ld a,' '
+	ld (hl),a
+	xor a
+	inc hl
+	ld (hl),a
+	ld de,scanWord
+	ld (wordToFindTemp),de
+	pop hl
+Find_Word_Loop:
+	ld a,(hl)
+	or a
+	jr z,Not_Found
+	ld b,a
+	ld a,(de)	
+	cp b
+	jr nz,Try_Next_Pos
+	;We've found a character!
+	inc de
+	inc hl
+	ld a,(de)
+	or a
+	jr z,Found_Word
+	jr Find_Word_Loop
+Try_Next_Pos:
+	inc hl
+	ld de,(wordToFindTemp)
+	jr Find_Word_Loop
+Not_Found:
+	inc a
+	ret
+Found_Word:
+	xor a
+	ret
+
+#ifdef TI83I
+
+;_memset: not the most efficient, but seems to work the most fully like the TI-83 Plus version.
+;More efficient versions may cause crashes... this one seems to be fine.
+
+_MemSet:
+	push hl
+	pop de
+_MemSet_Loop:
+	ld (de),a
+	inc de
+	dec bc
+	ld h,a
+	ld a,b
+	or c
+	ret z
+	ld a,h
+	jr _MemSet_Loop
+	ret
+
+#endif
+
+txt_Start:
+	.db "HI! I'M ELIZA. LET'S TALK.",0
+scancodes:
+	.db skMath,$27,skPrgm				; ABC
+	.db skRecip,skSin,skCos				; DEF
+	.db skTan,skPower,$2D				; GHI
+	.db skComma,skLParen,skRParen			; JKL
+	.db skDiv,skLog,sk7				; MNO
+	.db sk8,sk9,skMul				; PQR
+	.db skLn,sk4,sk5				; STU
+	.db sk6,skSub,SkStore				; VWX
+	.db sk1,sk2,sk0					; YZ 
+endofscancodes:
+chr_caps: .db "ABCDEFGHIJKLMNOPQRSTUVWXYZ "
+Conjugates:
+.db "ARE",0,"AM"
+.db 0
+.db "AM",0,"ARE"
+.db 0
+.db "WERE",0,"WAS"
+.db 0
+.db "WAS",0,"WERE"
+.db 0
+.db "YOU",0,"I"
+.db 0
+.db "I",0,"YOU"
+.db 0
+.db "YOUR",0,"MY"
+.db 0
+.db "MY",0,"YOUR"
+.db 0
+.db "IVE",0,"YOU'VE"
+.db 0
+.db "YOUVE",0,"I'VE"
+.db 0
+.db "IM",0,"YOU'RE"
+.db 0
+.db "ME",0,"YOU"
+.db 0
+.db "US",0,"YOU"
+.db 0
+.db "WE",0,"YOU"
+.db 0
+.db -1
+
+#include "replies.inc"
+
+
+.end

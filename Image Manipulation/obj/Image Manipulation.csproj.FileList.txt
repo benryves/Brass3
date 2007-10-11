@@ -1,0 +1,7 @@
+bin\Debug\Brass.exe
+bin\Debug\Brass.pdb
+obj\Debug\ResolveAssemblyReference.cache
+bin\Debug\ImageManipulation.dll
+bin\Debug\ImageManipulation.pdb
+obj\Debug\ImageManipulation.dll
+obj\Debug\ImageManipulation.pdb

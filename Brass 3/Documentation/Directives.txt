@@ -1,0 +1,78 @@
+GENERAL
+  org
+  align
+  include
+  echo
+! fail
+! warn
+  end
+! addinstr
+  asm/endasm
+! breakpoint
+
+MODULES
+! locallabelchar
+  module
+! local
+! global
+! nestmodules
+! using
+
+LABELS
+  equ
+! export
+! endexport
+! exportmode
+  enum
+! relocate
+! inclabels
+
+VARIABLES
+! var
+! varloc
+! dvar
+! struct
+
+DATA
+  db/byte/text/dw/word
+  incbin
+! rlemode
+! block
+! chk
+! fill
+! dbrnd/dwrnd
+! asc
+! asciimap
+! dbsin/dbcos/dbtan
+
+MACROS
+  define
+! undef
+! defcont
+! deflong
+
+OUTPUT
+! binarymode
+! variablename
+! tivariabletype
+! tiarchived
+! binaryfill
+! sdsctag
+! segaregion
+! segapart
+! unsquish
+! signkey
+! appfield
+
+FLOW CONTROL
+  if/else/endif/elseif/ifdef/ifndef/elseifdef
+  for/loop/repeat
+
+FILE MANIPULATION
+  fopen/fclose/fsize/fread/fpeek/fpos/fseek
+
+PAGES
+! defpage
+  page
+! branch
+! branchrule

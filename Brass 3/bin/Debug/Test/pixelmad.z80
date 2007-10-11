@@ -1,0 +1,936 @@
+#define TI83P
+
+; ==================================================================================================
+; Headers
+; ==================================================================================================
+
+#define equ .equ
+#define EQU .equ
+#define END .end
+
+#include "keyval.inc"
+
+; ==================================================================================================
+; TI-83 Ion
+; ==================================================================================================
+
+#ifdef TI83I
+.org 9327h
+	ret
+	jr nc,Init_All
+#include "ti83asm.inc"
+#include "tokens.inc"
+#include "ion83.inc"
+
+;TI-83 Plus compatibility issues:
+#define	bcall(label)	call label
+_zeroop1		.equ		_zerooop1     
+AppBackupScreen	=858Fh 	;Smaller than TI-83Plus version : be careful!
+_createprog .equ 448Ah
+#endif
+
+
+; ==================================================================================================
+; TI-83 Plus Ion
+; ==================================================================================================
+
+#ifdef TI83P
+#define	bcall(label)	RST 28h \ .dw label
+.org 9D93h
+.db $BB,$6D
+	ret
+	jr nc,Init_All
+#include "ti83plus.inc"
+#include "ion8X.inc"
+#endif
+
+; ==================================================================================================
+; TI-83 Plus MirageOS
+; ==================================================================================================
+
+#ifdef TI83M
+#define	bcall(label)	RST 28h \ .dw label
+.org 9D93h
+.db $BB,$6D
+	ret
+.db 1
+#include "icon.inc"
+#include "ti83plus.inc"
+#include "mirage.inc"
+#endif
+
+; ==================================================================================================
+; Variables
+; ==================================================================================================
+
+
+#define plasmaMem appBackupScreen
+plasma_Y	= plasmaMem+0
+plasma_Scroll	= plasmaMem+1
+plasma_X	= plasmaMem+2
+textX = plasmaMem+3
+textY = plasmaMem+4
+plasmaBuffer	= plasmaMem+50
+
+#define introMem appBackupScreen
+introTextPosY	= introMem+0
+introTextPosX	= introMem+1
+demoLoop	= introMem+2
+whichText	= introMem+3	;w
+intro_screen	= introMem+5
+
+#define textSwapDelay 150
+
+Description:
+.db "Pixel Madness Ben Ryves",0
+
+; ==================================================================================================
+; Start demo!
+; ==================================================================================================
+
+Init_All:
+	im 1
+	di
+
+	ld a,textSwapDelay
+	ld (demoLoop),a
+
+	ld hl,intro_Screens
+	ld (whichText),hl
+	ld de,intro_Screen
+	ld bc,14
+	ldir
+
+Intro_Text_Loop:
+	bcall(_grbufclr)
+	ld hl,19+(256*6)
+	ld (introTextPosY),hl
+	ld bc,intro_Screen
+Draw_Pixel_Loop:
+	ld a,(bc)
+	cp ' '
+	jr z,Skip_Pixel_Char
+	or a
+	jr z,Draw_Madness
+	call Mul_32
+	ld de,Big_Letters-('a'*32)
+	add hl,de
+	push hl
+	pop ix
+	ld hl,(introTextPosY)
+	ld a,h
+	push bc
+	ld b,16
+	ld c,2	
+	call ionLargeSprite
+	pop bc
+Skip_Pixel_Char:
+	ld a,(introTextPosX)
+	add a,17
+	ld (introTextPosX),a
+	inc bc
+	jr Draw_Pixel_Loop
+Draw_Madness:
+	ld hl,38+(256*5)
+	ld (introTextPosY),hl
+Draw_Madness_Loop:
+	inc bc
+	ld a,(bc)
+	cp ' '
+	jr z,Skip_Madness_Char
+	or a
+	jr z,Drawn_Madness
+	call Mul_14
+	ld de,Small_Letters-('a'*14)
+	add hl,de
+
+	push bc
+	ld b,7
+	push hl
+	pop ix
+	ld hl,(introTextPosY)
+	ld a,h
+
+	ld b,7
+	call ionPutSprite
+	pop bc
+Skip_Madness_Char:
+	ld a,(introTextPosX)
+	add a,13
+	ld (introTextPosX),a
+	jr Draw_Madness_Loop
+Drawn_Madness:
+
+
+
+	call ionFastCopy
+	bcall(_getcsc)
+	or a
+	jr nz,Start_Demos
+
+	ld b,14
+	call ionRandom
+	push af
+
+	ld l,a
+	ld h,0
+	ld de,intro_Screen
+	add hl,de
+	pop af
+	push hl
+
+	ld l,a
+	ld h,0
+	ld de,(whichText)
+	add hl,de
+	pop de
+	ld a,(hl)
+	ld (de),a
+
+	ld a,(demoLoop)
+	dec a
+	jr nz,Not_Time_Swap_Text
+
+	ld hl,(whichText)
+	ld de,14
+	add hl,de
+
+	ld a,(hl)
+	or a
+	jr nz,No_Need_Loop_IntoTexts
+	ld hl,intro_Screens
+No_Need_Loop_IntoTexts:
+	ld (whichText),hl
+	ld a,textSwapDelay
+Not_Time_Swap_Text:
+	ld (demoLoop),a
+
+	jp Intro_Text_Loop
+
+
+; ==================================================================================================
+; Roll the demos
+; ==================================================================================================
+
+
+Start_Demos:
+
+	ld hl,text_Field
+	call Display_Text_Screen
+	call Effect_Field
+
+	ld hl,text_Flag
+	call Display_Text_Screen
+	call Effect_Flag
+
+	ld hl,text_Globe
+	call Display_Text_Screen
+	call Effect_Globe
+
+	ld hl,48*32*2
+	bcall(_enoughmem)
+	jr nc,Can_Run_Tunnel
+	ld hl,text_Low_RAM
+	call Display_Text_Screen
+	jr Done_Tunnel
+Can_Run_Tunnel:
+	ld hl,text_Tunnel
+	call Display_Text_Screen
+	call Effect_Tunnel
+Done_Tunnel:
+
+
+	ld hl,text_Water
+	call Display_Text_Screen
+	call Effect_Water
+
+	ld hl,text_Plasma
+	call Display_Text_Screen
+	ld hl,text_ShowPlasma
+	call Display_Text_Screen
+	ld hl,text_SeenPlasma
+	call Display_Text_Screen
+
+	ret
+
+Text_To_Display:
+
+
+#ifdef TI83I
+
+;_memset: not the most efficient, but seems to work the most fully like the TI-83 Plus version.
+;More efficient versions may cause crashes... this one seems to be fine.
+
+_MemSet:
+	push hl
+	pop de
+_MemSet_Loop:
+	ld (de),a
+	inc de
+	dec bc
+	ld h,a
+	ld a,b
+	or c
+	ret z
+	ld a,h
+	jr _MemSet_Loop
+	ret
+
+_enoughmem:
+	push hl
+	bcall(_memchk)
+	pop de
+	bcall(_cphlde)
+	ret
+
+#endif
+
+
+; ==================================================================================================
+; Modules
+; ==================================================================================================
+
+
+; TUNNEL EFFECT
+#include "tunnel.z80"
+
+
+; WATER EFFECT
+#include "water.z80"
+
+
+
+; 3D GLOBE EFFECT
+#include "globe.z80"
+#include "linedraw.inc"
+
+
+; FLAG EFFECT
+#include "flag.z80"
+
+
+; CHECKERBOARD FIELD EFFECT
+#include "field.z80"
+
+
+
+; ==================================================================================================
+; Low RAM warning
+; ==================================================================================================
+
+text_Low_RAM:
+	.db "warning|||"
+	.db "you do not"
+	.db "   have   "
+	.db "enough ram"
+	.db "to run the"
+	.db " tunnel|",0
+
+; ==================================================================================================
+; Global include files
+; ==================================================================================================
+
+#include "ripple.inc"
+#include "shifts.inc"
+#include "general.inc"
+
+; ==================================================================================================
+; Intro screen stuff
+; ==================================================================================================
+
+
+intro_Screens:
+	.db "pixel",0 \ .db "madness",0
+	.db "funky",0 \	.db "program",0
+	.db "super",0 \ .db "d e m o",0
+	.db "great",0 \ .db "codings",0
+	.db "weird",0 \ .db "effects",0
+	.db "neato",0 \ .db "graphix",0
+	.db "press",0 \ .db "any key",0
+	.db " ||| ",0 \ .db "go away",0
+	.db "hurry",0 \ .db "come on",0
+	.db "i  am",0 \ .db "waiting",0
+	.db "cheap",0 \ .db " plug{ ",0
+	.db "visit",0 \ .db "website",0
+	.db "still",0 \ .db "why not",0
+	.db "sigh{",0 \ .db "give up",0
+	.db "{why{",0 \ .db "are you",0
+	.db "still",0 \ .db "here|||",0
+	.db "there",0 \ .db "is more",0
+	.db "later",0 \ .db "in this",0
+	.db "demo{",0 \ .db "and you",0
+	.db " are ",0 \ .db "wasting",0
+	.db "your ",0 \ .db "   time",0
+	.db "ok|||",0 \ .db "you win",0
+	.db "it is",0 \ .db "time to",0
+	.db "loop|",0 \ .db "byeeeee",0
+	.db 0
+
+
+; ==================================================================================================
+; Display_Text_Screen: Call to display a text screen (text screen location in [hl].
+; ==================================================================================================
+
+Display_Text_Screen:
+	ld (Text_Offset+1),hl
+
+Plasma_Text_Loop:
+	; Render background
+	bcall(_grbufclr)
+	di
+	ld ix,PlotsScreen
+	ld a,32
+	ld (Plasma_Done_Count+1),a
+Draw_Next_Plasma_ScanLine:
+	; Calculate the Y value
+
+	ld a,(Plasma_Done_Count+1)
+	ld b,a
+	ld a,(plasma_Scroll)
+	add a,b
+	srl a
+	call getSin
+	ld c,a
+
+	ld a,(Plasma_Done_Count+1)
+	add a,a
+	ld b,a
+	ld a,(plasma_Scroll)
+	add a,b
+	call getSin
+	add a,c
+	ld c,a
+
+	ld a,(Plasma_Done_Count+1)
+	add a,a
+	add a,a
+	ld b,a
+	ld a,(plasma_Scroll)
+	srl a
+	srl a
+	add a,b
+	call getSin
+	add a,c
+	ld (Plasma_Y),a
+
+
+	ld a,48
+	ld (plasma_X),a
+
+	ld b,12
+	ld c,%11000000
+Calculate_Next_Plasma:
+
+
+	; Decide what colour to draw the pixels
+	; Calculate X value
+	push bc
+
+	ld a,(Plasma_X)
+	ld b,a
+	ld a,(plasma_Scroll)
+	srl a
+	add a,b
+	call getSin
+	ld c,a
+	ld a,(Plasma_X)
+	add a,a
+	add a,a
+	ld b,a
+	ld a,(plasma_Scroll)
+	add a,b
+	call getSin
+	add a,c
+	ld b,a
+	ld a,(Plasma_Y)
+	add a,b
+
+	pop bc
+
+	cp 140
+	jr nc,Draw_In_White
+	cp 120
+	jr nc,Draw_In_Grey_White
+	cp 100
+	jr nc,Draw_Plasma_Grey
+	cp 80
+	jr nc,Draw_In_Grey_Black
+	; Draw wall
+	ld d,c
+
+	ld a,(ix+0)
+	or c
+	ld (ix+0),a
+	ld a,(ix+12)
+	or c
+	ld (ix+12),a
+	jr Draw_In_White
+Draw_Plasma_Grey:
+	ld a,c
+Grey_Plasma:
+	and %10101010
+	or (ix+0)
+	ld (ix+0),a
+	ld a,c
+	and %01010101
+	or (ix+12)
+	ld (ix+12),a
+	jr Draw_In_White
+
+
+Draw_In_Grey_White:
+	ld a,c
+	and %10101010
+	or (ix+0)
+	ld (ix+0),a
+	jr Draw_In_White
+
+
+Draw_In_Grey_Black
+	ld a,c
+	or (ix+0)
+	ld (ix+0),a
+
+	ld a,c
+	and %01010101
+	or (ix+12)
+	ld (ix+12),a
+
+	jr Draw_In_White	
+
+
+Draw_In_White:
+	; Done
+	srl c
+	srl c
+	ld hl,plasma_X
+	dec (hl)
+	jr nc,Not_Looped_Plasma_Bitmask
+	ld c,%11000000
+	inc ix
+	dec b
+	ld a,b
+	or a
+	jr z,Done_Plasma_Line
+Not_Looped_Plasma_Bitmask:
+	jp Calculate_Next_Plasma
+Done_Plasma_Line:
+
+	push ix
+	pop hl
+	ld de,12
+	add hl,de
+	push hl
+	pop ix
+
+
+Plasma_Done_Count:
+	ld a,0
+	dec a
+	ld (Plasma_Done_Count+1),a
+	or a
+	jp nz,Draw_Next_Plasma_ScanLine
+	ld a,(plasma_Scroll)
+	add a,5
+	ld (plasma_Scroll),a
+	ld a,(Grey_Plasma+1)
+	xor $FF
+	ld (Grey_Plasma+1),a
+	;Draw in text
+	ld hl,1+(256*8)
+	ld (textX),hl
+Text_Offset:
+	ld bc,0
+
+Draw_Next_Letter_Loop:
+	ld a,(bc)
+	or a
+	jr z,Done_All_Text_Tiled
+	cp ' '
+	jr z,Skip_Draw_Letter
+	call Mul_14
+	ld de,Small_Letters-('a'*14)
+	add hl,de
+	push hl
+	pop ix
+	ld a,(textY)
+	ld l,a
+	ld a,(textX)
+	push bc
+	ld b,7
+	call drawMaskedAlignedSprite
+	pop bc
+Skip_Draw_Letter:
+	ld a,(textX)
+	inc a
+	cp 11
+	jr nz,Not_Next_Row_Text
+	ld a,(textY)
+	add a,8
+	ld (textY),a
+	ld a,1
+Not_Next_Row_Text:
+	ld (textX),a
+	inc bc
+	jr Draw_Next_Letter_Loop
+Done_All_Text_Tiled:
+	call ionFastCopy
+	ei
+	bcall(_getcsc)
+	or a
+	ret nz
+	jp Plasma_Text_Loop
+
+drawMaskedAlignedSprite:
+	ld h,0
+	add hl,hl
+	add hl,hl
+	ld d,h
+	ld e,l
+	add hl,hl
+	add hl,de
+	ld de,PlotsScreen
+	add hl,de
+	ld e,a
+	ld d,0
+	add hl,de
+	ld de,12
+Copy_Sprite_Loop:
+	ld a,(ix+7)
+	xor $FF
+	and (hl)
+	ld (hl),a
+	ld a,(ix+0)
+	or (hl)
+	ld (hl),a
+	add hl,de
+	inc ix
+	djnz Copy_Sprite_Loop
+	ret
+
+getSin:
+	ld d,0
+	ld e,a
+	ld hl,Plasma_LUT
+	add hl,de
+	ld a,(hl)
+	ret
+
+
+#include "letters.inc"
+
+Plasma_LUT:
+.db 20
+.db 22
+.db 24
+.db 26
+.db 28
+.db 30
+.db 31
+.db 33
+.db 34
+.db 36
+.db 37
+.db 38
+.db 39
+.db 39
+.db 40
+.db 40
+.db 40
+.db 40
+.db 40
+.db 39
+.db 38
+.db 37
+.db 36
+.db 35
+.db 34
+.db 32
+.db 31
+.db 29
+.db 27
+.db 25
+.db 23
+.db 21
+.db 19
+.db 17
+.db 15
+.db 13
+.db 12
+.db 10
+.db 8
+.db 7
+.db 5
+.db 4
+.db 3
+.db 2
+.db 1
+.db 1
+.db 0
+.db 0
+.db 0
+.db 0
+.db 1
+.db 1
+.db 2
+.db 3
+.db 4
+.db 5
+.db 7
+.db 8
+.db 10
+.db 12
+.db 14
+.db 16
+.db 17
+.db 19
+.db 21
+.db 23
+.db 25
+.db 27
+.db 29
+.db 31
+.db 32
+.db 34
+.db 35
+.db 36
+.db 37
+.db 38
+.db 39
+.db 40
+.db 40
+.db 40
+.db 40
+.db 40
+.db 39
+.db 39
+.db 38
+.db 37
+.db 35
+.db 34
+.db 33
+.db 31
+.db 29
+.db 28
+.db 26
+.db 24
+.db 22
+.db 20
+.db 18
+.db 16
+.db 14
+.db 12
+.db 10
+.db 9
+.db 7
+.db 6
+.db 4
+.db 3
+.db 2
+.db 1
+.db 1
+.db 0
+.db 0
+.db 0
+.db 0
+.db 1
+.db 1
+.db 2
+.db 3
+.db 4
+.db 5
+.db 6
+.db 8
+.db 10
+.db 11
+.db 13
+.db 15
+.db 17
+.db 19
+.db 21
+.db 23
+.db 25
+.db 27
+.db 29
+.db 30
+.db 32
+.db 33
+.db 35
+.db 36
+.db 37
+.db 38
+.db 39
+.db 39
+.db 40
+.db 40
+.db 40
+.db 40
+.db 39
+.db 39
+.db 38
+.db 37
+.db 36
+.db 35
+.db 33
+.db 32
+.db 30
+.db 28
+.db 26
+.db 24
+.db 22
+.db 20
+.db 18
+.db 16
+.db 15
+.db 13
+.db 11
+.db 9
+.db 8
+.db 6
+.db 5
+.db 3
+.db 2
+.db 2
+.db 1
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 1
+.db 2
+.db 2
+.db 3
+.db 5
+.db 6
+.db 7
+.db 9
+.db 11
+.db 13
+.db 14
+.db 16
+.db 18
+.db 20
+.db 22
+.db 24
+.db 26
+.db 28
+.db 30
+.db 31
+.db 33
+.db 34
+.db 36
+.db 37
+.db 38
+.db 39
+.db 39
+.db 40
+.db 40
+.db 40
+.db 40
+.db 39
+.db 39
+.db 38
+.db 37
+.db 36
+.db 35
+.db 34
+.db 32
+.db 30
+.db 29
+.db 27
+.db 25
+.db 23
+.db 21
+.db 19
+.db 17
+.db 15
+.db 13
+.db 11
+.db 10
+.db 8
+.db 6
+.db 5
+.db 4
+.db 3
+.db 2
+.db 1
+.db 1
+.db 0
+.db 0
+.db 0
+.db 0
+.db 1
+.db 1
+.db 2
+.db 3
+.db 4
+.db 6
+.db 7
+.db 9
+.db 10
+.db 12
+.db 14
+.db 16
+.db 18
+.db 20
+.db 22
+.db 24
+
+#include "trig.inc"
+#include "tnllut.inc"
+#include "images.inc"
+
+text_Field:
+	.db "chessboard"
+	.db "landscapes"
+	.db " { you can"
+	.db "never have"
+	.db "enough  of"
+	.db "them|||",0
+text_Tunnel:
+	.db "spiro{    "
+	.db "   {tunnel"
+	.db " press }~ "
+	.db "and  arrow"
+	.db " keys  to "
+	.db "control it",0
+text_Water:
+	.db " rippling "
+	.db "water{ hit"
+	.db "  }~  to  "
+	.db "pause  the"
+	.db "scrolling "
+	.db "  text|",0
+text_Globe:
+	.db " spinning "
+	.db "three{ dee"
+	.db "globe| hit"
+	.db "}~ to swap"
+	.db " backface "
+	.db "  modes|",0
+text_Flag:
+	.db "wavy flag{"
+	.db "and a very"
+	.db " annoying "
+	.db "message to"
+	.db "read|||",0
+text_Plasma:
+	.db " did  you "
+	.db "notice the"
+	.db "plasma  on"
+	.db "these text"
+	.db "screens|||"
+	.db " press }~",0
+text_ShowPlasma:
+	.db " ",0
+text_SeenPlasma:
+	.db "i hope you"
+	.db " enjoyed  "
+	.db "the  demos"
+	.db "here|press"
+	.db "}~ to quit"
+	.db "from here|",0
+
+.end
+END

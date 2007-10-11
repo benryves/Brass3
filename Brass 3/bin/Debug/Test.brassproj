@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<brassproject version="3">
+	<plugins>
+		<collection source="core.dll" />
+		<collection source="imagemanipulation.dll" />
+		<collection source="legacy.dll" />
+		<collection source="z80.dll" />
+		<collection source="ticalc.dll" />
+		<collection source="chip8.dll" />
+		<collection source="variables.dll" />
+		<collection source="sega.dll" />
+	</plugins>
+	<input source="test.txt" assembler="z80" />
+	<output destination="test.bin" writer="raw">
+		<listing destination="test.html" writer="html" />
+		<listing destination="test.text.txt" writer="text" />
+	</output>
+</brassproject>

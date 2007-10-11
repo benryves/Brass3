@@ -1,0 +1,40 @@
+The expression parser operates on labels. Labels can either be named variables or literals.
+
+<codeexample>Brass: = 12</codeexample>
+
+"12" is a literal, "Brass" is a named variable. Literals are string constants ("") or anything that can be directly interpreted as a number.
+
+Labels have two major numeric fields: a value and a page number. By default, only the value is accessed. If you put a colon in front of the label you can access its page field. Putting a colon after the label name accesses its normal value field. If no colon is specified then the label's value is accessed implicitly.
+
+<codeexample>X: = 12 ; Assign 12 to X's value field (explicit).
+:X = 34 ; Assign 34 to X's page field (explicit).
+X  = 56 ; Assign 56 to X's value field (implicit).</codeexample>
+
+When a label is created it is cloned from the current program counter (which itself is stored in the named label '$'). For example:
+
+<codeexample>$: = 12
+:$ = 34
+
+X ; Automatically has the value 12 and page 34.</codeexample>
+
+Assignments only work on named labels. A potential area of confusion is that assigments transfer a single value. Thus:
+
+<codeexample>:$ = 1
+X
+:$ = 2
+Y = X
+:$ = 3
+Z = Y
+
+.echoln :X, ' ', :Y, ' ', :Z</codeexample>
+
+This displays "1 2 3" rather than "1 1 1" as only the value is copied each time. To copy both fields across you would need to do this:
+
+<codeexample>:$ = 1
+X
+:$ = 2
+Y: = X: \ :Y = :X
+:$ = 3
+Z: = Y: \ :Z = :Y
+
+.echoln :X, ' ', :Y, ' ', :Z</codeexample>
