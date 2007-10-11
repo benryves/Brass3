@@ -154,38 +154,55 @@ namespace Brass3 {
 
 				switch (O.OperandCount) {
 					case 1: {
-							if (O.ExpressionPosition.Next == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
-							Label Op = O.ExpressionPosition.Next.Value;
-							Label Result = Op;
 
-							if (!O.IsAssignment) {
-								Result = (Label)Result.Clone();
-								O.ExpressionPosition.List.AddAfter(O.ExpressionPosition.Next, Result);
-								O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
+							if (O.Type == Operator.OperatorType.LabelAccess) {
+
+								Label LabelToAccess = null;
+								if (O.ExpressionPosition.Next != null && O.ExpressionPosition.Next.Value != null) {
+									LabelToAccess = O.ExpressionPosition.Next.Value;
+									LabelToAccess.AccessingPage = true;
+								} else if (O.ExpressionPosition.Previous != null && O.ExpressionPosition.Previous.Value != null) {
+									LabelToAccess = O.ExpressionPosition.Previous.Value;
+									LabelToAccess.AccessingPage = false;
+								} else {
+									throw new InvalidExpressionSyntaxExpection(O.Token, "No label found for label access operator.");
+								}
+
 							} else {
-								Result.Created = true;
-							}
 
-							switch (O.Type) {
-								case Operator.OperatorType.UnaryAddition:
-									break;
-								case Operator.OperatorType.UnaryBitwiseNot:
-									Result.Value = (double)~((int)Op.Value);
-									break;
-								case Operator.OperatorType.UnaryDecrement:
-									Result.Value--;
-									break;
-								case Operator.OperatorType.UnaryIncrement:
-									Result.Value++;
-									break;
-								case Operator.OperatorType.UnaryLogicalNot:
-									Result.Value = (Op.Value == 0f) ? 1f : 0f;
-									break;
-								case Operator.OperatorType.UnarySubtraction:
-									Result.Value = -Op.Value;
-									break;
-								default:
-									throw new CompilerExpection(O.Token, O.Type.ToString());
+								if (O.ExpressionPosition.Next == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+								Label Op = O.ExpressionPosition.Next.Value;
+								Label Result = Op;
+
+								if (!O.IsAssignment) {
+									Result = (Label)Result.Clone();
+									O.ExpressionPosition.List.AddAfter(O.ExpressionPosition.Next, Result);
+									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
+								} else {
+									Result.Created = true;
+								}
+
+								switch (O.Type) {
+									case Operator.OperatorType.UnaryAddition:
+										break;
+									case Operator.OperatorType.UnaryBitwiseNot:
+										Result.Value = (double)~((int)Op.Value);
+										break;
+									case Operator.OperatorType.UnaryDecrement:
+										Result.Value--;
+										break;
+									case Operator.OperatorType.UnaryIncrement:
+										Result.Value++;
+										break;
+									case Operator.OperatorType.UnaryLogicalNot:
+										Result.Value = (Op.Value == 0f) ? 1f : 0f;
+										break;
+									case Operator.OperatorType.UnarySubtraction:
+										Result.Value = -Op.Value;
+										break;
+									default:
+										throw new CompilerExpection(O.Token, O.Type.ToString());
+								}
 							}
 
 						} break;

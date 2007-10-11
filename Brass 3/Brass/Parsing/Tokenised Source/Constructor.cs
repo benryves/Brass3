@@ -290,7 +290,7 @@ namespace Brass3 {
 
 			#endregion
 
-			#region Colon Merging (Sounds Fun)
+			/*#region Colon Merging (Sounds Fun)
 
 			for (int i = 0; i < FixedTokens.Count; ++i) {
 				if (FixedTokens[i].Type == Token.TokenTypes.Punctuation && FixedTokens[i].Data == ":") {
@@ -308,7 +308,7 @@ namespace Brass3 {
 				}
 			}
 
-			#endregion
+			#endregion*/
 
 			this.tokens = FixedTokens.ToArray();
 

@@ -22,6 +22,7 @@ namespace Brass3 {
 				UnaryBitwiseNot,
 				UnaryIncrement,
 				UnaryDecrement,
+				LabelAccess,
 				// Power
 				Power = 16 * 1,
 				// Arithmetic: multiplicative
@@ -83,13 +84,8 @@ namespace Brass3 {
 			public bool IsRightAssociative {
 				get {
 					if (this.IsAssignment) return true;
-					switch (this.Type) {
-						case OperatorType.ConditionalQuery:
-						case OperatorType.ConditionalResultSplitter:
-							return true;
-						default:
-							return false;
-					}
+					return this.OperandCount != 2;
+					
 				}
 			}
 
@@ -108,6 +104,7 @@ namespace Brass3 {
 						case OperatorType.UnaryIncrement:
 						case OperatorType.UnaryLogicalNot:
 						case OperatorType.UnarySubtraction:
+						case OperatorType.LabelAccess:
 							return 1;
 						default:
 							return 2;
@@ -232,7 +229,7 @@ namespace Brass3 {
 					case "||": this.Type = OperatorType.LogicalOr; break;
 					case "<<=": this.Type = OperatorType.AssignmentShiftLeft; break;
 					case ">>=": this.Type = OperatorType.AssignmentShiftRight; break;
-					case ":": this.Type = OperatorType.ConditionalResultSplitter; break;
+					case ":": this.Type = OperatorType.LabelAccess; break;
 					case "?": this.Type = OperatorType.ConditionalQuery; break;
 					case "~": this.Type = OperatorType.UnaryBitwiseNot; break;
 					case "[": this.Type = OperatorType.IndexingOpen; break;
