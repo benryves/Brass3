@@ -25,6 +25,18 @@ namespace Brass3 {
 		}
 
 		/// <summary>
+		/// Join an array of <c>TokenisedSource</c> into a single array of tokens.
+		/// </summary>
+		public static Token[] Join(TokenisedSource[] source) {
+			List<Token> Result = new List<Token>();
+			for (int i = 0; i < source.Length; ++i) {
+				if (i != 0) Result.Add(new Token("\\"));
+				Result.AddRange(source[i].tokens);
+			}
+			return Result.ToArray();
+		}
+
+		/// <summary>
 		/// Create an instance of the TokenisedSource class by parsing source code from a stream.
 		/// </summary>
 		/// <param name="tokens">The stream to parse data from.</param>
