@@ -9,8 +9,10 @@ using System.IO;
 
 namespace Core.Functions {
 
-	[Description("Returns the result of an expression in a string.")]
+	[Description("Evaluates a snippet of code contained in a string.")]
 	[Syntax("eval(\"expression\")")]
+	[Remarks("The expression can contain any ")]
+	[SatisfiesAssignmentRequirement(true)]
 	public class Eval : IFunction {
 
 		public string[] Names {
@@ -22,13 +24,18 @@ namespace Core.Functions {
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			int Expression = source.GetCommaDelimitedArguments(0, 1)[0];
-			if (!source.ExpressionIsStringConstant(compiler, Expression)) throw new CompilerExpection(source, "Expected a single string expression.");
-			double Result = double.NaN;
-			foreach (TokenisedSource TS in TokenisedSource.FromString(compiler, source.GetExpressionStringConstant(compiler, Expression))) {
-				Result = TS.EvaluateExpression(compiler).NumericValue;
+			object[] Source = source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String });
+
+			Label Result = null;
+			foreach (TokenisedSource TS in TokenisedSource.FromString(compiler, Source[0] as string)) {
+				Compiler.SourceStatement S = new Compiler.SourceStatement(compiler, TS.GetCode(), compiler.CurrentFile, compiler.CurrentLineNumber);
+				Result = S.Compile(false);
 			}
-			return new Label(compiler.Labels, Result);
+			if (Result != null) {
+				return Result.Clone() as Label;
+			} else {
+				return new Label(compiler.Labels, double.NaN);
+			}
 		}
 	}
 }

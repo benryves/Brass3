@@ -68,9 +68,10 @@
     <Compile Include="Functions\File Operations\End of File.cs" />
     <Compile Include="Functions\File Operations\File Read.cs" />
     <Compile Include="Functions\File Operations\File Open.cs" />
+    <Compile Include="Functions\String Manipulation\StrReplace.cs" />
     <Compile Include="Functions\String Manipulation\StrLength.cs" />
     <Compile Include="Functions\String Manipulation\Substring.cs" />
-    <Compile Include="Functions\String Manipulation\Format.cs" />
+    <Compile Include="Functions\String Manipulation\StrFormat.cs" />
     <Compile Include="Functions\String Manipulation\UpperLower.cs" />
     <Compile Include="Functions\User Function.cs" />
     <Compile Include="Functions\Logic\And.cs" />

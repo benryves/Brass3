@@ -14,11 +14,11 @@ namespace Brass3 {
 		/// <returns>An array of tokenised source data.</returns>
 		public static TokenisedSource[] FromString(Compiler compiler, string s) {
 			MemoryStream MS = new MemoryStream(Encoding.Unicode.GetBytes(s));
+			AssemblyReader AR = new AssemblyReader(compiler, MS);
 			List<TokenisedSource> Result = new List<TokenisedSource>();
 
-			while (MS.Position != MS.Length) {
-				int r = -1;
-				Result.Add(new TokenisedSource(compiler, MS, ref r));
+			while (AR.HasMoreData) {
+				Result.Add(AR.ReadAssemblySource());
 			}
 
 			return Result.ToArray();

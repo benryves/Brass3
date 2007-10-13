@@ -11,7 +11,7 @@
 		<collection source="sega.dll" />
 	</plugins>
 	<input source="test.txt" assembler="z80" />
-	<output destination="test.8xp" writer="ti8x">
+	<output destination="test.bin" writer="raw">
 		<listing destination="test.html" writer="html" />
 		<listing destination="test.text.txt" writer="text" />
 	</output>

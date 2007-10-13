@@ -205,8 +205,10 @@ namespace Brass3 {
 			this.value = value;
 			this.page = page;
 			this.type = type;
-			this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
-			this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
+			if (token != null) {
+				this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
+				this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
+			}
 		}
 
 		/// <summary>
@@ -219,8 +221,10 @@ namespace Brass3 {
 			this.created = false;
 			this.collection = collection;
 			this.name = GetNameWithoutColon(token.Data, out accessingPage);
-			this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
-			this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
+			if (token != null) {
+				this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
+				this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
+			}
 			
 		}
 

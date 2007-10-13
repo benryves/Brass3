@@ -129,10 +129,21 @@ namespace Brass3 {
 
 			#endregion
 
+
 			/// <summary>
 			/// Compiles the statement.
 			/// </summary>
-			public void Compile() {
+			public Label Compile() {
+				return this.Compile(true);
+			}
+
+			/// <summary>
+			/// Compiles the statement.
+			/// </summary>
+			/// <param name="mustMakeAssignment">True if an assignment must be made; false otherwise.</param>
+			public Label Compile(bool mustMakeAssignment) {
+
+				Label Result = null;
 
 				try {
 
@@ -154,9 +165,9 @@ namespace Brass3 {
 							compiler.labelEvaluationResult = null;
 							for (int i = 0; i < expressionStatementSplit; ++i) Source.Tokens[i].ExpressionGroup = -1;
 							Label L = Source.EvaluateExpression(compiler, -1);
-							if (L.IsConstant) throw new CompilerExpection(Source, "An assignment must be made.");
+							if (L.IsConstant && mustMakeAssignment) throw new CompilerExpection(Source, "An assignment must be made.");
 
-							compiler.labelEvaluationResult = L;
+							Result = compiler.labelEvaluationResult = L;
 
 							// Check for (implicit) duplicate label creation:
 							if (compiler.CurrentPass == AssemblyPass.Pass1 && expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], "Duplicate label '" + L.Name + "'.");
@@ -188,6 +199,8 @@ namespace Brass3 {
 				} finally {
 					this.compilerWasOnAfterwards = this.compiler.IsSwitchedOn;
 				}
+
+				return Result;
 			}
 
 
