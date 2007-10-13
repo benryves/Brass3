@@ -21,8 +21,8 @@ namespace Brass3 {
 			}
 
 			if (!string.IsNullOrEmpty(p.Assembler) && this.assemblers.PluginExists(p.Assembler)) this.CurrentAssembler = this.Assemblers[p.Assembler];
-			this.SourceFile = p.SourceFile;
-			this.DestinationFile = p.DestinationFile;
+			this.SourceFile = GetFullFilename(p, p.SourceFile);
+			this.DestinationFile = GetFullFilename(p, p.DestinationFile);
 
 			if (this.OutputWriters.PluginExists(p.OutputWriter)) {
 				this.OutputWriter = this.OutputWriters[p.OutputWriter];
@@ -32,9 +32,13 @@ namespace Brass3 {
 
 			foreach (KeyValuePair<string, string> ListingWriter in p.ListingFiles) {
 				if (this.ListingWriters.PluginExists(ListingWriter.Value)) {
-					this.ListingFiles.Add(ListingWriter.Key, this.ListingWriters[ListingWriter.Value]);
+					this.ListingFiles.Add(GetFullFilename(p, ListingWriter.Key), this.ListingWriters[ListingWriter.Value]);
 				}
 			}
+		}
+
+		private static string GetFullFilename(Project p, string relativeName) {
+			return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(p.ProjectFilename), relativeName));
 		}
 
 	}

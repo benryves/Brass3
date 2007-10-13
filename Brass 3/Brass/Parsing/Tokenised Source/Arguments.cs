@@ -83,5 +83,56 @@ namespace Brass3 {
 		public void ResetExpressionIndices() {
 			foreach (Token T in this.Tokens) T.ExpressionGroup = 0;
 		}
+
+		[Flags()]
+		public enum ArgumentType {
+			None = 0x0000,
+			Optional = 0x8000,
+			Value = 0x0001,
+			String = 0x0002,
+			UnescapedString = 0x0004,
+		}
+
+		public object[] GetCommaDelimitedArguments(Compiler compiler, int index, ArgumentType[] types) {
+
+			// Work out the number of arguments:
+			bool HitOptional = false;
+			int MinArgs = 0;
+			int MaxArgs = types.Length;
+			
+			foreach (ArgumentType AT in types) {
+				if ((AT & ArgumentType.Optional) == ArgumentType.Optional) {
+					HitOptional = true;
+				} else {
+					if (HitOptional) throw new ArgumentException("Argument types cannot have mandatory arguments following optional arguments.");
+					++MinArgs;
+				}
+			}
+
+			// Get expression indices:
+			int[] Arguments = this.GetCommaDelimitedArguments(index, MinArgs, MaxArgs);
+
+			// Calculate the result:
+			object[] Result = new object[Arguments.Length];
+			for (int i = 0; i < Arguments.Length; ++i) {
+				ArgumentType CurrentArgument = types[0] & ~ArgumentType.Optional;
+				switch (CurrentArgument) {
+					case ArgumentType.Value:
+						Result[i] = this.EvaluateExpression(compiler, Arguments[i]).Value;
+						break;
+					case ArgumentType.String:
+					case ArgumentType.UnescapedString:
+						if (!this.ExpressionIsStringConstant(Arguments[i])) throw new DirectiveArgumentException(this.GetExpressionTokens(Arguments[i]), "Expected a string argument.");
+						Result[i] = this.GetExpressionStringConstant(Arguments[i], CurrentArgument != ArgumentType.UnescapedString);
+						break;
+					default:
+						throw new ArgumentException("Argument type " + types[0].ToString() + " not recognised.");
+				}
+			}
+
+			return Result;
+
+		}
+
 	}
 }

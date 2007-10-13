@@ -48,6 +48,15 @@ namespace Brass3 {
 
 		#region Properties
 
+		private string projectFilename;
+		/// <summary>
+		/// Gets or sets the filename of the project.
+		/// </summary>
+		public string ProjectFilename {
+			get { return this.projectFilename; }
+			set { this.projectFilename = value;}
+		}
+
 		private string sourceFile;
 		/// <summary>
 		/// Gets or sets the source file.
@@ -281,6 +290,7 @@ namespace Brass3 {
 		}
 
 		public void Load(string filename) {
+			this.ProjectFilename = filename;
 			XmlDocument XmlDoc = new XmlDocument();
 			XmlDoc.Load(filename);
 			this.Load(XmlDoc);
@@ -291,6 +301,8 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="filename">The name of the file to save to.</param>
 		public void Save(string filename) {
+
+			this.ProjectFilename = filename;
 
 			using (XmlWriter XW = XmlWriter.Create(filename)) {
 				XW.WriteStartElement("brassproj");

@@ -307,5 +307,12 @@ namespace Brass3 {
 			this.created = true;
 		}
 
+		/// <summary>
+		/// State that the label is a constant. Only call this if you are generating new labels and want to force it to be constant.
+		/// </summary>
+		public void SetConstant() {
+			this.isConstant = true;
+		}
+
 	}
 }

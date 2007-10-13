@@ -1,4 +1,1 @@
-﻿;.echoln "[%NUMBER_OF_PROCESSORS%]"
-;x = "[%NUMBER_OF_PROCESSORS%]"
-x = eval("[%NUMBER_OF_PROCESSORS%]")
-.echoln x
+﻿.inclabels "ti8x.lbl"

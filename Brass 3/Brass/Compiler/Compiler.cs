@@ -52,11 +52,11 @@ namespace Brass3 {
 		/// <param name="filename">The filename to try and resolve.</param>
 		/// <returns>The resolved filename, after checking various directories.</returns>
 		public string ResolveFilename(string filename) {
-			string CurrentFilename = Path.Combine(Path.GetDirectoryName(this.CurrentFile), filename);
+			string CurrentFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.CurrentFile), filename));
 			if (File.Exists(CurrentFilename)) return CurrentFilename;
-			string LocalFilename = Path.Combine(Path.GetDirectoryName(this.SourceFile), filename);
+			string LocalFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), filename));
 			if (File.Exists(LocalFilename)) return LocalFilename;
-			return filename;
+			return Path.GetFullPath(filename);
 		}
 
 		#endregion
