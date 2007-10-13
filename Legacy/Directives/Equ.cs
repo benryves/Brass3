@@ -8,7 +8,7 @@ using Brass3.Plugins;
 using System.ComponentModel;
 using Brass3;
 
-namespace Legacy {
+namespace Legacy.Directives {
 	[Syntax("label .equ value")]
 	[Description("Sets the value <c>label</c> to <c>value</c>.")]
 	[Remarks("<c>label = value</c> is functionally equivalent to <c>label .equ value</c>. It is recommended that you do not use this directive and use the assignment operator instead.")]

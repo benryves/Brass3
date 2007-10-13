@@ -33,6 +33,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Directives\IncLabels.cs" />
     <Compile Include="Directives\EndAsm.cs" />
     <Compile Include="Other\Environment Variables.cs" />
     <Compile Include="Directives\Equ.cs" />
