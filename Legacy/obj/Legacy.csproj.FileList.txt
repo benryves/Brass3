@@ -1,7 +1,0 @@
-obj\Debug\ResolveAssemblyReference.cache
-bin\Debug\Legacy.dll
-bin\Debug\Legacy.pdb
-bin\Debug\Brass.exe
-bin\Debug\Brass.pdb
-obj\Debug\Legacy.dll
-obj\Debug\Legacy.pdb
