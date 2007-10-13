@@ -14,7 +14,7 @@ namespace Core.Functions {
 	public class UserFunction : IFunction {
 
 		public string[] Names {
-			get { return new string[] { null }; }
+			get { return new string[] { "user_func" }; }
 		}
 
 		public string Name {
@@ -71,7 +71,11 @@ namespace Core.Functions {
 								Label CreatedLabel = compiler.Labels.Create(FunctionDeclaration.Arguments[i]);
 
 								// Copy the value!
-								CreatedLabel.NumericValue = PassedArgument.NumericValue;
+								if (PassedArgument.IsString) {
+									CreatedLabel.StringValue = PassedArgument.StringValue;
+								} else {
+									CreatedLabel.NumericValue = PassedArgument.NumericValue;
+								}
 
 							} break;
 						case Core.Directives.Function.FunctionDeclaration.ArgumentType.Macro: {

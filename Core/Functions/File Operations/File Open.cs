@@ -33,8 +33,7 @@ namespace Core.Functions.FileOperations {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1);
-			if (!source.ExpressionIsStringConstant(Args[0])) throw new DirectiveArgumentException(source, "Expected a filename.");
-			string Filename = (source.GetExpressionStringConstant(Args[0], false));
+			string Filename = (source.GetExpressionStringConstant(compiler, Args[0], false));
 
 			if (!File.Exists(Filename)) throw new CompilerExpection(source, "File '" + Filename + "' not found.");
 

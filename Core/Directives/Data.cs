@@ -49,8 +49,8 @@ namespace Core.Directives {
 
 					// Is it a string?
 					byte[] StringData = null;
-					if (source.ExpressionIsStringConstant(Arg)) {
-						StringData = compiler.StringEncoder.GetData(source.GetExpressionStringConstant(Arg));
+					if (source.ExpressionIsStringConstant(compiler, Arg)) {
+						StringData = compiler.StringEncoder.GetData(source.GetExpressionStringConstant(compiler, Arg));
 					}
 
 					// Which pass?
@@ -100,8 +100,8 @@ namespace Core.Directives {
 				switch (compiler.CurrentPass) {
 					case AssemblyPass.Pass1:
 						foreach (int i in Args) {
-							if (source.ExpressionIsStringConstant(i)) {																
-								compiler.IncrementProgramAndOutputCounters(compiler.StringEncoder.GetData(source.GetExpressionStringConstant(i)).Length * Size);
+							if (source.ExpressionIsStringConstant(compiler, i)) {																
+								compiler.IncrementProgramAndOutputCounters(compiler.StringEncoder.GetData(source.GetExpressionStringConstant(compiler, i)).Length * Size);
 							} else {
 								compiler.IncrementProgramAndOutputCounters(Size);
 							}
@@ -109,8 +109,8 @@ namespace Core.Directives {
 						break;
 					case AssemblyPass.Pass2:
 						foreach (int i in Args) {
-							if (source.ExpressionIsStringConstant(i)) {
-								foreach (byte c in compiler.StringEncoder.GetData(source.GetExpressionStringConstant(i))) {
+							if (source.ExpressionIsStringConstant(compiler, i)) {
+								foreach (byte c in compiler.StringEncoder.GetData(source.GetExpressionStringConstant(compiler, i))) {
 									switch (Size) {
 										case 1:
 											compiler.WriteOutput((byte)c);

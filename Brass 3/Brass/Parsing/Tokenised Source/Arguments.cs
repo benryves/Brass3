@@ -127,8 +127,7 @@ namespace Brass3 {
 					case ArgumentType.String:
 					case ArgumentType.UnescapedString:
 					case ArgumentType.Filename:
-						if (!this.ExpressionIsStringConstant(Arguments[i])) throw new DirectiveArgumentException(this.GetExpressionTokens(Arguments[i]), "Expected a string argument.");
-						Result[i] = this.GetExpressionStringConstant(Arguments[i], CurrentArgument == ArgumentType.String);
+						Result[i] = this.GetExpressionStringConstant(compiler, Arguments[i], CurrentArgument == ArgumentType.String);
 						if (CurrentArgument == ArgumentType.Filename) Result[i] = compiler.ResolveFilename(Result[i] as string);
 						break;
 					default:

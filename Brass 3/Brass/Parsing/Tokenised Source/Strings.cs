@@ -12,7 +12,7 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="index">The expression string to check.</param>
 		/// <returns>True if it's a string constant, false otherwise.</returns>
-		public bool ExpressionIsStringConstant(int index) {
+		public bool ExpressionIsStringConstant(Compiler compiler, int index) {
 			bool HasSeenString = false;
 			foreach (Token T in this.Tokens) {
 				if (T.ExpressionGroup == index) {
@@ -26,13 +26,15 @@ namespace Brass3 {
 			return HasSeenString;
 		}
 
+
 		/// <summary>
-		/// Gets an escaped string constant from an expression.
+		/// Gets a string constant from an expression.
 		/// </summary>
 		/// <param name="index">The index of the expression to retrieve as a string constant.</param>
+		/// <param name="escape">Decode escape sequences in the literal.</param>
 		/// <returns>The decoded string.</returns>
-		public string GetExpressionStringConstant(int index) {
-			return this.GetExpressionStringConstant(index, true);
+		public string GetExpressionStringConstant(Compiler compiler, int index) {
+			return this.EvaluateExpression(compiler, index).StringValue;
 		}
 
 		/// <summary>
@@ -41,17 +43,20 @@ namespace Brass3 {
 		/// <param name="index">The index of the expression to retrieve as a string constant.</param>
 		/// <param name="escape">Decode escape sequences in the literal.</param>
 		/// <returns>The decoded string.</returns>
-		public string GetExpressionStringConstant(int index, bool escape) {
-			StringBuilder Result = new StringBuilder(128);
-			foreach (Token T in this.Tokens) {
-				if (T.ExpressionGroup == index) {
+		public string GetExpressionStringConstant(Compiler compiler, int index, bool escape) {
+			if (escape) {
+				return this.EvaluateExpression(compiler, index).StringValue;
+			} else {
+				TokenisedSource Src = this.Clone() as TokenisedSource;
+				foreach (Token T in Src.tokens) {
 					if (T.Type == Token.TokenTypes.String) {
-						Result.Append(T.GetStringConstant(escape));
-
-					}
+						T.Data = T.Data.Replace("\\", "\\\\").Replace("\"", "\\\"");
+					}					
 				}
+				return Src.EvaluateExpression(compiler, index).StringValue;
+
 			}
-			return Result.ToString();
+
 		}
 	}
 }

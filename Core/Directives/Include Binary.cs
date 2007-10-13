@@ -22,9 +22,8 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-			if (!source.ExpressionIsStringConstant(Args[0])) throw new DirectiveArgumentException(source, "Filename expected.");
-
-			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(Args[0], false));
+			
+			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(compiler, Args[0], false));
 
 			if (!File.Exists(Filename)) throw new DirectiveArgumentException(source.Tokens[index], "File '" + Filename + "' not found.");
 

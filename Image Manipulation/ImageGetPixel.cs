@@ -29,7 +29,7 @@ namespace ImageManipulation {
 				).GetPixel(
 					(int)source.EvaluateExpression(compiler, Args[1]).NumericValue,
 					(int)source.EvaluateExpression(compiler, Args[2]).NumericValue,
-					source.GetExpressionStringConstant(Args[3], false)
+					source.GetExpressionStringConstant(compiler, Args[3], false)
 				)
 			);
 		}		

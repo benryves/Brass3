@@ -23,9 +23,9 @@ namespace Core.Functions {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int Expression = source.GetCommaDelimitedArguments(0, 1)[0];
-			if (!source.ExpressionIsStringConstant(Expression)) throw new CompilerExpection(source, "Expected a single string expression.");
+			if (!source.ExpressionIsStringConstant(compiler, Expression)) throw new CompilerExpection(source, "Expected a single string expression.");
 			double Result = double.NaN;
-			foreach (TokenisedSource TS in TokenisedSource.FromString(compiler, source.GetExpressionStringConstant(Expression))) {
+			foreach (TokenisedSource TS in TokenisedSource.FromString(compiler, source.GetExpressionStringConstant(compiler, Expression))) {
 				Result = TS.EvaluateExpression(compiler).NumericValue;
 			}
 			return new Label(compiler.Labels, Result);

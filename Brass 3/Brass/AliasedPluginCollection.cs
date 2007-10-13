@@ -11,7 +11,6 @@ namespace Brass3 {
 	/// </summary>
 	public class AliasedPluginCollection<T> : NamedPluginCollection<T> where T : IAliasedPlugin {
 
-
 		public AliasedPluginCollection()
 			: base() {
 		}

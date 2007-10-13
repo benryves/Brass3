@@ -39,8 +39,8 @@ namespace SegaMasterSystem.Directives {
 			public SdscString(Compiler compiler, TokenisedSource source, int argument) {
 				this.Address = 0xFFFF;
 				this.Value = null;
-				if (source.ExpressionIsStringConstant(argument)) {
-					this.Value = source.GetExpressionStringConstant(argument, true);
+				if (source.ExpressionIsStringConstant(compiler, argument)) {
+					this.Value = source.GetExpressionStringConstant(compiler, argument, true);
 					if (this.Value == "") this.Value = null;
 				} else {
 					this.Address = (int)source.EvaluateExpression(compiler, argument).NumericValue;

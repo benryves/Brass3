@@ -23,8 +23,7 @@ namespace Core.Functions.StringManipulation {
 		
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1, int.MaxValue);
-			if (!source.ExpressionIsStringConstant(Args[0])) throw new DirectiveArgumentException(source, "First argument must be a string.");
-			string FormatString = source.GetExpressionStringConstant(Args[0]);
+			string FormatString = source.GetExpressionStringConstant(compiler, Args[0]);
 			object[] FormatArgs = new object[Args.Length - 1];
 			for (int i = 1; i < Args.Length; ++i) {
 				Label L = source.EvaluateExpression(compiler, Args[i]);

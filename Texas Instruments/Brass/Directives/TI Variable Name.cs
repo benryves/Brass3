@@ -18,15 +18,11 @@ namespace TexasInstruments.Brass.Directives {
 		internal Dictionary<int, string> VariableNames;
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.Pass2) { 
+			if (compiler.CurrentPass == AssemblyPass.Pass2) {
 				int Page = compiler.Labels.ProgramCounter.Page;
 				int NameIndex = source.GetCommaDelimitedArguments(index + 1, 1)[0];
-				if (source.ExpressionIsStringConstant(NameIndex)) {
-					if (VariableNames.ContainsKey(Page)) VariableNames.Remove(Page);
-					VariableNames.Add(Page, source.GetExpressionStringConstant(NameIndex));
-				} else {
-					throw new CompilerExpection(source, "Expected a variable name string.");
-				}
+				if (VariableNames.ContainsKey(Page)) VariableNames.Remove(Page);
+				VariableNames.Add(Page, source.GetExpressionStringConstant(compiler, NameIndex));
 			}
 		}
 		public string Name {

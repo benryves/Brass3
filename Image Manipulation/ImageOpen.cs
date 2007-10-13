@@ -36,7 +36,7 @@ namespace ImageManipulation {
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(source.GetCommaDelimitedArguments(0, 1)[0], false));
+			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(compiler, source.GetCommaDelimitedArguments(0, 1)[0], false));
 			double ImageHandle = ++CurrentHandle;
 			this.OpenedImages.Add(ImageHandle, new ImageManipulator(Filename));
 			return new Label(compiler.Labels, ImageHandle);

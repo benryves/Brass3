@@ -19,7 +19,7 @@ namespace Brass3 {
 			this.UniquePlugins = new List<T>();
 		}
 
-		public T this[string name] {
+		public virtual T this[string name] {
 			get {
 				return this.Plugins[name.ToLowerInvariant()];
 			}

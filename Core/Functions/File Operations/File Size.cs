@@ -22,8 +22,8 @@ namespace Core.Functions.FileOperations {
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 
 			int[] Args = source.GetCommaDelimitedArguments(0, 1);
-			if (source.ExpressionIsStringConstant(Args[0])) {
-				using (FileStream S = new FileStream(compiler.ResolveFilename(source.GetExpressionStringConstant(Args[0])), FileMode.Open)) {
+			if (source.ExpressionIsStringConstant(compiler, Args[0])) {
+				using (FileStream S = new FileStream(compiler.ResolveFilename(source.GetExpressionStringConstant(compiler, Args[0])), FileMode.Open)) {
 					return new Label(compiler.Labels, S.Length);
 				}
 			} else {
