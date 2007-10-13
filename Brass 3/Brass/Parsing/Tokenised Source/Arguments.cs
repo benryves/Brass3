@@ -88,9 +88,11 @@ namespace Brass3 {
 		public enum ArgumentType {
 			None = 0x0000,
 			Optional = 0x8000,
+			ImplicitLabelCreation = 0x4000,
 			Value = 0x0001,
 			String = 0x0002,
 			UnescapedString = 0x0004,
+			Filename = 0x0008,
 		}
 
 		public object[] GetCommaDelimitedArguments(Compiler compiler, int index, ArgumentType[] types) {
@@ -115,15 +117,19 @@ namespace Brass3 {
 			// Calculate the result:
 			object[] Result = new object[Arguments.Length];
 			for (int i = 0; i < Arguments.Length; ++i) {
-				ArgumentType CurrentArgument = types[0] & ~ArgumentType.Optional;
+				ArgumentType CurrentArgument = types[i] & ~(ArgumentType.Optional | ArgumentType.ImplicitLabelCreation);
 				switch (CurrentArgument) {
 					case ArgumentType.Value:
-						Result[i] = this.EvaluateExpression(compiler, Arguments[i]).Value;
+						Label L = this.EvaluateExpression(compiler, Arguments[i]);
+						if (!L.Created && ((types[i] & ArgumentType.ImplicitLabelCreation) == ArgumentType.ImplicitLabelCreation)) L.SetImplicitlyCreated();
+						Result[i] = L.Value;
 						break;
 					case ArgumentType.String:
 					case ArgumentType.UnescapedString:
+					case ArgumentType.Filename:
 						if (!this.ExpressionIsStringConstant(Arguments[i])) throw new DirectiveArgumentException(this.GetExpressionTokens(Arguments[i]), "Expected a string argument.");
-						Result[i] = this.GetExpressionStringConstant(Arguments[i], CurrentArgument != ArgumentType.UnescapedString);
+						Result[i] = this.GetExpressionStringConstant(Arguments[i], CurrentArgument == ArgumentType.String);
+						if (CurrentArgument == ArgumentType.Filename) Result[i] = compiler.ResolveFilename(Result[i] as string);
 						break;
 					default:
 						throw new ArgumentException("Argument type " + types[0].ToString() + " not recognised.");

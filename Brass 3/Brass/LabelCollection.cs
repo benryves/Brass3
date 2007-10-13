@@ -25,6 +25,28 @@ namespace Brass3 {
 			}
 		}
 
+		public void EnterTemporaryModule() {
+			int ModuleSuffix = (ushort)DateTime.Now.Ticks;
+			this.EnterModule(string.Format("TEMP_MODULE_#{0:X4}", ModuleSuffix));
+			
+		}
+		public Label[] LeaveTemporaryModule() {
+			List<Label> TemporaryLabels = new List<Label>();
+			List<Label> ToPurge = new List<Label>();
+			string TempName = this.CurrentModule.ToLowerInvariant();
+			foreach (Label L in this) {
+				if (ModuleGetParent(L.Name).ToLowerInvariant() == TempName) {
+					ToPurge.Add(L);
+				}
+			}
+			foreach (Label L in ToPurge) {
+				TemporaryLabels.Add(L.Clone() as Label);
+				this.Remove(L);				
+			}
+
+			return TemporaryLabels.ToArray();
+		}
+
 		private Label implicitCreationDefault;
 		public Label ImplicitCreationDefault {
 			get { return this.implicitCreationDefault ?? this.programCounter; }
@@ -356,6 +378,11 @@ namespace Brass3 {
 			if (ModulePath.Length == 0) throw new ArgumentException("Already at the top module level.");
 			Array.Resize<string>(ref ModulePath, ModulePath.Length - 1);
 			return string.Join(".", ModulePath);
+		}
+
+		public static string ModuleGetName(string path) {
+			string[] ModulePath = path.Split('.');
+			return ModulePath[path.Length - 1];
 		}
 
 		public string ModuleGetFullPath(string name) {
