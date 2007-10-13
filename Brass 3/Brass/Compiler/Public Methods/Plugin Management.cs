@@ -38,7 +38,7 @@ namespace Brass3 {
 					ConstructorInfo Constructor = null;
 					object[] ConstructorParameters = null;
 					bool IsAliased = false;
-					
+
 					bool IsAssembler = false;
 					bool IsDirective = false;
 					bool IsFunction = false;
@@ -77,7 +77,7 @@ namespace Brass3 {
 						}
 					}
 
-					if (IsAssembler || IsDirective || IsFunction || IsOutputWriter || IsOutputModifier || IsStringEncoder || IsListingWriter || IsNumberEncoding) {
+					if (Constructor != null) {
 
 						// Create an instance of the plugin:
 						object Plugin = Constructor.Invoke(ConstructorParameters);
