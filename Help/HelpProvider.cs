@@ -222,6 +222,7 @@ namespace Help {
 			HelpFile.Append(GetPluginList<IOutputModifier>(pluginCollection, compiler.OutputModifiers, "Output Modifiers", forExporting));
 			HelpFile.Append(GetPluginList<IListingWriter>(pluginCollection, compiler.ListingWriters, "Listing Writers", forExporting));
 			HelpFile.Append(GetPluginList<IAssembler>(pluginCollection, compiler.Assemblers, "Assemblers", forExporting));
+			HelpFile.Append(GetPluginList<IPlugin>(pluginCollection, compiler.InvisiblePlugins, "Other Plugins", forExporting));
 
 
 			if (HelpFile.Length == HelpFileLength) {

@@ -57,6 +57,9 @@ namespace Help {
 				TreeNode Assemblers = GetHelpForPlugin<IAssembler>(this.helpProvider.Compiler.Assemblers, "Assemblers", PluginCollections);
 				if (Assemblers != null) this.Contents.Nodes.Add(Assemblers);
 
+				TreeNode Other = GetHelpForPlugin<IPlugin>(this.helpProvider.Compiler.InvisiblePlugins, "Other Plugins", PluginCollections);
+				if (Other != null) this.Contents.Nodes.Add(Other);
+
 				List<TreeNode> CollectionNodes = new List<TreeNode>();
 				foreach (Assembly A in PluginCollections) {
 					string Name = A.GetName().Name;
