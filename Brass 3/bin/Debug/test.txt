@@ -1,1 +1,0 @@
-﻿.inclabels "ti8x.lbl"
