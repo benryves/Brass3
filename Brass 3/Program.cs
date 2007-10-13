@@ -66,7 +66,7 @@ namespace Brass3 {
 							List<Label> ToSort = new List<Label>(C.Labels);
 							ToSort.Sort(delegate(Label a, Label b) { return a.Name.CompareTo(b.Name); });
 							foreach (Label L in ToSort) {
-								Console.WriteLine(L.Name + "\t" + L.Value);								
+								Console.WriteLine(L.Name + "\t" + L.NumericValue);								
 							}
 							break;
 						default:
@@ -74,7 +74,7 @@ namespace Brass3 {
 								foreach (TokenisedSource TS in TokenisedSource.FromString(C, StringInput)) {
 									Label L = TS.GetCode().EvaluateExpression(C);
 									try {
-										Console.WriteLine(L.Value);
+										Console.WriteLine(L.NumericValue);
 									} catch (CompilerExpection cex) {
 										Console.WriteLine(cex.Message);
 										cex.SourceStatement.WriteColouredConsoleOutput(true, cex.Token, false);

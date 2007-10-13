@@ -25,8 +25,8 @@ namespace Core.Directives {
 
 			int[] args = source.GetCommaDelimitedArguments(index + 1, 1);
 
-			compiler.OutputCounter = (int)source.EvaluateExpression(compiler, args[0]).Value;
-			compiler.Labels.ProgramCounter.Value = compiler.OutputCounter;
+			compiler.OutputCounter = (int)source.EvaluateExpression(compiler, args[0]).NumericValue;
+			compiler.Labels.ProgramCounter.NumericValue = compiler.OutputCounter;
 			
 
 		}

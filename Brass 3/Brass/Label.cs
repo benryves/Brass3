@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Brass3.Plugins;
+using System.Globalization;
 
 namespace Brass3 {
 
@@ -68,13 +69,30 @@ namespace Brass3 {
 			get { return this.type == null ? 1 : this.type.Size; }
 		}
 
+		private bool isString;
+		/// <summary>
+		/// Gets or sets whether to interpret the label as a string.
+		/// </summary>
+		public bool IsString {
+			get { return this.isString; }
+			set { this.isString = value; }
+		}
+
+		private string stringValue;
+		/// <summary>
+		/// Gets or sets the string value of the label.
+		/// </summary>
+		public string StringValue {
+			get { return this.isString ? this.stringValue : this.NumericValue.ToString(CultureInfo.InvariantCulture); }
+			set { this.isString = true; this.stringValue = value; }
+		}
 
 		private double value;
 		/// <summary>
 		/// Gets or sets the value of the label.
 		/// </summary>
 		/// <remarks>You cannot assign values to constants.</remarks>
-		public double Value {
+		public double NumericValue {
 			get {
 				if (AccessingPage) {
 					return this.Page;
@@ -92,6 +110,7 @@ namespace Brass3 {
 					if (this.created) ++ChangeCount;
 					this.created = true;
 					this.value = value;
+					this.isString = false;
 				}
 			}
 		}
@@ -135,7 +154,7 @@ namespace Brass3 {
 		/// Returns a formatted string describing the label.
 		/// </summary>
 		public override string ToString() {
-			return this.Name + "=" + this.Value + ":" + this.Page;
+			return this.Name + "=" + (this.IsString ? this.StringValue : this.NumericValue.ToString()) + ":" + this.Page;
 		}
 
 		/// <summary>
@@ -186,6 +205,8 @@ namespace Brass3 {
 			this.value = value;
 			this.page = page;
 			this.type = type;
+			this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
+			this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
 		}
 
 		/// <summary>
@@ -198,6 +219,8 @@ namespace Brass3 {
 			this.created = false;
 			this.collection = collection;
 			this.name = GetNameWithoutColon(token.Data, out accessingPage);
+			this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
+			this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
 			
 		}
 
@@ -240,6 +263,17 @@ namespace Brass3 {
 			: this(collection, value, true) {
 		}
 
+		/// <summary>
+		/// Creates a limited instance of a label.
+		/// </summary>
+		/// <param name="collection">The collection containing the label.</param>
+		/// <param name="value">The value to set the label to.</param>
+		/// <remarks>This crude label is very limited in functionality, and it is recommended that you only use it to create temporary labels as return values from functions.</remarks>
+		public Label(LabelCollection collection, string value)
+			: this(collection, 0, true) {
+			this.StringValue = value;
+		}
+
 		#endregion
 
 
@@ -250,14 +284,20 @@ namespace Brass3 {
 		/// Creates a copy of the label.
 		/// </summary>
 		public object Clone() {
-			return new Label(this.collection, this.Token, this.IsConstant, this.Value, this.Page, this.type);
+			Label L = new Label(this.collection, this.Token, this.IsConstant, this.NumericValue, this.Page, this.type);
+			L.isString = this.isString;
+			L.stringValue = this.stringValue;
+			return L;
 		}
 
 		/// <summary>
 		/// Creates a copy of the label.
 		/// </summary>
 		public object Clone(TokenisedSource.Token renamed) {
-			return new Label(this.collection, renamed, this.IsConstant, this.Value, this.Page, this.type);
+			Label L = new Label(this.collection, renamed, this.IsConstant, this.NumericValue, this.Page, this.type);
+			L.isString = this.isString;
+			L.stringValue = this.stringValue;
+			return L;
 		}
 
 		#endregion

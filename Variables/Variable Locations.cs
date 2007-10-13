@@ -27,8 +27,8 @@ namespace Variables {
 			int[] Args = source.GetCommaDelimitedArguments(index + 1, 2);
 
 			Vars.VariableLocations.Add(new Var.VariableAllocationRegion(
-				(int)source.EvaluateExpression(compiler, Args[0]).Value,
-				(int)source.EvaluateExpression(compiler, Args[1]).Value
+				(int)source.EvaluateExpression(compiler, Args[0]).NumericValue,
+				(int)source.EvaluateExpression(compiler, Args[1]).NumericValue
 			));
 
 		}

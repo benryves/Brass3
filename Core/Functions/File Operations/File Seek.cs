@@ -21,7 +21,7 @@ namespace Core.Functions.FileOperations {
 
 			int[] Args = source.GetCommaDelimitedArguments(0, 2);
 			FileStream S = FileOpen.GetFilestreamFromHandle(compiler, source);
-			long Offset = (long)source.EvaluateExpression(compiler, Args[1]).Value;
+			long Offset = (long)source.EvaluateExpression(compiler, Args[1]).NumericValue;
 			S.Seek(Offset, SeekOrigin.Begin);
 			return new Label(compiler.Labels, S.Position);
 			

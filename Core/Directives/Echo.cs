@@ -26,11 +26,7 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass != AssemblyPass.Pass2) return;
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {
-				if (source.ExpressionIsStringConstant(Expression)) {
-					compiler.OutputString(source.GetExpressionStringConstant(Expression));
-				} else {
-					compiler.OutputString(source.EvaluateExpression(compiler, Expression).Value.ToString());
-				}
+				compiler.OutputString(source.EvaluateExpression(compiler, Expression).StringValue);
 			}
 			if (directive == "echoln") compiler.OutputString(Environment.NewLine);
 		}

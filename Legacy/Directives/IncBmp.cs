@@ -55,16 +55,16 @@ namespace Legacy.Directives {
 					foreach (Label L in Parms) {
 						switch (LabelCollection.ModuleGetName(L.Name).ToLowerInvariant()) {
 							case "width":
-								BmpWidth = (int)L.Value;
+								BmpWidth = (int)L.NumericValue;
 								break;
 							case "height":
-								BmpHeight = (int)L.Value;
+								BmpHeight = (int)L.NumericValue;
 								break;
 							case "rle":
 								CanRle = true;
 								break;
 							default:
-								BrightnessLimiter = (int)L.Value;
+								BrightnessLimiter = (int)L.NumericValue;
 								break;
 						}
 					}

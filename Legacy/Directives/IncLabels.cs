@@ -35,7 +35,7 @@ namespace Legacy.Directives {
 					uint LV = BR.ReadUInt16();
 					uint LP = BR.ReadUInt16();
 					Label L = compiler.Labels.Create(new TokenisedSource.Token(LN));
-					L.Value = LV;
+					L.NumericValue = LV;
 					L.Page = (int)LP;
 					L.SetConstant();
 					L.SetImplicitlyCreated();

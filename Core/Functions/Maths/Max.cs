@@ -26,8 +26,8 @@ namespace Core.Functions.Maths {
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 2);
 			return new Label(compiler.Labels, Math.Max(
-				source.EvaluateExpression(compiler, Args[0]).Value,
-				source.EvaluateExpression(compiler, Args[1]).Value
+				source.EvaluateExpression(compiler, Args[0]).NumericValue,
+				source.EvaluateExpression(compiler, Args[1]).NumericValue
 			));
 		}
 

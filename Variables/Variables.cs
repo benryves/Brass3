@@ -85,7 +85,7 @@ namespace Variables {
 					source.Tokens[i].ExpressionGroup = 1;
 				}
 
-				ElementCount = (int)source.EvaluateExpression(compiler, 1).Value;
+				ElementCount = (int)source.EvaluateExpression(compiler, 1).NumericValue;
 				++NameListIndex;
 			}
 
@@ -138,12 +138,12 @@ namespace Variables {
 
 					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerExpection(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Data));
 					Label StructLabel = compiler.Labels.Create(Var.Name);
-					StructLabel.Value = this.VariableLocations[0].CurrentOffset;
+					StructLabel.NumericValue = this.VariableLocations[0].CurrentOffset;
 					StructLabel.Type = Var.DataType;
 					foreach (KeyValuePair<string, DataStructure.Field> Field in Var.DataType.GetAllFields()) {
 						TokenisedSource.Token StructField = new TokenisedSource.Token(LabelCollection.ModuleCombine(Var.Name.Data, Field.Key));
 						Label StructFieldLabel = compiler.Labels.Create(StructField);
-						StructFieldLabel.Value = this.VariableLocations[0].CurrentOffset + Field.Value.Offset;
+						StructFieldLabel.NumericValue = this.VariableLocations[0].CurrentOffset + Field.Value.Offset;
 						StructFieldLabel.Type = Field.Value.DataType;						
 					}
 

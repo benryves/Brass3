@@ -20,7 +20,7 @@ namespace ImageManipulation {
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			return new Label(compiler.Labels,
 				((ImageOpen)compiler.GetPluginInstanceFromType(typeof(ImageOpen))).GetImage(
-					source.EvaluateExpression(compiler,source.GetCommaDelimitedArguments(0, 1)[0]).Value
+					source.EvaluateExpression(compiler,source.GetCommaDelimitedArguments(0, 1)[0]).NumericValue
 				).Height
 			);
 		}		

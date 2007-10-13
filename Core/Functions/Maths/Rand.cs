@@ -37,7 +37,7 @@ namespace Core.Functions.Maths {
 			double Result = 0;
 
 			int[] Args = source.GetCommaDelimitedArguments(0, 0, 2);
-			double[] ArgValues = Array.ConvertAll<int, double>(Args, delegate(int i) { return source.EvaluateExpression(compiler,i).Value; });
+			double[] ArgValues = Array.ConvertAll<int, double>(Args, delegate(int i) { return source.EvaluateExpression(compiler,i).NumericValue; });
 
 
 			switch (Args.Length) {

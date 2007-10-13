@@ -24,10 +24,10 @@ namespace Core.Functions.Maths {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1, int.MaxValue);
-			int Index = (int)source.EvaluateExpression(compiler, Args[0]).Value;
+			int Index = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
 			int AdjustedIndex = (Index > 0) ? (Index) : (Args.Length + Index);
 			if (AdjustedIndex < 1 || AdjustedIndex >= Args.Length) throw new CompilerExpection(source, "Choice " + Index + " not available.");
-			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Args[AdjustedIndex]).Value);
+			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Args[AdjustedIndex]).NumericValue);
 		}
 
 	}

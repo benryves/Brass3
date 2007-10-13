@@ -23,7 +23,7 @@ namespace Core.Functions.Logic {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 3);
-			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Args[source.EvaluateExpression(compiler, Args[0]).Value != 0 ? 1 : 2]).Value);
+			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Args[source.EvaluateExpression(compiler, Args[0]).NumericValue != 0 ? 1 : 2]).NumericValue);
 		}
 	}
 }

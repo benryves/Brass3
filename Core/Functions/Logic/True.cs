@@ -30,7 +30,7 @@ namespace Core.Functions.Logic {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 0, 1);
-			return new Label(compiler.Labels, Args.Length == 0 ? 1 : ((source.EvaluateExpression(compiler, Args[0]).Value != 0) ? 1 : 0));
+			return new Label(compiler.Labels, Args.Length == 0 ? 1 : ((source.EvaluateExpression(compiler, Args[0]).NumericValue != 0) ? 1 : 0));
 		}
 
 		#endregion

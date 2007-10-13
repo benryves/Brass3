@@ -44,7 +44,7 @@ namespace SegaMasterSystem.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass == AssemblyPass.Pass2) {
-				this.ProductNumber = (int)source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(index + 1, 1)[0]).Value;
+				this.ProductNumber = (int)source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(index + 1, 1)[0]).NumericValue;
 			}
 		}
 

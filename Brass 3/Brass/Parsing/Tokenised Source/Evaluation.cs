@@ -186,19 +186,19 @@ namespace Brass3 {
 									case Operator.OperatorType.UnaryAddition:
 										break;
 									case Operator.OperatorType.UnaryBitwiseNot:
-										Result.Label.Value = (double)~((int)Op.Label.Value);
+										Result.Label.NumericValue = (double)~((int)Op.Label.NumericValue);
 										break;
 									case Operator.OperatorType.UnaryDecrement:
-										Result.Label.Value--;
+										Result.Label.NumericValue--;
 										break;
 									case Operator.OperatorType.UnaryIncrement:
-										Result.Label.Value++;
+										Result.Label.NumericValue++;
 										break;
 									case Operator.OperatorType.UnaryLogicalNot:
-										Result.Label.Value = (Op.Label.Value == 0f) ? 1f : 0f;
+										Result.Label.NumericValue = (Op.Label.NumericValue == 0f) ? 1f : 0f;
 										break;
 									case Operator.OperatorType.UnarySubtraction:
-										Result.Label.Value = -Op.Label.Value;
+										Result.Label.NumericValue = -Op.Label.NumericValue;
 										break;
 									default:
 										throw new CompilerExpection(O.Token, O.Type.ToString());
@@ -228,94 +228,126 @@ namespace Brass3 {
 
 								// Power:
 								case Operator.OperatorType.Power:
-									Result.Label.Value = Math.Pow(OpA.Label.Value, OpB.Label.Value);
+									Result.Label.NumericValue = Math.Pow(OpA.Label.NumericValue, OpB.Label.NumericValue);
 									break;
 
 								// Arithmetic: multiplicative
 								case Operator.OperatorType.Modulo:
-									Result.Label.Value = OpA.Label.Value % OpB.Label.Value;
+									Result.Label.NumericValue = OpA.Label.NumericValue % OpB.Label.NumericValue;
 									break;
 								case Operator.OperatorType.Multiplication:
 								case Operator.OperatorType.AssignmentMultiplication:
-									Result.Label.Value = OpA.Label.Value * OpB.Label.Value;
+									Result.Label.NumericValue = OpA.Label.NumericValue * OpB.Label.NumericValue;
 									break;
 								case Operator.OperatorType.Division:
 								case Operator.OperatorType.AssignmentDivision:
-									Result.Label.Value = OpA.Label.Value / OpB.Label.Value;
+									Result.Label.NumericValue = OpA.Label.NumericValue / OpB.Label.NumericValue;
 									break;
 
 								// Arithmetic: additive:
 								case Operator.OperatorType.Addition:
 								case Operator.OperatorType.AssignmentAddition:
-									Result.Label.Value = OpA.Label.Value + OpB.Label.Value;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.StringValue = OpA.Label.StringValue + OpB.Label.StringValue;
+									} else {
+										Result.Label.NumericValue = OpA.Label.NumericValue + OpB.Label.NumericValue;
+									}
 									break;
 								case Operator.OperatorType.Subtraction:
 								case Operator.OperatorType.AssignmentSubtraction:
-									Result.Label.Value = OpA.Label.Value - OpB.Label.Value;
+									Result.Label.NumericValue = OpA.Label.NumericValue - OpB.Label.NumericValue;
 									break;
 
 								// Shift:
 								case Operator.OperatorType.ShiftLeft:
 								case Operator.OperatorType.AssignmentShiftLeft:
-									Result.Label.Value = ((int)OpA.Label.Value << (int)OpB.Label.Value);
+									Result.Label.NumericValue = ((int)OpA.Label.NumericValue << (int)OpB.Label.NumericValue);
 									break;
 								case Operator.OperatorType.ShiftRight:
 								case Operator.OperatorType.AssignmentShiftRight:
-									Result.Label.Value = ((int)OpA.Label.Value >> (int)OpB.Label.Value);
+									Result.Label.NumericValue = ((int)OpA.Label.NumericValue >> (int)OpB.Label.NumericValue);
 									break;
 
 								// Relational and type testing:
 								case Operator.OperatorType.GreaterOrEqualTo:
-									Result.Label.Value = (OpA.Label.Value >= OpB.Label.Value) ? 1 : 0;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.NumericValue = OpA.Label.StringValue.CompareTo(OpB.Label.StringValue) >= 0 ? 1 : 0;
+									} else {
+										Result.Label.NumericValue = (OpA.Label.NumericValue >= OpB.Label.NumericValue) ? 1 : 0;
+									}
 									break;
 								case Operator.OperatorType.LessOrEqualTo:
-									Result.Label.Value = (OpA.Label.Value <= OpB.Label.Value) ? 1 : 0;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.NumericValue = OpA.Label.StringValue.CompareTo(OpB.Label.StringValue) <= 0 ? 1 : 0;
+									} else {
+										Result.Label.NumericValue = (OpA.Label.NumericValue <= OpB.Label.NumericValue) ? 1 : 0;
+									}
 									break;
 								case Operator.OperatorType.GreaterThan:
-									Result.Label.Value = (OpA.Label.Value > OpB.Label.Value) ? 1 : 0;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.NumericValue = OpA.Label.StringValue.CompareTo(OpB.Label.StringValue) > 0 ? 1 : 0;
+									} else {
+										Result.Label.NumericValue = (OpA.Label.NumericValue > OpB.Label.NumericValue) ? 1 : 0;
+									}
 									break;
 								case Operator.OperatorType.LessThan:
-									Result.Label.Value = (OpA.Label.Value < OpB.Label.Value) ? 1 : 0;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.NumericValue = OpA.Label.StringValue.CompareTo(OpB.Label.StringValue) < 0 ? 1 : 0;
+									} else {
+										Result.Label.NumericValue = (OpA.Label.NumericValue < OpB.Label.NumericValue) ? 1 : 0;
+									}
 									break;
 
 								// Equality:
 								case Operator.OperatorType.NotEqual:
-									Result.Label.Value = (OpA.Label.Value != OpB.Label.Value) ? 1 : 0;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.NumericValue = (OpA.Label.StringValue != OpB.Label.StringValue) ? 1 : 0;
+									} else {
+										Result.Label.NumericValue = (OpA.Label.NumericValue != OpB.Label.NumericValue) ? 1 : 0;
+									}
 									break;
 								case Operator.OperatorType.Equal:
-									Result.Label.Value = (OpA.Label.Value == OpB.Label.Value) ? 1 : 0;
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.NumericValue = (OpA.Label.StringValue == OpB.Label.StringValue) ? 1 : 0;
+									} else {
+										Result.Label.NumericValue = (OpA.Label.NumericValue == OpB.Label.NumericValue) ? 1 : 0;
+									}
 									break;
 
 								// Bitwise:
 								case Operator.OperatorType.AssignmentBitwiseXor:
 								case Operator.OperatorType.BitwiseXor:
-									Result.Label.Value = ((int)OpA.Label.Value ^ (int)OpB.Label.Value);
+									Result.Label.NumericValue = ((int)OpA.Label.NumericValue ^ (int)OpB.Label.NumericValue);
 									break;
 								case Operator.OperatorType.AssignmentBitwiseAnd:
 								case Operator.OperatorType.BitwiseAnd:
-									Result.Label.Value = ((int)OpA.Label.Value & (int)OpB.Label.Value);
+									Result.Label.NumericValue = ((int)OpA.Label.NumericValue & (int)OpB.Label.NumericValue);
 									break;
 								case Operator.OperatorType.AssignmentBitwiseOr:
 								case Operator.OperatorType.BitwiseOr:
-									Result.Label.Value = ((int)OpA.Label.Value | (int)OpB.Label.Value);
+									Result.Label.NumericValue = ((int)OpA.Label.NumericValue | (int)OpB.Label.NumericValue);
 									break;
 
 								// Conditional:
 								case Operator.OperatorType.LogicalAnd:
-									Result.Label.Value = ((OpA.Label.Value != 0) && (OpB.Label.Value != 0)) ? 1 : 0;
+									Result.Label.NumericValue = ((OpA.Label.NumericValue != 0) && (OpB.Label.NumericValue != 0)) ? 1 : 0;
 									break;
 								case Operator.OperatorType.LogicalOr:
-									Result.Label.Value = ((OpA.Label.Value != 0) || (OpB.Label.Value != 0)) ? 1 : 0;
+									Result.Label.NumericValue = ((OpA.Label.NumericValue != 0) || (OpB.Label.NumericValue != 0)) ? 1 : 0;
 									break;
 
 								// Assignment:
 								case Operator.OperatorType.AssignmentEqual:
-									Result.Label.Value = OpB.Label.Value;
+									if (OpB.Label.IsString) {
+										Result.Label.StringValue = OpB.Label.StringValue;
+									} else {
+										Result.Label.NumericValue = OpB.Label.NumericValue;
+									}
 									break;
 
 								// Indexing:
 								case Operator.OperatorType.IndexingOpen:
-									Result.Label.Value += OpB.Label.Value * OpA.Label.Size;
+									Result.Label.NumericValue += OpB.Label.NumericValue * OpA.Label.Size;
 
 									// Now, here we have a special case:
 									// token[index].field
@@ -329,7 +361,7 @@ namespace Brass3 {
 										if (FieldName.Label.Name.Length > 0 && FieldName.Label.Name[0] == '.') {
 											string Field = FieldName.Label.Name.Substring(1);
 											DataStructure.Field SubField = (OpA.Label.Type as DataStructure)[Field];
-											Result.Label.Value += SubField.Offset;
+											Result.Label.NumericValue += SubField.Offset;
 											Result.Label.Type = SubField.DataType;
 											if (!FieldName.Label.Created) compiler.Labels.Remove(FieldName.Label);
 											LabelsToEvaluate.Remove(O.ExpressionPosition.Next.Next);
@@ -350,7 +382,7 @@ namespace Brass3 {
 							switch (O.Type) {
 								case Operator.OperatorType.ConditionalQuery:
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
-									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.Value != 0);
+									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.NumericValue != 0);
 									break;
 								case Operator.OperatorType.ConditionalResultSplitter:
 									
@@ -361,10 +393,10 @@ namespace Brass3 {
 									LabelAccessor Condition = (LabelAccessor)O.ExpressionPosition.Previous.Previous.Value.Clone();
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Previous.Previous);
 									O.ExpressionPosition.List.AddBefore(O.ExpressionPosition.Previous, Condition);
-									if (Condition.Label.Value != 0) {
-										Condition.Label.Value = O.ExpressionPosition.Previous.Value.Label.Value;
+									if (Condition.Label.NumericValue != 0) {
+										Condition.Label.NumericValue = O.ExpressionPosition.Previous.Value.Label.NumericValue;
 									} else {
-										Condition.Label.Value = O.ExpressionPosition.Next.Value.Label.Value;
+										Condition.Label.NumericValue = O.ExpressionPosition.Next.Value.Label.NumericValue;
 									}
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Previous);
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);

@@ -75,14 +75,31 @@ namespace Core.Properties {
         ///&lt;html&gt;
         ///	&lt;head&gt;
         ///		&lt;style&gt;
-        ///			pre.code {
+        ///			* {
+        ///				font-size: 8pt;
+        ///			}
+        ///			pre.source {
         ///				padding: 0px;
         ///				margin: 0px;
-        ///				font: consolas, &quot;lucida console&quot;, monospace;
+        ///				font-family: consolas, &quot;lucida console&quot;, monospace;
         ///			}
-        ///		&lt;/style&gt;
-        ///	&lt;/head&gt;
-        ///	&lt;body&gt;.
+        ///			pre.source span.comment {
+        ///				color: #060;
+        ///			}
+        ///			pre.source span.string {
+        ///				color: #900;
+        ///			}
+        ///			pre.source span.directive {
+        ///				color: #009;
+        ///			}
+        ///			pre.source span.function {
+        ///				color: #069;
+        ///			}
+        ///			pre.source span.label {
+        ///				color: #663;
+        ///			}
+        ///			pre.source.disabled, pre.source.disabled * {
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HtmlListHeader {
             get {

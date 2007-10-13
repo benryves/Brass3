@@ -253,7 +253,8 @@ namespace Brass3 {
 			}
 
 			result = new Label(this, token, false, 0, 0, null);
-			result.Value = ParsedValue;
+			result.NumericValue = ParsedValue;
+			if (token.Type == TokenisedSource.Token.TokenTypes.String) result.IsString = true;
 			result.IsConstant = true;
 			return true;
 		}

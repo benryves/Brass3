@@ -26,7 +26,7 @@ namespace Core.Functions.Maths {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 2);
-			return new Label(compiler.Labels, Math.Log(source.EvaluateExpression(compiler, Args[0]).Value, source.EvaluateExpression(compiler, Args[1]).Value));
+			return new Label(compiler.Labels, Math.Log(source.EvaluateExpression(compiler, Args[0]).NumericValue, source.EvaluateExpression(compiler, Args[1]).NumericValue));
 		}
 
 		#endregion

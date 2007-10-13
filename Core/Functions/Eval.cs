@@ -26,7 +26,7 @@ namespace Core.Functions {
 			if (!source.ExpressionIsStringConstant(Expression)) throw new CompilerExpection(source, "Expected a single string expression.");
 			double Result = double.NaN;
 			foreach (TokenisedSource TS in TokenisedSource.FromString(compiler, source.GetExpressionStringConstant(Expression))) {
-				Result = TS.EvaluateExpression(compiler).Value;
+				Result = TS.EvaluateExpression(compiler).NumericValue;
 			}
 			return new Label(compiler.Labels, Result);
 		}

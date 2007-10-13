@@ -346,7 +346,7 @@ namespace Z80 {
 				int IndexHackOffset = I.IndexHack ? 1 : 0;
 				int[] ExpressionParts = new int[I.Variables.Length + IndexHackOffset];
 				for (int i = 0; i < I.Variables.Length; ++i) {
-					ExpressionParts[i + IndexHackOffset] = (int)source.EvaluateExpression(compiler, i + 1).Value;
+					ExpressionParts[i + IndexHackOffset] = (int)source.EvaluateExpression(compiler, i + 1).NumericValue;
 				}
 
 				if (I.Rule == Instruction.InstructionRule.ZIdX && ExpressionParts.Length == 1) {
@@ -376,14 +376,14 @@ namespace Z80 {
 						}
 						break;
 					case Instruction.InstructionRule.R1:
-						ExpressionParts[0] -= (int)(compiler.Labels.ProgramCounter.Value + I.Size);
+						ExpressionParts[0] -= (int)(compiler.Labels.ProgramCounter.NumericValue + I.Size);
 						if (ExpressionParts[0] > 127 || ExpressionParts[0] < -128) {
 							throw new CompilerExpection(source.Tokens[index], "Range of relative jump exceeded.");
 						}
 						OutputData[OutputData.Length - 1] = (byte)ExpressionParts[0];
 						break;
 					case Instruction.InstructionRule.R2:
-						ExpressionParts[0] -= (int)(compiler.Labels.ProgramCounter.Value + I.Size);
+						ExpressionParts[0] -= (int)(compiler.Labels.ProgramCounter.NumericValue + I.Size);
 						if (ExpressionParts[0] > 32767 || ExpressionParts[0] < -32768) {
 							throw new CompilerExpection(source.Tokens[index], "Range of relative jump exceeded.");
 						}

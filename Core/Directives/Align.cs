@@ -27,10 +27,10 @@ namespace Core.Directives {
 			int[] Args = source.GetCommaDelimitedArguments(index + 1);
 			if (Args.Length != 1) throw new DirectiveArgumentException(source, "Only one argument expected.");
 
-			double Boundary = source.EvaluateExpression(compiler, Args[0]).Value;
+			double Boundary = source.EvaluateExpression(compiler, Args[0]).NumericValue;
 			if (Boundary < 1 || (int)Boundary != Boundary) throw new DirectiveArgumentException(source, "You can only align to positive integral boundaries.");
 
-			compiler.Labels.ProgramCounter.Value = ((((int)compiler.Labels.ProgramCounter.Value) + ((int)Boundary - 1)) / (int)(Boundary)) * Boundary;
+			compiler.Labels.ProgramCounter.NumericValue = ((((int)compiler.Labels.ProgramCounter.NumericValue) + ((int)Boundary - 1)) / (int)(Boundary)) * Boundary;
 
 		}
 

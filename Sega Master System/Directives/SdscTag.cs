@@ -43,7 +43,7 @@ namespace SegaMasterSystem.Directives {
 					this.Value = source.GetExpressionStringConstant(argument, true);
 					if (this.Value == "") this.Value = null;
 				} else {
-					this.Address = (int)source.EvaluateExpression(compiler, argument).Value;
+					this.Address = (int)source.EvaluateExpression(compiler, argument).NumericValue;
 					if (this.Address == 0) this.Address = 0xFFFF;
 				}
 			}
@@ -132,7 +132,7 @@ namespace SegaMasterSystem.Directives {
 
 				int[] Args = source.GetCommaDelimitedArguments(index + 1, 4);
 
-				double Version = source.EvaluateExpression(compiler, Args[0]).Value;
+				double Version = source.EvaluateExpression(compiler, Args[0]).NumericValue;
 				try{
 					this.MajorVersion = (int)Version;
 				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex.Message, ex)); }

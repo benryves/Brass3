@@ -26,7 +26,7 @@ namespace Legacy.Directives {
 			if (Args.Length != 1) throw new DirectiveArgumentException(source, "Expected one argument.");
 
 			Label L = source.EvaluateExpression(compiler, Args[0]);
-			compiler.LabelEvaluationResult.Value = L.Value;
+			compiler.LabelEvaluationResult.NumericValue = L.NumericValue;
 			compiler.LabelEvaluationResult.Page = L.Page;
 
 

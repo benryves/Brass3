@@ -64,7 +64,7 @@ namespace Core.Directives {
 							break;
 						case AssemblyPass.Pass2: // Evaluate and write the data!
 							if (StringData == null) {
-								compiler.WriteOutput(NumberEncoder.GetBytes(compiler, source.EvaluateExpression(compiler, Arg).Value));
+								compiler.WriteOutput(NumberEncoder.GetBytes(compiler, source.EvaluateExpression(compiler, Arg).NumericValue));
 							} else {
 								foreach (byte b in StringData) compiler.WriteOutput(NumberEncoder.GetBytes(compiler, b));
 							}
@@ -126,7 +126,7 @@ namespace Core.Directives {
 
 								}
 							} else {
-								double Data = source.EvaluateExpression(compiler, i).Value;
+								double Data = source.EvaluateExpression(compiler, i).NumericValue;
 								switch (Size) {
 									case 1:
 										compiler.WriteOutput((byte)Data);

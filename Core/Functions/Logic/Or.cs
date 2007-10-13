@@ -27,7 +27,7 @@ namespace Core.Functions.Logic {
 			int[] Args = source.GetCommaDelimitedArguments(0, 2, int.MaxValue);
 			bool Result = false;
 			for (int i = 0; i < Args.Length; ++i) {
-				if (source.EvaluateExpression(compiler, Args[i]).Value != 0) {
+				if (source.EvaluateExpression(compiler, Args[i]).NumericValue != 0) {
 					Result = true;
 					break;
 				}

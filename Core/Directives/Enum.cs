@@ -36,10 +36,10 @@ namespace Core.Directives {
 			foreach (int i in Args) {
 
 				Label L = source.EvaluateExpression(compiler, i);
-				if (L.Created) DefaultCreator.Value = double.MinValue;
+				if (L.Created) DefaultCreator.NumericValue = double.MinValue;
 				L.SetImplicitlyCreated();
 
-				DefaultCreator.Value = Math.Max(DefaultCreator.Value, L.Value) + 1;
+				DefaultCreator.NumericValue = Math.Max(DefaultCreator.NumericValue, L.NumericValue) + 1;
 			}
 
 			compiler.Labels.ImplicitCreationDefault = compiler.Labels.ProgramCounter;

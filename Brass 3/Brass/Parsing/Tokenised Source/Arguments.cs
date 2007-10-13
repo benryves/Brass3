@@ -122,7 +122,7 @@ namespace Brass3 {
 					case ArgumentType.Value:
 						Label L = this.EvaluateExpression(compiler, Arguments[i]);
 						if (!L.Created && ((types[i] & ArgumentType.ImplicitLabelCreation) == ArgumentType.ImplicitLabelCreation)) L.SetImplicitlyCreated();
-						Result[i] = L.Value;
+						Result[i] = L.NumericValue;
 						break;
 					case ArgumentType.String:
 					case ArgumentType.UnescapedString:

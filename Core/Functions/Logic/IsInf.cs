@@ -25,7 +25,7 @@ namespace Core.Functions.Logic {
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			return new Label(compiler.Labels, double.IsInfinity(source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(0, 1)[0]).Value) ? 1 : 0);
+			return new Label(compiler.Labels, double.IsInfinity(source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(0, 1)[0]).NumericValue) ? 1 : 0);
 		}
 
 	}

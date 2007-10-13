@@ -23,7 +23,7 @@ namespace Brass3 {
 		/// <param name="amount">The amount to increment the counters by.</param>
 		public void IncrementProgramAndOutputCounters(int amount) {
 			this.outputCounter += amount;
-			this.Labels.ProgramCounter.Value += amount;
+			this.Labels.ProgramCounter.NumericValue += amount;
 		}
 
 		/// <summary>
@@ -41,9 +41,9 @@ namespace Brass3 {
 				TranslatedData = NewOutput.ToArray();
 			}
 
-			this.output.Add(new OutputData(this.statements[CurrentStatement - 1], this.labels.ProgramCounter.Page, (int)this.labels.ProgramCounter.Value, this.outputCounter, TranslatedData));
+			this.output.Add(new OutputData(this.statements[CurrentStatement - 1], this.labels.ProgramCounter.Page, (int)this.labels.ProgramCounter.NumericValue, this.outputCounter, TranslatedData));
 
-			++this.Labels.ProgramCounter.Value;
+			++this.Labels.ProgramCounter.NumericValue;
 			//this.OutputCounter += TranslatedData.Length; //TODO: Check this.
 			++this.OutputCounter;
 		}

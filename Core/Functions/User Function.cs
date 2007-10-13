@@ -71,7 +71,7 @@ namespace Core.Functions {
 								Label CreatedLabel = compiler.Labels.Create(FunctionDeclaration.Arguments[i]);
 
 								// Copy the value!
-								CreatedLabel.Value = PassedArgument.Value;
+								CreatedLabel.NumericValue = PassedArgument.NumericValue;
 
 							} break;
 						case Core.Directives.Function.FunctionDeclaration.ArgumentType.Macro: {

@@ -55,7 +55,7 @@ namespace Core.Functions.FileOperations {
 		internal static FileStream GetFilestreamFromHandle(Compiler compiler, TokenisedSource source) {
 			int[] Args = source.GetCommaDelimitedArguments(0);
 			if (Args.Length < 1) throw new DirectiveArgumentException(source, "File handle not specified.");
-			return GetFilestreamFromHandle(compiler, source.EvaluateExpression(compiler, Args[0]).Value);
+			return GetFilestreamFromHandle(compiler, source.EvaluateExpression(compiler, Args[0]).NumericValue);
 		}
 	}
 }

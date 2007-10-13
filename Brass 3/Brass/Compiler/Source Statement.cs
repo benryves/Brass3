@@ -161,7 +161,7 @@ namespace Brass3 {
 							// Check for (implicit) duplicate label creation:
 							if (compiler.CurrentPass == AssemblyPass.Pass1 && expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], "Duplicate label '" + L.Name + "'.");
 							L.Created = true;
-							L.Value = L.Value;
+							//L.NumericValue = L.NumericValue; ?
 						}
 					}
 					compiler.JustRecalledPosition = false;

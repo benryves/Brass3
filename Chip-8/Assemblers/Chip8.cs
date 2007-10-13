@@ -346,7 +346,7 @@ namespace Chip8.Assemblers {
 					for (int i = 0; i < ArgumentTypes.Length; ++i) {
 						switch (ArgumentTypes[i]) {
 							case ArgumentType.Immediate:
-								Arguments[i] = (int)source.EvaluateExpression(compiler, PassedArguments[i]).Value;
+								Arguments[i] = (int)source.EvaluateExpression(compiler, PassedArguments[i]).NumericValue;
 								break;
 							case ArgumentType.Register:
 								Arguments[i] = "0123456789abcdef".IndexOf(char.ToLowerInvariant(source.GetExpressionTokens(PassedArguments[i]).Tokens[0].Data[1]));

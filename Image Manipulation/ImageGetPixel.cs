@@ -25,10 +25,10 @@ namespace ImageManipulation {
 
 			return new Label(compiler.Labels,
 				((ImageOpen)compiler.GetPluginInstanceFromType(typeof(ImageOpen))).GetImage(
-					source.EvaluateExpression(compiler, Args[0]).Value
+					source.EvaluateExpression(compiler, Args[0]).NumericValue
 				).GetPixel(
-					(int)source.EvaluateExpression(compiler, Args[1]).Value,
-					(int)source.EvaluateExpression(compiler, Args[2]).Value,
+					(int)source.EvaluateExpression(compiler, Args[1]).NumericValue,
+					(int)source.EvaluateExpression(compiler, Args[2]).NumericValue,
 					source.GetExpressionStringConstant(Args[3], false)
 				)
 			);

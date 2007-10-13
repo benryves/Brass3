@@ -27,7 +27,7 @@ namespace Core.Functions.Maths {
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 
 			int[] Args = source.GetCommaDelimitedArguments(0, 1);
-			int Seed = (int)source.EvaluateExpression(compiler, Args[0]).Value;
+			int Seed = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
 
 			Rand RandomSource = compiler.GetPluginInstanceFromType(typeof(Rand)) as Rand;
 			if (RandomSource == null) throw new InvalidOperationException("rand() function plugin not loaded.");

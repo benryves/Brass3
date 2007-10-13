@@ -46,7 +46,7 @@ namespace Core.Directives {
 						Field.Tokens[i].ExpressionGroup = 1;
 					}
 
-					ArraySize = (int)(Field.EvaluateExpression(compiler, 1).Value);
+					ArraySize = (int)(Field.EvaluateExpression(compiler, 1).NumericValue);
 				}
 
 				string FieldName = Field.Tokens[Field.Tokens.Length - 1].Data;

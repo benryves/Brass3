@@ -70,7 +70,7 @@ namespace Core.Directives {
 				case "while":
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0]).Value != 0;
+						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0]).NumericValue != 0;
 						int WhileLoopIndex = compiler.RememberPosition();
 						if (!WasSuccessful) {
 							compiler.SwitchOff(typeof(Repetition));
@@ -112,20 +112,20 @@ namespace Core.Directives {
 
 
 									Label Variable = source.EvaluateExpression(compiler, 1);
-									double Start = source.EvaluateExpression(compiler, 2).Value;
-									double End = source.EvaluateExpression(compiler, 3).Value;
-									double Step = CurrentExpressionIndex == 3 ? Math.Sign(End - Start) : source.EvaluateExpression(compiler, 4).Value;
+									double Start = source.EvaluateExpression(compiler, 2).NumericValue;
+									double End = source.EvaluateExpression(compiler, 3).NumericValue;
+									double Step = CurrentExpressionIndex == 3 ? Math.Sign(End - Start) : source.EvaluateExpression(compiler, 4).NumericValue;
 
 									if (Math.Sign(Step) == 0 || Math.Sign(Step) != Math.Sign(End - Start)) throw new CompilerExpection(source, "Infinite loop detected.");
 
 
 									if (LastLoopHit == null) {
-										Variable.Value = Start;
+										Variable.NumericValue = Start;
 									} else {
-										Variable.Value += Step;
+										Variable.NumericValue += Step;
 									}
 
-									bool WasSuccessful = (Start < End) ? (Variable.Value <= End) : (Variable.Value >= End);
+									bool WasSuccessful = (Start < End) ? (Variable.NumericValue <= End) : (Variable.NumericValue >= End);
 									int WhileLoopIndex = compiler.RememberPosition();
 									if (!WasSuccessful) {
 										compiler.SwitchOff(typeof(Repetition));
@@ -141,7 +141,7 @@ namespace Core.Directives {
 										source.EvaluateExpression(compiler, Args[2]); // Execute the last bit.
 									}
 
-									bool WasSuccessful = source.EvaluateExpression(compiler, Args[1]).Value != 0;
+									bool WasSuccessful = source.EvaluateExpression(compiler, Args[1]).NumericValue != 0;
 									int WhileLoopIndex = compiler.RememberPosition();
 									if (!WasSuccessful) {
 										compiler.SwitchOff(typeof(Repetition));
@@ -160,7 +160,7 @@ namespace Core.Directives {
 				case "repeat":
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-						int RepeatCount = (int)source.EvaluateExpression(compiler, Args[0]).Value;
+						int RepeatCount = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
 						int WhileLoopIndex = compiler.RememberPosition() + 1;
 						if (RepeatCount < 1) compiler.SwitchOff(typeof(Repetition));
 						RepetitionStackEntry RSE = new RepetitionStackEntry("rept", RepeatCount > 0, WhileLoopIndex);

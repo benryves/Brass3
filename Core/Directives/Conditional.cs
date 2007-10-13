@@ -59,9 +59,9 @@ namespace Core.Directives {
 					
 					TokenisedSource StuffAfterIfDef = source.GetExpressionTokens(Args[0]);
 					StuffAfterIfDef.Tokens[0] = new TokenisedSource.Token(StuffAfterIfDef, TokenisedSource.Token.TokenTypes.None, Defined ? "1" : "0", -1);
-					ConditionalResult = StuffAfterIfDef.EvaluateExpression(compiler).Value != 0;
+					ConditionalResult = StuffAfterIfDef.EvaluateExpression(compiler).NumericValue != 0;
 				} else {
-					ConditionalResult = source.EvaluateExpression(compiler, Args[0]).Value != 0;
+					ConditionalResult = source.EvaluateExpression(compiler, Args[0]).NumericValue != 0;
 				}
 			}
 

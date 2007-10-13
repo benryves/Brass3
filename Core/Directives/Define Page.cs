@@ -28,7 +28,7 @@ namespace Core.Directives {
 			if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) == null) throw new CompilerExpection(source, "Paged raw writer plugin not loaded.");
 			
 			int[] Args = Array.ConvertAll<int, int>(source.GetCommaDelimitedArguments(index + 1, 3), delegate(int arg) {
-				return (int)source.EvaluateExpression(compiler, arg).Value;
+				return (int)source.EvaluateExpression(compiler, arg).NumericValue;
 			});
 
 			if (PagedRawWriter.PageDeclarations.ContainsKey(Args[0])) PagedRawWriter.PageDeclarations.Remove(Args[0]);
