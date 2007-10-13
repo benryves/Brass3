@@ -11,10 +11,9 @@ using Brass3;
 namespace Legacy {
 	[Syntax("label .equ value")]
 	[Description("Sets the value <c>label</c> to <c>value</c>.")]
-	[Remarks("<c>label = value</c> is functionally equivalent to <c>label .equ value</c> and doesn't require a parser hack. It is strongly recommended that you do not use this directive and use the assignment operator instead.")]
+	[Remarks("<c>label = value</c> is functionally equivalent to <c>label .equ value</c>. It is recommended that you do not use this directive and use the assignment operator instead.")]
 	[Category("Labels")]
 	public class Equ : IDirective {
-		#region IDirective Members
 
 		public string[] Names { get { return new string[] { "equ" }; } }
 		public string Name { get { return this.Names[0]; } }
@@ -32,8 +31,6 @@ namespace Legacy {
 
 
 		}
-
-		#endregion
 
 	}
 }

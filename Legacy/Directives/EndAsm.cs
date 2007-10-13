@@ -8,7 +8,7 @@ using Brass3.Plugins;
 using System.ComponentModel;
 using Brass3;
 
-namespace Legacy {
+namespace Legacy.Directives {
 	[Syntax(".asm")]
 	[Syntax(".endasm")]
 	[Description("Switches compilation or or off.")]
