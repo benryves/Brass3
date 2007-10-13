@@ -27,7 +27,7 @@ namespace Brass3 {
 			if (this.OutputWriters.PluginExists(p.OutputWriter)) {
 				this.OutputWriter = this.OutputWriters[p.OutputWriter];
 			} else {
-				this.OnWarningRaised(new CompilerNotificationEventArgs("Output writer not set."));
+				this.OnWarningRaised(new NotificationEventArgs(this, "Output writer not set."));
 			}
 
 			foreach (KeyValuePair<string, string> ListingWriter in p.ListingFiles) {

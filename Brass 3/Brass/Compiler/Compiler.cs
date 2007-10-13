@@ -28,6 +28,11 @@ namespace Brass3 {
 			this.listingFiles = new Dictionary<string, IListingWriter>();
 			this.numberEncoders = new NamedPluginCollection<INumberEncoder>();
 			this.dataStructures = new NamedPluginCollection<IDataStructure>();
+			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
+			
+			this.allErrors = new List<NotificationEventArgs>();
+			this.allWarnings = new List<NotificationEventArgs>();
+			this.allInformation = new List<NotificationEventArgs>();
 		}
 
 

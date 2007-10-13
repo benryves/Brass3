@@ -26,7 +26,20 @@ namespace Brass3 {
 		/// <returns>An array of expression indices, one for each expression between commas.</returns>
 		public int[] GetCommaDelimitedArguments(int index, int min, int max) {
 			int[] Result = this.GetCommaDelimitedArguments(index);
-			if (Result.Length < min || Result.Length > max) throw new DirectiveArgumentException(this.OutermostTokenisedSource, "Invalid number of arguments.");
+			if (Result.Length < min || Result.Length > max) {
+				string Expected = 
+					max == int.MaxValue 
+					?  (
+						string.Format("{0} or more", min)
+					)
+					: string.Format(
+						min == max ? "{0}" : (min + 1 == max ? "{0} or {1}" : "{0} to {2}"), 
+						(min == 0 ? "no" : min.ToString()), 
+						(max == 0 ? "no" : max.ToString())
+					);
+				string Arguments = min == 1 ? "argument" : "arguments";
+				throw new DirectiveArgumentException(this.OutermostTokenisedSource, string.Format("Expected {0} {1} (you passed {2}).", Expected, Arguments, Result.Length == 0 ? "none" : Result.Length.ToString()));
+			}
 			return Result;
 		}
 

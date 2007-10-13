@@ -46,7 +46,7 @@ namespace Brass3 {
 			if (LeavingSourceFile != null) LeavingSourceFile(this, e);
 		}
 
-		public class CompilerNotificationEventArgs : EventArgs {
+		public class NotificationEventArgs : EventArgs {
 
 			private readonly string message;
 			public string Message {
@@ -58,28 +58,56 @@ namespace Brass3 {
 				get { return this.sourceException; }
 			}
 
+			private readonly int lineNumber;
+			public int LineNumber {
+				get { return this.lineNumber; }
+			}
 
-			public CompilerNotificationEventArgs(string message) {
+			private readonly string fileName;
+			public string Filename {
+				get { return this.fileName; }
+			}
+
+
+
+			public NotificationEventArgs(Compiler c, string message) {
+				this.lineNumber = c.CurrentLineNumber;
+				this.fileName = c.CurrentFile;
 				this.message = message;
 			}
 
-			public CompilerNotificationEventArgs(string message, CompilerExpection sourceException)
-				: this(message) {
+			public NotificationEventArgs(Compiler c, string message, CompilerExpection sourceException)
+				: this(c, message) {
 				this.sourceException = sourceException;
 			}
 
 		}
 
-		public delegate void CompilerNotificationEventHandler(object sender, CompilerNotificationEventArgs e);
+		public delegate void CompilerNotificationEventHandler(object sender, NotificationEventArgs e);
 
 		public event CompilerNotificationEventHandler WarningRaised;
-		public virtual void OnWarningRaised(CompilerNotificationEventArgs e) { if (WarningRaised != null) WarningRaised(this, e); }
+		public virtual void OnWarningRaised(NotificationEventArgs e) {
+			if (WarningRaised != null) {
+				this.allWarnings.Add(e);
+				WarningRaised(this, e);
+			}
+		}
 
 		public event CompilerNotificationEventHandler ErrorRaised;
-		public virtual void OnErrorRaised(CompilerNotificationEventArgs e) { if (ErrorRaised != null) ErrorRaised(this, e); }
+		public virtual void OnErrorRaised(NotificationEventArgs e) {
+			if (ErrorRaised != null) {
+				this.allErrors.Add(e);
+				ErrorRaised(this, e); 
+			}
+		}
 
 		public event CompilerNotificationEventHandler InformationRaised;
-		public virtual void OnInformationRaised(CompilerNotificationEventArgs e) { if (InformationRaised != null) InformationRaised(this, e); }
+		public virtual void OnInformationRaised(NotificationEventArgs e) {
+			if (InformationRaised != null) {
+				this.allInformation.Add(e);
+				InformationRaised(this, e);
+			}
+		}
 
 
 

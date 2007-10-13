@@ -51,6 +51,9 @@ namespace Help {
 				TreeNode OutputModifiers = GetHelpForPlugin<IOutputModifier>(this.helpProvider.Compiler.OutputModifiers, "Output Modifiers", PluginCollections);
 				if (OutputModifiers != null) this.Contents.Nodes.Add(OutputModifiers);
 
+				TreeNode ListingWriters = GetHelpForPlugin<IListingWriter>(this.helpProvider.Compiler.ListingWriters, "Listing Writers", PluginCollections);
+				if (ListingWriters != null) this.Contents.Nodes.Add(ListingWriters);
+
 				TreeNode Assemblers = GetHelpForPlugin<IAssembler>(this.helpProvider.Compiler.Assemblers, "Assemblers", PluginCollections);
 				if (Assemblers != null) this.Contents.Nodes.Add(Assemblers);
 

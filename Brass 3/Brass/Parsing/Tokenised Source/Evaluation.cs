@@ -24,7 +24,7 @@ namespace Brass3 {
 
 			if (this.tokens.Length == 0) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Nothing to evaluate.");
 
-			LinkedList<Label> LabelsToEvaluate = new LinkedList<Label>();
+			LinkedList<LabelAccessor> LabelsToEvaluate = new LinkedList<LabelAccessor>();
 			List<Operator> Operators = new List<Operator>(10);
 			int BraceDepth = 0;
 			Token PreviousToken = null;
@@ -40,7 +40,7 @@ namespace Brass3 {
 							if (T.IsOpenBracket) ++BraceDepth; // "["
 
 
-							LabelsToEvaluate.AddLast((Label)null);
+							LabelsToEvaluate.AddLast((LabelAccessor)null);
 							Operator Op = new Operator(T, LabelsToEvaluate.Last, BraceDepth);
 							if (Op.Type == Operator.OperatorType.Addition || Op.Type == Operator.OperatorType.Subtraction) {
 								// Check for unaries:
@@ -120,7 +120,7 @@ namespace Brass3 {
 
 
 							// Chuck into stuff-to-evaluate list:
-							LabelsToEvaluate.AddLast(ResultFromFunction);
+							LabelsToEvaluate.AddLast(new LabelAccessor(ResultFromFunction));
 
 
 						} else {
@@ -132,7 +132,7 @@ namespace Brass3 {
 								ToEvaluate.ChangeCount = -1;
 								ToEvaluate.Created = false;
 							}
-							LabelsToEvaluate.AddLast(ToEvaluate);
+							LabelsToEvaluate.AddLast(new LabelAccessor(ToEvaluate));
 						}
 					}
 
@@ -143,12 +143,12 @@ namespace Brass3 {
 
 			if (Operators.Count == 0) {
 				if (LabelsToEvaluate.Count != 1) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many constants left after evaluation.");
-				return LabelsToEvaluate.First.Value;
+				return LabelsToEvaluate.First.Value.Label;
 			}
 
 			Operators.Sort();
 
-			Dictionary<Label, bool> EvaluatedTernaries = new Dictionary<Label, bool>();
+			Dictionary<LabelAccessor, bool> EvaluatedTernaries = new Dictionary<LabelAccessor, bool>();
 
 			foreach (Operator O in Operators) {
 
@@ -157,13 +157,13 @@ namespace Brass3 {
 
 							if (O.Type == Operator.OperatorType.LabelAccess) {
 
-								Label LabelToAccess = null;
+								LabelAccessor LabelToAccess = null;
 								if (O.ExpressionPosition.Next != null && O.ExpressionPosition.Next.Value != null) {
 									LabelToAccess = O.ExpressionPosition.Next.Value;
-									LabelToAccess.AccessingPage = true;
+									LabelToAccess.AccessesPage = true;
 								} else if (O.ExpressionPosition.Previous != null && O.ExpressionPosition.Previous.Value != null) {
 									LabelToAccess = O.ExpressionPosition.Previous.Value;
-									LabelToAccess.AccessingPage = false;
+									LabelToAccess.AccessesPage = false;
 								} else {
 									throw new InvalidExpressionSyntaxExpection(O.Token, "No label found for label access operator.");
 								}
@@ -171,34 +171,34 @@ namespace Brass3 {
 							} else {
 
 								if (O.ExpressionPosition.Next == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
-								Label Op = O.ExpressionPosition.Next.Value;
-								Label Result = Op;
+								LabelAccessor Op = O.ExpressionPosition.Next.Value;
+								LabelAccessor Result = Op;
 
 								if (!O.IsAssignment) {
-									Result = (Label)Result.Clone();
+									Result = (LabelAccessor)Result.Clone();
 									O.ExpressionPosition.List.AddAfter(O.ExpressionPosition.Next, Result);
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
 								} else {
-									Result.Created = true;
+									Result.Label.Created = true;
 								}
 
 								switch (O.Type) {
 									case Operator.OperatorType.UnaryAddition:
 										break;
 									case Operator.OperatorType.UnaryBitwiseNot:
-										Result.Value = (double)~((int)Op.Value);
+										Result.Label.Value = (double)~((int)Op.Label.Value);
 										break;
 									case Operator.OperatorType.UnaryDecrement:
-										Result.Value--;
+										Result.Label.Value--;
 										break;
 									case Operator.OperatorType.UnaryIncrement:
-										Result.Value++;
+										Result.Label.Value++;
 										break;
 									case Operator.OperatorType.UnaryLogicalNot:
-										Result.Value = (Op.Value == 0f) ? 1f : 0f;
+										Result.Label.Value = (Op.Label.Value == 0f) ? 1f : 0f;
 										break;
 									case Operator.OperatorType.UnarySubtraction:
-										Result.Value = -Op.Value;
+										Result.Label.Value = -Op.Label.Value;
 										break;
 									default:
 										throw new CompilerExpection(O.Token, O.Type.ToString());
@@ -212,110 +212,110 @@ namespace Brass3 {
 							if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
 							if (O.ExpressionPosition.Next == null || O.ExpressionPosition.Next.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand after operator.");
 
-							Label OpA = O.ExpressionPosition.Previous.Value;
-							Label OpB = O.ExpressionPosition.Next.Value;
-							Label Result = OpA;
+							LabelAccessor OpA = O.ExpressionPosition.Previous.Value;
+							LabelAccessor OpB = O.ExpressionPosition.Next.Value;
+							LabelAccessor Result = OpA;
 
 							if (!O.IsAssignment) {
-								Result = (Label)Result.Clone();
+								Result = (LabelAccessor)Result.Clone();
 								O.ExpressionPosition.List.AddBefore(O.ExpressionPosition.Previous, Result);
 								O.ExpressionPosition.List.Remove(O.ExpressionPosition.Previous);
 							} else {
-								Result.Created = true;
+								Result.Label.Created = true;
 							}
 
 							switch (O.Type) {
 
 								// Power:
 								case Operator.OperatorType.Power:
-									Result.Value = Math.Pow(OpA.Value, OpB.Value);
+									Result.Label.Value = Math.Pow(OpA.Label.Value, OpB.Label.Value);
 									break;
 
 								// Arithmetic: multiplicative
 								case Operator.OperatorType.Modulo:
-									Result.Value = OpA.Value % OpB.Value;
+									Result.Label.Value = OpA.Label.Value % OpB.Label.Value;
 									break;
 								case Operator.OperatorType.Multiplication:
 								case Operator.OperatorType.AssignmentMultiplication:
-									Result.Value = OpA.Value * OpB.Value;
+									Result.Label.Value = OpA.Label.Value * OpB.Label.Value;
 									break;
 								case Operator.OperatorType.Division:
 								case Operator.OperatorType.AssignmentDivision:
-									Result.Value = OpA.Value / OpB.Value;
+									Result.Label.Value = OpA.Label.Value / OpB.Label.Value;
 									break;
 
 								// Arithmetic: additive:
 								case Operator.OperatorType.Addition:
 								case Operator.OperatorType.AssignmentAddition:
-									Result.Value = OpA.Value + OpB.Value;
+									Result.Label.Value = OpA.Label.Value + OpB.Label.Value;
 									break;
 								case Operator.OperatorType.Subtraction:
 								case Operator.OperatorType.AssignmentSubtraction:
-									Result.Value = OpA.Value - OpB.Value;
+									Result.Label.Value = OpA.Label.Value - OpB.Label.Value;
 									break;
 
 								// Shift:
 								case Operator.OperatorType.ShiftLeft:
 								case Operator.OperatorType.AssignmentShiftLeft:
-									Result.Value = ((int)OpA.Value << (int)OpB.Value);
+									Result.Label.Value = ((int)OpA.Label.Value << (int)OpB.Label.Value);
 									break;
 								case Operator.OperatorType.ShiftRight:
 								case Operator.OperatorType.AssignmentShiftRight:
-									Result.Value = ((int)OpA.Value >> (int)OpB.Value);
+									Result.Label.Value = ((int)OpA.Label.Value >> (int)OpB.Label.Value);
 									break;
 
 								// Relational and type testing:
 								case Operator.OperatorType.GreaterOrEqualTo:
-									Result.Value = (OpA.Value >= OpB.Value) ? 1 : 0;
+									Result.Label.Value = (OpA.Label.Value >= OpB.Label.Value) ? 1 : 0;
 									break;
 								case Operator.OperatorType.LessOrEqualTo:
-									Result.Value = (OpA.Value <= OpB.Value) ? 1 : 0;
+									Result.Label.Value = (OpA.Label.Value <= OpB.Label.Value) ? 1 : 0;
 									break;
 								case Operator.OperatorType.GreaterThan:
-									Result.Value = (OpA.Value > OpB.Value) ? 1 : 0;
+									Result.Label.Value = (OpA.Label.Value > OpB.Label.Value) ? 1 : 0;
 									break;
 								case Operator.OperatorType.LessThan:
-									Result.Value = (OpA.Value < OpB.Value) ? 1 : 0;
+									Result.Label.Value = (OpA.Label.Value < OpB.Label.Value) ? 1 : 0;
 									break;
 
 								// Equality:
 								case Operator.OperatorType.NotEqual:
-									Result.Value = (OpA.Value != OpB.Value) ? 1 : 0;
+									Result.Label.Value = (OpA.Label.Value != OpB.Label.Value) ? 1 : 0;
 									break;
 								case Operator.OperatorType.Equal:
-									Result.Value = (OpA.Value == OpB.Value) ? 1 : 0;
+									Result.Label.Value = (OpA.Label.Value == OpB.Label.Value) ? 1 : 0;
 									break;
 
 								// Bitwise:
 								case Operator.OperatorType.AssignmentBitwiseXor:
 								case Operator.OperatorType.BitwiseXor:
-									Result.Value = ((int)OpA.Value ^ (int)OpB.Value);
+									Result.Label.Value = ((int)OpA.Label.Value ^ (int)OpB.Label.Value);
 									break;
 								case Operator.OperatorType.AssignmentBitwiseAnd:
 								case Operator.OperatorType.BitwiseAnd:
-									Result.Value = ((int)OpA.Value & (int)OpB.Value);
+									Result.Label.Value = ((int)OpA.Label.Value & (int)OpB.Label.Value);
 									break;
 								case Operator.OperatorType.AssignmentBitwiseOr:
 								case Operator.OperatorType.BitwiseOr:
-									Result.Value = ((int)OpA.Value | (int)OpB.Value);
+									Result.Label.Value = ((int)OpA.Label.Value | (int)OpB.Label.Value);
 									break;
 
 								// Conditional:
 								case Operator.OperatorType.LogicalAnd:
-									Result.Value = ((OpA.Value != 0) && (OpB.Value != 0)) ? 1 : 0;
+									Result.Label.Value = ((OpA.Label.Value != 0) && (OpB.Label.Value != 0)) ? 1 : 0;
 									break;
 								case Operator.OperatorType.LogicalOr:
-									Result.Value = ((OpA.Value != 0) || (OpB.Value != 0)) ? 1 : 0;
+									Result.Label.Value = ((OpA.Label.Value != 0) || (OpB.Label.Value != 0)) ? 1 : 0;
 									break;
 
 								// Assignment:
 								case Operator.OperatorType.AssignmentEqual:
-									Result.Value = OpB.Value;
+									Result.Label.Value = OpB.Label.Value;
 									break;
 
 								// Indexing:
 								case Operator.OperatorType.IndexingOpen:
-									Result.Value += OpB.Value * OpA.Size;
+									Result.Label.Value += OpB.Label.Value * OpA.Label.Size;
 
 									// Now, here we have a special case:
 									// token[index].field
@@ -324,17 +324,17 @@ namespace Brass3 {
 									// so fix that little issue...
 
 									if (O.ExpressionPosition.Next.Next != null && O.ExpressionPosition.Next.Next.Value != null) {
-										Label FieldName = O.ExpressionPosition.Next.Next.Value;
-										if (OpA.Type == null) throw new CompilerExpection(OpA.Token, "Couldn't get type information.");
-										if (FieldName.Name.Length > 0 && FieldName.Name[0] == '.') {
-											string Field = FieldName.Name.Substring(1);
-											DataStructure.Field SubField = (OpA.Type as DataStructure)[Field];
-											Result.Value += SubField.Offset;
-											Result.Type = SubField.DataType;
-											if (!FieldName.Created) compiler.Labels.Remove(FieldName);
+										LabelAccessor FieldName = O.ExpressionPosition.Next.Next.Value;
+										if (OpA.Label.Type == null) throw new CompilerExpection(OpA.Label.Token, "Couldn't get type information.");
+										if (FieldName.Label.Name.Length > 0 && FieldName.Label.Name[0] == '.') {
+											string Field = FieldName.Label.Name.Substring(1);
+											DataStructure.Field SubField = (OpA.Label.Type as DataStructure)[Field];
+											Result.Label.Value += SubField.Offset;
+											Result.Label.Type = SubField.DataType;
+											if (!FieldName.Label.Created) compiler.Labels.Remove(FieldName.Label);
 											LabelsToEvaluate.Remove(O.ExpressionPosition.Next.Next);
 										} else {
-											throw new CompilerExpection(FieldName.Token, "Expected field access.");
+											throw new CompilerExpection(FieldName.Label.Token, "Expected field access.");
 										}
 									}
 
@@ -350,7 +350,7 @@ namespace Brass3 {
 							switch (O.Type) {
 								case Operator.OperatorType.ConditionalQuery:
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
-									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Value != 0);
+									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.Value != 0);
 									break;
 								case Operator.OperatorType.ConditionalResultSplitter:
 									
@@ -358,13 +358,13 @@ namespace Brass3 {
 									bool Result = EvaluatedTernaries[O.ExpressionPosition.Previous.Previous.Value];
 									EvaluatedTernaries.Remove(O.ExpressionPosition.Previous.Previous.Value);
 
-									Label Condition = (Label)O.ExpressionPosition.Previous.Previous.Value.Clone();
+									LabelAccessor Condition = (LabelAccessor)O.ExpressionPosition.Previous.Previous.Value.Clone();
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Previous.Previous);
 									O.ExpressionPosition.List.AddBefore(O.ExpressionPosition.Previous, Condition);
-									if (Condition.Value != 0) {
-										Condition.Value = O.ExpressionPosition.Previous.Value.Value;
+									if (Condition.Label.Value != 0) {
+										Condition.Label.Value = O.ExpressionPosition.Previous.Value.Label.Value;
 									} else {
-										Condition.Value = O.ExpressionPosition.Next.Value.Value;
+										Condition.Label.Value = O.ExpressionPosition.Next.Value.Label.Value;
 									}
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Previous);
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
@@ -381,9 +381,36 @@ namespace Brass3 {
 			}
 
 			if (LabelsToEvaluate.Count != 1) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many tokens left.");
-			return LabelsToEvaluate.First.Value;
+			return LabelsToEvaluate.First.Value.Label;
 
-		}	
-	
+		}
+
+
+		private class LabelAccessor : ICloneable {
+			private Label label;
+			public Label Label {
+				get {
+					label.AccessingPage = this.AccessesPage;
+					return this.label;
+				}
+				set {
+					this.label = value;
+				}
+			}
+			public bool AccessesPage = false;
+			public LabelAccessor(Label label) {
+				this.label = label;
+			}
+
+			public object Clone() {
+				Label L = label.Clone() as Label;
+				LabelAccessor LA = new LabelAccessor(L);
+				LA.AccessesPage = this.AccessesPage;
+				return LA;
+			}
+
+
+		}
+
 	}
 }

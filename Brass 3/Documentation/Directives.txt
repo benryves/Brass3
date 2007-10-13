@@ -28,10 +28,10 @@ LABELS
 ! inclabels
 
 VARIABLES
-! var
-! varloc
+  var
+  varloc
 ! dvar
-! struct
+  struct
 
 DATA
   db/byte/text/dw/word
@@ -53,14 +53,14 @@ MACROS
 
 OUTPUT
 ! binarymode
-! variablename
+  variablename
 ! tivariabletype
 ! tiarchived
-! binaryfill
-! sdsctag
-! segaregion
-! segapart
-! unsquish
+  binaryfill
+  sdsctag
+  segaregion
+  segapart
+  unsquish
 ! signkey
 ! appfield
 
@@ -72,7 +72,7 @@ FILE MANIPULATION
   fopen/fclose/fsize/fread/fpeek/fpos/fseek
 
 PAGES
-! defpage
+  defpage
   page
 ! branch
 ! branchrule

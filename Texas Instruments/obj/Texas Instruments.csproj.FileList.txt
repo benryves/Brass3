@@ -5,3 +5,5 @@ bin\Debug\TiCalc.pdb
 obj\Debug\TiCalc.pdb
 bin\Debug\TiCalc.dll
 obj\Debug\TiCalc.dll
+obj\Debug\TexasInstruments.Properties.Resources.resources
+obj\Debug\Texas Instruments.csproj.GenerateResource.Cache

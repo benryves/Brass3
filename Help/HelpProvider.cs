@@ -80,14 +80,14 @@ namespace Help {
 			}
 
 			HelpFile.Append("<!doctype><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
-			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + EscapeHtml(CollectionName) + "</p><h1>" + EscapeHtml(Title) + "</h1></div><div class=\"content\">");
+			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + DocumentationToHtml(CollectionName) + "</p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">");
 			int HelpFileLength = HelpFile.Length;
 
 			// Description:
 			foreach (object o in T.GetCustomAttributes(typeof(DescriptionAttribute), false)) {
 				DescriptionAttribute D = (o as DescriptionAttribute);
 				if (D != null) {
-					HelpFile.Append("<div class=\"description\">" + NewLinesToParagraphs(EscapeHtml(D.Description)) + "</div>");
+					HelpFile.Append("<div class=\"description\">" + NewLinesToParagraphs(DocumentationToHtml(D.Description)) + "</div>");
 				}
 			}
 
@@ -99,7 +99,7 @@ namespace Help {
 				foreach (object o in SyntaxAttributes) {
 					SyntaxAttribute S = (o as SyntaxAttribute);
 					if (S != null) {
-						HelpFile.AppendLine("<pre class=\"syntax\">" + EscapeHtml(S.Syntax) + "</pre>");
+						HelpFile.AppendLine("<pre class=\"syntax\">" + DocumentationToHtml(S.Syntax) + "</pre>");
 					}
 				}
 			}
@@ -111,7 +111,7 @@ namespace Help {
 				foreach (object o in RemarksAttributes) {
 					RemarksAttribute R = (o as RemarksAttribute);
 					if (R != null) {
-						HelpFile.Append("<div class=\"remarks\">" + NewLinesToParagraphs(EscapeHtml(R.Remarks)) + "</div>");
+						HelpFile.Append("<div class=\"remarks\">" + NewLinesToParagraphs(DocumentationToHtml(R.Remarks)) + "</div>");
 					}
 				}
 			}
@@ -120,7 +120,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(WarningAttribute), false)) {
 				WarningAttribute W = (o as WarningAttribute);
 				if (W != null) {
-					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + NewLinesToParagraphs(EscapeHtml(W.Warning)) + "</div>");
+					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + NewLinesToParagraphs(DocumentationToHtml(W.Warning)) + "</div>");
 				}
 			}
 
@@ -132,7 +132,7 @@ namespace Help {
 					CodeExampleAttribute C = (o as CodeExampleAttribute);
 					if (C != null && C.Example != null) {
 						if (C.Caption != null && !string.IsNullOrEmpty(C.Caption.Trim())) {
-							HelpFile.Append("<h3 class=\"example\">" + EscapeHtml(C.Caption) + "</h3>");
+							HelpFile.Append("<h3 class=\"example\">" + DocumentationToHtml(C.Caption) + "</h3>");
 						}
 						TokenisedSource[] CompiledExample = TokenisedSource.FromString(this.Compiler, this.ExpandTabs(C.Example.Replace("\r\n", "\n")));
 						StringBuilder OutputExample = new StringBuilder(C.Example.Length);
@@ -146,13 +146,14 @@ namespace Help {
 										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Functions[Token.Data], forExporting);
 										break;
 									case TokenisedSource.Token.TokenTypes.Directive:
-										IsLinked = this.Compiler.Directives.PluginExists(Token.Data);
-										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Directives[Token.Data], forExporting);
+										string DirectiveName = Token.Data.Substring(1);
+										IsLinked = this.Compiler.Directives.PluginExists(DirectiveName);
+										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Directives[DirectiveName], forExporting);
 										break;
 								}
 								if (IsLinked) OutputExample.Append("<a href=\"" + Link + "\">");
 								OutputExample.Append("<span class=\"" + Token.Type.ToString().ToLowerInvariant() + "\">");
-								OutputExample.Append(EscapeHtml(Token.Data));
+								OutputExample.Append(DocumentationToHtml(Token.Data, true));
 								OutputExample.Append("</span>");
 								if (IsLinked) OutputExample.Append("</a>");
 							}
@@ -179,7 +180,7 @@ namespace Help {
 
 				SeeAlsoPlugins.Sort(delegate(IPlugin a, IPlugin b) { return a.Name.CompareTo(b.Name); });
 				foreach (IPlugin P in SeeAlsoPlugins) {
-					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + EscapeHtml(P.Name) + "</a></li>");
+					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(P.Name) + "</a></li>");
 				}
 				
 
@@ -209,7 +210,7 @@ namespace Help {
 			}
 
 			HelpFile.Append("<!doctype><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
-			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + EscapeHtml(CollectionName) + "</p><h1>" + EscapeHtml(CollectionName) + "</h1></div><div class=\"content\">");
+			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + DocumentationToHtml(CollectionName) + "</p><h1>" + DocumentationToHtml(CollectionName) + "</h1></div><div class=\"content\">");
 
 			int HelpFileLength = HelpFile.Length;
 
@@ -219,6 +220,7 @@ namespace Help {
 			HelpFile.Append(GetPluginList<INumberEncoder>(pluginCollection, compiler.NumberEncoders, "Number Encoding", forExporting));
 			HelpFile.Append(GetPluginList<IOutputWriter>(pluginCollection, compiler.OutputWriters, "Output Writers", forExporting));
 			HelpFile.Append(GetPluginList<IOutputModifier>(pluginCollection, compiler.OutputModifiers, "Output Modifiers", forExporting));
+			HelpFile.Append(GetPluginList<IListingWriter>(pluginCollection, compiler.ListingWriters, "Listing Writers", forExporting));
 			HelpFile.Append(GetPluginList<IAssembler>(pluginCollection, compiler.Assemblers, "Assemblers", forExporting));
 
 
@@ -248,14 +250,14 @@ namespace Help {
 				Result.Append("<div><table>");
 				foreach (T Plugin in Matches) {
 					Result.Append("<tr>");
-					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(EscapeHtml(Plugin.Name)) + "</a></th><td>");
+					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Plugin.Name)) + "</a></th><td>");
 					
 					string Description = "";
 					object[] DescriptionAttributes = Plugin.GetType().GetCustomAttributes(typeof(DescriptionAttribute), false);
 					if (DescriptionAttributes.Length == 1) {
 						Description = (DescriptionAttributes[0] as DescriptionAttribute).Description;
 					}
-					Result.Append(NewLinesToParagraphs(SomethingOrNbsp(EscapeHtml(Description))));
+					Result.Append(NewLinesToParagraphs(SomethingOrNbsp(DocumentationToHtml(Description))));
 
 
 					Result.Append("</td></tr>");
@@ -308,17 +310,23 @@ namespace Help {
 			return Result.ToString();
 		}
 
-		private static string EscapeHtml(string toEscape) {
-			return toEscape
+
+		private static string DocumentationToHtml(string toEscape) {
+			return DocumentationToHtml(toEscape, false);
+		}
+		private static string DocumentationToHtml(string toEscape, bool escapeEntities) {
+			if (escapeEntities) toEscape = toEscape
 					.Replace("&", "&amp;")
 					.Replace("<", "&lt;")
-					.Replace(">", "&gt;")
-					.Replace("&lt;c&gt;", "<tt class=\"code\">")
-					.Replace("&lt;/c&gt;", "</tt>")
-					.Replace("&lt;para&gt;", "<p>")
-					.Replace("&lt;/para&gt;", "</p>")
-					.Replace("&lt;param&gt;", "<span class=\"param\">")
-					.Replace("&lt;/param&gt;", "</span>");
+					.Replace(">", "&gt;");
+
+			return toEscape
+					.Replace("<c>", "<tt class=\"code\">")
+					.Replace("</c>", "</tt>")
+					.Replace("<para>", "<p>")
+					.Replace("</para>", "</p>")
+					.Replace("<param>", "<span class=\"param\">")
+					.Replace("</param>", "</span>");
 		}
 
 

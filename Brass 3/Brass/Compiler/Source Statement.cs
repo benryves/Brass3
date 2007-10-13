@@ -184,7 +184,7 @@ namespace Brass3 {
 						compiler.labelEvaluationResult = null;
 					}
 				} catch (CompilerExpection ex) {
-					compiler.OnErrorRaised(new CompilerNotificationEventArgs(ex.Message, ex));
+					compiler.OnErrorRaised(new NotificationEventArgs(compiler, ex.Message, ex));
 				} finally {
 					this.compilerWasOnAfterwards = this.compiler.IsSwitchedOn;
 				}

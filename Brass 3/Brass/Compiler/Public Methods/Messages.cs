@@ -9,7 +9,7 @@ namespace Brass3 {
 	public partial class Compiler {
 
 		public void OutputString(string toOutput) {
-			this.OnInformationRaised(new CompilerNotificationEventArgs(toOutput));
+			this.OnInformationRaised(new NotificationEventArgs(this, toOutput));
 		}
 
 	}

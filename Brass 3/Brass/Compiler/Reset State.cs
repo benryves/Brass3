@@ -14,7 +14,7 @@ namespace Brass3 {
 			this.CurrentStatement = 0;
 			this.SwitchOn();
 			this.Reactivator = null;
-			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
+			this.MacroLookup.Clear();
 			this.endianness = Endianness.Little;
 			this.labels.ProgramCounter.Value = 0;
 			this.labels.ProgramCounter.Page = 0;

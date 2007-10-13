@@ -10,7 +10,7 @@ namespace Brass3 {
 
 			Compiler C = new Compiler();
 
-			C.ErrorRaised += new Compiler.CompilerNotificationEventHandler(delegate(object sender, Compiler.CompilerNotificationEventArgs e) {
+			C.ErrorRaised += new Compiler.CompilerNotificationEventHandler(delegate(object sender, Compiler.NotificationEventArgs e) {
 				Console.BackgroundColor = ConsoleColor.Black;
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.Write("Error ");
@@ -29,15 +29,19 @@ namespace Brass3 {
 				
 			});
 
-			C.InformationRaised += delegate(object sender, Compiler.CompilerNotificationEventArgs e) {
+			C.InformationRaised += delegate(object sender, Compiler.NotificationEventArgs e) {
 				Console.Write(e.Message);
 			};
 
 			if (args.Length == 1) {
-				Project P = new Project();
-				P.Load(args[0]);
-				C.LoadProject(P);
-				C.Compile(true);
+				try {
+					Project P = new Project();
+					P.Load(args[0]);
+					C.LoadProject(P);
+					C.Compile(true);
+				} catch (Exception ex) {
+					Console.Error.WriteLine("Fatal error! " + ex.Message);
+				}
 			} else {
 
 				Console.WriteLine("Usage: Brass ProjectFile");

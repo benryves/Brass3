@@ -1,9 +1,0 @@
-bin\Debug\Brass.exe
-bin\Debug\Brass.pdb
-obj\Debug\ResolveAssemblyReference.cache
-bin\Debug\Core.dll
-bin\Debug\Core.pdb
-bin\Debug\Sega.dll
-bin\Debug\Sega.pdb
-obj\Debug\Sega.dll
-obj\Debug\Sega.pdb

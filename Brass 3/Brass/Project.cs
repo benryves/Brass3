@@ -317,6 +317,14 @@ namespace Brass3 {
 				XW.WriteStartElement("output");
 				if (!string.IsNullOrEmpty(this.DestinationFile)) XW.WriteAttributeString("destination", GetRelativeFilename(filename, this.DestinationFile));
 				if (!string.IsNullOrEmpty(this.OutputWriter)) XW.WriteAttributeString("writer", this.OutputWriter);
+
+				foreach (KeyValuePair<string, string> List in this.ListingFiles) {
+					XW.WriteStartElement("listing");
+					XW.WriteAttributeString("destination", List.Key);
+					XW.WriteAttributeString("writer", List.Value);
+					XW.WriteEndElement();
+				}
+
 				XW.WriteEndElement();
 
 				XW.WriteEndElement();

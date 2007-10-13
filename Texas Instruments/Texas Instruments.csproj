@@ -35,18 +35,44 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Brass\Directives\TI Variable Name.cs" />
+    <Compile Include="Brass\Output\TI73.cs" />
+    <Compile Include="Brass\Output\TI86.cs" />
+    <Compile Include="Brass\Output\TI85.cs" />
+    <Compile Include="Brass\Output\TI82.cs" />
+    <Compile Include="Brass\Output\TI83.cs" />
+    <Compile Include="Brass\Output\TI8X.cs" />
     <Compile Include="Brass\TiComplex.cs" />
     <Compile Include="Brass\Large 8X Font.cs" />
     <Compile Include="Brass\Squish.cs" />
     <Compile Include="Brass\TiReal.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Types\CalculatorModel.cs" />
+    <Compile Include="Types\GroupFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Float.cs" />
+    <Compile Include="Types\Variables\Program.cs" />
+    <Compile Include="Types\Variables\Variable.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Brass 3\Brass 3.csproj">
       <Project>{75305F27-C13B-4904-9EC4-6FD352230601}</Project>
       <Name>Brass 3</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HelpGroupWriterRemarks.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

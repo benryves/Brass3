@@ -15,46 +15,46 @@ namespace Brass3 {
 			/// Defines the function of the operator.
 			/// </summary>
 			public enum OperatorType {
+				LabelAccess = 16 * 0,
 				// Unary
-				UnaryAddition = 16 * 0,
+				UnaryAddition = 16 * 1,
 				UnarySubtraction,
 				UnaryLogicalNot,
 				UnaryBitwiseNot,
 				UnaryIncrement,
 				UnaryDecrement,
-				LabelAccess,
 				// Power
-				Power = 16 * 1,
+				Power = 16 * 2,
 				// Arithmetic: multiplicative
-				Modulo = 16 * 2,
+				Modulo = 16 * 3,
 				Division,
 				Multiplication,
 				// Arithmetic: additive
-				Addition = 16 * 3,
+				Addition = 16 * 4,
 				Subtraction,
 				// Shift
-				ShiftLeft = 16 * 4,
+				ShiftLeft = 16 * 5,
 				ShiftRight,
 				// Relational and type testing
-				GreaterOrEqualTo = 16 * 5,
+				GreaterOrEqualTo = 16 * 6,
 				LessOrEqualTo,
 				GreaterThan,
 				LessThan,
 				// Equality
-				NotEqual = 16 * 6,
+				NotEqual = 16 * 7,
 				Equal,
 				// Bitwise
-				BitwiseAnd = 16 * 7,
-				BitwiseXor = 16 * 8,
-				BitwiseOr = 16 * 9,
+				BitwiseAnd = 16 * 8,
+				BitwiseXor = 16 * 9,
+				BitwiseOr = 16 * 10,
 				// Conditional    
-				LogicalAnd = 16 * 10,
-				LogicalOr = 16 * 11,
+				LogicalAnd = 16 * 11,
+				LogicalOr = 16 * 12,
 				// Ternary conditional
-				ConditionalQuery = 16 * 12,
+				ConditionalQuery = 16 * 13,
 				ConditionalResultSplitter,
 				// Assignment
-				AssignmentEqual = 16 * 13,
+				AssignmentEqual = 16 * 14,
 				AssignmentAddition,
 				AssignmentSubtraction,
 				AssignmentMultiplication,
@@ -66,7 +66,7 @@ namespace Brass3 {
 				AssignmentShiftLeft,
 				AssignmentShiftRight,
 				// Indexing
-				IndexingOpen = 16 * 14,
+				IndexingOpen = 16 * 15,
 			}
 			
 			#endregion
@@ -160,7 +160,7 @@ namespace Brass3 {
 			/// <summary>
 			/// Represents the position of the operator within an expression.
 			/// </summary>
-			public LinkedListNode<Label> ExpressionPosition;
+			public LinkedListNode<LabelAccessor> ExpressionPosition;
 
 			#endregion
 
@@ -192,7 +192,7 @@ namespace Brass3 {
 			/// <param name="token">The token to create the operator for.</param>
 			/// <param name="position">The position in the expression of the operator.</param>
 			/// <param name="braceIndex">How deeply nested the operator is in the expression.</param>
-			public Operator(Token token, LinkedListNode<Label> expressionPosition, int braceDepth) {
+			public Operator(Token token, LinkedListNode<LabelAccessor> expressionPosition, int braceDepth) {
 				this.Token = token;
 				this.ExpressionPosition = expressionPosition;
 				this.BraceDepth = braceDepth;

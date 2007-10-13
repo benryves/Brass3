@@ -97,14 +97,18 @@ namespace Brass3 {
 
 			try {
 
+				this.allWarnings.Clear();
+				this.allErrors.Clear();
+				this.allInformation.Clear();
+
 				// Set the assembler:
 				if (this.assembler == null) {
 					if (this.assemblers.Count == 1) {
 
 						this.assembler = this.assemblers.GetEnumerator().Current;
-						this.OnWarningRaised(new CompilerNotificationEventArgs("Assembler not explicitly set, so assuming " + this.assembler.Name + "."));
+						this.OnWarningRaised(new NotificationEventArgs(this, "Assembler not explicitly set, so assuming " + this.assembler.Name + "."));
 					} else {
-						this.OnErrorRaised(new CompilerNotificationEventArgs("No assembler set."));
+						this.OnErrorRaised(new NotificationEventArgs(this, "No assembler set."));
 						return false;
 					}
 				}

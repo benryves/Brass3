@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B41ADF33-4688-480E-9019-55BBA0F96127}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{E25EDA41-3463-4984-B8BA-715FE7029853}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Legacy</RootNamespace>
-    <AssemblyName>Legacy</AssemblyName>
+    <RootNamespace>CreateBrassProj</RootNamespace>
+    <AssemblyName>CreateBrassProj</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,9 +33,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EndAsm.cs" />
-    <Compile Include="Equ.cs" />
-    <Compile Include="Latenite\Latenite Errors.cs" />
+    <Compile Include="CreateBrassProj.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +51,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(SolutionDir)Brass 3\$(OutDir)$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(SolutionDir)Brass 3\$(OutDir)$(TargetFileName)"
+Copy "$(TargetDir)CreateBrassProj.brassproj" "$(SolutionDir)Brass 3\$(OutDir)CreateBrassProj.brassproj"</PostBuildEvent>
   </PropertyGroup>
 </Project>

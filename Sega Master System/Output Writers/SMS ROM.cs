@@ -53,7 +53,7 @@ namespace SegaMasterSystem.Output {
 			// Grab the source data.
 			byte[] Data = BasePlugin.CreateOutputData(compiler);
 			if (Data.Length < 0x8000) {
-				compiler.OnErrorRaised(new Compiler.CompilerNotificationEventArgs("Complete output binary is smaller than 32KB."));
+				compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, "Complete output binary is smaller than 32KB."));
 			} else {
 
 				// Track down the SDSC tag directive plugin
@@ -65,14 +65,14 @@ namespace SegaMasterSystem.Output {
 				// Create SMS stuff:
 				int PageIndex;
 				if (!BasePlugin.TryGetPageContainingRange(MinAddress, 0x7FFF, out PageIndex)) {
-					compiler.OnErrorRaised(new Compiler.CompilerNotificationEventArgs(string.Format("No page has been declared that covers the ${0:X4}..$7FFF range to insert the Sega header into.", MinAddress)));
+					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, string.Format("No page has been declared that covers the ${0:X4}..$7FFF range to insert the Sega header into.", MinAddress)));
 				} else {
 					// PageIndex = the page to write to :)
 					// First, check the address range is free;
 					bool HeaderRangeIsFree = true;
 					foreach (OutputData CheckNotOverwriting in compiler.GetOutputDataOnPage(PageIndex)) {
 						if (CheckNotOverwriting.OutputCounter >= MinAddress && CheckNotOverwriting.OutputCounter <= 0x7FFF) {
-							compiler.OnErrorRaised(new Compiler.CompilerNotificationEventArgs(string.Format("There is output data in the ${0:X4}..$7FFF range that would get overwritten by the Sega header.", MinAddress)));
+							compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, string.Format("There is output data in the ${0:X4}..$7FFF range that would get overwritten by the Sega header.", MinAddress)));
 							HeaderRangeIsFree = false;
 							break;
 						}
@@ -212,7 +212,7 @@ namespace SegaMasterSystem.Output {
 									break;
 								case Directives.SegaRegion.Regions.International:
 									Data[0x7FFF] |= 0x40;
-									compiler.OnWarningRaised(new Compiler.CompilerNotificationEventArgs("'International' region invalid for Sega Master System ROMs (amended to 'Export')."));
+									compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, "'International' region invalid for Sega Master System ROMs (amended to 'Export')."));
 									break;
 							}
 						}
@@ -258,7 +258,7 @@ namespace SegaMasterSystem.Output {
 					c.WriteOutput(Data);
 					return (ushort)Address;
 				}
-				c.OnWarningRaised(new Compiler.CompilerNotificationEventArgs("No room to store SDSC tag '" + str.Value + "'."));
+				c.OnWarningRaised(new Compiler.NotificationEventArgs(c, "No room to store SDSC tag '" + str.Value + "'."));
 				return 0xFFFF;
 			} else {
 				return (ushort)str.Address;
