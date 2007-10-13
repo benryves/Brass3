@@ -97,14 +97,18 @@ namespace Brass3 {
 							if (ExclusionList.Contains((Plugin as IPlugin).Name.ToLowerInvariant())) continue;
 						}
 
-						if (IsAssembler) this.assemblers.Add((IAssembler)Plugin);
-						if (IsDirective) this.directives.Add((IDirective)Plugin);
-						if (IsFunction) this.functions.Add((IFunction)Plugin);
-						if (IsOutputWriter) this.outputWriters.Add((IOutputWriter)Plugin);
-						if (IsOutputModifier) this.outputModifiers.Add((IOutputModifier)Plugin);
-						if (IsStringEncoder) this.StringEncoders.Add((IStringEncoder)Plugin);
-						if (IsListingWriter) this.ListingWriters.Add((IListingWriter)Plugin);
-						if (IsNumberEncoding) this.NumberEncoders.Add((INumberEncoder)Plugin);
+						bool HasCategory = false;
+						if (IsAssembler) { HasCategory = true; this.assemblers.Add((IAssembler)Plugin); }
+						if (IsDirective) { HasCategory = true; this.directives.Add((IDirective)Plugin); }
+						if (IsFunction) { HasCategory = true; this.functions.Add((IFunction)Plugin); }
+						if (IsOutputWriter) { HasCategory = true; this.outputWriters.Add((IOutputWriter)Plugin); }
+						if (IsOutputModifier) { HasCategory = true; this.outputModifiers.Add((IOutputModifier)Plugin); }
+						if (IsStringEncoder) { HasCategory = true; this.StringEncoders.Add((IStringEncoder)Plugin); }
+						if (IsListingWriter) { HasCategory = true; this.ListingWriters.Add((IListingWriter)Plugin); }
+						if (IsNumberEncoding) { HasCategory = true; this.NumberEncoders.Add((INumberEncoder)Plugin); }
+
+						if (!HasCategory) this.InvisiblePlugins.Add((IPlugin)Plugin);
+
 					}
 
 				}

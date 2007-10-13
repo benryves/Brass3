@@ -27,6 +27,7 @@ namespace Brass3 {
 			this.listingWriters = new NamedPluginCollection<IListingWriter>();
 			this.listingFiles = new Dictionary<string, IListingWriter>();
 			this.numberEncoders = new NamedPluginCollection<INumberEncoder>();
+			this.invisiblePlugins = new NamedPluginCollection<IPlugin>();
 			this.dataStructures = new NamedPluginCollection<IDataStructure>();
 			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
 			

@@ -146,6 +146,18 @@ namespace Brass3 {
 
 		#endregion
 
+		#region Misc
+
+		private readonly NamedPluginCollection<IPlugin> invisiblePlugins;
+		/// <summary>
+		/// Gets the "invisible" plugins loaded by the compiler.
+		/// </summary>
+		public NamedPluginCollection<IPlugin> InvisiblePlugins {
+			get { return this.invisiblePlugins; }
+		}
+
+		#endregion
+
 		#endregion
 
 		private readonly NamedPluginCollection<IDataStructure> dataStructures;
