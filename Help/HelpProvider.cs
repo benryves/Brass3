@@ -28,9 +28,9 @@ namespace Help {
 					if (forExporting) {
 						Output = name;
 					} else {
-						Output = "D:\\" + name;
+						Output = Path.GetTempFileName() + name;
+						Output = Output.Replace('\\', '/');
 						img.Save(Output, ImageFormat.Png);
-						//Output = "file:///" + Output;
 						ImagePaths.Add(img, Output);
 					}
 					

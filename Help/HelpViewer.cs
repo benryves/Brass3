@@ -220,17 +220,23 @@ namespace Help {
 		private void Contents_AfterSelect(object sender, TreeViewEventArgs e) {
 			if (e.Node == null) return;
 			if (e.Node.Tag == null) return;
+
+			string Help = null;
+
 			IPlugin P = e.Node.Tag as IPlugin;
 			if (P != null) {
 				this.SetHistory(e.Node);
-				this.Viewer.DocumentText = this.HelpProvider.GetHelpHtml(P, false);
+				Help = this.HelpProvider.GetHelpHtml(P, false);
+			} else {
+				Assembly PluginCollection = e.Node.Tag as Assembly;
+				if (PluginCollection != null) {
+					this.SetHistory(e.Node);
+					Help = this.HelpProvider.GetHelpHtml(PluginCollection, false);
+				}
 			}
-			Assembly PluginCollection = e.Node.Tag as Assembly;
-			if (PluginCollection != null) {
-				this.SetHistory(e.Node);
-				this.Viewer.DocumentText = this.HelpProvider.GetHelpHtml(PluginCollection, false);
+			if (Help != null) {
+				this.Viewer.DocumentText = Help;
 			}
-
 			this.Viewer.Document.MouseDown += new HtmlElementEventHandler(Document_MouseDown);
 		}
 

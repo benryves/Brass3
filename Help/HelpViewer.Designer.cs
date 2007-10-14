@@ -91,8 +91,10 @@ namespace Help {
 			// 
 			// Viewer
 			// 
+			this.Viewer.AllowWebBrowserDrop = false;
 			this.Viewer.ContextMenuStrip = this.ViewerContext;
 			this.Viewer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Viewer.IsWebBrowserContextMenuEnabled = false;
 			this.Viewer.Location = new System.Drawing.Point(1, 1);
 			this.Viewer.MinimumSize = new System.Drawing.Size(20, 20);
 			this.Viewer.Name = "Viewer";
