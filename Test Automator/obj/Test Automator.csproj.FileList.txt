@@ -7,3 +7,5 @@ obj\Debug\Test Automator.exe
 obj\Debug\Test Automator.pdb
 bin\Debug\Brass.exe
 bin\Debug\Brass.pdb
+..\Brass 3\bin\Debug\Test Automator.exe
+..\Brass 3\bin\Debug\Test Automator.pdb
