@@ -56,7 +56,6 @@ namespace TexasInstruments.Types.Variables {
 
 				case CalculatorModel.TI85:
 					throw new NotImplementedException("No TI-85 support.");
-					break;
 			}
 			// Size:
 			VariableWriter.Write((ushort)(SourceData.Length));
