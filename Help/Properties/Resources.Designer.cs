@@ -61,7 +61,7 @@ namespace Help.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!doctype&gt;
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html PUBLIC \&quot;-//W3C//DTD XHTML 1.0 Transitional//EN\&quot; \&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\&quot;&gt;
         ///&lt;html&gt;
         ///	&lt;style&gt;
         ///	body, body * {
@@ -79,9 +79,6 @@ namespace Help.Properties {
         ///		padding: 0px 0px 10px 0px;
         ///		margin: 0px;
         ///	}
-        ///	a:visited {
-        ///		color: blue;
-        ///	}
         ///	ul {
         ///		padding: 0px;
         ///		margin: 3px 0px 0px 0px;
@@ -90,10 +87,7 @@ namespace Help.Properties {
         ///		list-style: none;
         ///		padding: 3px 0px 3px 20px;
         ///		background-image: url(&apos;icon_error.png&apos;);
-        ///		background-repeat: no-repeat;
-        ///		background-position: top left;
-        ///	}
-        ///	li.section [rest of string was truncated]&quot;;.
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ContentsHtml {
             get {
@@ -107,12 +101,11 @@ namespace Help.Properties {
         ///		&lt;title&gt;Brass 3 Help&lt;/title&gt;
         ///	&lt;/head&gt;
         ///
-        ///	&lt;frameset cols=&quot;200,*&quot;&gt;
+        ///	&lt;frameset cols=&quot;250,*&quot;&gt;
         ///		&lt;frame src=&quot;help/contents.html&quot; name=&quot;contents&quot; target=&quot;viewer&quot;&gt;
-        ///		&lt;frame name=&quot;viewer&quot;/&gt;
+        ///		&lt;frame name=&quot;viewer&quot; onload=&quot;if(viewer.document.location!=&apos;about:blank&apos;)window.document.title=&apos;Brass 3 Help &amp;bull; &apos;+viewer.document.title;&quot; /&gt;
         ///	&lt;/frameset&gt;
-        ///&lt;/html&gt;
-        ///.
+        ///&lt;/html&gt;.
         /// </summary>
         internal static string FramesetHtml {
             get {
@@ -190,6 +183,13 @@ namespace Help.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap page_world {
+            get {
+                object obj = ResourceManager.GetObject("page_world", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to body, body * {
         ///	font-family: verdana;
@@ -218,12 +218,10 @@ namespace Help.Properties {
         ///	padding: 2px 8px;
         ///}
         ///div.header p.plugincollection {
-        ///	font-size: 7pt;
-        ///	color: #039;
         ///	padding-top: 6px;
         ///	padding-bottom: 2px;
         ///}
-        ///div.heade [rest of string was truncated]&quot;;.
+        ///div.header p.plugincollection, div.header  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ViewerCss {
             get {

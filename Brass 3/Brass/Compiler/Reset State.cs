@@ -13,6 +13,7 @@ namespace Brass3 {
 		private void ResetState() {
 			this.CurrentStatement = 0;
 			this.SwitchOn();
+			this.AllowPositionToChange = true;
 			this.Reactivator = null;
 			this.MacroLookup.Clear();
 			this.endianness = Endianness.Little;

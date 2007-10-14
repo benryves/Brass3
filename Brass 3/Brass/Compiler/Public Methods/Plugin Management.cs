@@ -26,7 +26,9 @@ namespace Brass3 {
 				Array.ConvertAll<string, string>(exclusions, delegate(string a) { return a.ToLowerInvariant(); })
 			);
 
-			Assembly PluginAssembly = Assembly.LoadFile(Path.GetFullPath(assemblyName));
+			string AssemblyName = Path.GetFullPath(assemblyName);
+			if (!File.Exists(AssemblyName)) AssemblyName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Path.GetFileName(AssemblyName));
+			Assembly PluginAssembly = Assembly.LoadFile(AssemblyName);
 
 			Type[] Plugins = PluginAssembly.GetExportedTypes();
 

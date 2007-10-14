@@ -5,6 +5,6 @@
 
 	<frameset cols="250,*">
 		<frame src="help/contents.html" name="contents" target="viewer">
-		<frame name="viewer"/>
+		<frame name="viewer" onload="if(viewer.document.location!='about:blank')window.document.title='Brass 3 Help &bull; '+viewer.document.title;" />
 	</frameset>
 </html>

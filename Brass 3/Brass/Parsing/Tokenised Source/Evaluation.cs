@@ -21,6 +21,19 @@ namespace Brass3 {
 		/// <param name="index">The index of the expression to evaluate.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		public Label EvaluateExpression(Compiler compiler, int index) {
+			return EvaluateExpression(compiler, index, false);
+		}
+
+		/// <summary>
+		/// Evaluate an expression within the source line.
+		/// </summary>
+		/// <param name="index">The index of the expression to evaluate.</param>
+		/// <param name="canCreateImplicitLabels">True if labels can be implicitly created by the evaluation.</param>
+		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
+		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels) {
+
+
+			List<Label> TempLabels = new List<Label>();
 
 			if (this.tokens.Length == 0) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Nothing to evaluate.");
 
@@ -60,8 +73,8 @@ namespace Brass3 {
 					} else {
 
 						// Check for function calls:
-						
-						
+
+
 
 						// Handle function calls:
 						if (T.Type == Token.TokenTypes.Function) {
@@ -83,25 +96,25 @@ namespace Brass3 {
 							int OriginalBraceDepth = BraceDepth;
 							bool SkipFirstToken = true;
 							for (i = FunctionOpenBracePosition; i < this.tokens.Length; ++i) {
-								if (this.tokens[i].ExpressionGroup == index) {
-									switch (this.tokens[i].Data) {
-										case "(":
-											++BraceDepth;
-											break;
-										case ")":
-											--BraceDepth;
-											if (BraceDepth == OriginalBraceDepth) {
-												goto FoundInsideFunctionTokens;
-											}
-											break;
-									}
-									if (!SkipFirstToken) InsideFunctionTokens.Add(this.tokens[i]);
-									SkipFirstToken = false;
+								//if (this.tokens[i].ExpressionGroup == index) {
+								switch (this.tokens[i].Data) {
+									case "(":
+										++BraceDepth;
+										break;
+									case ")":
+										--BraceDepth;
+										if (BraceDepth == OriginalBraceDepth) {
+											goto FoundInsideFunctionTokens;
+										}
+										break;
 								}
+								if (!SkipFirstToken) InsideFunctionTokens.Add(this.tokens[i]);
+								SkipFirstToken = false;
+								//}
 							}
 						FoundInsideFunctionTokens:
 
-							
+
 							TokenisedSource SourceInsideFunction = new TokenisedSource(InsideFunctionTokens.ToArray(), this.OutermostTokenisedSource);
 							int[] OriginalExpressionIndices = Array.ConvertAll<Token, int>(SourceInsideFunction.Tokens, delegate(Token Tok) { return Tok.ExpressionGroup; });
 
@@ -131,6 +144,7 @@ namespace Brass3 {
 								ToEvaluate = compiler.Labels.Create(T);
 								ToEvaluate.ChangeCount = -1;
 								ToEvaluate.Created = false;
+								TempLabels.Add(ToEvaluate);
 							}
 							LabelsToEvaluate.AddLast(new LabelAccessor(ToEvaluate));
 						}
@@ -141,10 +155,6 @@ namespace Brass3 {
 				}
 			}
 
-			if (Operators.Count == 0) {
-				if (LabelsToEvaluate.Count != 1) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many constants left after evaluation.");
-				return LabelsToEvaluate.First.Value.Label;
-			}
 
 			Operators.Sort();
 
@@ -375,7 +385,7 @@ namespace Brass3 {
 									}
 
 									break;
-								
+
 								default:
 									throw new CompilerExpection(O.Token, O.Type.ToString());
 							}
@@ -389,7 +399,7 @@ namespace Brass3 {
 									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.NumericValue != 0);
 									break;
 								case Operator.OperatorType.ConditionalResultSplitter:
-									
+
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Previous == null || !EvaluatedTernaries.ContainsKey(O.ExpressionPosition.Previous.Previous.Value)) throw new InvalidExpressionSyntaxExpection(O.Token, "Missing matching conditional operator '?'.");
 									bool Result = EvaluatedTernaries[O.ExpressionPosition.Previous.Previous.Value];
 									EvaluatedTernaries.Remove(O.ExpressionPosition.Previous.Previous.Value);
@@ -416,8 +426,21 @@ namespace Brass3 {
 				LabelsToEvaluate.Remove(O.ExpressionPosition);
 			}
 
-			if (LabelsToEvaluate.Count != 1) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many tokens left.");
-			return LabelsToEvaluate.First.Value.Label;
+			try {
+				if (LabelsToEvaluate.Count != 1) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many tokens left.");
+				if (!canCreateImplicitLabels) {
+					foreach (Label L in TempLabels) if (!L.Created) throw new InvalidOperationException("Labels cannot be implicitly created.");
+				}
+
+				return LabelsToEvaluate.First.Value.Label;
+			} catch {
+
+				foreach (Label L in TempLabels) {
+					compiler.Labels.Remove(L);
+				}
+
+				throw;
+			}
 
 		}
 

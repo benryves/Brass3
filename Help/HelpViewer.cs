@@ -10,6 +10,8 @@ using Brass3.Plugins;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Xml;
+using Brass3.Attributes;
 
 namespace Help {
 	public partial class HelpViewer : UserControl {
@@ -352,7 +354,7 @@ namespace Help {
 			Directory.CreateDirectory(Path.Combine(BasePath, "help"));
 			StringBuilder Contents = new StringBuilder(1024);
 			Contents.Append(Properties.Resources.ContentsHtml);
-			WriteTreeNodes(Contents, this.Contents.Nodes, (Path.Combine(BasePath, "help")));
+			WebsiteWriteTreeNodes(Contents, this.Contents.Nodes, (Path.Combine(BasePath, "help")));
 			Contents.Append("</body></html>");
 			File.WriteAllText(Path.Combine(BasePath, Path.Combine("help", "contents.html")), Contents.ToString());
 			Properties.Resources.Icon_Error.Save(Path.Combine(BasePath, Path.Combine("help", "icon_error.png")));
@@ -361,7 +363,8 @@ namespace Help {
 			Properties.Resources.Icon_PageBlue.Save(Path.Combine(BasePath, Path.Combine("help", "icon_page.png")));
 		}
 
-		public void WriteTreeNodes(StringBuilder contents, TreeNodeCollection nodes, string baseDirectory) {
+
+		private void WebsiteWriteTreeNodes(StringBuilder contents, TreeNodeCollection nodes, string baseDirectory) {
 			contents.Append("<ul>");
 			foreach (TreeNode N in nodes) {
 				contents.Append("<li class=\"");
@@ -386,11 +389,109 @@ namespace Help {
 
 					File.WriteAllText(Path.Combine(baseDirectory, Guid + ".html"), HelpHtml);
 				}
-				if (N.Nodes.Count > 0) WriteTreeNodes(contents, N.Nodes, baseDirectory);
+				if (N.Nodes.Count > 0) WebsiteWriteTreeNodes(contents, N.Nodes, baseDirectory);
 				if (N.Tag != null) contents.Append("</a>");
 				contents.Append("</li>");
 			}
 			contents.Append("</ul>");
+		}
+
+		public void ExportLatenite1Xml(string lateniteDirectory) {
+			Dictionary<Assembly, XmlWriter> Writers = new Dictionary<Assembly,XmlWriter>();
+			List<IPlugin> Exported = new List<IPlugin>();
+			Latenite1XmlWriteTreeNodes(this.Contents.Nodes, Writers, lateniteDirectory, Exported);
+			foreach (KeyValuePair<Assembly, XmlWriter> KVP in Writers) {
+				KVP.Value.WriteEndElement();
+				KVP.Value.Flush();
+				KVP.Value.Close();
+			}
+		}
+
+		private void Latenite1XmlWriteTreeNodes(TreeNodeCollection nodes, Dictionary<Assembly, XmlWriter> writers, string baseDirectory, List<IPlugin> exported) {
+
+			foreach (TreeNode N in nodes) {
+				IPlugin Plugin;
+				if (N.Tag != null && (Plugin = N.Tag as IPlugin) != null && !exported.Contains(Plugin)) {
+					exported.Add(Plugin);
+					XmlWriter Writer;
+					if (!writers.TryGetValue(Plugin.GetType().Assembly, out Writer)) {
+						Writer = XmlWriter.Create(Path.Combine(baseDirectory, "Brass3." + Path.GetFileNameWithoutExtension(Plugin.GetType().Assembly.Location) + ".xml"));
+						writers.Add(Plugin.GetType().Assembly, Writer);
+						Writer.WriteStartElement("helpfile");
+
+						string CollectionName = Plugin.GetType().Assembly.GetName().Name;
+						object[] CollectionTitle = Plugin.GetType().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+						if (CollectionTitle.Length > 0) CollectionName = (CollectionTitle[0] as AssemblyTitleAttribute).Title;
+
+						Writer.WriteAttributeString("name", CollectionName);
+					}
+
+					Writer.WriteStartElement("item");
+
+					List<string> Names = new List<string>();
+					IAliasedPlugin AliasedPlugin = Plugin as IAliasedPlugin;
+					if (AliasedPlugin != null) {
+						Names.AddRange(AliasedPlugin.Names);
+					} else {
+						Names.Add(Plugin.Name);
+					}
+
+					Writer.WriteAttributeString("name", string.Join("/", Names.ToArray()));
+
+					List<string> Highlights = new List<string>();
+
+					if (Plugin as IFunction != null) {
+						Highlights.AddRange(Names);
+					}
+
+					if (Plugin as IDirective != null) {
+						foreach (string s in Names) {
+							Highlights.Add("." + s);
+							Highlights.Add("#" + s);
+						}
+					}
+
+					if (Highlights.Count != 0) {
+						Writer.WriteAttributeString("highlight", string.Join("/", Highlights.ToArray()));
+						Writer.WriteAttributeString("colour", Plugin as IDirective == null ? "routine" : "directive");
+					}
+
+					DescriptionAttribute DA = HelpProvider.GetCustomAttribute<DescriptionAttribute>(Plugin);
+					if (DA != null) Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(DA.Description));
+
+					SyntaxAttribute[] SA = HelpProvider.GetCustomAttributes<SyntaxAttribute>(Plugin);
+					if (SA.Length > 0) {
+						Writer.WriteAttributeString("syntax", string.Join(string.Format("{0}{1}{0}{1}", "<br />", Environment.NewLine), Array.ConvertAll<SyntaxAttribute, string>(SA, delegate(SyntaxAttribute S) {
+							return HelpProvider.DocumentationToHtml(S.Syntax);
+						})));
+					}
+
+					foreach (WarningAttribute Warning in HelpProvider.GetCustomAttributes<WarningAttribute>(Plugin)) {
+						Writer.WriteStartElement("note");
+						Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(Warning.Warning));
+						Writer.WriteEndElement();
+					}
+
+					foreach (RemarksAttribute Remarks in HelpProvider.GetCustomAttributes<RemarksAttribute>(Plugin)) {
+						Writer.WriteStartElement("note");
+						Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(Remarks.Remarks));
+						Writer.WriteEndElement();
+					}
+
+					foreach (CodeExampleAttribute CEO in HelpProvider.GetCustomAttributes<CodeExampleAttribute>(Plugin)) {
+						Writer.WriteStartElement("example");
+						string Code = CEO.Example;
+						Writer.WriteAttributeString("code",  this.HelpProvider.ExpandTabs(HelpProvider.DocumentationToHtml(Code, false)));
+						Writer.WriteEndElement();
+					}
+
+					Writer.WriteEndElement();
+
+				
+				}
+				Latenite1XmlWriteTreeNodes(N.Nodes, writers, baseDirectory, exported);
+			}
+
 		}
 
 	}

@@ -56,5 +56,11 @@ namespace Help {
 		private void forwardsToolStripMenuItem_Click(object sender, EventArgs e) {
 			this.HelpViewer.GoForwards();
 		}
+
+		private void exportAsLatenite1XMLToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (this.ExportLateniteDialog.ShowDialog(this) == DialogResult.OK) {
+				this.HelpViewer.ExportLatenite1Xml(this.ExportLateniteDialog.SelectedPath);
+			}
+		}
 	}
 }

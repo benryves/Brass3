@@ -21,7 +21,10 @@ namespace Test_Automator {
 				Console.WriteLine("Compiling " + ToTest);
 				C.SourceFile = "Test/" + ToTest.Trim();
 				C.DestinationFile = C.SourceFile + ".test.bin";
-				C.Compile(true);
+				C.ListingFiles.Add(C.SourceFile + ".test.txt", C.ListingWriters["text"]);
+				try {
+					C.Compile(true);
+				} catch { }
 				byte[] A = File.ReadAllBytes(C.SourceFile + ".test.bin");
 				byte[] B = File.ReadAllBytes(C.SourceFile + ".obj");
 
@@ -40,11 +43,25 @@ namespace Test_Automator {
 				if (Failed) {
 					Console.ForegroundColor = ConsoleColor.Red;
 					Console.WriteLine("FAILED");
+					//Console.WriteLine("$={0:X4} @={1:X4}", (int)C.Labels.ProgramCounter.NumericValue, (int)C.Labels.OutputCounter.NumericValue);
+					Console.ForegroundColor = ConsoleColor.Gray;
+
+					for (; ; ) {
+						Console.Write("> ");
+						string Command = Console.ReadLine();
+						if (Command == "") break;
+						try {
+							Label L = new Compiler.SourceStatement(C, TokenisedSource.FromString(C, Command)[0].GetCode(), null, 0).Compile();
+							Console.WriteLine("${0:X4} {1} \"{2}\"", (int)L.NumericValue, L.NumericValue, L.StringValue);
+						} catch { }
+					}
+
 				} else {
 					Console.ForegroundColor = ConsoleColor.Green;
 					Console.WriteLine("OK");
+					Console.ForegroundColor = ConsoleColor.Gray;
 				}
-				Console.ForegroundColor = ConsoleColor.Gray;
+				
 
 			}
 

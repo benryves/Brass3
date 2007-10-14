@@ -27,6 +27,7 @@ namespace Help {
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportAsHTMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportAsLatenite1XMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,6 +37,7 @@ namespace Help {
 			this.backToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.forwardsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExportHtmlDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ExportLateniteDialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.HelpViewer = new Help.HelpViewer();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -55,6 +57,7 @@ namespace Help {
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportAsHTMLToolStripMenuItem,
+            this.exportAsLatenite1XMLToolStripMenuItem,
             this.toolStripMenuItem2,
             this.printToolStripMenuItem,
             this.printPreviewToolStripMenuItem,
@@ -66,42 +69,50 @@ namespace Help {
 			// 
 			// exportAsHTMLToolStripMenuItem
 			// 
-			this.exportAsHTMLToolStripMenuItem.Image = global::Help.Properties.Resources.Icon_PageCode;
+			this.exportAsHTMLToolStripMenuItem.Image = global::Help.Properties.Resources.page_world;
 			this.exportAsHTMLToolStripMenuItem.Name = "exportAsHTMLToolStripMenuItem";
-			this.exportAsHTMLToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.exportAsHTMLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.exportAsHTMLToolStripMenuItem.Text = "&Export as HTML...";
 			this.exportAsHTMLToolStripMenuItem.Click += new System.EventHandler(this.exportAsHTMLToolStripMenuItem_Click);
+			// 
+			// exportAsLatenite1XMLToolStripMenuItem
+			// 
+			this.exportAsLatenite1XMLToolStripMenuItem.Image = global::Help.Properties.Resources.Icon_PageCode;
+			this.exportAsLatenite1XMLToolStripMenuItem.Name = "exportAsLatenite1XMLToolStripMenuItem";
+			this.exportAsLatenite1XMLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.exportAsLatenite1XMLToolStripMenuItem.Text = "Export as &Latenite 1 XML...";
+			this.exportAsLatenite1XMLToolStripMenuItem.Click += new System.EventHandler(this.exportAsLatenite1XMLToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(163, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(208, 6);
 			// 
 			// printToolStripMenuItem
 			// 
 			this.printToolStripMenuItem.Image = global::Help.Properties.Resources.Icon_Printer;
 			this.printToolStripMenuItem.Name = "printToolStripMenuItem";
 			this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.printToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.printToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.printToolStripMenuItem.Text = "&Print";
 			this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
 			// 
 			// printPreviewToolStripMenuItem
 			// 
 			this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-			this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.printPreviewToolStripMenuItem.Text = "Print Pre&view...";
 			this.printPreviewToolStripMenuItem.Click += new System.EventHandler(this.printPreviewToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(163, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(208, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -119,7 +130,7 @@ namespace Help {
 			// 
 			this.backToolStripMenuItem.Image = global::Help.Properties.Resources.Icon_Back;
 			this.backToolStripMenuItem.Name = "backToolStripMenuItem";
-			this.backToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.backToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
 			this.backToolStripMenuItem.Text = "&Back";
 			this.backToolStripMenuItem.Click += new System.EventHandler(this.backToolStripMenuItem_Click);
 			// 
@@ -127,7 +138,7 @@ namespace Help {
 			// 
 			this.forwardsToolStripMenuItem.Image = global::Help.Properties.Resources.Icon_Forwards;
 			this.forwardsToolStripMenuItem.Name = "forwardsToolStripMenuItem";
-			this.forwardsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.forwardsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
 			this.forwardsToolStripMenuItem.Text = "&Forwards";
 			this.forwardsToolStripMenuItem.Click += new System.EventHandler(this.forwardsToolStripMenuItem_Click);
 			// 
@@ -135,6 +146,11 @@ namespace Help {
 			// 
 			this.ExportHtmlDialog.FileName = "index.html";
 			this.ExportHtmlDialog.Filter = "HTML Files (*.html)|*.html";
+			// 
+			// ExportLateniteDialog
+			// 
+			this.ExportLateniteDialog.Description = "Select the Latenite \"Help\" directory to export the XML files to.";
+			this.ExportLateniteDialog.ShowNewFolderButton = false;
 			// 
 			// HelpViewer
 			// 
@@ -176,6 +192,8 @@ namespace Help {
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem backToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem forwardsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem exportAsLatenite1XMLToolStripMenuItem;
+		private System.Windows.Forms.FolderBrowserDialog ExportLateniteDialog;
 
 	}
 }

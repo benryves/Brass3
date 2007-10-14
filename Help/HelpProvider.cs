@@ -14,6 +14,20 @@ using System.Runtime.InteropServices;
 namespace Help {
 	public class HelpProvider : IDisposable {
 
+		public static T[] GetCustomAttributes<T>(object o) where T : Attribute {
+			object[] Attributes = o.GetType().GetCustomAttributes(typeof(T), false);
+			T[] Result = new T[Attributes.Length];
+			for (int i = 0; i < Attributes.Length; ++i) {
+				Result[i] = Attributes[i] as T;
+			}
+			return Result;
+		}
+
+		public static T GetCustomAttribute<T>(object o) where T : Attribute {
+			T[] Result = GetCustomAttributes<T>(o);
+			return Result.Length > 0 ? Result[0] : default(T);
+		}
+
 		private int tabWidth = 4;
 		public int TabWidth {
 			get { return this.tabWidth; }
@@ -252,7 +266,7 @@ namespace Help {
 
 			if (Title == null) Title = CollectionName;
 
-			return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>"
+			return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>" + DocumentationToHtml(Title) + "</title><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>"
 				 + "<div class=\"header\"><p class=\"plugincollection\"><a href=\"" + GetSeeAlsoUrl(PluginAssembly,forExporting) + "\">" + DocumentationToHtml(CollectionName) + "</a></p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">";
 		}
 
@@ -316,7 +330,7 @@ namespace Help {
 			return Result.ToString();
 		}
 
-		private string ExpandTabs(string toExpand) {
+		internal string ExpandTabs(string toExpand) {
 			StringBuilder Result = new StringBuilder(toExpand.Length * 2);
 			foreach (string s in toExpand.Split(new char[] { '\n' }, StringSplitOptions.None)) {
 				int CurrentPosition = 0;
@@ -340,10 +354,10 @@ namespace Help {
 		}
 
 
-		private static string DocumentationToHtml(string toEscape) {
+		internal static string DocumentationToHtml(string toEscape) {
 			return DocumentationToHtml(toEscape, false);
 		}
-		private static string DocumentationToHtml(string toEscape, bool escapeEntities) {
+		internal static string DocumentationToHtml(string toEscape, bool escapeEntities) {
 			if (escapeEntities) toEscape = toEscape
 					.Replace("&", "&amp;")
 					.Replace("<", "&lt;")

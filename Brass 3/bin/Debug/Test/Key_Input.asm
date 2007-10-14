@@ -148,7 +148,7 @@ _ctrl_pressed:
 	push af
 	cp 'a'
 	jr c,_not_lower
-	cp 'z'+1
+	cp ('z'*1)+1
 	jr nc,_not_lower
 	add a,'A'-'a'
 _not_lower:
