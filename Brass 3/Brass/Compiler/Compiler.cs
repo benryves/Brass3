@@ -30,7 +30,9 @@ namespace Brass3 {
 			this.invisiblePlugins = new NamedPluginCollection<IPlugin>();
 			this.dataStructures = new NamedPluginCollection<IDataStructure>();
 			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
-			
+
+			this.statements = new List<SourceStatement>(1024);
+
 			this.allErrors = new List<NotificationEventArgs>();
 			this.allWarnings = new List<NotificationEventArgs>();
 			this.allInformation = new List<NotificationEventArgs>();

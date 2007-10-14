@@ -93,7 +93,6 @@ namespace Help {
 			// 
 			this.Viewer.ContextMenuStrip = this.ViewerContext;
 			this.Viewer.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.Viewer.IsWebBrowserContextMenuEnabled = false;
 			this.Viewer.Location = new System.Drawing.Point(1, 1);
 			this.Viewer.MinimumSize = new System.Drawing.Size(20, 20);
 			this.Viewer.Name = "Viewer";
@@ -108,14 +107,14 @@ namespace Help {
 			this.ViewerContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ViewerContextCopy});
 			this.ViewerContext.Name = "ViewerContext";
-			this.ViewerContext.Size = new System.Drawing.Size(153, 48);
+			this.ViewerContext.Size = new System.Drawing.Size(103, 26);
 			this.ViewerContext.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContext_Opening);
 			// 
 			// ViewerContextCopy
 			// 
 			this.ViewerContextCopy.Image = global::Help.Properties.Resources.Icon_PageCopy;
 			this.ViewerContextCopy.Name = "ViewerContextCopy";
-			this.ViewerContextCopy.Size = new System.Drawing.Size(152, 22);
+			this.ViewerContextCopy.Size = new System.Drawing.Size(102, 22);
 			this.ViewerContextCopy.Text = "&Copy";
 			this.ViewerContextCopy.Click += new System.EventHandler(this.ViewerContextCopy_Click);
 			// 

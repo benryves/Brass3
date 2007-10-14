@@ -236,14 +236,16 @@ namespace Brass3 {
 						break;
 					}
 					// Is this some assembly code?
-					for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = false;
-					if (compiler.CurrentAssembler.TryMatchSource(this.compiler, Source, i)) {
-						LabelInstructionSplit = i;
+					if (compiler.CurrentAssembler != null) {
+						for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = false;
+						if (compiler.CurrentAssembler.TryMatchSource(this.compiler, Source, i)) {
+							LabelInstructionSplit = i;
+							for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = true;
+							this.type = StatementType.Assembly;
+							break;
+						}
 						for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = true;
-						this.type = StatementType.Assembly;
-						break;
 					}
-					for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = true;
 				}
 				this.expressionStatementSplit = LabelInstructionSplit;
 

@@ -128,7 +128,7 @@ namespace Brass3 {
 				}
 
 				// Clear state:
-				this.statements = new List<SourceStatement>(1024);
+				this.statements.Clear();
 				this.output.Clear();
 
 				// Run pass 1:

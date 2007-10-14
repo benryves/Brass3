@@ -28,9 +28,9 @@ namespace Help {
 					if (forExporting) {
 						Output = name;
 					} else {
-						Output = Path.GetTempFileName() + "." + name;
+						Output = "D:\\" + name;
 						img.Save(Output, ImageFormat.Png);
-						Output = "file:///" + Output;
+						//Output = "file:///" + Output;
 						ImagePaths.Add(img, Output);
 					}
 					
@@ -78,8 +78,8 @@ namespace Help {
 			if (CollectionTitle.Length == 1) {
 				CollectionName = (CollectionTitle[0] as AssemblyTitleAttribute).Title;
 			}
-
-			HelpFile.Append("<!doctype><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
+			
+			HelpFile.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
 			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + DocumentationToHtml(CollectionName) + "</p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">");
 			int HelpFileLength = HelpFile.Length;
 
@@ -209,7 +209,7 @@ namespace Help {
 				CollectionName = (CollectionTitle[0] as AssemblyTitleAttribute).Title;
 			}
 
-			HelpFile.Append("<!doctype><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
+			HelpFile.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
 			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + DocumentationToHtml(CollectionName) + "</p><h1>" + DocumentationToHtml(CollectionName) + "</h1></div><div class=\"content\">");
 
 			int HelpFileLength = HelpFile.Length;

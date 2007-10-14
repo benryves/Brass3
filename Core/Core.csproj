@@ -57,7 +57,6 @@
     <Compile Include="Directives\Echo.cs" />
     <Compile Include="Directives\Endianness.cs" />
     <Compile Include="Directives\Data.cs" />
-    <Compile Include="Functions\DataOnPageSize.cs" />
     <Compile Include="Functions\IsString.cs" />
     <Compile Include="Functions\Eval.cs" />
     <Compile Include="Functions\Maths\KB.cs" />

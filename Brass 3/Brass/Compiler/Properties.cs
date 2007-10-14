@@ -238,11 +238,26 @@ namespace Brass3 {
 		/// Gets the current source file.
 		/// </summary>
 		public string CurrentFile {
-			get { return this.statements[this.CurrentStatement - 1].SourceFile; }
+			get { 
+				int StatementNumber = this.CurrentStatement -1;
+				if (StatementNumber < 0 || StatementNumber >= this.statements.Count) {
+					return null;
+				} else {
+					return this.statements[this.CurrentStatement - 1].SourceFile;
+				}
+			}
 		}
 
 		public int CurrentLineNumber {
-			get { return this.statements[this.CurrentStatement - 1].LineNumber; }
+			get {
+				int StatementNumber = this.CurrentStatement - 1;
+				if (StatementNumber < 0 || StatementNumber >= this.statements.Count) {
+					return 0;
+				} else {
+					return this.statements[this.CurrentStatement - 1].LineNumber;
+				}
+			}
+
 		}
 
 		private string destinationFile;

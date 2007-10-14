@@ -321,7 +321,11 @@ namespace Brass3 {
 									break;
 								case Operator.OperatorType.AssignmentBitwiseAnd:
 								case Operator.OperatorType.BitwiseAnd:
-									Result.Label.NumericValue = ((int)OpA.Label.NumericValue & (int)OpB.Label.NumericValue);
+									if (OpA.Label.IsString || OpB.Label.IsString) {
+										Result.Label.StringValue = OpA.Label.StringValue + OpB.Label.StringValue;
+									} else {
+										Result.Label.NumericValue = ((int)OpA.Label.NumericValue & (int)OpB.Label.NumericValue);
+									}
 									break;
 								case Operator.OperatorType.AssignmentBitwiseOr:
 								case Operator.OperatorType.BitwiseOr:
