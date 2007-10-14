@@ -41,8 +41,8 @@ DATA
 ! chk
 ! fill
 ! dbrnd/dwrnd
-! asc
-! asciimap
+  asc
+  asciimap
 ! dbsin/dbcos/dbtan
 
 MACROS
