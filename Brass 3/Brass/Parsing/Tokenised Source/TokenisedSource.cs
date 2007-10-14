@@ -13,7 +13,7 @@ namespace Brass3 {
 
 		#region Constants
 
-		private const string Punctuation = ",+-*/!%^&|()[]{}@~<>=?:";
+		private const string Punctuation = ",+-*/!%^&|()[]{}~<>=?:";
 		private static string[] MergablePunctuation = new string[] { "++", "--", "**", "<<", ">>", ">=", "<=", "!=", "==", "&&", "||", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=" };
 
 		#endregion

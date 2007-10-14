@@ -16,9 +16,12 @@ namespace Brass3 {
 			this.Reactivator = null;
 			this.MacroLookup.Clear();
 			this.endianness = Endianness.Little;
+			
 			this.labels.ProgramCounter.NumericValue = 0;
 			this.labels.ProgramCounter.Page = 0;
-			this.outputCounter = 0;
+			this.labels.OutputCounter.NumericValue = 0;
+			this.labels.OutputCounter.Page = 0;
+
 			this.labels.ImplicitCreationDefault = this.labels.ProgramCounter;
 			this.labels.ExportLabels = true;
 			this.JustRecalledPosition = false;

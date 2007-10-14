@@ -34,11 +34,19 @@ namespace Brass3 {
 
 		}
 
+		bool allowPositionToChange;
+		public bool AllowPositionToChange {
+			get { return this.allowPositionToChange; }
+			set { this.allowPositionToChange = value; }		
+		}
+
 		bool JustRecalledPosition = false;
 		public void RecallPosition(int position) {
+			if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled.");
 			RecallPosition(position, true);
 		}
 		public void RecallPosition(int position, bool doNotReparseLabel) {
+			if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled.");
 			CurrentStatement = position;
 			if (doNotReparseLabel) JustRecalledPosition = true;
 		}

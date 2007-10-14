@@ -86,7 +86,7 @@ namespace SegaMasterSystem.Output {
 
 							// Dirty the SDSC tag area and Sega header;
 							compiler.Labels.ProgramCounter.Page = PageIndex;
-							compiler.OutputCounter = 0x7FE0;
+							compiler.Labels.OutputCounter.NumericValue = 0x7FE0;
 							compiler.WriteOutput(new byte[32]);
 
 							// "SDSC"
@@ -253,7 +253,7 @@ namespace SegaMasterSystem.Output {
 				byte[] Data = Encoding.ASCII.GetBytes(str.Value + '\0');
 				int Address = c.FindFreeMemoryBlock(c.Labels.ProgramCounter.Page, Data.Length);
 				if (Address < 0x7FE0) {
-					c.OutputCounter = Address;
+					c.Labels.OutputCounter.NumericValue = Address;
 					Array.Copy(Data, 0, binary, Address, Data.Length); // Copy in the string!
 					c.WriteOutput(Data);
 					return (ushort)Address;

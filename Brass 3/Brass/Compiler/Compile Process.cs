@@ -7,15 +7,16 @@ using System.IO;
 namespace Brass3 {
 	public partial class Compiler {
 
-		public void RecompileRange(int firstStatement, int lastStatement) {
-			this.RecompileRange(firstStatement, lastStatement, null);
+		public Label RecompileRange(int firstStatement, int lastStatement) {
+			return this.RecompileRange(firstStatement, lastStatement, null);
 		}
 
-		public void RecompileRange(int firstStatement, int lastStatement, KeyValuePair<TokenisedSource.Token, TokenisedSource>[] tokenReplacements) {
+		public Label RecompileRange(int firstStatement, int lastStatement, KeyValuePair<TokenisedSource.Token, TokenisedSource>[] tokenReplacements) {
 			if (Math.Min(firstStatement, lastStatement) < 0 || Math.Max(firstStatement, lastStatement) >= this.statements.Count) {
 				throw new InvalidOperationException("Cannot recompile a source range that hasn't been parsed.");
 			}
 			int PreservePosition = this.CurrentStatement;
+			Label Result = null;
 			for (this.CurrentStatement = firstStatement; this.CurrentStatement <= lastStatement; ++this.CurrentStatement) {
 				if (tokenReplacements == null) {
 					this.statements[this.CurrentStatement].Compile();
@@ -32,11 +33,12 @@ namespace Brass3 {
 						}
 					}
 
-					Duplicate.Compile();
+					Result = Duplicate.Compile();
 
 				}
 			}
 			this.CurrentStatement = PreservePosition;
+			return Result;
 		}
 
 		#region Private Methods
@@ -57,6 +59,18 @@ namespace Brass3 {
 		private List<SourceStatement> statements;
 		public SourceStatement[] Statements {
 			get { return this.statements.ToArray(); }
+		}
+
+		public bool CanAppendStatement {
+			get {
+				return this.CurrentPass == AssemblyPass.Pass1 && this.CurrentStatement == this.statements.Count - 1;
+			}
+		}
+
+		public void AppendStatement(SourceStatement statement) {
+			if (this.CurrentPass != AssemblyPass.Pass1) throw new InvalidOperationException("Source statements may only be appended during the first pass.");
+			if (!CanAppendStatement) throw new InvalidOperationException("Source statements may only be appended to the end of a sequence of statements.");
+			this.statements.Add(statement);
 		}
 
 		private int CurrentStatement = 0;

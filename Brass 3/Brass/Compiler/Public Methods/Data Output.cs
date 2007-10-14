@@ -8,22 +8,13 @@ using Brass3.Plugins;
 namespace Brass3 {
 	public partial class Compiler {
 
-		private int outputCounter;
-		/// <summary>
-		/// Gets or sets the current output counter.
-		/// </summary>
-		public int OutputCounter {
-			get { return this.outputCounter; }
-			set { this.outputCounter = value; }
-		}
-
 		/// <summary>
 		/// Increment the program counter and output counters by an amount.
 		/// </summary>
 		/// <param name="amount">The amount to increment the counters by.</param>
 		public void IncrementProgramAndOutputCounters(int amount) {
-			this.outputCounter += amount;
 			this.Labels.ProgramCounter.NumericValue += amount;
+			this.Labels.OutputCounter.NumericValue += amount;
 		}
 
 		/// <summary>
@@ -41,11 +32,12 @@ namespace Brass3 {
 				TranslatedData = NewOutput.ToArray();
 			}
 
-			this.output.Add(new OutputData(this.statements[CurrentStatement - 1], this.labels.ProgramCounter.Page, (int)this.labels.ProgramCounter.NumericValue, this.outputCounter, TranslatedData));
+			this.output.Add(new OutputData(this.statements[CurrentStatement - 1], 
+				this.labels.ProgramCounter.Page, (int)this.labels.ProgramCounter.NumericValue,
+				(int)this.labels.OutputCounter.NumericValue, TranslatedData));
 
 			++this.Labels.ProgramCounter.NumericValue;
-			//this.OutputCounter += TranslatedData.Length; //TODO: Check this.
-			++this.OutputCounter;
+			++this.Labels.OutputCounter.NumericValue;
 		}
 
 		/// <summary>
@@ -114,6 +106,33 @@ namespace Brass3 {
 			}
 			return TestAddress;
 		}
+
+		/// <summary>
+		/// Erase all output data on a particular page.
+		/// </summary>
+		/// <param name="page">The page to clear.</param>
+		public void ClearPage(int page) {
+			for (int i = 0; i < this.output.Count; ++i) {
+				if (this.output[i].Page == page) {
+					this.output.RemoveAt(i);
+					--i;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Gets the total size of data on a particular page.
+		/// </summary>
+		/// <param name="page">The page to check.</param>
+		/// <returns>The total size of data written to the page.</returns>
+		public int SizeOfDataOnPage(int page) {
+			int Result = 0;
+			foreach (OutputData D in this.GetOutputDataOnPage(page)) {
+				Result += D.Data.Length;
+			}
+			return Result;
+		}
+
 
 	}
 }

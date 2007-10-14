@@ -321,7 +321,7 @@ namespace Brass3 {
 			// These include operators and whitespace.
 			const string BadChars = " \t\r\n\"%^&*()[]-=+/\\<>,~|!?:;";
 
-			const string BadPrefix = "$%@";
+			const string BadPrefix = "$%";
 			foreach (char c in BadPrefix) if (name[0] == c) return false;
 
 			foreach (char c in name) if (BadChars.IndexOf(c) != -1) return false;

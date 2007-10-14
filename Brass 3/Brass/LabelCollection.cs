@@ -62,6 +62,14 @@ namespace Brass3 {
 			get { this.programCounter.AccessingPage = false; return this.programCounter; }
 		}
 
+		private readonly Label outputCounter;
+		/// <summary>
+		/// Gets the current output counter.
+		/// </summary>
+		public Label OutputCounter {
+			get { this.outputCounter.AccessingPage = false; return this.outputCounter; }
+		}
+
 		private readonly Compiler compiler;
 		/// <summary>
 		/// Gets the compiler containing this label collection.
@@ -339,6 +347,8 @@ namespace Brass3 {
 			this.Lookup = new Dictionary<string, Label>(1024);
 			this.programCounter = new Label(this, new TokenisedSource.Token(null, TokenisedSource.Token.TokenTypes.Label, "$", 0), false, 0d, 0, null);
 			this.Lookup.Add("$", this.programCounter);
+			this.outputCounter = new Label(this, new TokenisedSource.Token(null, TokenisedSource.Token.TokenTypes.Label, "@", 0), false, 0d, 0, null);
+			this.Lookup.Add("@", this.programCounter);
 		}
 
 		#endregion

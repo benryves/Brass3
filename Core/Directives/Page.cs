@@ -28,7 +28,7 @@ namespace Core.Directives {
 				Output.RawPages.PageDeclaration PD;
 				if (PagedRawWriter.PageDeclarations.TryGetValue(compiler.Labels.ProgramCounter.Page, out PD)) {
 					compiler.Labels.ProgramCounter.NumericValue = PD.Address;
-					compiler.OutputCounter = PD.Address;
+					compiler.Labels.OutputCounter.NumericValue = PD.Address;
 				}
 			}
 
