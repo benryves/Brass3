@@ -25,10 +25,13 @@ div.header {
 	padding: 2px 8px;
 }
 div.header p.plugincollection {
-	font-size: 7pt;
-	color: #039;
 	padding-top: 6px;
 	padding-bottom: 2px;
+}
+div.header p.plugincollection, div.header p.plugincollection * {
+	font-size: 7pt;
+	color: #039;
+	text-decoration: none;
 }
 div.header h1 {
 	padding-top: 0px;

@@ -12,6 +12,7 @@ namespace Core.Directives {
 	[Syntax(".data type expression, [, expression [, ... ] ]")]
 	[Description("Defines bytes (<c>.db</c>/<c>.byte</c>), 16-bit words (<c>.dw</c>/<c>.word</c>) or 32-bit integers (<c>.di</c>/<c>.int</c>).\r\nYou may also define string literals using these directives.")]
 	[Remarks("If you have a string, each character is treated as an individual expression, hence <c>.dw \"123\"</c> outputs six bytes of data for three characters.")]
+	[Warning("The type of argument - string or number - is determined during the first pass. If the evaluation fails, the result is assumed to be a number. This can cause problems for forward-referenced strings.")]
 	[CodeExample(".word 512, 4 ** 4, 1 << 10")]
 	[CodeExample(".db \"Brass\", 0")]
 	[Category("Data")]
@@ -27,55 +28,30 @@ namespace Core.Directives {
 			}
 		}
 
+		private Queue<bool> IsStringQueue;
+
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
+
+			int[] Args;
+			INumberEncoder NumberEncoder = this.ByteEncoder;
 
 			if (directive == "data") {
 
 				// Name of the type:
 				TokenisedSource.Token Type = source.Tokens[index + 1];
-				
+
 				//  Get arguments;
-				int[] Args = source.GetCommaDelimitedArguments(index + 2, 1, int.MaxValue);
+				Args = source.GetCommaDelimitedArguments(index + 2, 1, int.MaxValue);
 
 				// Encoder for this data type:
 				if (!compiler.NumberEncoders.PluginExists(Type.Data)) throw new CompilerExpection(Type, "Data type '" + Type.Data + "' not defined.");
-				INumberEncoder NumberEncoder = compiler.NumberEncoders[Type.Data];
+				NumberEncoder = compiler.NumberEncoders[Type.Data];
 
 				// Set size of declaring label if applicable.
 				if (compiler.LabelEvaluationResult != null) compiler.LabelEvaluationResult.Type = NumberEncoder;
-
-				// Iterate over each argument;
-				foreach (int Arg in Args) {
-
-					// Is it a string?
-					byte[] StringData = null;
-					if (source.ExpressionIsStringConstant(compiler, Arg)) {
-						StringData = compiler.StringEncoder.GetData(source.GetExpressionStringConstant(compiler, Arg));
-					}
-
-					// Which pass?
-					switch (compiler.CurrentPass) {
-						case AssemblyPass.Pass1: // Just $+=sizeof(data)
-							if (StringData == null) {
-								compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size);
-							} else {
-								compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size * StringData.Length);
-							}
-							break;
-						case AssemblyPass.Pass2: // Evaluate and write the data!
-							if (StringData == null) {
-								compiler.WriteOutput(NumberEncoder.GetBytes(compiler, source.EvaluateExpression(compiler, Arg).NumericValue));
-							} else {
-								foreach (byte b in StringData) compiler.WriteOutput(NumberEncoder.GetBytes(compiler, b));
-							}
-							break;
-					}
-				}
-			
-
 			} else {
 
-				int[] Args = source.GetCommaDelimitedArguments(index + 1);
+				Args = source.GetCommaDelimitedArguments(index + 1);
 
 				// Get the size of the data:
 				int Size = 1;
@@ -84,76 +60,75 @@ namespace Core.Directives {
 					case "dw":
 					case "word":
 						Size = 2;
-						Encoder = this.WordEncoder;
+						NumberEncoder = this.WordEncoder;
 						break;
 					case "di":
 					case "int":
 						Size = 4;
-						Encoder = this.IntEncoder;
+						NumberEncoder = this.IntEncoder;
 						break;
 				}
 
-				if (compiler.LabelEvaluationResult != null) {
-					compiler.LabelEvaluationResult.Type = Encoder;
+			}
+
+			// Iterate over each argument;
+			foreach (int Arg in Args) {
+
+				Label Result = null;
+
+				bool IsString = false;
+				if (compiler.CurrentPass == AssemblyPass.Pass1) {
+
+					try {
+						Result = source.EvaluateExpression(compiler, Arg);
+						IsString = Result.IsString;
+					} catch {
+						IsString = false;
+					}
+
+					this.IsStringQueue.Enqueue(IsString);
+				} else {
+					IsString = this.IsStringQueue.Dequeue();
 				}
 
+
+				// Which pass?
 				switch (compiler.CurrentPass) {
-					case AssemblyPass.Pass1:
-						foreach (int i in Args) {
-							if (source.ExpressionIsStringConstant(compiler, i)) {																
-								compiler.IncrementProgramAndOutputCounters(compiler.StringEncoder.GetData(source.GetExpressionStringConstant(compiler, i)).Length * Size);
-							} else {
-								compiler.IncrementProgramAndOutputCounters(Size);
-							}
+					case AssemblyPass.Pass1: // Just $+=sizeof(data)
+						if (IsString) {
+							compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size * Result.StringValue.Length);
+						} else {
+							compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size);
 						}
 						break;
-					case AssemblyPass.Pass2:
-						foreach (int i in Args) {
-							if (source.ExpressionIsStringConstant(compiler, i)) {
-								foreach (byte c in compiler.StringEncoder.GetData(source.GetExpressionStringConstant(compiler, i))) {
-									switch (Size) {
-										case 1:
-											compiler.WriteOutput((byte)c);
-											break;
-										case 2:
-											compiler.WriteOutput((short)c);
-											break;
-										case 4:
-											compiler.WriteOutput((int)c);
-											break;
-
-									}
-
-								}
-							} else {
-								double Data = source.EvaluateExpression(compiler, i).NumericValue;
-								switch (Size) {
-									case 1:
-										compiler.WriteOutput((byte)Data);
-										break;
-									case 2:
-										compiler.WriteOutput((short)Data);
-										break;
-									case 4:
-										compiler.WriteOutput((int)Data);
-										break;
-
-								}
-
-							}
+					case AssemblyPass.Pass2: // Evaluate and write the data!
+						Result = source.EvaluateExpression(compiler, Arg);
+						if (IsString) {
+							foreach (byte b in compiler.StringEncoder.GetData(Result.StringValue)) compiler.WriteOutput(NumberEncoder.GetBytes(compiler, b));
+						} else {
+							compiler.WriteOutput(NumberEncoder.GetBytes(compiler, Result.NumericValue));
 						}
 						break;
 				}
 			}
+
+
+
 		}
 
 
 		public string Name { get { return Names[0]; } }
 
-		public DataDeclaration() {
+		public DataDeclaration(Compiler c) {
+			this.IsStringQueue = new Queue<bool>();
 			ByteEncoder = new Core.NumberEncoding.Byte();
 			WordEncoder = new Core.NumberEncoding.Word();
 			IntEncoder = new Core.NumberEncoding.Int();
+			c.PassBegun += delegate(object sender, EventArgs e) {
+				if (c.CurrentPass == AssemblyPass.Pass1) {
+					this.IsStringQueue.Clear();
+				}
+			};
 		}
 
 	}

@@ -262,6 +262,19 @@ namespace Help {
 			}
 		}
 
+		private TreeNode GetCollectionNode(TreeNodeCollection root, Guid guid) {
+			foreach (TreeNode N in root) {
+				if (N.Tag != null && N.Tag.GetType() == typeof(Assembly)) {
+					if (new Guid((((N.Tag as Assembly).GetCustomAttributes(typeof(GuidAttribute), false)[0]) as GuidAttribute).Value) == guid) return N;
+				}
+				if (N.Nodes.Count > 0) {
+					TreeNode N2 = GetCollectionNode(N.Nodes, guid);
+					if (N2 != null) return N2;
+				}
+			}
+			return null;
+		}
+
 		private void Viewer_Navigating(object sender, WebBrowserNavigatingEventArgs e) {
 			if (e.Url.AbsolutePath.StartsWith("brass_help")) {
 				string Action = e.Url.AbsolutePath.Substring(11).Split('=')[0];
@@ -270,6 +283,9 @@ namespace Help {
 				IPlugin Plugin = this.HelpProvider.Compiler.GetPluginInstanceFromGuid(new Guid(Arguments));
 				if (Plugin != null) {
 					this.SelectedPlugin = Plugin;
+				} else {
+					TreeNode N = this.GetCollectionNode(this.Contents.Nodes, new Guid(Arguments));
+					if (N != null) this.Contents.SelectedNode = N;
 				}
 			}
 		}

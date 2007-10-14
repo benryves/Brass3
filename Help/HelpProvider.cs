@@ -9,6 +9,7 @@ using System.Reflection;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Help {
 	public class HelpProvider : IDisposable {
@@ -63,24 +64,7 @@ namespace Help {
 
 			Type T = plugin.GetType();
 			
-
-			List<Type> ImplementedInterfaces = new List<Type>(T.GetInterfaces());
-
-			string Title = plugin.Name;
-
-			if (ImplementedInterfaces.Contains(typeof(IDirective))) {
-				IDirective Directive = plugin as IDirective;
-				Title = string.Join("/", Directive.Names);
-			}
-
-			string CollectionName = T.Assembly.GetName().Name;
-			object[] CollectionTitle = T.Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-			if (CollectionTitle.Length == 1) {
-				CollectionName = (CollectionTitle[0] as AssemblyTitleAttribute).Title;
-			}
-			
-			HelpFile.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
-			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + DocumentationToHtml(CollectionName) + "</p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">");
+			HelpFile.Append(GetHeader(plugin, forExporting));
 			int HelpFileLength = HelpFile.Length;
 
 			// Description:
@@ -209,8 +193,7 @@ namespace Help {
 				CollectionName = (CollectionTitle[0] as AssemblyTitleAttribute).Title;
 			}
 
-			HelpFile.Append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>");
-			HelpFile.Append("<div class=\"header\"><p class=\"plugincollection\">" + DocumentationToHtml(CollectionName) + "</p><h1>" + DocumentationToHtml(CollectionName) + "</h1></div><div class=\"content\">");
+			HelpFile.Append(GetHeader(pluginCollection, forExporting));
 
 			int HelpFileLength = HelpFile.Length;
 
@@ -233,6 +216,44 @@ namespace Help {
 
 			return HelpFile.ToString();
 
+		}
+
+
+		private string GetHeader(object plugin, bool forExporting) {
+
+			Assembly PluginAssembly = null;
+			IPlugin Plugin = null;
+
+			string Title = null;
+
+			if (plugin.GetType() == typeof(Assembly)) {
+				PluginAssembly = plugin as Assembly;
+			} else {
+				Plugin = plugin as IPlugin;
+				PluginAssembly = plugin.GetType().Assembly;
+			}
+
+			Type T = plugin.GetType();
+
+			List<Type> ImplementedInterfaces = new List<Type>(T.GetInterfaces());
+
+			if (Plugin != null) Title = Plugin.Name;
+
+			if (ImplementedInterfaces.Contains(typeof(IAliasedPlugin))) {
+				IAliasedPlugin Directive = plugin as IAliasedPlugin;
+				Title = string.Join("/", Directive.Names);
+			}
+
+			string CollectionName = PluginAssembly.GetName().Name;
+			object[] CollectionTitle = PluginAssembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+			if (CollectionTitle.Length == 1) {
+				CollectionName = (CollectionTitle[0] as AssemblyTitleAttribute).Title;
+			}
+
+			if (Title == null) Title = CollectionName;
+
+			return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>"
+				 + "<div class=\"header\"><p class=\"plugincollection\"><a href=\"" + GetSeeAlsoUrl(PluginAssembly,forExporting) + "\">" + DocumentationToHtml(CollectionName) + "</a></p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">";
 		}
 
 		private string GetPluginList<T>(Assembly collection, NamedPluginCollection<T> source, string name, bool forExporting) where T : IPlugin {
@@ -270,11 +291,18 @@ namespace Help {
 			
 		}
 
-		private static string GetSeeAlsoUrl(IPlugin type, bool forExporting) {
+		private static string GetSeeAlsoUrl(object type, bool forExporting) {
+			string Guid = type.GetType().GUID.ToString();
+			if (type.GetType() == typeof(Assembly)) {
+				object[] GuidAttr = (type as Assembly).GetCustomAttributes(typeof(GuidAttribute), false);
+				if (GuidAttr.Length > 0) {
+					Guid = (GuidAttr[0] as GuidAttribute).Value;
+				}
+			}
 			if (forExporting) {
-				return type.GetType().GUID + ".html";
+				return Guid + ".html";
 			} else {
-				return "brass_help_type=" + type.GetType().GUID;				
+				return "brass_help_type=" + Guid;
 			}
 		}
 		private static string SomethingOrNbsp(string source) {

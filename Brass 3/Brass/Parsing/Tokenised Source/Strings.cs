@@ -50,7 +50,7 @@ namespace Brass3 {
 				TokenisedSource Src = this.Clone() as TokenisedSource;
 				foreach (Token T in Src.tokens) {
 					if (T.Type == Token.TokenTypes.String) {
-						T.Data = T.Data.Replace("\\", "\\\\").Replace("\"", "\\\"");
+						T.Data = T.Data[0] + T.Data.Substring(1, T.Data.Length - 2).Replace("\\", "\\\\").Replace("\"", "\\\"") + T.Data[T.Data.Length - 1];
 					}					
 				}
 				return Src.EvaluateExpression(compiler, index).StringValue;
