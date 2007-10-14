@@ -216,6 +216,7 @@ namespace Brass3 {
 								case "e": Result.Append('\u001B'); break;
 								case "0": Result.Append('\0'); break;
 								case "\\": Result.Append('\\'); break;
+								case "\"": Result.Append('"'); break;
 								default:
 									int EscapeCode = 0;
 									if ((EscapeString.Length == 3 && EscapeString[0] == 'x') || (EscapeString.Length == 5 && EscapeString[0] == 'u')) {
