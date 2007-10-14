@@ -184,7 +184,6 @@ namespace Brass3 {
 			foreach (TokenisedSource.Token T in MergableTokens) {
 				Result.Add(new KeyValuePair<Token.TokenTypes, string>(T.Type, T.Data));				
 			}
-
 			return Result.ToArray();
 		}
 

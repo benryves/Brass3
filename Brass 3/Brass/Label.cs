@@ -98,7 +98,17 @@ namespace Brass3 {
 					return this.Page;
 				} else {
 					if (!this.Created) throw new LabelNotFoundExpection(this.Token, "Value for label '" + this.Name + "' not found.");
-					return this.value;
+					if (this.IsString) {
+						byte[] Data = this.collection.Compiler.StringEncoder.GetData(this.StringValue);
+						double ParsedValue = 0;
+						for (int i = Data.Length - 1; i >= 0; i--) {
+							ParsedValue *= 256;
+							ParsedValue += (int)(Data[i]);
+						}
+						return ParsedValue;
+					} else {
+						return this.value;
+					}
 				}
 			}
 			set {

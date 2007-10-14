@@ -123,12 +123,27 @@ namespace Brass3 {
 			get { return this.stringEncoders; }
 		}
 
+
+		private bool customStringEncoderEnabled;
+		/// <summary>
+		/// Gets or sets whether the custom string encoder is enabled.
+		/// </summary>
+		public bool CustomStringEncoderEnabled {
+			get { return this.customStringEncoderEnabled; }
+			set { this.customStringEncoderEnabled = value; }
+		}
 		private IStringEncoder stringEncoder;
 		/// <summary>
 		/// Gets or sets the current string encoder being used by the compiler.
 		/// </summary>
 		public IStringEncoder StringEncoder {
-			get { return this.stringEncoder ?? new DefaultStringEncoder(); }
+			get {
+				if (!this.CustomStringEncoderEnabled) {
+					return new DefaultStringEncoder();
+				} else {
+					return this.stringEncoder ?? new DefaultStringEncoder();
+				}
+			}
 			set { this.stringEncoder = value; }
 		}
 

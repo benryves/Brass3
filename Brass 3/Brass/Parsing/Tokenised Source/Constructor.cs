@@ -59,6 +59,9 @@ namespace Brass3 {
 			// Used for keeping track of whether we're in whitespace or not:
 			bool InWhiteSpace = false;
 
+			// Used for keeping track of "absolute" strings.
+			bool InAbsolute = false;
+
 			// Keep track of parser-mangling directives.
 			bool FoundDirective = false;
 			int DirectiveIndex = -1;
@@ -107,6 +110,9 @@ namespace Brass3 {
 						CurrentToken = new StringBuilder(32);
 						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
 					}
+				} else if (InAbsolute) {
+					CurrentToken.Append(c);
+					if (c == '}') InAbsolute = false;
 				} else if (InString) {
 					CurrentToken.Append(c);
 
@@ -177,8 +183,8 @@ namespace Brass3 {
 
 					if (Punctuation.IndexOf(c) != -1) { // Is it some punctuation?
 
-						// Multi-line comment test:
-						if (c == '*' && LastChar == '/') {
+						
+						if (c == '*' && LastChar == '/') { // Multi-line comment?
 
 							Tokens.RemoveAt(Tokens.Count - 1); // Purge the last token.
 							KeyValuePair<Token.TokenTypes, StringBuilder> StartComment = Tokens[Tokens.Count - 1];
@@ -193,9 +199,12 @@ namespace Brass3 {
 						} else {
 							CurrentToken = new StringBuilder(32);
 							CurrentToken.Append(c);
-							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.Punctuation, CurrentToken));
-							CurrentToken = new StringBuilder(32);
-							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+							InAbsolute = c == '{';
+							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(InAbsolute ? Token.TokenTypes.None : Token.TokenTypes.Punctuation, CurrentToken));
+							if (!InAbsolute) {
+								CurrentToken = new StringBuilder(32);
+								Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+							}
 						}
 					} else if (c == ';') { // Is it a comment character?
 						InToEndOfLineComment = true;
