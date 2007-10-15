@@ -51,6 +51,10 @@ pre.syntax, pre.example, div.warning {
 	border-bottom: 1px solid #D5D5D3;
 	margin: 5px 0px;
 }
+div.warning {
+	background-color: #FFF7F7;
+	border-bottom-color: #D3D5D5;
+}
 h3.example, h2.warning {
 	padding: 3px;
 	background-color: #EFEFF7;
@@ -66,6 +70,8 @@ h2.warning {
 	padding-left: 22px;
 	background-position: 2px center;
 	background-repeat: no-repeat;
+	background-color: #FED;
+	border-bottom-color: #FCB;
 }
 pre.example a {
 	text-decoration: none;
