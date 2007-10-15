@@ -14,5 +14,6 @@
 	<output destination="test.bin" writer="raw">
 		<listing destination="test.html" writer="html" />
 		<listing destination="test.text.txt" writer="text" />
+		<listing destination="vera.xml" writer="veradoc" />
 	</output>
 </brassproject>

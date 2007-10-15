@@ -54,17 +54,14 @@ namespace Core.Directives {
 				Args = source.GetCommaDelimitedArguments(index + 1);
 
 				// Get the size of the data:
-				int Size = 1;
 				INumberEncoder Encoder = this.ByteEncoder;
 				switch (directive) {
 					case "dw":
 					case "word":
-						Size = 2;
 						NumberEncoder = this.WordEncoder;
 						break;
 					case "di":
 					case "int":
-						Size = 4;
 						NumberEncoder = this.IntEncoder;
 						break;
 				}

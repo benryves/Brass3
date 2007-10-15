@@ -206,9 +206,6 @@ namespace Brass3 {
 						// Strip it down to the code and code only:
 						TokenisedSource Source = FullSource.GetCode();
 
-						// If there are no tokens available, skip this statement:
-						if (Source.Tokens.Length == 0) continue;
-
 						PAS = new SourceStatement(
 							this,
 							Source,

@@ -143,6 +143,8 @@ namespace Brass3 {
 			/// <param name="mustMakeAssignment">True if an assignment must be made; false otherwise.</param>
 			public Label Compile(bool mustMakeAssignment) {
 
+				if (this.source.Tokens.Length == 0) return null;
+
 				Label Result = null;
 
 				try {
