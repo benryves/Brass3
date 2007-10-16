@@ -30,13 +30,31 @@ namespace Core.StringEncoding {
 				default:
 					throw new InvalidOperationException();
 			}
-			
 		}
+
+		public string GetString(byte[] data) {
+			switch (this.Compiler.Endianness) {
+				case Endianness.Little:
+					return Encoding.Unicode.GetString(data);
+				case Endianness.Big:
+					return Encoding.BigEndianUnicode.GetString(data);
+				default:
+					throw new InvalidOperationException();
+			}
+		}
+
+
+		public char GetChar(int value) {
+			return (char)value;
+		}
+
 		public string Name {
 			get { return "utf16"; }
 		}
 		public UTF16(Compiler c) {
 			this.Compiler = c;
 		}
+
+
 	}
 }

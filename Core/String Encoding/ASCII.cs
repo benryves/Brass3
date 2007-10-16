@@ -18,5 +18,14 @@ namespace Core.StringEncoding {
 		public string Name {
 			get { return "ascii"; }
 		}
+
+		public string GetString(byte[] data) {
+			return Encoding.ASCII.GetString(data);
+		}
+
+		public char GetChar(int value) {
+			return Encoding.ASCII.GetString(new byte[] { (byte)value })[0];
+		}
+
 	}
 }

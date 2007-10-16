@@ -91,6 +91,7 @@
     <Compile Include="Brass\Attributes\WarningAttribute.cs" />
     <Compile Include="Brass\Parsing\Tokenised Source\TokenisedSource.cs" />
     <Compile Include="Brass\Parsing\Assembly Reader.cs" />
+    <Compile Include="Brass\Plugins\StringEncodingWrapper.cs" />
     <Compile Include="Brass\Project.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -33,6 +33,8 @@ namespace Brass3 {
 			this.dataStructures.Clear();
 			this.emptyFill = 0;
 			this.writingToListFile = true;
+
+			this.stringEncoder = null;
 		}
 
 	}

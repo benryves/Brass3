@@ -38,6 +38,27 @@ namespace Core.StringEncoding {
 			}
 			
 		}
+		public string GetString(byte[] data) {
+			switch (this.Compiler.Endianness) {
+				case Endianness.Little:
+					return Encoding.UTF32.GetString(data);
+				case Endianness.Big:
+					byte[] Destination = new byte[data.Length];
+					for (int i = 0; i < Destination.Length; i += 4) {
+						for (int j0 = 0, j1 = 3; j0 < 4; ++j0, --j1) {
+							Destination[i + j0] = data[i + j1];
+						}
+					}
+					return Encoding.UTF32.GetString(data);
+				default:
+					throw new InvalidOperationException();
+			}
+		}
+
+		public char GetChar(int value) {
+			return (char)value;
+		}
+
 		public string Name {
 			get { return "utf32"; }
 		}

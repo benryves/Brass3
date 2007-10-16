@@ -27,6 +27,5 @@ namespace Brass3.Attributes {
 			this.remarks = remarks;
 
 		}
-
 	}
 }

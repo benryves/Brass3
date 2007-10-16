@@ -111,7 +111,7 @@ namespace Core.Directives {
 									}
 
 
-									Label Variable = source.EvaluateExpression(compiler, 1);
+									Label Variable = source.EvaluateExpression(compiler, 1, true);
 									double Start = source.EvaluateExpression(compiler, 2).NumericValue;
 									double End = source.EvaluateExpression(compiler, 3).NumericValue;
 									double Step = CurrentExpressionIndex == 3 ? Math.Sign(End - Start) : source.EvaluateExpression(compiler, 4).NumericValue;

@@ -9,6 +9,14 @@ namespace Brass3 {
 			return Encoding.ASCII.GetBytes(toEncode);
 		}
 
+		public string GetString(byte[] data) {
+			return Encoding.ASCII.GetString(data);
+		}
+
+		public char GetChar(int data) {
+			return Encoding.ASCII.GetString(new byte[] { (byte)(data) })[0];
+		}
+
 		public string Name { get { return null; } }
 	}
 }

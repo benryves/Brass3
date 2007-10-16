@@ -73,6 +73,7 @@
     <Compile Include="Functions\File Operations\End of File.cs" />
     <Compile Include="Functions\File Operations\File Read.cs" />
     <Compile Include="Functions\File Operations\File Open.cs" />
+    <Compile Include="Functions\String Manipulation\Char.cs" />
     <Compile Include="Functions\String Manipulation\StrToken.cs" />
     <Compile Include="Functions\String Manipulation\StrReplace.cs" />
     <Compile Include="Functions\String Manipulation\StrLength.cs" />

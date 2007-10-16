@@ -18,6 +18,12 @@ namespace Core.StringEncoding {
 		public byte[] GetData(string toEncode) {
 			return Encoding.UTF7.GetBytes(toEncode);
 		}
+		public string GetString(byte[] data) {
+			return Encoding.UTF7.GetString(data);
+		}
+		public char GetChar(int value) {
+			return (char)value;
+		}
 		public string Name {
 			get { return "utf7"; }
 		}

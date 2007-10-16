@@ -15,6 +15,10 @@ namespace Brass3.Plugins {
 		/// </summary>
 		byte[] GetData(string toEncode);
 
+		string GetString(byte[] data);
+
+		char GetChar(int value);
+
 	}
 
 

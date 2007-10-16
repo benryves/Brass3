@@ -9,7 +9,7 @@ using Brass3.Plugins;
 
 namespace Core.Functions.StringManipulation {
 	
-	[Description("Retrieves a substring.")]
+	[Description("Replaces all occurances of a string with another.")]
 	[Syntax("strreplace(original, search, replacement)")]
 	[CodeExample("Replace <c>hlp</c> with <c>help</c>.", "errstring = \"This hlpfile is hlping you to hlp yourself with hlpful hlp.\"\r\n.echoln \"Original:  \", errstring\r\n\r\nerrstring = strreplace(errstring, \"hlp\", \"help\")\r\n.echoln \"Corrected: \", errstring\r\n")]
 	public class StrReplace : IFunction {
