@@ -10,8 +10,14 @@ namespace Brass3 {
 
 	public partial class Compiler {
 
+		private Project project;
+		public Project Project {
+			get { return this.project; }
+		}
+
 		public void LoadProject(Project p) {
 
+			this.project = p;
 
 			//TODO: Clear state on project load.
 

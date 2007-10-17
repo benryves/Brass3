@@ -1,0 +1,6 @@
+<script language="JavaScript">
+if (window.name!='viewer') {
+	var guid = window.location.href.split('/'); guid = guid[guid.length - 1];
+	window.location.href = '../index.html?doc=' + guid;
+}
+</script>

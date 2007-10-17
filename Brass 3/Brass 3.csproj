@@ -43,6 +43,7 @@
     <Compile Include="Brass\Compiler\Compile Process.cs" />
     <Compile Include="Brass\AliasedPluginCollection.cs" />
     <Compile Include="Brass\Compiler\Output Data Filtering.cs" />
+    <Compile Include="Brass\Compiler\Public Methods\Files.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Messages.cs" />
     <Compile Include="Brass\Compiler\Reset State.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Data Structures.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="Brass\Parsing\Assembly Reader.cs" />
     <Compile Include="Brass\Plugins\StringEncodingWrapper.cs" />
     <Compile Include="Brass\Project.cs" />
+    <Compile Include="Brass\Utility\CrapZip.cs" />
+    <Compile Include="Brass\Utility\ZipWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -369,13 +369,16 @@ namespace Help {
 			foreach (TreeNode N in nodes) {
 				contents.Append("<li class=\"");
 				contents.Append(N.Tag == null ? "section" : "topic");
-				contents.Append("\">");
+				contents.Append("\"");
 				string Guid = N.Tag == null ? "" : N.Tag.GetType().GUID.ToString();
 				if (N.Tag != null) {
 					if (N.Tag as Assembly != null) {
 						Guid = ((N.Tag as Assembly).GetCustomAttributes(typeof(GuidAttribute), false)[0] as GuidAttribute).Value;
 					}
-					contents.Append("<a href=\"" + Guid + ".html\" target=\"viewer\">");
+					contents.Append(" id=\"" + Guid + "\"");
+					contents.Append("><a href=\"" + Guid + ".html\" target=\"viewer\">");
+				} else {
+					contents.Append(">");
 				}
 				contents.Append("<span class=\"section\">" + N.Text + "</span>");
 				if (N.Tag != null) {

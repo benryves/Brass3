@@ -106,5 +106,117 @@ namespace Core.Properties {
                 return ResourceManager.GetString("HtmlListHeader", resourceCulture);
             }
         }
+        
+        internal static System.Drawing.Bitmap VeraDoc_Icon_Error_PNG {
+            get {
+                object obj = ResourceManager.GetObject("VeraDoc_Icon_Error_PNG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap VeraDoc_Icon_File_PNG {
+            get {
+                object obj = ResourceManager.GetObject("VeraDoc_Icon_File_PNG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap VeraDoc_Icon_Folder_PNG {
+            get {
+                object obj = ResourceManager.GetObject("VeraDoc_Icon_Folder_PNG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; ?&gt;
+        ///&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Frameset//EN&quot; &quot;XHTML1-f.dtd&quot; &gt;
+        ///&lt;html xmlns=&quot;http://www.w3.org/TR/1999/REC-html-in-xml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot; &gt;
+        ///
+        ///	&lt;head&gt;
+        ///		&lt;title&gt;Vera source documentation&lt;/title&gt;
+        ///	&lt;/head&gt;
+        ///	
+        ///	&lt;frameset cols=&quot;220px, *&quot;&gt;
+        ///		&lt;frame src =&quot;tree.xml&quot; /&gt;
+        ///		&lt;frame src =&quot;main.xml&quot; name=&quot;file&quot;/&gt;
+        ///	&lt;/frameset&gt;
+        ///
+        ///&lt;/html&gt;
+        ///.
+        /// </summary>
+        internal static string VeraDoc_Index_HTML {
+            get {
+                return ResourceManager.GetString("VeraDoc_Index_HTML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /**
+        /// * Page
+        /// */
+        ///
+        ///html,body {
+        ///	width: 100%;
+        ///	padding: 0px;
+        ///	margin: 0px;
+        ///}
+        ///
+        ////**
+        /// * Header
+        /// */
+        ///
+        ///h1 {
+        ///	font: bold 13px verdana,Tahoma,Arial,sans-serif;
+        ///	border-bottom: 2px dotted black;
+        ///	color: #003399;
+        ///	background-color: #B5C3FF;
+        ///	border-bottom: 1px solid #A8ADBE;
+        ///	padding: 10px;
+        ///	margin: 0px;
+        ///	
+        ///}
+        ///
+        ////**
+        /// * Sub header (File description, Routines etc)
+        /// */
+        ///
+        ///h2 {
+        ///	font: bold 12px verdana,Tahoma,Arial,sans-serif;
+        ///	color: #003399;
+        ///	margin: 25px 0px 20px 0px;
+        ///	background-color: #D4DFFF;
+        ///	padding: 5px;
+        ///	padding-left:  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string VeraDoc_VeraDoc_CSS {
+            get {
+                return ResourceManager.GetString("VeraDoc_VeraDoc_CSS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+        ///&lt;xsl:stylesheet version=&quot;1.0&quot;
+        ///xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+        ///
+        ///&lt;xsl:template match=&quot;/file&quot;&gt;
+        ///	&lt;html&gt;
+        ///	&lt;head&gt;
+        ///		&lt;title&gt;Documentation of &lt;xsl:value-of select=&quot;name&quot;/&gt;&lt;/title&gt;
+        ///		&lt;link href=&quot;veradoc.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;
+        ///	&lt;/head&gt;
+        ///	&lt;body&gt;
+        ///		&lt;h1&gt;Documentation of source file &lt;xsl:value-of select=&quot;name&quot;/&gt;&lt;/h1&gt;
+        ///		&lt;xsl:if test=&quot;description/p&quot;&gt;
+        ///			&lt;h2&gt;File description&lt;/h2&gt;
+        ///			&lt;xsl:for-each select=&quot;description/p&quot;&gt;
+        ///				&lt;p&gt;&lt;xsl:value-of select [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string VeraDoc_VeraDoc_XSL {
+            get {
+                return ResourceManager.GetString("VeraDoc_VeraDoc_XSL", resourceCulture);
+            }
+        }
     }
 }

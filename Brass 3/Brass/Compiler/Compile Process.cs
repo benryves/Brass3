@@ -166,7 +166,7 @@ namespace Brass3 {
 					foreach (KeyValuePair<string, IListingWriter> Listing in this.listingFiles) {
 						using (FileStream ListingStream = new FileStream(Listing.Key, FileMode.Create)) {
 							Listing.Value.WriteListing(this, ListingStream);
-							ListingStream.Flush();
+							if (ListingStream.CanWrite) ListingStream.Flush();
 						}
 					}
 				}

@@ -2,9 +2,20 @@
 	<head>
 		<title>Brass 3 Help</title>
 	</head>
-
+	<script language="JavaScript">
+	function update_contents() {
+		if (viewer.document.location!='about:blank') {
+			window.document.title = 'Brass 3 Help - ' + viewer.document.title;
+			guid = viewer.document.location.href.split('/');
+			if (guid.length > 1) {
+				guid = guid[guid.length - 1].split('.html')[0];
+				contents.set_selected(guid);
+			}
+		}
+	}
+	</script>
 	<frameset cols="250,*">
 		<frame src="help/contents.html" name="contents" target="viewer">
-		<frame name="viewer" onload="if(viewer.document.location!='about:blank')window.document.title='Brass 3 Help &bull; '+viewer.document.title;" />
+		<frame name="viewer" onload="update_contents();" />
 	</frameset>
 </html>

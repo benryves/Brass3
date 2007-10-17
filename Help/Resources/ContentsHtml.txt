@@ -33,6 +33,12 @@
 	li.section.closed {
 		background-image: url('icon_book_closed.png');
 	}
+	li span {
+		padding: 2px;
+	}
+	li.selected span {
+		background-color: #D4DFFF;
+	}
 	li.section.closed ul {
 		display: none;
 	}
@@ -47,7 +53,8 @@
 		text-decoration: none;
 	}
 	</style>
-	<script>
+	
+	<script language="JavaScript">
 	function collapse_tree() {
 		var bullets = document.getElementsByTagName('span');
 		for (var i = 0; i < bullets.length; ++i) {
@@ -65,5 +72,31 @@
 			}
 		}
 	}
+
+	function set_selected(guid) {
+		var el = document.getElementById(guid);
+		if (el) {
+			var els = document.getElementsByTagName('li');
+			for (var i = 0; i < els.length; ++i) {
+				els[i].className = els[i].className.replace('selected', '');
+			}
+			el.className += ' selected';
+			while (el) {
+				if (el.tagName == 'LI' && el.className == 'section closed') el.className = 'section';
+				el = el.parentNode;
+			}
+		}
+	}
+
+	function check_guid() {
+		if (window.name != 'contents') {
+			window.location.href = '../index.html';
+		} else {
+			var guid = window.parent.location.href.split('?doc=');
+			if (guid.length == 2) {
+				window.parent.viewer.location.href = guid[1];
+			}
+		}
+	}
 	</script>
-	<body onload="collapse_tree()">
+	<body onload="collapse_tree();check_guid();">

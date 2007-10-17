@@ -1,0 +1,129 @@
+/**
+ * Page
+ */
+
+html,body {
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+/**
+ * Header
+ */
+
+h1 {
+	font: bold 13px verdana,Tahoma,Arial,sans-serif;
+	border-bottom: 2px dotted black;
+	color: #003399;
+	background-color: #B5C3FF;
+	border-bottom: 1px solid #A8ADBE;
+	padding: 10px;
+	margin: 0px;
+	
+}
+
+/**
+ * Sub header (File description, Routines etc)
+ */
+
+h2 {
+	font: bold 12px verdana,Tahoma,Arial,sans-serif;
+	color: #003399;
+	margin: 25px 0px 20px 0px;
+	background-color: #D4DFFF;
+	padding: 5px;
+	padding-left: 10px;
+	border-top: 1px solid #C8CDDE;
+	border-bottom: 1px solid #C8CDDE;
+}
+
+/**
+ * Subsub header (Pre- and postconditions, example, etc)
+ */
+
+h3 {
+	font: bold 11px verdana,Tahoma,Arial,sans-serif;
+	margin: 25px 20px 0px 20px;
+	color: #000066;
+	background-color: #EFEFF7;
+	border-bottom: 1px solid #D5D5D3;
+	padding: 3px;
+	padding-left: 6px;
+}
+
+/**
+ * Some default formatting
+ */
+
+a {
+	color: blue;
+}
+
+p {
+	font: 11px times,serif;
+	margin: 10px 20px 0px 20px;
+	padding-left: 10px;
+}
+
+ul, li {
+	font: 11px times,serif;
+	margin: 0px 20px 0px 20px;
+	padding: 0px;
+	padding-left: 4px;
+	list-style: circle;
+}
+
+ul {
+	margin-top: 10px;
+}
+
+/**
+ * Example fields
+ */
+
+pre {
+	font: 11px "Courier New",courier,monospace;
+	margin: 0px 20px 0px 20px;
+	padding: 10px;
+	background-color: #F9F9FF;
+	border-bottom: 1px solid #D5D5D3;
+}
+
+/**
+ * Warning header
+ */
+
+.warning {
+	background: url('icon_error.png') no-repeat 3px center;
+	background-color: #FFEEDD;
+	border-bottom: 1px solid #FFCCBB;
+	padding-left: 22px;
+}
+
+/**
+ * Source tree on the left
+ */
+
+.tree {
+	margin: 40px 20px 0px 40px;
+	padding: 0px;
+}
+.tree li {
+	list-style: none;
+	padding: 0px 0px 4px 19px;
+	margin: 0px 0px 0px 0px;
+}
+.tree li ul {
+	margin: 2px 0px 0px 5px;
+	padding: 0px;
+}
+
+.dir {
+	background: url('icon_folder.png') no-repeat left 2px;
+}
+.file {
+	background: url('icon_file.png') no-repeat left top;
+}
+
+

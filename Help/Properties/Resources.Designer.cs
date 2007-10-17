@@ -96,6 +96,20 @@ namespace Help.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;script language=&quot;JavaScript&quot;&gt;
+        ///if (window.name!=&apos;viewer&apos;) {
+        ///	var guid = window.location.href.split(&apos;/&apos;); guid = guid[guid.length - 1];
+        ///	window.location.href = &apos;../index.html?doc=&apos; + guid;
+        ///}
+        ///&lt;/script&gt;.
+        /// </summary>
+        internal static string FrameForcingScript {
+            get {
+                return ResourceManager.GetString("FrameForcingScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;html&gt;
         ///	&lt;head&gt;
         ///		&lt;title&gt;Brass 3 Help&lt;/title&gt;

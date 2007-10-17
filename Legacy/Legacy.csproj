@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Directives\Asc.cs" />
     <Compile Include="Directives\AsciiMap.cs" />
+    <Compile Include="Directives\BinaryMode.cs" />
     <Compile Include="Directives\IncBmp.cs" />
     <Compile Include="Directives\IncLabels.cs" />
     <Compile Include="Directives\EndAsm.cs" />

@@ -8,6 +8,8 @@ using System.Xml;
 using Brass3;
 using Brass3.Plugins;
 using Brass3.Attributes;
+using Brass3.Utility;
+using System.Drawing;
 
 namespace Core.Listing {
 	public class VeraDoc : IListingWriter {
@@ -191,25 +193,74 @@ namespace Core.Listing {
 								throw new NotImplementedException();
 						}
 						string[] Components = Array.ConvertAll<string, string>(ToFormat.ToString().Split('\n'), delegate(string s) {
-							return s.Trim() + " "; 
+							return s.Trim(); 
 						});
-						return string.Join(Environment.NewLine, Components).Replace(Environment.NewLine + Environment.NewLine, Environment.NewLine).Trim();
+
+						StringBuilder Result = new StringBuilder(ToFormat.Length);
+
+						switch (section) {
+							case DocumentationSection.Example:
+							case DocumentationSection.Precondition:
+							case DocumentationSection.Postcondition:
+								Result.Append(ToFormat);
+								break;
+							default:
+								bool DumpedNewline = false;
+								for (int i = 0; i < Components.Length; ++i) {
+									if (Components[i] == "") {
+										if (!DumpedNewline) Result.Append(Environment.NewLine);
+										DumpedNewline = true;
+									} else {
+										Result.Append(Components[i] + " ");
+										DumpedNewline = false;
+									}
+								}
+								break;
+						}
+
+		
+
+						return section == DocumentationSection.Example ? Result.ToString() : Result.ToString().Trim();
 				}
 			}
 
 			/// <summary>
 			/// Writes this file's attributes to an XML writer.
 			/// </summary>
-			public void WriteAttributeString(XmlWriter writer) {
+			public void WriteElements(XmlWriter writer) {
 				foreach (DocumentationSection Section in Enum.GetValues(typeof(DocumentationSection))) {
 					string AttributeText = this.GetValue(Section);
 					if (!string.IsNullOrEmpty(AttributeText)) {
-						if (Section ==  DocumentationSection.SeeAlso) {
-							foreach (string s in AttributeText.Split(',')) {
-								writer.WriteElementString(Section.ToString().ToLowerInvariant(), s.Trim());									
-							}
-						} else {
-							writer.WriteElementString(Section.ToString().ToLowerInvariant(), AttributeText);
+						switch (Section) {
+							case DocumentationSection.SeeAlso:
+								foreach (string s in AttributeText.Split(',')) {
+									writer.WriteElementString(Section.ToString().ToLowerInvariant(), s.Trim());
+								}
+								break;
+							case DocumentationSection.Description:
+							case DocumentationSection.Warning:
+								writer.WriteStartElement(Section.ToString().ToLowerInvariant());
+								foreach (string s in AttributeText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)) {
+									writer.WriteElementString("p", s.Trim());
+								}
+								writer.WriteEndElement();
+								break;
+							case DocumentationSection.Example:
+								writer.WriteStartElement("example");
+								foreach (string s in AttributeText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)) {
+									writer.WriteElementString("line", s.TrimEnd());
+								}
+								writer.WriteEndElement();
+								break;
+							case DocumentationSection.Precondition:
+							case DocumentationSection.Postcondition:
+								foreach (string s in AttributeText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)) {
+									writer.WriteElementString(Section.ToString().ToLowerInvariant(), s.Trim());
+								}
+								break;
+							default:
+								writer.WriteElementString(Section.ToString().ToLowerInvariant(), AttributeText);
+								break;
 						}
 					}
 				}
@@ -218,9 +269,11 @@ namespace Core.Listing {
 			#endregion
 
 		}
-
+		
 		#endregion
 
+		#region Methods
+		
 		/// <summary>
 		/// Write a VeraDoc listing file to a stream.
 		/// </summary>
@@ -282,9 +335,6 @@ namespace Core.Listing {
 				if (WaitingForSeperatorComment) {
 
 					string Comments = CommentedSource.Tokens[DocumentationCommentsIndex].Data.Substring(1).Trim();
-
-					Console.WriteLine("Sep: " + Comments);
-
 					WaitingForSeperatorComment = false;
 
 				} else  if (HasDocumentationComments) {				
@@ -302,24 +352,25 @@ namespace Core.Listing {
 								CurrentRoutine = new DocumentedFile(RoutineName);
 								CurrentFile.Routines.Add(RoutineName.ToLowerInvariant(), CurrentRoutine);
 							}
+							CurrentSection = DocumentationSection.Description;
 							continue;
 						}
 					}
 
-					switch (Comments) {
-						case "Pre:":
+					switch (Comments.ToLowerInvariant()) {
+						case "pre:":
 							CurrentSection = DocumentationSection.Precondition;
 							break;
-						case "Post:":
+						case "post:":
 							CurrentSection = DocumentationSection.Postcondition;
 							break;
-						case "SeeAlso:":
+						case "seealso:":
 							CurrentSection = DocumentationSection.SeeAlso;
 							break;
-						case "Warning:":
+						case "warning:":
 							CurrentSection = DocumentationSection.Warning;
 							break;
-						case "Example:":
+						case "example:":
 							CurrentSection = DocumentationSection.Example;
 							break;
 						default:
@@ -337,31 +388,116 @@ namespace Core.Listing {
 
 			// By this point everything should have been documented...
 
-			// Let's be enterprisey and use XML:
-			XmlWriter VeraDocWriter = XmlWriter.Create(stream);
+			using (Zip.ZipFile ZipFile = new Zip.ZipFile(stream)) {
 
-			VeraDocWriter.WriteProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"veradoc.xsl\"");
-			VeraDocWriter.WriteStartElement("veradoc"); // Document root.
-			foreach (KeyValuePair<string, DocumentedFile> DocumentedFile in DocumentedFiles) {
-				VeraDocWriter.WriteStartElement("file");
-				VeraDocWriter.WriteElementString("source", DocumentedFile.Value.Name);
+				VeraDoc.WriteResourceToZip(ZipFile, "index.html", Properties.Resources.VeraDoc_Index_HTML.Replace("$(main)", GetXmlFilename(compiler, compiler.SourceFile)));
+				VeraDoc.WriteResourceToZip(ZipFile, "veradoc.xsl", Properties.Resources.VeraDoc_VeraDoc_XSL);
+				VeraDoc.WriteResourceToZip(ZipFile, "veradoc.css", Properties.Resources.VeraDoc_VeraDoc_CSS);
+				VeraDoc.WriteResourceToZip(ZipFile, "icon_file.png", Properties.Resources.VeraDoc_Icon_File_PNG);
+				VeraDoc.WriteResourceToZip(ZipFile, "icon_folder.png", Properties.Resources.VeraDoc_Icon_Folder_PNG);
+				VeraDoc.WriteResourceToZip(ZipFile, "icon_error.png", Properties.Resources.VeraDoc_Icon_Error_PNG);
 
-				// Write file attributes.
-				DocumentedFile.Value.WriteAttributeString(VeraDocWriter);
+				foreach (KeyValuePair<string, DocumentedFile> DocumentedFile in DocumentedFiles) {
 
-				// Write routines.
-				foreach (KeyValuePair<string, DocumentedFile> Routine in DocumentedFile.Value.Routines) {
-					VeraDocWriter.WriteStartElement("routine");
-					VeraDocWriter.WriteElementString("name", Routine.Value.Name);
-					Routine.Value.WriteAttributeString(VeraDocWriter);
-					VeraDocWriter.WriteEndElement();
+					using (XmlWriter VeraDocWriter = XmlWriter.Create(ZipFile.AddFile(GetXmlFilename(compiler, DocumentedFile.Value.Name)).FileData)) {
+
+						VeraDocWriter.WriteProcessingInstruction("xml-stylesheet", @"type=""text/xsl"" href=""veradoc.xsl""");
+
+						VeraDocWriter.WriteStartElement("file"); // Document root.
+						VeraDocWriter.WriteElementString("name", Path.GetFileName(DocumentedFile.Value.Name));
+
+						// Write file attributes.
+						DocumentedFile.Value.WriteElements(VeraDocWriter);
+
+						// Write routines.
+						foreach (KeyValuePair<string, DocumentedFile> Routine in DocumentedFile.Value.Routines) {
+							VeraDocWriter.WriteStartElement("routine");
+							VeraDocWriter.WriteElementString("name", Routine.Value.Name);
+							Routine.Value.WriteElements(VeraDocWriter);
+							VeraDocWriter.WriteEndElement();
+						}
+
+
+						VeraDocWriter.WriteEndElement();
+						VeraDocWriter.Flush();
+					}
 				}
 
+				// Tree:
+				{
+					using (XmlWriter VeraDocWriter = XmlWriter.Create(ZipFile.AddFile("tree.xml").FileData)) {
 
-				VeraDocWriter.WriteEndElement();
+						VeraDocWriter.WriteProcessingInstruction("xml-stylesheet", @"type=""text/xsl"" href=""veradoc.xsl""");
+						VeraDocWriter.WriteStartElement("tree");
+
+						foreach (Compiler.SourceTreeEntry SourceTree in compiler.GetSourceTree(true).Children) {
+							WriteTree(SourceTree, VeraDocWriter, null);
+						}						
+
+						VeraDocWriter.WriteEndElement();
+						VeraDocWriter.Flush();
+					}
+
+				}
+
+				ZipFile.Save();
 			}
-			VeraDocWriter.WriteEndElement();
-			VeraDocWriter.Flush();
+			
+		}
+
+		/// <summary>
+		/// Write general data to a zip file.
+		/// </summary>
+		private static void WriteResourceToZip(Zip.ZipFile zip, string filename, byte[] data) {
+			zip.AddFile(filename).FileData.Write(data, 0, data.Length);
+		}
+
+		/// <summary>
+		/// Write string data to a zip file.
+		/// </summary>
+		private static void WriteResourceToZip(Zip.ZipFile zip, string filename, string data) {
+			VeraDoc.WriteResourceToZip(zip, filename, Encoding.UTF8.GetBytes(data));
+		}
+
+		/// <summary>
+		/// Write image data to a zip file (as a PNG).
+		/// </summary>
+		private static void WriteResourceToZip(Zip.ZipFile zip, string filename, Image data) {
+			using (MemoryStream MS = new MemoryStream()) {
+				data.Save(MS, System.Drawing.Imaging.ImageFormat.Png);
+				VeraDoc.WriteResourceToZip(zip, filename, MS.ToArray());
+			}
+		}
+
+		/// <summary>
+		/// Gets the filename of an XML document for documentation.
+		/// </summary>
+		/// <param name="compiler">The compiler providing the file.</param>
+		/// <param name="name">The name of the source file.</param>
+		private static string GetXmlFilename(Compiler compiler, string name) {
+			name = compiler.GetRelativeFilename(name);
+			name = name.Replace(Path.DirectorySeparatorChar, '.');
+			name = name.Replace(Path.AltDirectorySeparatorChar, '.');
+			name += ".xml";
+			return name;
+		}
+
+		/// <summary>
+		/// Write tree.xml
+		/// </summary>
+		/// <param name="tree">The root of the tree to write.</param>
+		/// <param name="writer">The XML writer being used to write the tree.</param>
+		private static void WriteTree(Compiler.SourceTreeEntry tree, XmlWriter writer, string baseDir) {
+			writer.WriteStartElement(tree.IsDirectory ? "dir" : "treefile");
+			writer.WriteElementString("name", tree.Name);
+			if (tree.IsDirectory) {
+				foreach (Compiler.SourceTreeEntry Subtree in tree.Children) {
+					WriteTree(Subtree, writer, tree.Name);
+				}				
+			} else {
+				writer.WriteElementString("file", (baseDir == null ? "" : baseDir + ".") + tree.Name + ".xml");
+			}
+			writer.WriteEndElement();
 		}
 
 		/// <summary>
@@ -375,6 +511,7 @@ namespace Core.Listing {
 			return true;
 		}
 
+		#endregion
 
 	}
 }

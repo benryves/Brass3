@@ -30,6 +30,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +217,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\HtmlListFooter.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VeraDoc_Icon_Folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VeraDoc_Index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VeraDoc_Icon_File.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VeraDoc_VeraDoc.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VeraDoc_Icon_Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VeraDoc_VeraDoc.xsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

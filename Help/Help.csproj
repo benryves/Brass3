@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="help.ico" />
+    <None Include="Resources\FrameForcingScript.txt" />
     <None Include="Resources\page_world.png" />
     <None Include="Resources\control_fastforward_blue.png" />
     <None Include="Resources\control_rewind_blue.png" />

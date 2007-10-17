@@ -266,8 +266,12 @@ namespace Help {
 
 			if (Title == null) Title = CollectionName;
 
-			return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>" + DocumentationToHtml(Title) + "</title><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>"
-				 + "<div class=\"header\"><p class=\"plugincollection\"><a href=\"" + GetSeeAlsoUrl(PluginAssembly,forExporting) + "\">" + DocumentationToHtml(CollectionName) + "</a></p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">";
+			string Result = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>" + DocumentationToHtml(Title) + "</title><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>";
+
+			if (forExporting) Result += Properties.Resources.FrameForcingScript;
+
+			Result += "<div class=\"header\"><p class=\"plugincollection\"><a href=\"" + GetSeeAlsoUrl(PluginAssembly, forExporting) + "\">" + DocumentationToHtml(CollectionName) + "</a></p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">";
+			return Result;
 		}
 
 		private string GetPluginList<T>(Assembly collection, NamedPluginCollection<T> source, string name, bool forExporting) where T : IPlugin {
