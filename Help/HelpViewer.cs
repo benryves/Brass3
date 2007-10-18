@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
 using Brass3.Attributes;
+using System.Diagnostics;
 
 namespace Help {
 	public partial class HelpViewer : UserControl {
@@ -289,6 +290,8 @@ namespace Help {
 					TreeNode N = this.GetCollectionNode(this.Contents.Nodes, new Guid(Arguments));
 					if (N != null) this.Contents.SelectedNode = N;
 				}
+			} else if (e.Url.Scheme == "http") {
+				Process.Start(e.Url.AbsoluteUri);
 			}
 		}
 

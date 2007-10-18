@@ -9,18 +9,24 @@ namespace Brass3 {
 	/// <summary>
 	/// Defines a collection of directives.
 	/// </summary>
-	public class NamedPluginCollection<T> : ICollection<T> where T:IPlugin {
+	public class NamedPluginCollection<T> : ICollection<T> where T : class, IPlugin {
 
 		protected Dictionary<string, T> Plugins;
 		protected List<T> UniquePlugins;
 
-		public NamedPluginCollection() {
+		private readonly Compiler Compiler;
+
+		public NamedPluginCollection(Compiler compiler) {
+			this.Compiler = compiler;
 			this.Plugins = new Dictionary<string, T>();
 			this.UniquePlugins = new List<T>();
 		}
 
 		public virtual T this[string name] {
 			get {
+				if (!this.PluginExists(name) && typeof(T) == typeof(IStringEncoder)) { 
+					return new StringEncodingWrapper(this.Compiler, name, Encoding.GetEncoding(name)) as T;
+				}
 				return this.Plugins[name.ToLowerInvariant()];
 			}
 		}
@@ -78,7 +84,7 @@ namespace Brass3 {
 				this.Plugins.Remove(Remove);
 			}
 			return this.UniquePlugins.Remove(item);
-			
+
 		}
 	}
 }

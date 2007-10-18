@@ -10,24 +10,9 @@ namespace Brass3 {
 
 			Compiler C = new Compiler();
 
-			C.ErrorRaised += new Compiler.CompilerNotificationEventHandler(delegate(object sender, Compiler.NotificationEventArgs e) {
-				Console.BackgroundColor = ConsoleColor.Black;
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.Write("Error ");
-				Console.ForegroundColor = ConsoleColor.Gray;
-				Console.Write("Pass " + (int)C.CurrentPass);
-				Console.WriteLine(" [" + C.CurrentFile + "]: " + e.Message);
-				if (e.SourceException != null && e.SourceException.SourceStatement != null) {
 
-					Console.ForegroundColor = ConsoleColor.DarkGreen;
-					Console.BackgroundColor = ConsoleColor.Gray;
-					Console.Write("{0,5}", C.CurrentLineNumber);
-					RestoreConsoleColours();
-					e.SourceException.SourceStatement.WriteColouredConsoleOutput(true, e.SourceException.Token, true);
-					Console.WriteLine();
-				}
-				
-			});
+			C.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { DisplayError(C, e, "Error", ConsoleColor.Red); };
+			C.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { DisplayError(C, e, "Warning", ConsoleColor.Yellow); };
 
 			C.InformationRaised += delegate(object sender, Compiler.NotificationEventArgs e) {
 				Console.Write(e.Message);
@@ -103,6 +88,24 @@ namespace Brass3 {
 				
 			}
 
+		}
+
+		static void DisplayError(Compiler c, Compiler.NotificationEventArgs e, string errorType, ConsoleColor errorColour) {
+
+			Console.BackgroundColor = ConsoleColor.Black;
+			Console.ForegroundColor = errorColour;
+			Console.Write(errorType + " ");
+			Console.ForegroundColor = ConsoleColor.Gray;
+			if (c.CurrentPass != AssemblyPass.None) Console.Write(c.CurrentPass + " ");
+			Console.WriteLine("[" + c.GetRelativeFilename(e.Filename) + "]: " + e.Message);
+			if (e.SourceStatement != null) {
+				Console.ForegroundColor = ConsoleColor.DarkGreen;
+				Console.BackgroundColor = ConsoleColor.Gray;
+				Console.Write("{0,5}", e.LineNumber);
+				RestoreConsoleColours();
+				e.SourceStatement.OutermostTokenisedSource.WriteColouredConsoleOutput(true, e.SourceToken, true);
+				Console.WriteLine();
+			}
 		}
 
 		private static ConsoleColor[] OriginalConsoleColours = new ConsoleColor[] { Console.ForegroundColor, Console.BackgroundColor };

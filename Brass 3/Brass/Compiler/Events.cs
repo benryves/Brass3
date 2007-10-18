@@ -53,32 +53,46 @@ namespace Brass3 {
 				get { return this.message; }
 			}
 
-			private readonly CompilerExpection sourceException;
-			public CompilerExpection SourceException {
-				get { return this.sourceException; }
+
+			private readonly TokenisedSource sourceStatement;
+			public TokenisedSource SourceStatement {
+				get { return this.sourceStatement; }
 			}
 
-			private readonly int lineNumber;
+			private readonly TokenisedSource.Token sourceToken;
+			public TokenisedSource.Token SourceToken {
+				get { return this.sourceToken; }
+			}
+
+			private readonly int linenumber;
 			public int LineNumber {
-				get { return this.lineNumber; }
+				get { return this.linenumber; }
 			}
 
-			private readonly string fileName;
+			private readonly string filename;
 			public string Filename {
-				get { return this.fileName; }
+				get { return this.filename; }
 			}
 
-
-
-			public NotificationEventArgs(Compiler c, string message) {
-				this.lineNumber = c.CurrentLineNumber;
-				this.fileName = c.CurrentFile;
+			public NotificationEventArgs(Compiler c, string message, string filename, int linenumber) {
 				this.message = message;
+				this.filename = filename;
+				this.linenumber = linenumber;
 			}
 
-			public NotificationEventArgs(Compiler c, string message, CompilerExpection sourceException)
-				: this(c, message) {
-				this.sourceException = sourceException;
+			public NotificationEventArgs(Compiler c, string message)
+				: this(c, message, c.CurrentFile, c.CurrentLineNumber) {
+			}
+
+			public NotificationEventArgs(Compiler c, CompilerExpection sourceException)
+				: this(c, sourceException.Message) {
+				this.sourceToken = sourceException.Token;
+				this.sourceStatement = sourceException.SourceStatement;
+			}
+
+			public NotificationEventArgs(Compiler c, string message, Compiler.SourceStatement statement)
+				: this(c, message, statement.Filename, statement.LineNumber) {
+				this.sourceStatement = statement.Source;
 			}
 
 		}

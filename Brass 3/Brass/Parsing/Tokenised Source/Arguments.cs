@@ -93,6 +93,7 @@ namespace Brass3 {
 			String = 0x0002,
 			UnescapedString = 0x0004,
 			Filename = 0x0008,
+			SingleToken = 0x0010,
 		}
 
 		public object[] GetCommaDelimitedArguments(Compiler compiler, int index, ArgumentType[] types) {
@@ -118,6 +119,21 @@ namespace Brass3 {
 			object[] Result = new object[Arguments.Length];
 			for (int i = 0; i < Arguments.Length; ++i) {
 				ArgumentType CurrentArgument = types[i] & ~(ArgumentType.Optional | ArgumentType.ImplicitLabelCreation);
+
+				bool StringExpected = (CurrentArgument & (ArgumentType.String | ArgumentType.UnescapedString | ArgumentType.Filename)) != ArgumentType.None;
+
+				if ((CurrentArgument & ArgumentType.SingleToken) == ArgumentType.SingleToken) {
+					TokenisedSource SingleToken = this.GetExpressionTokens(Arguments[i]);
+					if (SingleToken.Tokens.Length == 1 && (!StringExpected || SingleToken.Tokens[0].Type != Token.TokenTypes.String)) {
+						Result[i] = SingleToken.Tokens[0].Data;
+						continue;
+					}
+					CurrentArgument &= ~ArgumentType.SingleToken;
+					if (CurrentArgument == ArgumentType.None) throw new DirectiveArgumentException(this, "Expected a single token value for argument " + (i + 1) + ".");
+				}
+
+				
+
 				switch (CurrentArgument) {
 					case ArgumentType.Value:
 						Label L = this.EvaluateExpression(compiler, Arguments[i]);
@@ -131,7 +147,7 @@ namespace Brass3 {
 						if (CurrentArgument == ArgumentType.Filename) Result[i] = compiler.ResolveFilename(Result[i] as string);
 						break;
 					default:
-						throw new ArgumentException("Argument type " + types[0].ToString() + " not recognised.");
+						throw new ArgumentException("Argument type " + types[0].ToString() + " not supported.");
 				}
 			}
 

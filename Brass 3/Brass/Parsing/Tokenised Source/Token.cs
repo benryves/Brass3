@@ -256,6 +256,18 @@ namespace Brass3 {
 				}
 			}
 
+			/// <summary>
+			/// Gets the string contents of a comment token.
+			/// </summary>
+			public string GetCommentString() {
+				if (this.Type != TokenTypes.Comment) throw new InvalidOperationException();
+				if (this.data.Length == 0) return "";
+				if (this.data[0] == ';') {
+					return this.data.Substring(1);
+				}
+				return this.data.Substring(2, data.Length - 4);
+			}
+
 
 
 			public object Clone() {

@@ -135,11 +135,11 @@ namespace SegaMasterSystem.Directives {
 				double Version = source.EvaluateExpression(compiler, Args[0]).NumericValue;
 				try{
 					this.MajorVersion = (int)Version;
-				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex.Message, ex)); }
+				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
 				try {
 					this.MinorVersion = ((int)(Math.Abs(Version - Math.Truncate(Version)) * 100));
-				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex.Message, ex)); }
+				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
 				this.ProgramName = new SdscString(compiler, source, Args[1]);
 				this.ReleaseNotes = new SdscString(compiler, source, Args[2]);

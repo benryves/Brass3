@@ -57,7 +57,7 @@ namespace Brass3 {
 			/// <summary>
 			/// Gets the name of the source file.
 			/// </summary>
-			public string SourceFile {
+			public string Filename {
 				get { return this.sourceFile; }
 			}
 
@@ -197,9 +197,9 @@ namespace Brass3 {
 						compiler.labelEvaluationResult = null;
 					}
 				} catch (CompilerExpection ex) {
-					compiler.OnErrorRaised(new NotificationEventArgs(compiler, ex.Message, ex));
+					compiler.OnErrorRaised(new NotificationEventArgs(compiler, ex));
 				} catch (Exception ex) {
-					compiler.OnErrorRaised(new NotificationEventArgs(compiler, ex.Message, null));
+					compiler.OnErrorRaised(new NotificationEventArgs(compiler, ex.Message));
 				} finally {
 					this.compilerWasOnAfterwards = this.compiler.IsSwitchedOn;
 				}
@@ -213,9 +213,12 @@ namespace Brass3 {
 			/// </summary>
 			/// <remarks>The source statements are also cloned.</remarks>
 			public object Clone() {
-				SourceStatement Clone = new SourceStatement(this.compiler, (TokenisedSource)this.Source.Clone(), this.SourceFile, this.LineNumber);
+				SourceStatement Clone = new SourceStatement(this.compiler, (TokenisedSource)this.Source.Clone(), this.Filename, this.LineNumber);
+				Clone.index = this.index;
 				return Clone;
 			}
+
+			internal int index;
 
 			public SourceStatement(Compiler compiler, TokenisedSource source, string filename, int lineNumber) {
 
@@ -250,6 +253,8 @@ namespace Brass3 {
 					}
 				}
 				this.expressionStatementSplit = LabelInstructionSplit;
+
+				this.index = compiler.statements.Count;
 
 			}
 

@@ -258,7 +258,7 @@ namespace Brass3 {
 				if (StatementNumber < 0 || StatementNumber >= this.statements.Count) {
 					return null;
 				} else {
-					return this.statements[this.CurrentStatement - 1].SourceFile;
+					return this.statements[this.CurrentStatement - 1].Filename;
 				}
 			}
 		}

@@ -9,10 +9,10 @@ namespace Brass3 {
 	/// <summary>
 	/// Defines a collection of directives.
 	/// </summary>
-	public class AliasedPluginCollection<T> : NamedPluginCollection<T> where T : IAliasedPlugin {
+	public class AliasedPluginCollection<T> : NamedPluginCollection<T> where T : class, IAliasedPlugin {
 
-		public AliasedPluginCollection()
-			: base() {
+		public AliasedPluginCollection(Compiler compiler)
+			: base(compiler) {
 		}
 
 		public override void Add(T plugin) {

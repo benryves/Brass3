@@ -10,6 +10,7 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Help {
 	public class HelpProvider : IDisposable {
@@ -274,7 +275,7 @@ namespace Help {
 			return Result;
 		}
 
-		private string GetPluginList<T>(Assembly collection, NamedPluginCollection<T> source, string name, bool forExporting) where T : IPlugin {
+		private string GetPluginList<T>(Assembly collection, NamedPluginCollection<T> source, string name, bool forExporting) where T : class, IPlugin {
 			StringBuilder Result = new StringBuilder(1024);
 			
 			List<T> Matches = new List<T>();
@@ -328,6 +329,10 @@ namespace Help {
 		}
 		private static string NewLinesToParagraphs(string toEscape) {
 			StringBuilder Result = new StringBuilder(toEscape.Length * 2);
+			
+			toEscape = new Regex(@">(\s*?)<", RegexOptions.Multiline).Replace(toEscape, "><");
+
+			
 			foreach (string s in toEscape.Split('\n')) {
 				Result.Append("<p>" + s + "</p>");
 			}

@@ -21,35 +21,12 @@ namespace Core.Directives {
 		public string Name { get { return Names[0]; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-
-			//foreach (EncodingInfo EI in Encoding.GetEncodings()) Console.WriteLine("{0}\t{1}\t{2}\t{3}", EI.CodePage, EI.GetEncoding().IsSingleByte, EI.Name, EI.DisplayName);	
-
-			int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-			TokenisedSource T = source.GetExpressionTokens(Args[0]);
-			if (T.Tokens.Length == 0) throw new CompilerExpection(source, "Expected a string encoder name.");
-
-			string EncodingName = T.Tokens[0].Data;
-			Label EncodingLabel = null;
-			if (T.Tokens.Length != 1 || T.Tokens[0].Type == TokenisedSource.Token.TokenTypes.String) {
-				EncodingLabel = T.EvaluateExpression(compiler);
-				EncodingName = EncodingLabel.StringValue;
-			}
 			
-			if (compiler.StringEncoders.PluginExists(EncodingName)) {
-				compiler.StringEncoder = compiler.StringEncoders[EncodingName];
+			object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] {
+				TokenisedSource.ArgumentType.String | TokenisedSource.ArgumentType.SingleToken
+			});
+			compiler.StringEncoder = compiler.StringEncoders[Args[0] as string];
 
-			} else {
-				if (EncodingLabel == null) EncodingLabel = T.EvaluateExpression(compiler);
-				try {
-					if (!EncodingLabel.IsString) {
-						compiler.StringEncoder = new StringEncodingWrapper(compiler, EncodingName, Encoding.GetEncoding((int)EncodingLabel.NumericValue));
-					} else {
-						compiler.StringEncoder = new StringEncodingWrapper(compiler, EncodingName, Encoding.GetEncoding(EncodingLabel.StringValue));
-					}
-				} catch (Exception ex) {
-					throw new CompilerExpection(T, ex.Message);
-				}
-			}
 		}
 	}
 }

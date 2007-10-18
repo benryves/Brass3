@@ -180,6 +180,7 @@
     <Compile Include="Listing\Html.cs" />
     <Compile Include="Listing\Text.cs" />
     <Compile Include="Listing\No%24Gmb.cs" />
+    <Compile Include="Listing\ToDo.cs" />
     <Compile Include="Listing\VeraDoc.cs" />
     <Compile Include="Number Encoding\Byte.cs" />
     <Compile Include="Number Encoding\Int.cs" />

@@ -16,19 +16,19 @@ namespace Brass3 {
 
 		public Compiler() {
 			this.assembler = null;
-			this.assemblers = new NamedPluginCollection<IAssembler>();
+			this.assemblers = new NamedPluginCollection<IAssembler>(this);
 			this.labels = new LabelCollection(this);
-			this.directives = new AliasedPluginCollection<IDirective>();
-			this.functions = new AliasedPluginCollection<IFunction>();
-			this.outputWriters = new NamedPluginCollection<IOutputWriter>();
-			this.outputModifiers = new NamedPluginCollection<IOutputModifier>();
-			this.stringEncoders = new NamedPluginCollection<IStringEncoder>();
+			this.directives = new AliasedPluginCollection<IDirective>(this);
+			this.functions = new AliasedPluginCollection<IFunction>(this);
+			this.outputWriters = new NamedPluginCollection<IOutputWriter>(this);
+			this.outputModifiers = new NamedPluginCollection<IOutputModifier>(this);
+			this.stringEncoders = new NamedPluginCollection<IStringEncoder>(this);
 			this.output = new List<OutputData>();
-			this.listingWriters = new NamedPluginCollection<IListingWriter>();
+			this.listingWriters = new NamedPluginCollection<IListingWriter>(this);
 			this.listingFiles = new Dictionary<string, IListingWriter>();
-			this.numberEncoders = new NamedPluginCollection<INumberEncoder>();
-			this.invisiblePlugins = new NamedPluginCollection<IPlugin>();
-			this.dataStructures = new NamedPluginCollection<IDataStructure>();
+			this.numberEncoders = new NamedPluginCollection<INumberEncoder>(this);
+			this.invisiblePlugins = new NamedPluginCollection<IPlugin>(this);
+			this.dataStructures = new NamedPluginCollection<IDataStructure>(this);
 			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
 
 			this.statements = new List<SourceStatement>(1024);

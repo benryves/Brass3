@@ -10,6 +10,7 @@ using Brass3.Plugins;
 
 namespace Core.Listing {
 
+	[Category("Debugging")]
 	public class NoGmb : IListingWriter {
 
 		public string Name { get { return "no$gmb"; } }

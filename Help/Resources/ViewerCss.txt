@@ -103,7 +103,7 @@ table {
 table td, table th {
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
-	padding: 5px 5px 0px 5px;
+	padding: 5px 5px 10px 5px;
 	margin: 1px;
 	text-align: left;
 	vertical-align: top;	
@@ -119,4 +119,8 @@ table th {
 table th, table th * {
 	color: #006;
 	text-decoration: none;
+}
+table td p, table th p {
+	padding: 0px;
+	pargin: 0px;
 }
