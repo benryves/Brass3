@@ -75,6 +75,14 @@ namespace Brass3 {
 
 		private int CurrentStatement = 0;
 
+		private int compiledStatements;
+		/// <summary>
+		/// Gets the number of compiled statements this pass.
+		/// </summary>
+		public int CompiledStatements {
+			get { return this.compiledStatements; }
+		}
+
 		private bool IsCompiling = false;
 
 		public delegate void PreprocessMacro(Compiler compiler, ref TokenisedSource source, int index);

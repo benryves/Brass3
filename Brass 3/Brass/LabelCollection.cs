@@ -11,6 +11,9 @@ namespace Brass3 {
 		
 		private Dictionary<string, Label> Lookup = new Dictionary<string,Label>();
 
+		private Dictionary<int, Dictionary<int, Label>> ReusableBackwards;
+		private Dictionary<int, Dictionary<int, Label>> ReusableForwards;
+
 		#region Properties
 
 		private string currentModule;
@@ -115,6 +118,56 @@ namespace Brass3 {
 		}
 
 
+		/// <summary>
+		/// Creates a reusable label from a name.
+		/// </summary>
+		/// <param name="reusable">The name of the reusable label.</param>
+		/// <returns>A created reusable label.</returns>
+		public Label CreateReusable(string reusable) {
+
+			// Check there is *some* sort of name being passed.
+			if (string.IsNullOrEmpty(reusable)) throw new ArgumentException("No name specified.");
+
+			// Verify that each character in the name is the same.
+			char Class = reusable[0];
+			foreach (char c in reusable) {
+				if (c != Class) throw new ArgumentException("Invalid reusable label name.");				
+			}
+
+			// Grab the dictionary to store the label in.
+			Dictionary<int, Dictionary<int, Label>> ReusableDictionary;
+
+			switch (Class) {
+				case '-':
+					ReusableDictionary = this.ReusableBackwards;
+					break;
+				case '+':
+					ReusableDictionary = this.ReusableForwards;
+					break;
+				default:
+					throw new ArgumentException(string.Format("'{0}' is not a valid reusable label class.", Class));
+			}
+
+			// Add!
+			Dictionary<int, Label> Reusables;
+
+			// Try to get the length-based dictionary. If not present, create a new one!
+			if (!ReusableDictionary.TryGetValue(reusable.Length, out Reusables)) {
+				Reusables = new Dictionary<int, Label>();
+				ReusableDictionary.Add(reusable.Length, Reusables);
+			}
+
+			// Sanity check;
+			if (Reusables.ContainsKey(this.Compiler.CompiledStatements)) throw new InvalidOperationException("A reusable label already exists at this position.");
+
+			// Create, add, and return the new label.
+			Label CreatedLabel = this.ImplicitCreationDefault.Clone() as Label;
+			Reusables.Add(this.Compiler.CompiledStatements, CreatedLabel);
+			CreatedLabel.Name = "{" + reusable + "}";
+			return CreatedLabel;
+		}
+
+
 		public Label Create(TokenisedSource.Token name) {
 			return Create(name, null);
 		}
@@ -190,12 +243,68 @@ namespace Brass3 {
 
 			if (string.IsNullOrEmpty(Value)) return false;
 
+			// Handle reusable labels:
+			{
+				string ReusableName = token.Data;
+				if (ReusableName[0] == '{' && ReusableName[ReusableName.Length - 1] == '}') {
+					ReusableName = ReusableName.Substring(1, ReusableName.Length - 2);
+				}
+
+				char ReusableClass = ReusableName[0];
+				bool IsReusable = ReusableClass == '+' || ReusableClass == '-';
+
+				if (IsReusable) {
+
+					foreach (char c in ReusableName) {
+						if (c != ReusableClass) {
+							IsReusable = false;
+							break;
+						}
+					}
+
+					if (IsReusable) {
+
+						Dictionary<int, Dictionary<int, Label>> ReusableClassDictionary;
+
+						int Step;
+						int Start = Compiler.CompiledStatements;
+						int End;
+
+						switch (ReusableClass) {
+							case '+':
+								ReusableClassDictionary = this.ReusableForwards;
+								Step = +1;
+								End = Compiler.Statements.Length;
+								break;
+							case '-':
+								ReusableClassDictionary = this.ReusableBackwards;
+								Step = -1;
+								End = -1;
+								break;
+							default:
+								throw new Exception(); // ?!
+						}
+
+						Dictionary<int, Label> ReusableOffsetDictionary;
+						if (!ReusableClassDictionary.TryGetValue(ReusableName.Length, out ReusableOffsetDictionary)) {
+							return false;
+						} else {
+							for (int i = Start; i != End; i += Step) {
+								if (ReusableOffsetDictionary.TryGetValue(i, out result)) return true;
+							}
+							return false;
+						}
+					}
+				}
+			}
+
+
 			// Handle string constants:
 			if (token.Type == TokenisedSource.Token.TokenTypes.String) {
 				byte[] Data = compiler.StringEncoder.GetData(token.GetStringConstant(true));
 				ParsedValue = 0;
 				for (int i = Data.Length - 1; i >= 0; i--) {
-					ParsedValue *= 256; 
+					ParsedValue *= 256;
 					ParsedValue += (int)(Data[i]);
 				}
 			} else {
@@ -216,8 +325,8 @@ namespace Brass3 {
 						return true;
 					}
 				}
-				
-				
+
+
 
 				char Prefix = Value[0];
 				char Suffix = Value[Value.Length - 1];
@@ -240,10 +349,11 @@ namespace Brass3 {
 					} else if (Suffix == 'b') {
 						Trimmed = Value.Remove(Value.Length - 1);
 						FromBase = 2;
-					/*} else if (Prefix == '0') {
-						Trimmed = Value.Substring(1);
-						FromBase = 8;
-					*/} else if (Suffix == 'o') {
+						/*} else if (Prefix == '0') {
+							Trimmed = Value.Substring(1);
+							FromBase = 8;
+						*/
+					} else if (Suffix == 'o') {
 						Trimmed = Value.Remove(Value.Length - 1);
 						FromBase = 8;
 					} else {
@@ -345,6 +455,8 @@ namespace Brass3 {
 		public LabelCollection(Compiler compiler) {
 			this.compiler = compiler;
 			this.Lookup = new Dictionary<string, Label>(1024);
+			this.ReusableForwards = new Dictionary<int, Dictionary<int, Label>>(8);
+			this.ReusableBackwards = new Dictionary<int, Dictionary<int, Label>>(8);
 			this.programCounter = new Label(this, new TokenisedSource.Token(null, TokenisedSource.Token.TokenTypes.Label, "$", 0), false, 0d, 0, null);
 			this.Lookup.Add("$", this.programCounter);
 			this.outputCounter = new Label(this, new TokenisedSource.Token(null, TokenisedSource.Token.TokenTypes.Label, "@", 0), false, 0d, 0, null);

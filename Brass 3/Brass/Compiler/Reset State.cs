@@ -35,6 +35,8 @@ namespace Brass3 {
 			this.writingToListFile = true;
 
 			this.stringEncoder = null;
+
+			this.compiledStatements = 0;
 		}
 
 	}

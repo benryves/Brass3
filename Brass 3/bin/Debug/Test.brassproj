@@ -12,7 +12,6 @@
 	</plugins>
 	<input source="test.txt" assembler="z80" />
 	<output destination="test.bin" writer="raw">
-		<listing destination="vera.zip" writer="veradoc" />
 		<listing destination="todo.xml" writer="todo" />
 	</output>
 </brassproject>

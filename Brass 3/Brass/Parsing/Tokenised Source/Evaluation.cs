@@ -32,6 +32,70 @@ namespace Brass3 {
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels) {
 
+			// Check for reusables first;
+			bool IsReusableLabel = true;
+			char? ReusableChar = null;
+			string ReusableName = "";
+
+			for (int i = 0; i < this.tokens.Length; ++i) {
+				if (tokens[i].ExpressionGroup == index) {
+					if (tokens[i].type != Token.TokenTypes.Punctuation) {
+						IsReusableLabel = false;
+						break;
+					} else {
+						if (tokens[i].Data == "+" || tokens[i].Data=="++") {
+							if (ReusableChar == null) {
+								ReusableChar = '+';
+								ReusableName = tokens[i].Data;
+							} else if (tokens[i].Data[0] != ReusableChar) {
+								IsReusableLabel = false;
+								break;
+							} else {
+								ReusableName += tokens[i].Data;
+							}
+						} else if (tokens[i].Data == "-" || tokens[i].Data == "--") {
+							if (ReusableChar == null) {
+								ReusableChar = '-';
+								ReusableName = tokens[i].Data;
+							} else if (tokens[i].Data[0] != ReusableChar) {
+								IsReusableLabel = false;
+								break;
+							} else {
+								ReusableName += tokens[i].Data;
+							}
+						} else if (tokens[i].Data == ":") {
+							ReusableName += ":";
+						} else {
+							IsReusableLabel = false;
+							break;
+						}
+					}
+				}
+			}
+
+
+
+
+			if (IsReusableLabel) {
+
+				if (ReusableName.StartsWith(":") && !ReusableName.EndsWith(":")) {
+					ReusableName = ReusableName.Substring(1);
+				} else if (ReusableName.EndsWith(":") && !ReusableName.StartsWith(":")) {
+					ReusableName = ReusableName.Remove(ReusableName.Length - 1);
+				}
+
+
+				Label Reusable;
+				if (canCreateImplicitLabels && compiler.CurrentPass == AssemblyPass.Pass1) {
+					Reusable = compiler.Labels.CreateReusable(ReusableName);
+					Reusable.Created = false;
+				} else {
+					if (!compiler.Labels.TryParse(new Token(ReusableName), out Reusable)) {
+						throw new CompilerExpection(this, string.Format("Couldn't get value for reusable label '{0}'.", ReusableName));
+					}
+				}
+				return Reusable;				
+			}
 
 			List<Label> TempLabels = new List<Label>();
 
