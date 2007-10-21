@@ -10,6 +10,9 @@ using Brass3;
 
 namespace Legacy.Directives {
 	[Syntax(".binarymode mode")]
+	[Description("Specifies the format of the output binary.")]
+	[Remarks("This sets the output writer plugin at compile-time. It is strongly recommended that this is set in the project file rather than in the source file.")]
+	[Warning("<c>intel</c> is translated into <c>intelhex</c>.")]
 	public class BinaryMode : IDirective {
 
 		public string[] Names { get { return new string[] { "binarymode" }; } }

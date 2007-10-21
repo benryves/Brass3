@@ -76,10 +76,10 @@ namespace Core.Directives {
 				bool IsString = false;
 				if (compiler.CurrentPass == AssemblyPass.Pass1) {
 
-					try {
-						Result = source.EvaluateExpression(compiler, Arg);
+					CompilerExpection ReasonForFailure;
+					if(source.TryEvaluateExpression(compiler, Arg, out Result, out ReasonForFailure)) {
 						IsString = Result.IsString;
-					} catch {
+					} else {
 						IsString = false;
 					}
 

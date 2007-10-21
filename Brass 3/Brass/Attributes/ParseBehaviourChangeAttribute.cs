@@ -17,6 +17,7 @@ namespace Brass3.Attributes {
 			IgnoreStatementSeperator = 1,
 			IgnoreAllNewLines = 2,
 			IgnoreFirstNewLine = 4,
+			SkipMacroPreprocessor = 8,
 		}
 
 		private readonly ParserBehaviourModifiers behaviour;

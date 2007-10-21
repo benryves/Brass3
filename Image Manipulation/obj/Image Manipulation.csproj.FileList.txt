@@ -5,4 +5,3 @@ bin\Debug\ImageManipulation.dll
 bin\Debug\ImageManipulation.pdb
 obj\Debug\ImageManipulation.dll
 obj\Debug\ImageManipulation.pdb
-bin\Debug\Brass.xml

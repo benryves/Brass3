@@ -12,7 +12,7 @@ namespace Core.Directives {
 	[Syntax(".define name(args) substitution")]
 	[Remarks("Macros perform 'stupid' text substitution. This can cause problems with operator order of precedence if you try and use macros as functions.")]
 	[CodeExample("A problem with text-replacement macros.", ".define product(x, y) x * y\r\n\r\n; This outputs six as expected.\r\n.echoln product(2, 3)\r\n\r\n; This outputs four, incorrectly!\r\n.echoln product(1 + 1, 1 + 1 + 1)\r\n\r\n; By adding extra parentheses, this 'works'.\r\n.define product2(x, y) (x) * (y)\r\n.echoln product2(1 + 1, 1 + 1 + 1)")]
-	[ParserBehaviourChange(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreStatementSeperator)]
+	[ParserBehaviourChange(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreStatementSeperator)]// | ParserBehaviourChangeAttribute.ParserBehaviourModifiers.SkipMacroPreprocessor)]
 	public class Define : IDirective {
 
 		public string[] Names {
