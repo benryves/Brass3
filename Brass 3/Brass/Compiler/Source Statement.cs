@@ -118,11 +118,17 @@ namespace Brass3 {
 			}
 
 			private bool compilerWasOnBefore;
+			/// <summary>
+			/// Gets whether the compiler was switched on before this statement was compiled.
+			/// </summary>
 			public bool CompilerWasOnBefore {
 				get { return this.compilerWasOnBefore; }
 			}
 
 			private bool compilerWasOnAfterwards;
+			/// <summary>
+			/// Gets whether the compiler was switched on after this statement was compiled.
+			/// </summary>
 			public bool CompilerWasOnAfterwards {
 				get { return this.compilerWasOnAfterwards; }
 			}
@@ -222,6 +228,13 @@ namespace Brass3 {
 
 			internal int index;
 
+			/// <summary>
+			/// Creates an instance of the <see cref="SourceStatement"/> class.
+			/// </summary>
+			/// <param name="compiler">The compiler that will be used to compile the statement.</param>
+			/// <param name="source">The <see cref="TokenisedSource"/> to create the statement from.</param>
+			/// <param name="filename">The name of the file containing the source.</param>
+			/// <param name="lineNumber">The line number that the statement starts on.</param>
 			public SourceStatement(Compiler compiler, TokenisedSource source, string filename, int lineNumber) {
 
 				this.compiler = compiler;
@@ -260,7 +273,9 @@ namespace Brass3 {
 
 			}
 
-
+			/// <summary>
+			/// Returns a formatted string representing the statement.
+			/// </summary>
 			public override string ToString() {
 				return this.Source.ToString();
 			}

@@ -20,6 +20,7 @@ namespace Brass3 {
 		/// Load plugins from an assembly.
 		/// </summary>
 		/// <param name="assemblyName">The filename of the assembly to load.</param>
+		/// <param name="exclusions">An array of strings corresponding to names of plugins that are not to be loaded.</param>
 		public void LoadPluginsFromAssembly(string assemblyName, string[] exclusions) {
 
 			List<string> ExclusionList = new List<string>(
@@ -131,14 +132,18 @@ namespace Brass3 {
 			return null;
 		}
 
-		public T GetPluginInstanceFromType<T>() where T : class {
+		/// <summary>
+		/// Get a plugin instance from a type.
+		/// </summary>
+		/// <typeparam name="T">The type of the plugin to retrieve.</typeparam>
+		public T GetPluginInstanceFromType<T>() where T : class, IPlugin {
 			return GetPluginInstanceFromType(typeof(T)) as T;
 		}
 
 		/// <summary>
 		/// Get a plugin instance from a GUID.
 		/// </summary>
-		/// <param name="type">The GUID of the plugin to retrieve.</param>
+		/// <param name="guid">The GUID of the plugin to retrieve.</param>
 		/// <returns>An instance of the plugin, or null if one wasn't found matching the type.</returns>
 		public IPlugin GetPluginInstanceFromGuid(Guid guid) {
 			foreach (IDirective Plugin in this.directives) if (Plugin.GetType().GUID == guid) return Plugin;

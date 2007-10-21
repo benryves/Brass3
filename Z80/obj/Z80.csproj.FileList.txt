@@ -7,3 +7,4 @@ obj\Debug\Z80.dll
 obj\Debug\Z80.pdb
 obj\Debug\Z80.Properties.Resources.resources
 obj\Debug\Z80.csproj.GenerateResource.Cache
+bin\Debug\Brass.xml

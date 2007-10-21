@@ -10,6 +10,9 @@ namespace Brass3.Plugins {
 	/// </summary>
 	public interface IPlugin {
 
+		/// <summary>
+		/// Gets the name of the plugin.
+		/// </summary>
 		string Name { get; }
 
 	}

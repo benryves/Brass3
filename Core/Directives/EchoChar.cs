@@ -25,7 +25,7 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass != AssemblyPass.Pass2) return;
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {
-				compiler.OutputString(((char)(int)source.EvaluateExpression(compiler, Expression).NumericValue).ToString());
+				compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, (((char)(int)source.EvaluateExpression(compiler, Expression).NumericValue).ToString())));
 			}
 		}
 

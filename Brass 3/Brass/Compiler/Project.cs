@@ -11,10 +11,17 @@ namespace Brass3 {
 	public partial class Compiler {
 
 		private Project project;
+		/// <summary>
+		/// Gets the currently loaded project file.
+		/// </summary>
 		public Project Project {
 			get { return this.project; }
 		}
 
+		/// <summary>
+		/// Load a project file into the compiler.
+		/// </summary>
+		/// <param name="p">The project to load.</param>
 		public void LoadProject(Project p) {
 
 			this.project = p;

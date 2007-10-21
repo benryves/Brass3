@@ -29,22 +29,40 @@ namespace Brass3 {
 			this.switchedOn = true;
 		}
 
+		/// <summary>
+		/// Returns a statement index that can be used to later jump back to the current statement.
+		/// </summary>
 		public int RememberPosition() {
 			return CurrentStatement - 1;
 
 		}
 
 		bool allowPositionToChange;
+		/// <summary>
+		/// Gets or sets a flag that specifies whether a plugin can change the current position.
+		/// </summary>
+		/// <remarks>Use this to disable jumping when executing your own code.</remarks>
 		public bool AllowPositionToChange {
 			get { return this.allowPositionToChange; }
 			set { this.allowPositionToChange = value; }		
 		}
 
 		bool JustRecalledPosition = false;
+		/// <summary>
+		/// Return to a position in the source file and recompile from that point.
+		/// </summary>
+		/// <param name="position">The position to jump back to, retrieved by <seealso cref="RememberPosition"/>.</param>
+		/// <remarks>The label assignment component of the statement jumped to will not be re-evaluated.</remarks>
 		public void RecallPosition(int position) {
 			if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled.");
 			RecallPosition(position, true);
 		}
+
+		/// <summary>
+		/// Return to a position in the source file and recompile from that point.
+		/// </summary>
+		/// <param name="position">The position to jump back to, retrieved by <seealso cref="RememberPosition"/>.</param>
+		/// <param name="doNotReparseLabel">Set to true to stop the label assignment component of the remembered statement from being re-evaluated.</param>
 		public void RecallPosition(int position, bool doNotReparseLabel) {
 			if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled.");
 			CurrentStatement = position;

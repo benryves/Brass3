@@ -5,3 +5,4 @@ obj\Debug\Variables.dll
 obj\Debug\Variables.pdb
 bin\Debug\Brass.exe
 bin\Debug\Brass.pdb
+bin\Debug\Brass.xml

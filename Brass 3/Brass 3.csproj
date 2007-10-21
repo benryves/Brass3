@@ -19,6 +19,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Brass.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,7 +45,6 @@
     <Compile Include="Brass\AliasedPluginCollection.cs" />
     <Compile Include="Brass\Compiler\Output Data Filtering.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Files.cs" />
-    <Compile Include="Brass\Compiler\Public Methods\Messages.cs" />
     <Compile Include="Brass\Compiler\Reset State.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Data Structures.cs" />
     <Compile Include="Brass\Compiler\Source Statement.cs" />

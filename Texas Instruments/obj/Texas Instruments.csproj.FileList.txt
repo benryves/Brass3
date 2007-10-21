@@ -7,3 +7,4 @@ bin\Debug\TiCalc.dll
 obj\Debug\TiCalc.dll
 obj\Debug\TexasInstruments.Properties.Resources.resources
 obj\Debug\Texas Instruments.csproj.GenerateResource.Cache
+bin\Debug\Brass.xml

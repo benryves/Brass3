@@ -250,7 +250,7 @@ namespace Brass3 {
 		}
 
 		/// <summary>
-		/// Gets the current source file.
+		/// Gets the name of the source file currently being compiled.
 		/// </summary>
 		public string CurrentFile {
 			get { 
@@ -263,6 +263,10 @@ namespace Brass3 {
 			}
 		}
 
+
+		/// <summary>
+		/// Gets the line number of the current statement being compiled, or zero.
+		/// </summary>
 		public int CurrentLineNumber {
 			get {
 				int StatementNumber = this.CurrentStatement - 1;

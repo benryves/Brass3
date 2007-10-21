@@ -151,7 +151,7 @@ namespace Brass3 {
 		/// <summary>
 		/// Creates a basic data structure declaration instance.
 		/// </summary>
-		/// <param name="name">The underlying data type.</param>
+		/// <param name="type">The underlying data type.</param>
 		public DataStructure(IDataStructure type)
 			: this(type.Names) {
 			this.fields.Add(new Field(type));
@@ -192,6 +192,9 @@ namespace Brass3 {
 
 			return Result.ToArray();
 		}
+		/// <summary>
+		/// Gets all of the fields underneath a particular data structure.
+		/// </summary>
 		public KeyValuePair<string, Field>[] GetAllFields() {
 			return this.GetAllFields(0, "");
 		}

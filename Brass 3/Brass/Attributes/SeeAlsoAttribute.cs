@@ -22,7 +22,7 @@ namespace Brass3.Attributes {
 		/// <summary>
 		/// Creates a new instance of the SyntaxAttribute class.
 		/// </summary>
-		/// <param name="syntax">The type to see also.</param>
+		/// <param name="typeToSeeAlso">The type to see also.</param>
 		public SeeAlsoAttribute(Type typeToSeeAlso) {
 			this.typeToSeeAlso = typeToSeeAlso;
 

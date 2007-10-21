@@ -14,6 +14,9 @@ namespace Brass3 {
 
 		#region Constructor
 
+		/// <summary>
+		/// Creates an instance of a compiler.
+		/// </summary>
 		public Compiler() {
 			this.assembler = null;
 			this.assemblers = new NamedPluginCollection<IAssembler>(this);
@@ -52,7 +55,7 @@ namespace Brass3 {
 		/// Resolve a filename.
 		/// </summary>
 		/// <param name="filename">The filename to try and resolve.</param>
-		/// <returns>The resolved filename, after checking various directories.</returns>
+		/// <returns>The resolved, full, filename, after checking various directories.</returns>
 		public string ResolveFilename(string filename) {
 			string CurrentFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.CurrentFile), filename));
 			if (File.Exists(CurrentFilename)) return CurrentFilename;

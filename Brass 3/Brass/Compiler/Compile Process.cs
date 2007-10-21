@@ -7,10 +7,24 @@ using System.IO;
 namespace Brass3 {
 	public partial class Compiler {
 
+		/// <summary>
+		/// Recompiles a range of statements.
+		/// </summary>
+		/// <param name="firstStatement">The index of the first statement to recompile.</param>
+		/// <param name="lastStatement">The index of the last statement to recompile.</param>
+		/// <returns>The result of the last statement's label assignment.</returns>
 		public Label RecompileRange(int firstStatement, int lastStatement) {
 			return this.RecompileRange(firstStatement, lastStatement, null);
 		}
 
+		/// <summary>
+		/// Recompiles a range of statements.
+		/// </summary>
+		/// <param name="firstStatement">The index of the first statement to recompile.</param>
+		/// <param name="lastStatement">The index of the last statement to recompile.</param>
+		/// <param name="tokenReplacements">An array of Token-&gt;TokenisedSource replacement macros that only apply for the duration of the recompilation stage.</param>
+		/// <remarks>Use the <paramref name="tokenReplacements"/> parameter to register temporary macro replacements (for example: when recompiling a range as a function call).</remarks>
+		/// <returns>The result of the last statement's label assignment.</returns>
 		public Label RecompileRange(int firstStatement, int lastStatement, KeyValuePair<TokenisedSource.Token, TokenisedSource>[] tokenReplacements) {
 			if (Math.Min(firstStatement, lastStatement) < 0 || Math.Max(firstStatement, lastStatement) >= this.statements.Count) {
 				throw new InvalidOperationException("Cannot recompile a source range that hasn't been parsed.");
@@ -56,24 +70,18 @@ namespace Brass3 {
 
 		#region Private Members
 
+		private int CurrentStatement = 0;
+
 		private List<SourceStatement> statements;
+		/// <summary>
+		/// Gets an array of all of the parsed assembly source statements.
+		/// </summary>
+		/// <remarks>During the first pass this will still be in a process of being populated, but it will remain constant during the second pass.</remarks>
 		public SourceStatement[] Statements {
 			get { return this.statements.ToArray(); }
 		}
 
-		public bool CanAppendStatement {
-			get {
-				return this.CurrentPass == AssemblyPass.Pass1 && this.CurrentStatement == this.statements.Count - 1;
-			}
-		}
-
-		public void AppendStatement(SourceStatement statement) {
-			if (this.CurrentPass != AssemblyPass.Pass1) throw new InvalidOperationException("Source statements may only be appended during the first pass.");
-			if (!CanAppendStatement) throw new InvalidOperationException("Source statements may only be appended to the end of a sequence of statements.");
-			this.statements.Add(statement);
-		}
-
-		private int CurrentStatement = 0;
+		
 
 		private int compiledStatements;
 		/// <summary>
@@ -85,6 +93,12 @@ namespace Brass3 {
 
 		private bool IsCompiling = false;
 
+		/// <summary>
+		/// Defines a macro replacement delegate.
+		/// </summary>
+		/// <param name="compiler">The compiler that the macro is being run in.</param>
+		/// <param name="source">The assembly source that needs to have the macro run on it.</param>
+		/// <param name="index">The index of the matched token that needs to be replaced.</param>
 		public delegate void PreprocessMacro(Compiler compiler, ref TokenisedSource source, int index);
 
 		internal Dictionary<string, PreprocessMacro> MacroLookup;
@@ -93,21 +107,24 @@ namespace Brass3 {
 
 		#region Public Methods
 
+		/// <summary>
+		/// Register a text-replacement macro.
+		/// </summary>
+		/// <param name="name">The text string to run the macro on.</param>
+		/// <param name="function">The macro replacement to perform.</param>
 		public void RegisterMacro(string name, PreprocessMacro function) {
 			string Name = name.ToLowerInvariant();
 			if (this.MacroLookup.ContainsKey(Name)) throw new InvalidOperationException("Macro " + name + " already defined.");
 			this.MacroLookup.Add(Name, function);
 		}
 
+		/// <summary>
+		/// Remove a macro from the list of available macros.
+		/// </summary>
+		/// <param name="name">The name of the macro to remove.</param>
 		public void UnregisterMacro(string name) {
 			this.MacroLookup.Remove(name.ToLowerInvariant());
 		}
-
-		private bool FileStopPending = false;
-		public void StopAssemblingCurrentFile() {
-			FileStopPending = true;
-		}
-
 
 
 		#endregion
@@ -188,18 +205,14 @@ namespace Brass3 {
 		/// <summary>
 		/// Load, parse, and compile a file.
 		/// </summary>
-		/// <param name="file">The name of the file to compile.</param>
+		/// <param name="filename">The name of the file to compile.</param>
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileFile(string filename) {
-
-			bool RaisedEnteredFileEvent = false;
-
-			this.FileStopPending = false;
 
 			if (this.currentPass == AssemblyPass.Pass2) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");
 			using (AssemblyReader AR = new AssemblyReader(this, new MemoryStream(Encoding.Unicode.GetBytes(File.ReadAllText(filename))))) {
 
-				while ((CurrentStatement < this.statements.Count || AR.HasMoreData) && !FileStopPending) {
+				while (CurrentStatement < this.statements.Count || AR.HasMoreData) {
 
 					// Source to compile:
 					SourceStatement PAS;
@@ -226,12 +239,6 @@ namespace Brass3 {
 						PAS = statements[CurrentStatement];
 					}
 					++CurrentStatement;
-
-					// Raise event to say that "we've entered the source file!"
-					if (!RaisedEnteredFileEvent) {
-						this.OnEnteringSourceFile(new EventArgs());
-						RaisedEnteredFileEvent = true;
-					}
 
 					PAS.Compile();
 				}

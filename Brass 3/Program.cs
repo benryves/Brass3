@@ -14,7 +14,7 @@ namespace Brass3 {
 			C.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { DisplayError(C, e, "Error", ConsoleColor.Red); };
 			C.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { DisplayError(C, e, "Warning", ConsoleColor.Yellow); };
 
-			C.InformationRaised += delegate(object sender, Compiler.NotificationEventArgs e) {
+			C.MessageRaised += delegate(object sender, Compiler.NotificationEventArgs e) {
 				Console.Write(e.Message);
 			};
 

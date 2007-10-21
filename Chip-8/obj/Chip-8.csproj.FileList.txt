@@ -5,3 +5,4 @@ bin\Debug\Chip8.dll
 bin\Debug\Chip8.pdb
 obj\Debug\Chip8.dll
 obj\Debug\Chip8.pdb
+bin\Debug\Brass.xml

@@ -3,3 +3,4 @@ bin\Debug\Brass.exe
 bin\Debug\Brass.pdb
 obj\Debug\Brass.exe
 obj\Debug\Brass.pdb
+bin\Debug\Brass.XML

@@ -7,3 +7,4 @@ bin\Debug\Brass.exe
 bin\Debug\Brass.pdb
 obj\Debug\Core.csproj.GenerateResource.Cache
 obj\Debug\Core.Properties.Resources.resources
+bin\Debug\Brass.xml

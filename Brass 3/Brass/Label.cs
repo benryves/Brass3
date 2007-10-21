@@ -57,6 +57,9 @@ namespace Brass3 {
 		}
 
 		private IDataStructure type = null;
+		/// <summary>
+		/// Gets or sets the underlying <see cref="IDataStructure"/> type defined by the label.
+		/// </summary>
 		public IDataStructure Type {
 			get { return this.type; }
 			set { this.type = value; }
@@ -202,10 +205,12 @@ namespace Brass3 {
 		/// <summary>
 		/// Creates a valued instance of a label.
 		/// </summary>
-		/// <param name="name">The name of the label.</param>
+		/// <param name="collection">The <see cref="LabelCollection"/> that will contain the label.</param>
+		/// <param name="token">The name of the label.</param>
 		/// <param name="isConstant">True if this label is a constant.</param>
 		/// <param name="value">The value of the label.</param>
 		/// <param name="page">The page the label is on.</param>
+		/// <param name="type">The <see cref="IDataStructure"/> type of the label.</param>
 		public Label(LabelCollection collection, TokenisedSource.Token token, bool isConstant, double value, int page, IDataStructure type) {
 			this.exported = collection.ExportLabels;
 			this.created = true;
@@ -224,7 +229,8 @@ namespace Brass3 {
 		/// <summary>
 		/// Creates an instance of a label.
 		/// </summary>
-		/// <param name="name">The name of the label.</param>
+		/// <param name="collection">The <see cref="LabelCollection"/> that will contain the label.</param>
+		/// <param name="token">The name of the label.</param>
 		/// <param name="isConstant">True if this label is a constant.</param>
 		public Label(LabelCollection collection, TokenisedSource.Token token, bool isConstant) {
 			this.exported = collection.ExportLabels;
