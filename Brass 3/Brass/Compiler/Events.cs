@@ -98,6 +98,7 @@ namespace Brass3 {
 			/// <param name="filename">The name of the filename that the notification refers to.</param>
 			/// <param name="linenumber">The line number that the notification refers to.</param>
 			public NotificationEventArgs(Compiler compiler, string message, string filename, int linenumber) {
+				this.compiler = compiler;
 				this.message = message;
 				this.filename = filename;
 				this.linenumber = linenumber;
