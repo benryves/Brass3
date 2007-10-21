@@ -159,6 +159,10 @@ namespace Brass3 {
 			throw new CompilerExpection(tokens[startBraceIndex], "Matching closing bracket not found.");
 		}
 
+		/// <summary>
+		/// Gets an array of token types and strings.
+		/// </summary>
+		/// <remarks>Use this to group like tokens together for optimal output in listing files.</remarks>
 		public KeyValuePair<Token.TokenTypes, string>[] GetTypesAndStrings() {
 			List<KeyValuePair<Token.TokenTypes, string>> Result = new List<KeyValuePair<Token.TokenTypes, string>>();
 
@@ -169,8 +173,8 @@ namespace Brass3 {
 
 
 			LinkedListNode<TokenisedSource.Token> MergerPointer = MergableTokens.First;
-			while (MergerPointer.Next != null) {
-				if (false && MergerPointer.Next.Value.Type == MergerPointer.Value.Type) {
+			/*while (MergerPointer.Next != null) {
+				if (MergerPointer.Next.Value.Type == MergerPointer.Value.Type) {
 					TokenisedSource.Token MergedToken = MergerPointer.Value.Clone(MergerPointer.Value.Data + MergerPointer.Next.Value.Data) as TokenisedSource.Token;
 					MergerPointer = MergerPointer.Next;
 					MergableTokens.Remove(MergerPointer.Previous); // Remove old.
@@ -179,7 +183,7 @@ namespace Brass3 {
 				} else {
 					MergerPointer = MergerPointer.Next;
 				}
-			}
+			}*/
 
 			foreach (TokenisedSource.Token T in MergableTokens) {
 				Result.Add(new KeyValuePair<Token.TokenTypes, string>(T.Type, T.Data));				
@@ -190,6 +194,9 @@ namespace Brass3 {
 		#endregion
 
 		
+		/// <summary>
+		/// Clones the source and all of its tokens.
+		/// </summary>
 		public object Clone() {
 			Token[] DuplicatedTokens = new Token[this.Tokens.Length];
 			for (int i = 0; i < this.tokens.Length; ++i) DuplicatedTokens[i] = (Token)this.Tokens[i].Clone();
