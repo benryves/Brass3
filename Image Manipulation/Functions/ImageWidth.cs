@@ -14,9 +14,6 @@ namespace ImageManipulation {
 	[SeeAlso(typeof(ImgHeight))]
 	public class ImgWidth : IFunction {
 
-		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "imgwidth" }; } }
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			return new Label(compiler.Labels,
 				((ImgOpen)compiler.GetPluginInstanceFromType(typeof(ImgOpen))).GetImage(

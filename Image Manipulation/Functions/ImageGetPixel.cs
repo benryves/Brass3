@@ -16,9 +16,6 @@ namespace ImageManipulation {
 	[Category("Image Manipulation")]
 	public class ImgGetPixel : IFunction {
 
-		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "imggetpixel" }; } }
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 
 			int[] Args = source.GetCommaDelimitedArguments(0, 4);

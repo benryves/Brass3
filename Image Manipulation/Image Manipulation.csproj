@@ -36,6 +36,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions\ImageCreate.cs" />
+    <Compile Include="Functions\ImageSave.cs" />
+    <Compile Include="Functions\ImageSetPixel.cs" />
     <Compile Include="Functions\ImageGetPixel.cs" />
     <Compile Include="Functions\ImageHeight.cs" />
     <Compile Include="Functions\ImageWidth.cs" />

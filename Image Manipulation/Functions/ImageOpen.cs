@@ -22,8 +22,6 @@ namespace ImageManipulation {
 			throw new ArgumentException("Invalid handle '" + handle + "'.");
 		}
 
-		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "imgopen" }; } }
 
 		private double CurrentHandle = 0;
 
@@ -39,6 +37,12 @@ namespace ImageManipulation {
 			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(compiler, source.GetCommaDelimitedArguments(0, 1)[0], false));
 			double ImageHandle = ++CurrentHandle;
 			this.OpenedImages.Add(ImageHandle, new ImageManipulator(Filename));
+			return new Label(compiler.Labels, ImageHandle);
+		}
+
+		public Label Create(Compiler compiler, int width, int height) {
+			double ImageHandle = ++CurrentHandle;
+			this.OpenedImages.Add(ImageHandle, new ImageManipulator(width, height));
 			return new Label(compiler.Labels, ImageHandle);
 		}
 
