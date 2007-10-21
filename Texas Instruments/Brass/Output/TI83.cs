@@ -20,10 +20,6 @@ namespace TexasInstruments.Brass.Output {
 	[SeeAlso(typeof(Output.TI8X)), SeeAlso(typeof(Output.TI82)), SeeAlso(typeof(Output.TI73)), SeeAlso(typeof(Output.TI86)), SeeAlso(typeof(Output.TI85))]
 	public class TI83 : TI8X {
 
-		public override string Name {
-			get { return "ti83"; }
-		}
-
 		public override string DefaultExtension {
 			get { return "83p"; }
 		}

@@ -9,14 +9,8 @@ using System.ComponentModel;
 namespace Core.Directives {
 
 	[Syntax(".undefine name")]
+	[PluginName("undef")]
 	public class Undefine : IDirective {
-
-		public string[] Names {
-			get { return new string[] { "undef" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 

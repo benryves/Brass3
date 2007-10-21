@@ -11,13 +11,8 @@ namespace Core.Directives {
 	[Syntax(".export\r\n[labels]\r\n.endexport")]
 	[Syntax(".export label [, label [, ... ]]")]
 	[Description("Disables or enables automatic exporting of label names.")]
+	[PluginName("export"), PluginName("endexport")]
 	public class Export : IDirective {
-
-		public string[] Names {
-			get { return new string[] { "export", "endexport" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 

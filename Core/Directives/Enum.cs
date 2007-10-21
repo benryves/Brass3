@@ -17,13 +17,6 @@ namespace Core.Directives {
 	[Warning("You can manually assign two labels with the same value. This is intended behaviour.")]
 	public class Enum : IDirective {
 
-		public string[] Names {
-			get { return new string[] { "enum" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			int[] Args = source.GetCommaDelimitedArguments(index + 2);
 

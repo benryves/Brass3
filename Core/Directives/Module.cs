@@ -15,13 +15,8 @@ namespace Core.Directives {
 	[Remarks("Modules can be used to group labels into logical blocks.")]
 	[Category("Labels")]
 	[Warning("Unlike TASM and previous versions of Brass, all labels are automatically local in scope.")]
+	[PluginName("module"), PluginName("endmodule")]
 	public class Module : IDirective {
-
-
-		public string[] Names {
-			get { return new string[] { "module", "endmodule" }; }
-		}
-		public string Name { get { return Names[0]; } }
 
 		private Stack<string> ModuleNames;
 

@@ -8,20 +8,20 @@ using Brass3.Attributes;
 using System.ComponentModel;
 
 namespace ImageManipulation {
-	[Syntax("imgwidth(handle)")]
-	[Description("Gets the width of an image from its handle.")]
+	[Syntax("imgheight(handle)")]
+	[Description("Gets the height of an image from its handle.")]
 	[Category("Image Manipulation")]
-	[SeeAlso(typeof(ImageHeight))]
-	public class ImageWidth : IFunction {
+	[SeeAlso(typeof(ImgWidth))]
+	public class ImgHeight : IFunction {
 
 		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "imgwidth" }; } }
+		public string[] Names { get { return new string[] { "imgheight" }; } }
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			return new Label(compiler.Labels,
-				((ImageOpen)compiler.GetPluginInstanceFromType(typeof(ImageOpen))).GetImage(
-					source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(0, 1)[0]).NumericValue
-				).Width
+				((ImgOpen)compiler.GetPluginInstanceFromType(typeof(ImgOpen))).GetImage(
+					source.EvaluateExpression(compiler,source.GetCommaDelimitedArguments(0, 1)[0]).NumericValue
+				).Height
 			);
 		}		
 

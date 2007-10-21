@@ -19,6 +19,7 @@ namespace Core.Directives {
 	[CodeExample("Passing a string via the <c>macro</c> keyword.", ".function repeatstring(macro str, repeat)\r\n\t.for i = 0, i < repeat, ++i\r\n\t\t.db str\r\n\t.loop\r\n.endfunction\r\n\r\nrepeatstring(\"Hello\", 3)")]
 	[CodeExample("Passing by reference.", ".function increment(macro label)\r\n\t++label\r\n.endfunction\r\n\r\nx = 1\r\n.echoln \"x=\", x\r\n\r\nincrement(x)\r\n.echoln \"x=\", x")]
 	[Category("Functions")]
+	[PluginName("function"), PluginName("endfunction")]
 	public class Function : IDirective {
 
 		internal class FunctionDeclaration {
@@ -34,12 +35,6 @@ namespace Core.Directives {
 		}
 
 		internal Dictionary<string, List<FunctionDeclaration>> UserDefinedFunctions;
-
-		public string[] Names {
-			get { return new string[] { "function", "endfunction" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
 
 		public Function(Compiler c) {
 			this.UserDefinedFunctions = new Dictionary<string, List<FunctionDeclaration>>();

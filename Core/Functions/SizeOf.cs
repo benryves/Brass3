@@ -11,14 +11,6 @@ namespace Core.Functions {
 
 	public class SizeOf : IFunction {
 
-		public string[] Names {
-			get { return new string[] { "sizeof" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int Arg = source.GetCommaDelimitedArguments(0, 1)[0];
 			TokenisedSource NamedArgs = source.GetExpressionTokens(Arg);

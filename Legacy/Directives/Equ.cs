@@ -14,10 +14,6 @@ namespace Legacy.Directives {
 	[Remarks("<c>label = value</c> is functionally equivalent to <c>label .equ value</c>. It is recommended that you do not use this directive and use the assignment operator instead.")]
 	[Category("Labels")]
 	public class Equ : IDirective {
-
-		public string[] Names { get { return new string[] { "equ" }; } }
-		public string Name { get { return this.Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			if (compiler.LabelEvaluationResult == null) throw new CompilerExpection(source, "No label in the statement to assign to.");

@@ -14,14 +14,6 @@ namespace Core.Directives {
 	[SeeAlso(typeof(Echo))]
 	public class EchoChar : IDirective {
 
-		public string[] Names {
-			get {
-				return new string[] { "echochar" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass != AssemblyPass.Pass2) return;
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {

@@ -15,9 +15,6 @@ namespace Core.Directives {
 	[CodeExample(".include \"graphics.asm\"")]
 	public class Include : IDirective {
 
-		public string[] Names { get { return new string[] { "include" }; } }
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			if (compiler.CurrentPass == AssemblyPass.Pass2) return; // ONLY include extra source files during pass 1.

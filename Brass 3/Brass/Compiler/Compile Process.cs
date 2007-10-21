@@ -93,16 +93,6 @@ namespace Brass3 {
 
 		private bool IsCompiling = false;
 
-		/// <summary>
-		/// Defines a macro replacement delegate.
-		/// </summary>
-		/// <param name="compiler">The compiler that the macro is being run in.</param>
-		/// <param name="source">The assembly source that needs to have the macro run on it.</param>
-		/// <param name="index">The index of the matched token that needs to be replaced.</param>
-		public delegate void PreprocessMacro(Compiler compiler, ref TokenisedSource source, int index);
-
-		internal Dictionary<string, PreprocessMacro> MacroLookup;
-
 		#endregion
 
 		#region Public Methods
@@ -145,7 +135,7 @@ namespace Brass3 {
 					if (this.assemblers.Count == 1) {
 
 						this.assembler = this.assemblers.GetEnumerator().Current;
-						this.OnWarningRaised(new NotificationEventArgs(this, "Assembler not explicitly set, so assuming " + this.assembler.Name + "."));
+						this.OnWarningRaised(new NotificationEventArgs(this, "Assembler not explicitly set, so assuming " + Compiler.GetPluginName(this.assembler) + "."));
 					} else {
 						this.OnErrorRaised(new NotificationEventArgs(this, "No assembler set."));
 						return false;

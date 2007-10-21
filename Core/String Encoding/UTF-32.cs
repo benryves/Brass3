@@ -59,9 +59,6 @@ namespace Core.StringEncoding {
 			return (char)value;
 		}
 
-		public string Name {
-			get { return "utf32"; }
-		}
 		public UTF32(Compiler c) {
 			this.Compiler = c;
 		}

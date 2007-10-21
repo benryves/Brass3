@@ -14,7 +14,7 @@ namespace Legacy.Latenite {
 	[Category("Latenite 1")]
 	[Description("Writes an XML error log for Latenite 1.")]
 	[Remarks("Each error is output as an XML element (<c>error</c>, <c>warning</c> or <c>message</c>) with a text description in a <c>&lt;![CDATA[...]]&gt;</c> block.\r\nEach XML element will have, if available, a <c>file</c> and <c>line</c> attribute corresponding to the file name and line number that the error was generated on.")]
-	public class LateniteErrors : IListingWriter {
+	public class Latenite1Errors : IListingWriter {
 
 		public void WriteListing(Compiler compiler, Stream stream) {
 			XmlWriter ErrorFile = XmlWriter.Create(stream);
@@ -49,9 +49,6 @@ namespace Legacy.Latenite {
 			ErrorFile.Flush();
 		}
 
-		public string Name {
-			get { return "latenite1errors"; }
-		}
 
 	}
 }

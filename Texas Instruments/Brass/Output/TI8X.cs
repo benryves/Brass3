@@ -22,10 +22,6 @@ namespace TexasInstruments.Brass.Output {
 
 		internal const string Remarks = "Data is output sequentially in order of the output counter. Gaps are not inserted between non-consecutive addresses; output modifiers that change the size of the output data are fully supported.\r\nA new program variable is created within the output file for each page - use this to create groups.";
 
-		public virtual string Name {
-			get { return "ti8x"; }
-		}
-
 		public virtual string DefaultExtension {
 			get { return "8xp"; }
 		}

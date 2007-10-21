@@ -11,18 +11,8 @@ namespace Core.Functions {
 
 	public class IsString : IFunction {
 
-		public string[] Names {
-			get { return new string[] { "isstring" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			return new Label(compiler.Labels, source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(0, 1)[0]).IsString ? 1 : 0);
-				
-			
+			return new Label(compiler.Labels, source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(0, 1)[0]).IsString ? 1 : 0);		
 		}
 	}
 }

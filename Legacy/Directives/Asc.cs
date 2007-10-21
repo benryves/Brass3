@@ -17,9 +17,6 @@ namespace Legacy.Directives {
 	[SeeAlso(typeof(Core.Directives.DataDeclaration))]
 	public class Asc : IDirective {
 
-		public string[] Names { get { return new string[] { "asc" }; } }
-		public string Name { get { return this.Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			throw new InvalidOperationException();
 		}

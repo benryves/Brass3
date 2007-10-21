@@ -75,7 +75,7 @@ namespace Brass3 {
 			/// Returns a string representation of the field.
 			/// </summary>
 			public override string ToString() {
-				return string.Format("{{offset={0}, type={1}, size={2}}}", this.Offset, this.DataType.Name, this.Size);
+				return string.Format("{{offset={0}, type={1}, size={2}}}", this.Offset, Compiler.GetPluginName(this.DataType), this.Size);
 			}
 
 			/// <summary>
@@ -153,7 +153,7 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="type">The underlying data type.</param>
 		public DataStructure(IDataStructure type)
-			: this(type.Names) {
+			: this(Compiler.GetPluginNames(type)) {
 			this.fields.Add(new Field(type));
 		}
 

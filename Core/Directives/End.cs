@@ -13,14 +13,6 @@ namespace Core.Directives {
 	[Category("Flow Control")]
 	public class End : IDirective {
 
-		public string[] Names {
-			get {
-				return new string[] { "end" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			source.GetCommaDelimitedArguments(index + 1, 0);
 			//compiler.StopAssemblingCurrentFile();

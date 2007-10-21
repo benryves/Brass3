@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-
 namespace Brass3.Plugins {
 
 	/// <summary>
@@ -10,12 +5,5 @@ namespace Brass3.Plugins {
 	/// </summary>
 	public interface IPlugin {
 
-		/// <summary>
-		/// Gets the name of the plugin.
-		/// </summary>
-		string Name { get; }
-
 	}
-
-
 }

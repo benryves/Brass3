@@ -14,9 +14,6 @@ namespace Variables {
 	[Category("Variables")]
 	public class Var : IDirective {
 
-		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "var" }; } }
-
 		private List<VariableToAllocate> ToAllocate;
 		private List<string> AlreadyAllocated;
 		internal List<VariableAllocationRegion> VariableLocations;

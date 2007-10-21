@@ -14,10 +14,7 @@ namespace Core.Functions.FileOperations {
 	[Description("Returns the size of a file.")]
 	[CodeExample("; fsize() on a filename:\r\n.echoln fsize(\"file.ext\")\r\n\r\n; fsize() on an already-opened file:\r\nf = fopen(\"file.ext\")\r\n.echoln fsize(f)\r\nfclose(f)")]
 	[Category("File Operations")]
-	public class FileSize : IFunction {
-
-		public string[] Names { get { return new string[] { "fsize" }; } }
-		public string Name { get { return this.Names[0]; } }
+	public class FSize : IFunction {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 
@@ -27,7 +24,7 @@ namespace Core.Functions.FileOperations {
 					return new Label(compiler.Labels, S.Length);
 				}
 			} else {
-				FileStream S = FileOpen.GetFilestreamFromHandle(compiler, source);
+				FileStream S = FOpen.GetFilestreamFromHandle(compiler, source);
 				return new Label(compiler.Labels, S.Length);
 			}
 			

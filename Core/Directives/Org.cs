@@ -14,13 +14,6 @@ namespace Core.Directives {
 	[CodeExample(".org $9D93")]
 	public class Org : IDirective {
 
-		public string[] Names {
-			get { return new string[] { "org" }; }
-		}
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int[] args = source.GetCommaDelimitedArguments(index + 1, 1);

@@ -16,7 +16,7 @@ namespace SegaMasterSystem.Directives {
 	[SeeAlso(typeof(SegaRegion))]
 	[SeeAlso(typeof(SegaProduct))]
 	[SeeAlso(typeof(Output.SmsRom))]
-	[SeeAlso(typeof(Output.GameGearRom))]
+	[SeeAlso(typeof(Output.GGRom))]
 	public class SegaVersion : IDirective {
 
 		private int version = 0;
@@ -38,9 +38,6 @@ namespace SegaMasterSystem.Directives {
 				}
 			};			
 		}
-
-		public string Name { get { return this.Names[0]; } }
-		public string[] Names { get { return new string[] { "segaversion" }; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass == AssemblyPass.Pass2) {

@@ -13,16 +13,7 @@ namespace Core.Functions.Maths {
 	[Description("Seeds the random number generator.")]
 	[Category("Maths")]
 	[SeeAlso(typeof(Rand))]
-	public class SeedRand : IFunction {
-
-		public string[] Names {
-			get { return new string[] { "srand" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
+	public class SRand : IFunction {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 
@@ -37,7 +28,6 @@ namespace Core.Functions.Maths {
 
 			return new Label(compiler.Labels, Seed);
 		}
-
 
 	}
 }

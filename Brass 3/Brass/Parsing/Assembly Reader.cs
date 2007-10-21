@@ -49,6 +49,8 @@ namespace Brass3 {
 				// Rip some stuff out of the source file:
 				TokenisedSource FullSource = new TokenisedSource(this.Compiler, this.BaseStream, ref this.lineNumber);
 
+				TokenisedSource[] EnMacroed = this.Compiler.PreprocessMacros(FullSource);
+
 				// Macro preprocess:
 				bool AffectedByMacro = false;
 				for (int i = 0; i < FullSource.Tokens.Length; ++i) {

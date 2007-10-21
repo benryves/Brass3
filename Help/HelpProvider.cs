@@ -177,9 +177,9 @@ namespace Help {
 					}
 				}
 
-				SeeAlsoPlugins.Sort(delegate(IPlugin a, IPlugin b) { return a.Name.CompareTo(b.Name); });
+				SeeAlsoPlugins.Sort(delegate(IPlugin a, IPlugin b) { return Compiler.GetPluginName(a).CompareTo(Compiler.GetPluginName(b)); });
 				foreach (IPlugin P in SeeAlsoPlugins) {
-					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(P.Name) + "</a></li>");
+					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(Compiler.GetPluginName(P)) + "</a></li>");
 				}
 				
 
@@ -252,12 +252,8 @@ namespace Help {
 
 			List<Type> ImplementedInterfaces = new List<Type>(T.GetInterfaces());
 
-			if (Plugin != null) Title = Plugin.Name;
+			if (Plugin != null) Title = string.Join("/", Compiler.GetPluginNames(Plugin));
 
-			if (ImplementedInterfaces.Contains(typeof(IAliasedPlugin))) {
-				IAliasedPlugin Directive = plugin as IAliasedPlugin;
-				Title = string.Join("/", Directive.Names);
-			}
 
 			string CollectionName = PluginAssembly.GetName().Name;
 			object[] CollectionTitle = PluginAssembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
@@ -284,14 +280,14 @@ namespace Help {
 					Matches.Add(Plugin);
 				}
 			}
-			Matches.Sort(delegate(T a, T b) { return a.Name.CompareTo(b.Name); });
+			Matches.Sort(delegate(T a, T b) { return Compiler.GetPluginName(a).CompareTo(Compiler.GetPluginName(b)); });
 
 			if (Matches.Count > 0) {
 				Result.Append("<h2>" + name + "</h2>");
 				Result.Append("<div><table>");
 				foreach (T Plugin in Matches) {
 					Result.Append("<tr>");
-					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Plugin.Name)) + "</a></th><td>");
+					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Compiler.GetPluginName(Plugin))) + "</a></th><td>");
 					
 					string Description = "";
 					object[] DescriptionAttributes = Plugin.GetType().GetCustomAttributes(typeof(DescriptionAttribute), false);

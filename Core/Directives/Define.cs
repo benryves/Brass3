@@ -15,12 +15,6 @@ namespace Core.Directives {
 	[ParserBehaviourChange(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreStatementSeperator)]// | ParserBehaviourChangeAttribute.ParserBehaviourModifiers.SkipMacroPreprocessor)]
 	public class Define : IDirective {
 
-		public string[] Names {
-			get { return new string[] { "define" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		private static TokenisedSource GetArguments(TokenisedSource s, int i) {
 			if (s.Tokens[i + 1].Data != "(") throw new CompilerExpection(s, "Macro expects parameters.");
 

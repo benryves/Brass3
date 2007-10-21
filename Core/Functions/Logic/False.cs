@@ -18,22 +18,11 @@ namespace Core.Functions.Logic {
 	[Category("Logic")]
 	[SeeAlso(typeof(True))]
 	public class False : IFunction {
-		#region IFunction Members
-
-		public string[] Names {
-			get { return new string[] { "false" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
+	
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 0, 1);
 			return new Label(compiler.Labels, Args.Length == 0 ? 0 : ((source.EvaluateExpression(compiler, Args[0]).NumericValue != 0) ? 0 : 1));
 		}
-
-		#endregion
 
 	}
 }

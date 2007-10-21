@@ -11,9 +11,8 @@ using Brass3.Plugins;
 namespace Core.Listing {
 
 	[Category("Debugging")]
+	[PluginName("no$gmb")]
 	public class NoGmb : IListingWriter {
-
-		public string Name { get { return "no$gmb"; } }
 
 		public void WriteListing(Compiler compiler, Stream stream) {
 			TextWriter ListWriter = new StreamWriter(stream, Encoding.ASCII);

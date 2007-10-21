@@ -7,7 +7,7 @@ namespace Brass3.Plugins {
 	/// <summary>
 	/// Defines the interface that directives need to implement.
 	/// </summary>
-	public interface IDirective : IPlugin, IAliasedPlugin {
+	public interface IDirective : IPlugin {
 
 
 		/// <summary>

@@ -13,15 +13,6 @@ namespace Core.Functions.Maths {
 	[Remarks("If the index value is negative then the value from the end of the list is chosen instead.")]
 	[CodeExample("; Define some prime numbers:\r\n#define primes 2, 3, 5, 7, 11, 13\r\n\r\n; Iterate over the list from start to end:\r\n.echoln \"Forwards:\"\r\n#for i is +1 to +6\r\n.echoln choose(i, primes)\r\n#loop\r\n\r\n; Iterate over the list backwards:\r\n.echoln \"Backwards:\"\r\n#for i is -1 to -6\r\n.echoln choose(i, primes)\r\n#loop")]
 	public class Choose : IFunction {
-
-		public string[] Names {
-			get { return new string[] { "choose" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1, int.MaxValue);
 			int Index = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
@@ -29,6 +20,5 @@ namespace Core.Functions.Maths {
 			if (AdjustedIndex < 1 || AdjustedIndex >= Args.Length) throw new CompilerExpection(source, "Choice " + Index + " not available.");
 			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Args[AdjustedIndex]).NumericValue);
 		}
-
 	}
 }

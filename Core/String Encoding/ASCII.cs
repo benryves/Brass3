@@ -15,10 +15,6 @@ namespace Core.StringEncoding {
 		public byte[] GetData(string toEncode) {
 			return Encoding.ASCII.GetBytes(toEncode);
 		}
-		public string Name {
-			get { return "ascii"; }
-		}
-
 		public string GetString(byte[] data) {
 			return Encoding.ASCII.GetString(data);
 		}

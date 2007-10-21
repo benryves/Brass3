@@ -14,10 +14,9 @@ namespace Core.Functions.StringManipulation {
 	[Syntax("strlower(string)")]
 	[Remarks("The invariant culture is used.")]
 	[Category("String Manipulation")]
+	[PluginName("strupper"), PluginName("strlower")]
 	public class StrUpperLower : IFunction {
 
-		public string[] Names { get { return new string[] { "strupper", "strlower" }; } }
-		public string Name { get { return Names[0]; } }
 		
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			string Arg = source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String })[0] as string;

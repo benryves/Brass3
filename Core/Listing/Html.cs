@@ -12,8 +12,6 @@ namespace Core.Listing {
 
 	public class Html : IListingWriter {
 
-		public string Name { get { return "html"; } }
-
 		public void WriteListing(Compiler compiler, Stream stream) {
 			TextWriter ListWriter = new StreamWriter(stream, Encoding.UTF8);
 

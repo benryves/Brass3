@@ -15,18 +15,10 @@ namespace Core.Functions.Maths {
 	[Description("Returns a random number between range specified.")]
 	[Remarks("<c>rand()</c> returns a floating-point value between 0 and 1; <c>rand(max)</c> and <c>rand(min, max)</c> both return integral values.\r\nThe random number generator is seeded to 0 at the start of each pass.")]
 	[Category("Maths")]
-	[SeeAlso(typeof(SeedRand))]
+	[SeeAlso(typeof(SRand))]
 	public class Rand : IFunction {
 		
 		private Random RandomNumberSource;
-
-		public string[] Names {
-			get { return new string[] { "rand" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
 
 		public void Seed(int seed) {
 			this.RandomNumberSource = new Random(seed);

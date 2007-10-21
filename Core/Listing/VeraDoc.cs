@@ -133,8 +133,6 @@ console.putchar:
 
 	public class VeraDoc : IListingWriter {
 
-		public string Name { get { return "veradoc"; } }
-
 		#region Types
 
 		/// <summary>

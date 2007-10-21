@@ -15,22 +15,9 @@ namespace Core.Functions.Maths {
 	[SeeAlso(typeof(Truncate))]
 	[SeeAlso(typeof(Ceiling))]
 	public class Floor : IFunction {
-		#region IFunction Members
-
-		public string[] Names {
-			get { return new string[] { "floor" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1);
 			return new Label(compiler.Labels, Math.Floor(source.EvaluateExpression(compiler, Args[0]).NumericValue));
 		}
-
-		#endregion
-
 	}
 }

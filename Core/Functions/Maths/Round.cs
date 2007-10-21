@@ -18,16 +18,6 @@ namespace Core.Functions.Maths {
 	[SeeAlso(typeof(Floor))]
 	[SeeAlso(typeof(Ceiling))]
 	public class Round : IFunction {
-		#region IFunction Members
-
-		public string[] Names {
-			get { return new string[] { "round" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1, 2);
 			return new Label(compiler.Labels, Math.Round(
@@ -35,8 +25,5 @@ namespace Core.Functions.Maths {
 				Args.Length == 1 ? 0 : (int)source.EvaluateExpression(compiler, Args[1]).NumericValue
 			));
 		}
-
-		#endregion
-
 	}
 }

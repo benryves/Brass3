@@ -14,7 +14,7 @@ namespace SegaMasterSystem.Output {
 	[Category("Sega 8-bit")]
 	[SeeAlso(typeof(SmsRom))]
 	[SeeAlso(typeof(Core.Output.RawPages))]
-	public class GameGearRom : SmsRom {
+	public class GGRom : SmsRom {
 
 		protected override bool IsGameGear {
 			get { return true; }
@@ -24,11 +24,7 @@ namespace SegaMasterSystem.Output {
 			get { return "gg"; }
 		}
 
-		public override string Name {
-			get { return "ggrom"; }
-		}
-
-		public GameGearRom(Compiler c)
+		public GGRom(Compiler c)
 			: base(c) {
 		}
 

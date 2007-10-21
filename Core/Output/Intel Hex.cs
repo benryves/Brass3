@@ -13,10 +13,6 @@ namespace Core.Output {
 	[Remarks("Pages are defined in segment address records.")]
 	public class IntelHex : IOutputWriter {
 
-		public string Name {
-			get { return "intelhex"; }
-		}
-
 		public string DefaultExtension {
 			get { return "hex"; }
 		}

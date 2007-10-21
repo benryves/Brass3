@@ -21,8 +21,8 @@ namespace Brass3 {
 			this.assembler = null;
 			this.assemblers = new NamedPluginCollection<IAssembler>(this);
 			this.labels = new LabelCollection(this);
-			this.directives = new AliasedPluginCollection<IDirective>(this);
-			this.functions = new AliasedPluginCollection<IFunction>(this);
+			this.directives = new NamedPluginCollection<IDirective>(this);
+			this.functions = new NamedPluginCollection<IFunction>(this);
 			this.outputWriters = new NamedPluginCollection<IOutputWriter>(this);
 			this.outputModifiers = new NamedPluginCollection<IOutputModifier>(this);
 			this.stringEncoders = new NamedPluginCollection<IStringEncoder>(this);

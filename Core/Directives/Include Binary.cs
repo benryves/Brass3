@@ -16,9 +16,6 @@ namespace Core.Directives {
 	[Category("Data")]
 	public class IncBin : IDirective {
 
-		public string[] Names { get { return new string[] { "incbin" }; } }
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);

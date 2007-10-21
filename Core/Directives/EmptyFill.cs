@@ -11,13 +11,6 @@ namespace Core.Directives {
 	[Syntax(".emptyfill value")]
 	[Description("Used to fill unused space in binaries for padding directives.")]
 	public class EmptyFill : IDirective {
-
-		public string[] Names {
-			get { return new string[] { "emptyfill" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			compiler.EmptyFill = (byte)(source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(index + 1, 1)[0])).NumericValue;
 		}

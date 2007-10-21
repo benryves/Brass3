@@ -72,8 +72,5 @@ Any comment that starts with <c>todo:</c> or <c>hack:</c> will be written to the
 			Writer.Close();
 
 		}
-
-		public string Name { get { return "todo"; } }
-
 	}
 }

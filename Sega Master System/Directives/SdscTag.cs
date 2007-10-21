@@ -17,7 +17,7 @@ namespace SegaMasterSystem.Directives {
 	[CodeExample("Using addresses of predefined strings.", ".sdsctag 1.02, Name, \"\", Author\r\n\r\nName   .db \"Tag example.\",0\r\nAuthor .db \"Ben Ryves\",0")]
 	[Category("Sega 8-bit")]
 	[SeeAlso(typeof(Output.SmsRom))]
-	[SeeAlso(typeof(Output.GameGearRom))]
+	[SeeAlso(typeof(Output.GGRom))]
 	public class SdscTag : IDirective {
 
 		#region Exciting SDSC Properties

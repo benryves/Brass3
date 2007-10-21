@@ -23,8 +23,6 @@ Using the width/height flags forces the bitmap data to a particular size; note t
 	[Category("Data")]
 	[SeeAlso(typeof(RleMode))]
 	public class IncBmp : IDirective {
-		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "incbmp" }; } }
 
 		public byte RLE_Flag; // = 0x91;
 		public bool RLE_ValueFirst;

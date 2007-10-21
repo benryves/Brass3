@@ -17,10 +17,6 @@ namespace Core.Output {
 	[SeeAlso(typeof(Directives.Page))]
 	public class RawPages : IOutputWriter {
 
-		public virtual string Name {
-			get { return "rawpages"; }
-		}
-
 		public virtual string DefaultExtension {
 			get { return "bin"; }
 		}

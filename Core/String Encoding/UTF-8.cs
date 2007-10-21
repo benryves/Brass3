@@ -24,8 +24,5 @@ namespace Core.StringEncoding {
 		public char GetChar(int value) {
 			return (char)value;
 		}
-		public string Name {
-			get { return "utf8"; }
-		}
 	}
 }

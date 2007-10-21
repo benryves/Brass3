@@ -13,15 +13,8 @@ namespace Core.Directives {
 	[Remarks("Expressions can be either numeric or string constants. This directive is only invoked during the second pass.")]
 	[CodeExample(".echoln \"Program counter = \", $")]
 	[SeeAlso(typeof(EchoChar))]
+	[PluginName("echo"), PluginName("echoln")]
 	public class Echo : IDirective {
-
-		public string[] Names {
-			get {
-				return new string[] { "echo", "echoln" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass != AssemblyPass.Pass2) return;

@@ -12,7 +12,7 @@ namespace ImageManipulation {
 	[Syntax("handle = fopen(\"filename\")")]
 	[Description("Opens an image from a file and returns the image handle for subsequent image operations.")]
 	[Category("Image Manipulation")]
-	public class ImageOpen : IFunction {
+	public class ImgOpen : IFunction {
 
 		internal Dictionary<double, ImageManipulator> OpenedImages;
 		
@@ -27,7 +27,7 @@ namespace ImageManipulation {
 
 		private double CurrentHandle = 0;
 
-		public ImageOpen(Compiler c) {
+		public ImgOpen(Compiler c) {
 			this.OpenedImages = new Dictionary<double, ImageManipulator>();
 			c.PassBegun += delegate(object sender, EventArgs e) {
 				this.CurrentHandle = 0;

@@ -13,15 +13,6 @@ namespace Core.Functions {
 	[SatisfiesAssignmentRequirement(true)]
 	public class UserFunction : IFunction {
 
-		public string[] Names {
-			get { return new string[] { "user_func" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
-
 		int ModuleAllocation = 0;
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {

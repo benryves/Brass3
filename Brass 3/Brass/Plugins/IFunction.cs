@@ -8,7 +8,7 @@ namespace Brass3.Plugins {
 	/// <summary>
 	/// Defines the interface that functions need to implement.
 	/// </summary>
-	public interface IFunction : IAliasedPlugin {
+	public interface IFunction : IPlugin {
 
 		/// <summary>
 		/// Invoke the function.

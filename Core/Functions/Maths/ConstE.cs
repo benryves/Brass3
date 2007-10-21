@@ -14,23 +14,11 @@ namespace Core.Functions.Maths {
 	[CodeExample(".echoln e() ; Outputs 2.718...")]
 	[Remarks("The value of the constant e is 2.7182818284590452354.")]
 	[Category("Maths")]
+	[PluginName("e"), PluginName("exp")]
 	public class ConstE : IFunction {
-		#region IFunction Members
-
-		public string[] Names {
-			get { return new string[] { "e", "exp" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 0, 1);
 			return new Label(compiler.Labels, Args.Length == 0 ? Math.E : Math.Exp(source.EvaluateExpression(compiler, Args[0]).NumericValue));
 		}
-
-		#endregion
-
 	}
 }

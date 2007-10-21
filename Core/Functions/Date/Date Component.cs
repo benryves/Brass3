@@ -18,6 +18,7 @@ namespace Core.Functions.Date {
 	[Remarks("If no date is passed then the function returns the component from the current time.")]
 	[CodeExample("Embedding a timestamp into a compiler binary.", ".db strformat(\"Built: {0:D2}:{1:D2}:{2:D2} {3}/{4}/{5}\",\r\n\thour(), minute(), second(),\r\n\tday(), month(), year()), 0")]
 	[Category("Date and Time")]
+	[PluginName("year"), PluginName("month"), PluginName("day"), PluginName("hour"), PluginName("minute"), PluginName("second")]
 	public class DateComponent : IFunction {
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
@@ -47,12 +48,5 @@ namespace Core.Functions.Date {
 			}
 			return new Label(compiler.Labels, Result);
 		}
-
-		public string[] Names {
-			get { return new string[] { "year", "month", "day", "hour", "minute", "second" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 	}
 }

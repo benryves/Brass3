@@ -109,9 +109,7 @@ namespace Help {
 					CategoryNodes.Add(Category, DirectiveNodes);
 				}
 
-				string[] Names = new string[] { D.Name };
-				IAliasedPlugin AliasedNames = D as IAliasedPlugin;
-				if (AliasedNames != null) Names = AliasedNames.Names;
+				string[] Names = Compiler.GetPluginNames(D);				
 
 				foreach (string DirectiveName in Names) {
 					TreeNode DirectiveNode = new TreeNode(DirectiveName);
@@ -434,15 +432,9 @@ namespace Help {
 
 					Writer.WriteStartElement("item");
 
-					List<string> Names = new List<string>();
-					IAliasedPlugin AliasedPlugin = Plugin as IAliasedPlugin;
-					if (AliasedPlugin != null) {
-						Names.AddRange(AliasedPlugin.Names);
-					} else {
-						Names.Add(Plugin.Name);
-					}
+					string[] Names = Compiler.GetPluginNames(Plugin);
 
-					Writer.WriteAttributeString("name", string.Join("/", Names.ToArray()));
+					Writer.WriteAttributeString("name", string.Join("/", Names));
 
 					List<string> Highlights = new List<string>();
 

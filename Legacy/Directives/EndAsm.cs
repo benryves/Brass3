@@ -13,10 +13,8 @@ namespace Legacy.Directives {
 	[Syntax(".endasm")]
 	[Description("Switches compilation or or off.")]
 	[Remarks("The code between <c>.endasm</c> and <c>.asm</c> is still parsed. If you don't want it to be parsed at all, consider using multi-line comments instead.")]
+	[PluginName("endasm"), PluginName("asm")]
 	public class EndAsm : IDirective {
-
-		public string Name { get { return this.Names[0]; } }
-		public string[] Names { get { return new string[] { "endasm", "asm" }; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			

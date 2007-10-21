@@ -37,13 +37,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Brass\Attributes\CodeExampleAttribute.cs" />
+    <Compile Include="Brass\Attributes\PluginNameAttribute.cs" />
     <Compile Include="Brass\Attributes\SatisfiesAssignmentRequirementAttribute.cs" />
     <Compile Include="Brass\Attributes\ParseBehaviourChangeAttribute.cs" />
     <Compile Include="Brass\Attributes\SeeAlsoAttribute.cs" />
     <Compile Include="Brass\Attributes\RemarksAttribute.cs" />
     <Compile Include="Brass\Attributes\SyntaxAttribute.cs" />
     <Compile Include="Brass\Compiler\Compile Process.cs" />
-    <Compile Include="Brass\AliasedPluginCollection.cs" />
+    <Compile Include="Brass\Compiler\Macros.cs" />
     <Compile Include="Brass\Compiler\Output Data Filtering.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Files.cs" />
     <Compile Include="Brass\Compiler\Reset State.cs" />
@@ -57,7 +58,6 @@
     <Compile Include="Brass\Compiler\Public Methods\Plugin Management.cs" />
     <Compile Include="Brass\Compiler\Defined.cs" />
     <Compile Include="Brass\Default String Encoder.cs" />
-    <Compile Include="Brass\FunctionCollection.cs" />
     <Compile Include="Brass\Exceptions\CompilerExpection.cs" />
     <Compile Include="Brass\Exceptions\DirectiveArgumentException.cs" />
     <Compile Include="Brass\Exceptions\ParseErrorException.cs" />
@@ -79,7 +79,6 @@
     <Compile Include="Brass\Plugins\IStringEncoding.cs" />
     <Compile Include="Brass\Plugins\IOutputModifier.cs" />
     <Compile Include="Brass\Plugins\IOutputWriter.cs" />
-    <Compile Include="Brass\Plugins\IAliasedPlugin.cs" />
     <Compile Include="Brass\Plugins\IFunction.cs" />
     <Compile Include="Brass\Plugins\IPlugin.cs" />
     <Compile Include="Brass\Plugins\IAssembler.cs" />

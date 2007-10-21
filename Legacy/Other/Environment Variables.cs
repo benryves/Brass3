@@ -16,13 +16,9 @@ namespace Legacy.Other {
 	[Warning("You can only insert environment variables into strings. Use <c>eval()</c> to evaluate a passed string into a numeric value.")]
 	[CodeExample("Porting Brass 1 code to Brass 3", "/* The following definitions are required */\r\n\r\nNone     = 0 ; No shell - All\r\nIon      = 1 ; Ion      - 83, 83+\r\nMirageOS = 2 ; MirageOS - 83+\r\nVenus    = 3 ; Venus    - 83\r\n\r\nTI8X     = 1 ; TI-83 Plus\r\nTI83     = 2 ; TI-83\r\n\r\n/*\r\nThe build script passes in a value for \r\nSHELL and PLATFORM. We need these to be\r\nnumeric values. The Brass 1 source code\r\nwas as follows:\r\n\r\nShell    = [%SHELL%]\r\nPlatform = [%PLATFORM%]\r\n\r\nThis will not work in Brass 3!\r\nThe following code demonstrates a way to\r\nwork around Brass 3's stricter parser.\r\n*/\r\n\r\nShell    = eval(\"[%SHELL%]\")\r\nPlatform = eval(\"[%PLATFORM%]\")\r\n\r\n/*\r\nThe following used a string anyway, so\r\nno code needed to be changed.\r\nThere is no functional difference between\r\n[%var%] and [%$var$%].\r\n*/\r\n\r\n.if Shell != None\r\n\t.db \"[%$PROJECT_NAME$%]\", 0\r\n.endif")]
 	[SeeAlso(typeof(Core.Functions.Eval))]
-	public class EnvironmentVariables : IPlugin {
+	public class EnvVars : IPlugin {
 
-		public string Name {
-			get { return "envvars"; }
-		}
-
-		public EnvironmentVariables(Compiler compiler) {
+		public EnvVars(Compiler compiler) {
 			compiler.PassBegun += delegate(object sender, EventArgs e) {
 				if (compiler.CurrentPass == AssemblyPass.Pass1) {
 

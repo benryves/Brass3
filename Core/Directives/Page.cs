@@ -13,12 +13,6 @@ namespace Core.Directives {
 	[CodeExample(".page 2\r\n.echoln \"Current page = \", :$")]
 	public class Page : IDirective {
 
-		public string[] Names {
-			get { return new string[] { "page" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 			compiler.Labels.ProgramCounter.Page = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;

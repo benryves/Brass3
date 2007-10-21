@@ -9,9 +9,6 @@ namespace Core.NumberEncoding {
 	[Description("Defines a 16-bit word.")]
 	public class Word : INumberEncoder {
 		
-		public string[] Names { get { return new string[] { "word" }; } }
-		public string Name { get { return this.Names[0]; } }
-
 		public int Size { get { return 2; } }
 
 		public byte[] GetBytes(Compiler c, double d) {

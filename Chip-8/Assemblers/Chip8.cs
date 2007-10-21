@@ -148,8 +148,6 @@ namespace Chip8.Assemblers {
 			}
 		}
 
-		public string Name { get { return "chip8"; } }
-
 		/// <summary>
 		/// Returns true if a token is a valid register name.
 		/// </summary>

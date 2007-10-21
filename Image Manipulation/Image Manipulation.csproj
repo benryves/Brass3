@@ -36,11 +36,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageGetPixel.cs" />
-    <Compile Include="ImageHeight.cs" />
-    <Compile Include="ImageWidth.cs" />
+    <Compile Include="Functions\ImageGetPixel.cs" />
+    <Compile Include="Functions\ImageHeight.cs" />
+    <Compile Include="Functions\ImageWidth.cs" />
     <Compile Include="ImageManipulator.cs" />
-    <Compile Include="ImageOpen.cs" />
+    <Compile Include="Functions\ImageOpen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

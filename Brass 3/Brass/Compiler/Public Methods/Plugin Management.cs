@@ -9,6 +9,46 @@ namespace Brass3 {
 	public partial class Compiler {
 
 		/// <summary>
+		/// Gets all of the names for a plugin.
+		/// </summary>
+		/// <param name="plugin">The plugin to get the names of.</param>
+		/// <returns>An array of the plugin's names.</returns>
+		public static string[] GetPluginNames(Type plugin) {
+			string[] Result = Array.ConvertAll<object, string>(plugin.GetCustomAttributes(typeof(Attributes.PluginNameAttribute), false), delegate(object o) {
+				return (o as Attributes.PluginNameAttribute).Name.ToLowerInvariant();
+			});
+			if (Result.Length == 0) {
+				Result = new string[] { plugin.Name.ToLowerInvariant() };
+			}
+			return Result;
+		}
+
+		/// <summary>
+		/// Gets all of the names for a plugin.
+		/// </summary>
+		/// <param name="plugin">The plugin to get the names of.</param>
+		/// <returns>An array of the plugin's names.</returns>
+		public static string[] GetPluginNames(IPlugin plugin) {
+			return Compiler.GetPluginNames(plugin.GetType());
+		}
+
+		/// <summary>
+		/// Gets the single identifying name for a plugin.
+		/// </summary>
+		/// <param name="plugin">The plugin to get the name of.</param>
+		public static string GetPluginName(Type plugin) {
+			return Compiler.GetPluginNames(plugin)[0];
+		}
+
+		/// <summary>
+		/// Gets the single identifying name for a plugin.
+		/// </summary>
+		/// <param name="plugin">The plugin to get the name of.</param>
+		public static string GetPluginName(IPlugin plugin) {
+			return Compiler.GetPluginNames(plugin)[0];
+		}
+
+		/// <summary>
 		/// Load all plugins from an assembly.
 		/// </summary>
 		/// <param name="assemblyName">The filename of the assembly to load.</param>
@@ -38,75 +78,45 @@ namespace Brass3 {
 
 					ConstructorInfo Constructor = null;
 					object[] ConstructorParameters = null;
-					bool IsAliased = false;
 
-					bool IsAssembler = false;
-					bool IsDirective = false;
-					bool IsFunction = false;
-					bool IsOutputWriter = false;
-					bool IsOutputModifier = false;
-					bool IsStringEncoder = false;
-					bool IsListingWriter = false;
-					bool IsNumberEncoding = false;
-
-					foreach (Type I in T.GetInterfaces()) {
-						if (I == typeof(IPlugin)) {
-							Constructor = T.GetConstructor(new Type[] { typeof(Compiler) });
-							ConstructorParameters = new object[] { this };
-							if (Constructor == null) {
-								Constructor = T.GetConstructor(Type.EmptyTypes);
-								ConstructorParameters = null;
-							}
-						} else if (I == typeof(IAssembler)) {
-							IsAssembler = true;
-						} else if (I == typeof(IDirective)) {
-							IsDirective = true;
-						} else if (I == typeof(IFunction)) {
-							IsFunction = true;
-						} else if (I == typeof(IOutputWriter)) {
-							IsOutputWriter = true;
-						} else if (I == typeof(IOutputModifier)) {
-							IsOutputModifier = true;
-						} else if (I == typeof(IStringEncoder)) {
-							IsStringEncoder = true;
-						} else if (I == typeof(IListingWriter)) {
-							IsListingWriter = true;
-						} else if (I == typeof(INumberEncoder)) {
-							IsNumberEncoding = true;
-						} else if (I == typeof(IAliasedPlugin)) {
-							IsAliased = true;
+					if (new List<Type>(T.GetInterfaces()).Contains(typeof(IPlugin))) {
+						Constructor = T.GetConstructor(new Type[] { typeof(Compiler) });
+						ConstructorParameters = new object[] { this };
+						if (Constructor == null) {
+							Constructor = T.GetConstructor(Type.EmptyTypes);
+							ConstructorParameters = null;
 						}
 					}
-
 					if (Constructor != null) {
+
+						// Check if the plugin has been excluded:
+						bool IsExcluded = false;
+						foreach (string AliasedName in Compiler.GetPluginNames(T)) {
+							if (ExclusionList.Contains(AliasedName)) {
+								IsExcluded = true;
+								break;
+							}
+						}
+						if (IsExcluded) {
+							continue;
+						}
 
 						// Create an instance of the plugin:
 						object Plugin = Constructor.Invoke(ConstructorParameters);
 
 						// Check if we can use it or if it's been blacklisted:
-						if (IsAliased) {
-							bool IsExcluded = false;
-							foreach (string AliasedName in (Plugin as IAliasedPlugin).Names) {
-								if (AliasedName == null) continue;
-								if (ExclusionList.Contains(AliasedName.ToLowerInvariant())) {
-									IsExcluded = true;
-									break;
-								}
-							}
-							if (IsExcluded) continue;
-						} else {
-							if (ExclusionList.Contains((Plugin as IPlugin).Name.ToLowerInvariant())) continue;
-						}
 
+						
+					
 						bool HasCategory = false;
-						if (IsAssembler) { HasCategory = true; this.assemblers.Add((IAssembler)Plugin); }
-						if (IsDirective) { HasCategory = true; this.directives.Add((IDirective)Plugin); }
-						if (IsFunction) { HasCategory = true; this.functions.Add((IFunction)Plugin); }
-						if (IsOutputWriter) { HasCategory = true; this.outputWriters.Add((IOutputWriter)Plugin); }
-						if (IsOutputModifier) { HasCategory = true; this.outputModifiers.Add((IOutputModifier)Plugin); }
-						if (IsStringEncoder) { HasCategory = true; this.StringEncoders.Add((IStringEncoder)Plugin); }
-						if (IsListingWriter) { HasCategory = true; this.ListingWriters.Add((IListingWriter)Plugin); }
-						if (IsNumberEncoding) { HasCategory = true; this.NumberEncoders.Add((INumberEncoder)Plugin); }
+						if (Plugin is IAssembler) { HasCategory = true; this.assemblers.Add((IAssembler)Plugin); }
+						if (Plugin is IDirective) { HasCategory = true; this.directives.Add((IDirective)Plugin); }
+						if (Plugin is IFunction) { HasCategory = true; this.functions.Add((IFunction)Plugin); }
+						if (Plugin is IOutputWriter) { HasCategory = true; this.outputWriters.Add((IOutputWriter)Plugin); }
+						if (Plugin is IOutputModifier) { HasCategory = true; this.outputModifiers.Add((IOutputModifier)Plugin); }
+						if (Plugin is IStringEncoder) { HasCategory = true; this.StringEncoders.Add((IStringEncoder)Plugin); }
+						if (Plugin is IListingWriter) { HasCategory = true; this.ListingWriters.Add((IListingWriter)Plugin); }
+						if (Plugin is INumberEncoder) { HasCategory = true; this.NumberEncoders.Add((INumberEncoder)Plugin); }
 
 						if (!HasCategory) this.InvisiblePlugins.Add((IPlugin)Plugin);
 

@@ -8,10 +8,7 @@ namespace Core.NumberEncoding {
 
 	[Description("Defines a 32-bit integer.")]
 	public class Int : INumberEncoder {
-		
-		public string[] Names { get { return new string[] { "int" }; } }
-		public string Name { get { return this.Names[0]; } }
-
+	
 		public int Size { get { return 4; } }
 
 		public byte[] GetBytes(Compiler c, double d) {

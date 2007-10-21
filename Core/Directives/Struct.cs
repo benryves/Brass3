@@ -11,13 +11,6 @@ namespace Core.Directives {
 	[ParserBehaviourChange(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreFirstNewLine)]
 	public class Struct : IDirective {
 
-		public string[] Names {
-			get { return new string[] { "struct" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 2);

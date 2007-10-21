@@ -52,7 +52,7 @@ namespace ProjectEditor {
 				List<string> Exclusions = new List<string>();
 				foreach (IPlugin P in KVP.Value) {
 					if (this.ExcludedPlugins.Contains(P.GetType())) {
-						Exclusions.Add(P.Name);
+						Exclusions.Add(Compiler.GetPluginName(P));
 					} else {
 						FoundAnyPlugins = true;
 					}
@@ -113,7 +113,7 @@ namespace ProjectEditor {
 						if (P.TrueForAll(delegate(IPlugin p) { return p.GetType() != NewPlugin.GetType(); })) {
 							ReturnValues.Add(NewPlugin);
 							P.Add(NewPlugin);
-							if (Exclusions.Contains(NewPlugin.Name.ToLowerInvariant())) {
+							if (Exclusions.Contains(Compiler.GetPluginName(NewPlugin))) {
 								this.ExcludedPlugins.Add(NewPlugin.GetType());
 							}
 						}
@@ -148,8 +148,7 @@ namespace ProjectEditor {
 
 					bool IsExcluded = this.ExcludedPlugins.Contains(P.GetType());
 
-					IAliasedPlugin PAliased = P as IAliasedPlugin;
-					TreeNode PT = new TreeNode(PAliased == null ? P.Name : string.Join("/", PAliased.Names));
+					TreeNode PT = new TreeNode(string.Join("/", Compiler.GetPluginNames(P)));
 					PT.Tag = P;
 					PT.ImageIndex = IsExcluded ? 0 : 1;
 					PT.SelectedImageIndex = IsExcluded ? 0 : 1;

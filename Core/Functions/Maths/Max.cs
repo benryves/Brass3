@@ -13,16 +13,6 @@ namespace Core.Functions.Maths {
 	[CodeExample(".echoln max(12, 34) ; Outputs 34.")]
 	[Category("Maths")]
 	public class Max : IFunction {
-		#region IFunction Members
-
-		public string[] Names {
-			get { return new string[] { "max" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 2);
 			return new Label(compiler.Labels, Math.Max(
@@ -30,8 +20,5 @@ namespace Core.Functions.Maths {
 				source.EvaluateExpression(compiler, Args[1]).NumericValue
 			));
 		}
-
-		#endregion
-
 	}
 }

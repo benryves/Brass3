@@ -15,16 +15,8 @@ namespace Core.Directives {
 	[Category("Data")]
 	[CodeExample(".big\r\n.int $123456 ; Outputs $12, $34, $56.")]
 	[CodeExample(".little\r\n.int $123456 ; Outputs $56, $34, $12.")]
+	[PluginName("big"), PluginName("little")]
 	public class Endian : IDirective {
-		#region IDirective Members
-
-		public string[] Names {
-			get {
-				return new string[] { "little", "big" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			switch (directive) {
@@ -36,9 +28,5 @@ namespace Core.Directives {
 					break;
 			}
 		}
-
-
-		#endregion
-
 	}
 }

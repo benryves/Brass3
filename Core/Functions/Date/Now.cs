@@ -18,11 +18,5 @@ namespace Core.Functions.Date {
 			return new Label(compiler.Labels, (double)DateTime.Now.Ticks);
 		}
 
-		public string[] Names {
-			get { return new string[] { "now" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 	}
 }

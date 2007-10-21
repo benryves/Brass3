@@ -18,6 +18,7 @@ namespace Core.Directives {
 	[CodeExample("BASIC-style for-loop.", ".for i is 10 to 1\r\n\t.echoln i, \"...\"\r\n.loop\r\n\r\n.echoln \"Blast off!\"")]
 	[Remarks("Both a C-style for-loop and a BASIC-style for loop are provided.")]
 	[Category("Flow Control")]
+	[PluginName("while"), PluginName("rept"), PluginName("for"), PluginName("loop")]
 	public class Repetition : IDirective {
 
 		private class RepetitionStackEntry {
@@ -48,15 +49,6 @@ namespace Core.Directives {
 
 		private Stack<RepetitionStackEntry> RepetitionStack;
 		private RepetitionStackEntry LastLoopHit;
-
-		public string[] Names {
-			get {
-				return new string[] { "while", "rept", "for", "loop" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
-
 
 		public Repetition(Compiler c) {
 			this.RepetitionStack = new Stack<RepetitionStackEntry>();

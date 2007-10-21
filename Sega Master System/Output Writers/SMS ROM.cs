@@ -13,7 +13,7 @@ namespace SegaMasterSystem.Output {
 	[Description("Outputs a Sega Master System ROM file with a Sega and SDSC header.")]
 	[Remarks("This plugin is based on the raw pages output plugin, so the rules between the two are roughly the same.")]
 	[Category("Sega 8-bit")]
-	[SeeAlso(typeof(GameGearRom))]
+	[SeeAlso(typeof(GGRom))]
 	[SeeAlso(typeof(Core.Output.RawPages))]
 	public class SmsRom : Core.Output.RawPages {
 
@@ -21,11 +21,6 @@ namespace SegaMasterSystem.Output {
 
 		public override string DefaultExtension {
 			get { return "sms"; }
-		}
-
-
-		public override string Name {
-			get { return "smsrom"; }
 		}
 
 		public SmsRom(Compiler c)

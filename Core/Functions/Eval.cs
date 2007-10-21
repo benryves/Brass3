@@ -17,14 +17,6 @@ namespace Core.Functions {
 	[SatisfiesAssignmentRequirement(true)]
 	public class Eval : IFunction {
 
-		public string[] Names {
-			get { return new string[] { "eval" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			object[] Source = source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String });
 

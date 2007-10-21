@@ -48,9 +48,6 @@ namespace Core.StringEncoding {
 			return (char)value;
 		}
 
-		public string Name {
-			get { return "utf16"; }
-		}
 		public UTF16(Compiler c) {
 			this.Compiler = c;
 		}

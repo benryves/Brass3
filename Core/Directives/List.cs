@@ -12,20 +12,10 @@ namespace Core.Directives {
 	[Syntax(".list")]
 	[Description("Disables or enables additions to the list file.")]
 	[Category("List File")]
+	[PluginName("nolist"), PluginName("list")]
 	public class NoList : IDirective {
-
-		public string[] Names {
-			get {
-				return new string[] { "nolist", "list" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			source.GetCommaDelimitedArguments(index + 1, 0);
-			
+			source.GetCommaDelimitedArguments(index + 1, 0);	
 		}
-
 	}
 }

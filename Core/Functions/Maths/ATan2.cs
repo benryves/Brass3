@@ -13,16 +13,6 @@ namespace Core.Functions.Maths {
 	[Remarks("The return value is the angle in radians in the Cartesian plane formed by the x-axis, and a vector starting from the origin, (0,0), and terminating at the point, (x,y).")]
 	[Category("Maths")]
 	public class ATan2 : IFunction {
-		#region IFunction Members
-
-		public string[] Names {
-			get { return new string[] { "atan2" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			int[] Args = source.GetCommaDelimitedArguments(0, 2);
 			return new Label(compiler.Labels, Math.Atan2(
@@ -30,8 +20,5 @@ namespace Core.Functions.Maths {
 				source.EvaluateExpression(compiler, Args[1]).NumericValue
 			));
 		}
-
-		#endregion
-
 	}
 }

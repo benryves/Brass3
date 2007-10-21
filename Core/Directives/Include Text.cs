@@ -13,11 +13,8 @@ namespace Core.Directives {
 	[Description("Insert all data from a text file into the output, converting it to the current text encoding.")]
 	[Category("Data")]
 	[CodeExample("Convert <c>file.txt</c> to big-endian UTF-32.", ".big\r\n.stringencoder utf32\r\n.inctext \"file.txt\"")]
-	[SeeAlso(typeof(Functions.FileOperations.FileReadText))]
+	[SeeAlso(typeof(Functions.FileOperations.FReadText))]
 	public class IncText : IDirective {
-
-		public string[] Names { get { return new string[] { "inctext" }; } }
-		public string Name { get { return Names[0]; } }
 
 		private Queue<byte[]> PrecompiledData;
 

@@ -17,9 +17,6 @@ namespace Core.Directives {
 	[CodeExample(".stringencoder \"windows-1252\"\r\n.echoln char($80) ; Displays a € sign.")]
 	public class StringEncoder : IDirective {
 
-		public string[] Names { get { return new string[] { "stringencoder" }; } }
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			
 			object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] {

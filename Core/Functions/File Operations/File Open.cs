@@ -13,7 +13,7 @@ namespace Core.Functions.FileOperations {
 	[Description("Opens a file and returns a handle for subsequent file operations.")]
 	[Remarks("Files are implicitly closed after each pass.")]
 	[Category("File Operations")]
-	public class FileOpen : IFunction {
+	public class FOpen : IFunction {
 
 		/// <summary>
 		/// Stores file handle mappings.
@@ -22,10 +22,8 @@ namespace Core.Functions.FileOperations {
 
 		private double FileHandleAllocation;
 
-		public string[] Names { get { return new string[] { "fopen" }; } }
-		public string Name { get { return this.Names[0]; } }
 
-		public FileOpen(Compiler compiler) {
+		public FOpen(Compiler compiler) {
 			this.FileHandles = new Dictionary<double, FileStream>();
 			compiler.PassBegun += new EventHandler(delegate(object sender, EventArgs e) { FileHandles.Clear(); FileHandleAllocation = 1; });
 			compiler.PassEnded += new EventHandler(delegate(object sender, EventArgs e) { foreach (KeyValuePair<double, FileStream> KVP in FileHandles) { KVP.Value.Dispose(); } });
@@ -44,7 +42,7 @@ namespace Core.Functions.FileOperations {
 		}
 
 		internal static FileStream GetFilestreamFromHandle(Compiler compiler, double handle) {
-			FileOpen Handles = compiler.GetPluginInstanceFromType(typeof(FileOpen)) as FileOpen;
+			FOpen Handles = compiler.GetPluginInstanceFromType<FOpen>();
 			if (Handles == null) throw new InvalidOperationException("fopen() plugin not loaded.");
 			FileStream Result;
 			if (!Handles.FileHandles.TryGetValue(handle, out Result)) throw new InvalidOperationException("File handle " + handle + " is invalid.");

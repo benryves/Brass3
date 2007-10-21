@@ -25,13 +25,7 @@ namespace TexasInstruments.Brass.Directives {
 				VariableNames.Add(Page, source.GetExpressionStringConstant(compiler, NameIndex));
 			}
 		}
-		public string Name {
-			get { return this.Names[0]; }
-		}
-		public string[] Names {
-			get { return new string[] { "tivariablename" }; }
-		}
-
+		
 		public TIVariableName(Compiler c) {
 			this.VariableNames = new Dictionary<int, string>();
 			c.PassBegun += delegate(object sender, EventArgs e) {

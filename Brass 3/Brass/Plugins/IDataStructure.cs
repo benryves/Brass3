@@ -7,7 +7,7 @@ namespace Brass3.Plugins {
 	/// <summary>
 	/// Defines the interface that number encoders need to implement.
 	/// </summary>
-	public interface IDataStructure : IAliasedPlugin {
+	public interface IDataStructure : IPlugin {
 
 		/// <summary>
 		/// Returns the fixed size in bytes of the number type.

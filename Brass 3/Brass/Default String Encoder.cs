@@ -17,6 +17,5 @@ namespace Brass3 {
 			return Encoding.ASCII.GetString(new byte[] { (byte)(data) })[0];
 		}
 
-		public string Name { get { return null; } }
 	}
 }

@@ -13,10 +13,7 @@ namespace Core.Functions.StringManipulation {
 	[Syntax("strlength(string)")]
 	[Category("String Manipulation")]
 	public class StrLength : IFunction {
-
-		public string[] Names { get { return new string[] { "strlength" }; } }
-		public string Name { get { return Names[0]; } }
-		
+	
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			
 			object[] Args = source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] {

@@ -15,9 +15,6 @@ namespace Core.Functions.StringManipulation {
 	[Remarks("If the start index is a negative value then the substring is returned <c>start</c> characters from the end of the string rather than from the beginning.")]
 	[CodeExample("A function to reverse a string.", ".function rev(s)\r\n\trev = \"\"\r\n\t.for i = 1, i <= strlength(s), ++i\r\n\t\trev += strsub(s, -i, 1)\r\n\t.loop\r\n.endfunction\r\n\r\n; Displays \"Hello!\"\r\n.echoln rev(\"!olleH\")")]
 	public class StrSub : IFunction {
-
-		public string[] Names { get { return new string[] { "strsub" }; } }
-		public string Name { get { return Names[0]; } }
 		
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			

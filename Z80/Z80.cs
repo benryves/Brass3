@@ -11,8 +11,6 @@ namespace Z80 {
 	[Description("An assembler for the ZiLOG Z80 microprocessor.")]
 	public partial class Z80 : IAssembler {
 
-		public string Name { get { return "z80"; } }
-
 		private class Instruction {
 			public int Index;
 			public string InstructionName;

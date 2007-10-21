@@ -12,8 +12,6 @@ namespace Core.Listing {
 
 	public class Text : IListingWriter {
 
-		public string Name { get { return "text"; } }
-
 		public void WriteListing(Compiler compiler, Stream stream) {
 			TextWriter ListWriter = new StreamWriter(stream, Encoding.ASCII);
 			foreach (Compiler.SourceStatement Statement in compiler.Statements) {

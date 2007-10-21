@@ -16,10 +16,7 @@ namespace Core.Functions.StringManipulation {
 	[Syntax("strtoken(tokens)")]
 	[CodeExample("expression = strtoken(1+abs(sin(toradians(-90))))\r\n.echoln strformat(\"{0} = {1}\", expression, eval(expression))\r\n/* Outputs \"1+abs(sin(toradians(-90))) = 2\". */")]
 	public class StrToken : IFunction {
-
-		public string[] Names { get { return new string[] { "strtoken" }; } }
-		public string Name { get { return Names[0]; } }
-		
+	
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
 			return new Label(compiler.Labels, source.ToString());
 		}

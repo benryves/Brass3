@@ -16,12 +16,6 @@ namespace Core.Directives {
 	[SeeAlso(typeof(Directives.Page))]
 	public class DefPage : IDirective {
 
-		public string[] Names {
-			get { return new string[] { "defpage" }; }
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass != AssemblyPass.Pass1) return;
 			Output.RawPages PagedRawWriter;

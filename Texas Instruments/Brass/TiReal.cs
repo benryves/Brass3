@@ -11,9 +11,6 @@ namespace TexasInstruments.Brass {
 	[SeeAlso(typeof(TiComplex))]
 	public class TiReal : INumberEncoder {
 
-		public virtual string[] Names { get { return new string[] { "tireal" }; } }
-		public string Name { get { return this.Names[0]; } }
-
 		public int Size { get { return 9; } }
 
 		public virtual byte[] GetBytes(Compiler c, double d) {

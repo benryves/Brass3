@@ -16,17 +16,13 @@ namespace Core.Directives {
 	[CodeExample(".word 512, 4 ** 4, 1 << 10")]
 	[CodeExample(".db \"Brass\", 0")]
 	[Category("Data")]
+	[PluginName("data"), PluginName("db"), PluginName("byte"), PluginName("dw"), PluginName("word"), PluginName("di"), PluginName("int")]
 	public class DataDeclaration : IDirective {
 		
 		private Core.NumberEncoding.Byte ByteEncoder;
 		private Core.NumberEncoding.Word WordEncoder;
 		private Core.NumberEncoding.Int IntEncoder;
 
-		public string[] Names {
-			get {
-				return new string[] { "db", "byte", "dw", "word", "di", "int", "data" };
-			}
-		}
 
 		private Queue<bool> IsStringQueue;
 
@@ -112,9 +108,6 @@ namespace Core.Directives {
 
 
 		}
-
-
-		public string Name { get { return Names[0]; } }
 
 		public DataDeclaration(Compiler c) {
 			this.IsStringQueue = new Queue<bool>();

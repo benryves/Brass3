@@ -12,6 +12,7 @@ namespace Brass3 {
 	public class NamedPluginCollection<T> : ICollection<T> where T : class, IPlugin {
 
 		protected Dictionary<string, T> Plugins;
+		protected Dictionary<string, T> RuntimeAliases;
 		protected List<T> UniquePlugins;
 
 		private readonly Compiler Compiler;
@@ -19,28 +20,36 @@ namespace Brass3 {
 		public NamedPluginCollection(Compiler compiler) {
 			this.Compiler = compiler;
 			this.Plugins = new Dictionary<string, T>();
+			this.RuntimeAliases = new Dictionary<string, T>();
 			this.UniquePlugins = new List<T>();
 		}
 
 		public virtual T this[string name] {
 			get {
-				if (!this.PluginExists(name) && typeof(T) == typeof(IStringEncoder)) { 
+				name = name.ToLowerInvariant();
+
+				T Result;
+				if (this.Plugins.TryGetValue(name, out Result)) return Result;
+				if (this.RuntimeAliases.TryGetValue(name, out Result)) return Result;
+				if (typeof(T) == typeof(IStringEncoder)) {
 					return new StringEncodingWrapper(this.Compiler, name, Encoding.GetEncoding(name)) as T;
+				} else {
+					throw new InvalidOperationException("Handler for '" + name + "' not found.");
 				}
-				return this.Plugins[name.ToLowerInvariant()];
 			}
 		}
 
-		public virtual void Add(T plugin) {
-			if (plugin.Name == null) return;
-			string Name = plugin.Name.ToLowerInvariant();
-			if (this.Plugins.ContainsKey(Name)) throw new InvalidOperationException("Plugin " + plugin.Name + " already loaded.");
-			this.Plugins.Add(Name, plugin);
+		public virtual void Add(T plugin) {			
+			foreach (string Name in Compiler.GetPluginNames(plugin)) {
+				if (this.Plugins.ContainsKey(Name)) throw new InvalidOperationException("Plugin " + Name + " already loaded.");
+				this.Plugins.Add(Name, plugin);
+			}
 			UniquePlugins.Add(plugin);
 		}
 
 		public bool PluginExists(string name) {
-			return this.Plugins.ContainsKey(name.ToLowerInvariant());
+			name = name.ToLowerInvariant();
+			return this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name);
 		}
 
 		public IEnumerator<T> GetEnumerator() {
@@ -85,6 +94,16 @@ namespace Brass3 {
 			}
 			return this.UniquePlugins.Remove(item);
 
+		}
+
+		public void ClearRuntimeAliases() {
+			RuntimeAliases.Clear();
+		}
+
+		public void AddRuntimeAlias(T function, string name) {
+			name = name.ToLowerInvariant();
+			if (this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name)) throw new InvalidOperationException("Plugin '" + name + "' already loaded.");
+			RuntimeAliases.Add(name, function);
 		}
 	}
 }

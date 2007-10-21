@@ -12,19 +12,9 @@ namespace Brass.TexasInstruments {
 	[Syntax(".squish")]
 	[Syntax(".unsquish")]
 	[Remarks("Unsquished data is output as hexadecmial ASCII.")]
+	[PluginName("squish"), PluginName("unsquish")]
 	public class Squish : IOutputModifier, IDirective {
 
-		#region Name
-
-		public string[] Names {
-			get { return new string[] { "squish", "unsquish" }; }
-		}
-
-		public string Name {
-			get { return this.Names[0]; }
-		}
-
-		#endregion
 
 		private bool Squishing = true;
 

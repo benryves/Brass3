@@ -13,10 +13,6 @@ namespace TexasInstruments.Brass {
 	[SeeAlso(typeof(TiReal))]
 	public class TiComplex : TiReal {
 
-		public override string[] Names {
-			get { return new string[] { "ticomplex" }; }
-		}
-
 		public override byte[] GetBytes(Compiler c, double d) {
 			byte[] Data = Types.Real.GetBytes((Types.Real)d);
 			Data[0] |= 0x0C;

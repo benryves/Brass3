@@ -35,11 +35,11 @@ namespace Brass3 {
 
 		#region Directives
 
-		private readonly AliasedPluginCollection<IDirective> directives;
+		private readonly NamedPluginCollection<IDirective> directives;
 		/// <summary>
 		/// Gets the directives being used by the compiler.
 		/// </summary>
-		public AliasedPluginCollection<IDirective> Directives {
+		public NamedPluginCollection<IDirective> Directives {
 			get { return this.directives; }
 		}
 
@@ -88,11 +88,11 @@ namespace Brass3 {
 
 		#region Functions
 
-		private readonly AliasedPluginCollection<IFunction> functions;
+		private readonly NamedPluginCollection<IFunction> functions;
 		/// <summary>
 		/// Gets the functions being used by the compiler.
 		/// </summary>
-		public AliasedPluginCollection<IFunction> Functions {
+		public NamedPluginCollection<IFunction> Functions {
 			get { return this.functions; }
 		}
 

@@ -15,10 +15,6 @@ namespace Core.Output {
 	[CodeExample("Gaps between non-consecutivate addresses are ignored.", "$: = $0000\r\n.db 1\r\n\r\n$: = $1000\r\n.db 2\r\n\r\n; The above outputs a 2-byte file.")]
 	public class Raw : IOutputWriter {
 
-		public string Name {
-			get { return "raw"; }
-		}
-
 		public string DefaultExtension {
 			get { return "bin"; }
 		}

@@ -15,14 +15,6 @@ namespace Core.Directives {
 	[CodeExample("$ = 512\r\n.align 256\r\n.echoln $ ; Outputs 512.")]
 	public class Align : IDirective {
 
-		public string[] Names {
-			get {
-				return new string[] { "align" };
-			}
-		}
-
-		public string Name { get { return Names[0]; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			int[] Args = source.GetCommaDelimitedArguments(index + 1);
 			if (Args.Length != 1) throw new DirectiveArgumentException(source, "Only one argument expected.");

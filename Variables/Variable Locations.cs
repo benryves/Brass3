@@ -15,9 +15,6 @@ namespace Variables {
 	[Category("Variables")]
 	public class VarLoc : IDirective {
 
-		public string Name { get { return Names[0]; } }
-		public string[] Names { get { return new string[] { "varloc" }; } }
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			
 			if (compiler.CurrentPass == AssemblyPass.Pass2) return;

@@ -15,7 +15,7 @@ namespace SegaMasterSystem.Directives {
 	[SeeAlso(typeof(SegaProduct))]
 	[SeeAlso(typeof(SegaVersion))]
 	[SeeAlso(typeof(Output.SmsRom))]
-	[SeeAlso(typeof(Output.GameGearRom))]
+	[SeeAlso(typeof(Output.GGRom))]
 	public class SegaRegion : IDirective {
 
 		public enum Regions { Japan, Export, International };
@@ -39,9 +39,6 @@ namespace SegaMasterSystem.Directives {
 				}
 			};			
 		}
-
-		public string Name { get { return this.Names[0]; } }
-		public string[] Names { get { return new string[] { "segaregion" }; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass == AssemblyPass.Pass2) {
