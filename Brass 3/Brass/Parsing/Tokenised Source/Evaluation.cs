@@ -7,30 +7,90 @@ using Brass3.Attributes;
 namespace Brass3 {
 	public partial class TokenisedSource {
 
+		#region Types
+
 		/// <summary>
-		/// Evaluate an entire expression.
+		/// Class used to reference labels.
 		/// </summary>
-		public Label EvaluateExpression(Compiler compiler) {
+		private class LabelAccessor : ICloneable {
+			private Label label;
+			/// <summary>
+			/// Gets or sets the label being referenced.
+			/// </summary>
+			public Label Label {
+				get { label.AccessingPage = this.AccessesPage; return this.label; }
+				set { this.label = value; }
+			}
+			
+			/// <summary>
+			/// Gets or sets whether the label is being referenced by page.
+			/// </summary>
+			public bool AccessesPage = false;
+
+			/// <summary>
+			/// Createas an instance of the <see cref="LabelAccessor"/> from a label.
+			/// </summary>
+			/// <param name="label">The label we are accessing.</param>
+			public LabelAccessor(Label label) {
+				this.label = label;
+			}
+
+			/// <summary>
+			/// Clone a label accessor and its contained label.
+			/// </summary>
+			public object Clone() {
+				Label L = label.Clone() as Label;
+				LabelAccessor LA = new LabelAccessor(L);
+				LA.AccessesPage = this.AccessesPage;
+				return LA;
+			}
+		}
+
+
+		#endregion
+
+		#region TryEvaluateExpression
+
+		/// <summary>
+		/// Try to evaluate an entire expression.
+		/// </summary>
+		/// <param name="compiler">The compiler being used to build the current project.</param>
+		/// <param name="result">Outputs the result, if successful.</param>
+		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
+		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
+		public bool TryEvaluateExpression(Compiler compiler, out Label result, out CompilerExpection reasonForFailure) {
 			for (int i = 0; i < this.tokens.Length; ++i) this.tokens[i].ExpressionGroup = 0;
-			return this.EvaluateExpression(compiler, 0);
+			return this.TryEvaluateExpression(compiler, 0, out result, out reasonForFailure);
 		}
 
 		/// <summary>
-		/// Evaluate an expression within the source line.
+		/// Try to evaluate an expression within the source line.
 		/// </summary>
+		/// <param name="compiler">The compiler being used to build the current project.</param>
 		/// <param name="index">The index of the expression to evaluate.</param>
+		/// <param name="result">Outputs the result, if successful.</param>
+		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
-		public Label EvaluateExpression(Compiler compiler, int index) {
-			return EvaluateExpression(compiler, index, false);
+		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
+		public bool TryEvaluateExpression(Compiler compiler, int index, out Label result, out CompilerExpection reasonForFailure) {
+			return this.TryEvaluateExpression(compiler, index, false, out result, out reasonForFailure);
 		}
 
 		/// <summary>
-		/// Evaluate an expression within the source line.
+		/// Try to evaluate an expression within the source line.
 		/// </summary>
+		/// <param name="compiler">The compiler being used to build the current project.</param>
 		/// <param name="index">The index of the expression to evaluate.</param>
 		/// <param name="canCreateImplicitLabels">True if labels can be implicitly created by the evaluation.</param>
+		/// <param name="result">Outputs the result, if successful.</param>
+		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
-		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels) {
+		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
+		public bool TryEvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, out Label result, out CompilerExpection reasonForFailure) {
+
+			// Set the default outputs...
+			reasonForFailure = default(CompilerExpection);
+			result = default(Label);
 
 			// Check for reusables first;
 			bool IsReusableLabel = true;
@@ -43,7 +103,7 @@ namespace Brass3 {
 						IsReusableLabel = false;
 						break;
 					} else {
-						if (tokens[i].Data == "+" || tokens[i].Data=="++") {
+						if (tokens[i].Data == "+" || tokens[i].Data == "++") {
 							if (ReusableChar == null) {
 								ReusableChar = '+';
 								ReusableName = tokens[i].Data;
@@ -91,15 +151,20 @@ namespace Brass3 {
 					Reusable.Created = false;
 				} else {
 					if (!compiler.Labels.TryParse(new Token(ReusableName), out Reusable)) {
-						throw new CompilerExpection(this, string.Format("Couldn't get value for reusable label '{0}'.", ReusableName));
+						reasonForFailure = new CompilerExpection(this, string.Format("Couldn't get value for reusable label '{0}'.", ReusableName));
+						return false;
 					}
 				}
-				return Reusable;				
+				result = Reusable;
+				return true;
 			}
 
 			List<Label> TempLabels = new List<Label>();
 
-			if (this.tokens.Length == 0) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Nothing to evaluate.");
+			if (this.tokens.Length == 0) {
+				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Nothing to evaluate.");
+				return false;
+			}
 
 			LinkedList<LabelAccessor> LabelsToEvaluate = new LinkedList<LabelAccessor>();
 			List<Operator> Operators = new List<Operator>(10);
@@ -153,7 +218,8 @@ namespace Brass3 {
 							}
 
 							if (!compiler.Functions.PluginExists(T.Data)) {
-								throw new CompilerExpection(T, "Function '" + T.Data + "' not declared.");
+								reasonForFailure = new CompilerExpection(T, "Function '" + T.Data + "' not declared.");
+								return false;
 							}
 
 							List<Token> InsideFunctionTokens = new List<Token>();
@@ -239,17 +305,29 @@ namespace Brass3 {
 									LabelToAccess = O.ExpressionPosition.Previous.Value;
 									LabelToAccess.AccessesPage = false;
 								} else {
-									throw new InvalidExpressionSyntaxExpection(O.Token, "No label found for label access operator.");
+									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "No label found for label access operator.");
+									return false;
 								}
 
 							} else {
 
-								if (O.ExpressionPosition.Next == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+								if (O.ExpressionPosition.Next == null) {
+									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+									return false;
+								}
+
 								LabelAccessor Op = O.ExpressionPosition.Next.Value;
 								LabelAccessor Result = Op;
 
 								if (!O.IsAssignment) {
-									Result = (LabelAccessor)Result.Clone();
+									
+									try {
+										Result = (LabelAccessor)Result.Clone();
+									} catch (CompilerExpection c) {
+										reasonForFailure = c;
+										return false;
+									}
+
 									O.ExpressionPosition.List.AddAfter(O.ExpressionPosition.Next, Result);
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
 								} else {
@@ -275,7 +353,8 @@ namespace Brass3 {
 										Result.Label.NumericValue = -Op.Label.NumericValue;
 										break;
 									default:
-										throw new CompilerExpection(O.Token, O.Type.ToString());
+										reasonForFailure = new CompilerExpection(O.Token, O.Type.ToString());
+										return false;
 								}
 							}
 
@@ -283,15 +362,29 @@ namespace Brass3 {
 					case 2: {
 
 
-							if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
-							if (O.ExpressionPosition.Next == null || O.ExpressionPosition.Next.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand after operator.");
+							if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) {
+								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+								return false;
+							}
+
+							if (O.ExpressionPosition.Next == null || O.ExpressionPosition.Next.Value == null) {
+								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand after operator.");
+								return false;
+							}
 
 							LabelAccessor OpA = O.ExpressionPosition.Previous.Value;
 							LabelAccessor OpB = O.ExpressionPosition.Next.Value;
 							LabelAccessor Result = OpA;
 
 							if (!O.IsAssignment) {
-								Result = (LabelAccessor)Result.Clone();
+								
+								try {
+									Result = (LabelAccessor)Result.Clone();
+								} catch (CompilerExpection c) {
+									reasonForFailure = c;
+									return false;
+								}
+
 								O.ExpressionPosition.List.AddBefore(O.ExpressionPosition.Previous, Result);
 								O.ExpressionPosition.List.Remove(O.ExpressionPosition.Previous);
 							} else {
@@ -435,7 +528,10 @@ namespace Brass3 {
 
 									if (O.ExpressionPosition.Next.Next != null && O.ExpressionPosition.Next.Next.Value != null) {
 										LabelAccessor FieldName = O.ExpressionPosition.Next.Next.Value;
-										if (OpA.Label.Type == null) throw new CompilerExpection(OpA.Label.Token, "Couldn't get type information.");
+										if (OpA.Label.Type == null) {
+											reasonForFailure = new CompilerExpection(OpA.Label.Token, "Couldn't get type information.");
+											return false;
+										}
 										if (FieldName.Label.Name.Length > 0 && FieldName.Label.Name[0] == '.') {
 											string Field = FieldName.Label.Name.Substring(1);
 											DataStructure.Field SubField = (OpA.Label.Type as DataStructure)[Field];
@@ -444,14 +540,16 @@ namespace Brass3 {
 											if (!FieldName.Label.Created) compiler.Labels.Remove(FieldName.Label);
 											LabelsToEvaluate.Remove(O.ExpressionPosition.Next.Next);
 										} else {
-											throw new CompilerExpection(FieldName.Label.Token, "Expected field access.");
+											reasonForFailure = new CompilerExpection(FieldName.Label.Token, "Expected field access.");
+											return false;
 										}
 									}
 
 									break;
 
 								default:
-									throw new CompilerExpection(O.Token, O.Type.ToString());
+									reasonForFailure = new CompilerExpection(O.Token, O.Type.ToString());
+									return false;
 							}
 
 							LabelsToEvaluate.Remove(O.ExpressionPosition.Next);
@@ -459,12 +557,19 @@ namespace Brass3 {
 					case 3: {
 							switch (O.Type) {
 								case Operator.OperatorType.ConditionalQuery:
-									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) throw new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) {
+										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+										return false;
+									}
 									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.NumericValue != 0);
 									break;
 								case Operator.OperatorType.ConditionalResultSplitter:
 
-									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Previous == null || !EvaluatedTernaries.ContainsKey(O.ExpressionPosition.Previous.Previous.Value)) throw new InvalidExpressionSyntaxExpection(O.Token, "Missing matching conditional operator '?'.");
+									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Previous == null || !EvaluatedTernaries.ContainsKey(O.ExpressionPosition.Previous.Previous.Value)) {
+										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Missing matching conditional operator '?'.");
+										return false;
+									}
+
 									bool Result = EvaluatedTernaries[O.ExpressionPosition.Previous.Previous.Value];
 									EvaluatedTernaries.Remove(O.ExpressionPosition.Previous.Previous.Value);
 
@@ -480,60 +585,98 @@ namespace Brass3 {
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
 									break;
 								default:
-									throw new CompilerExpection(O.Token, O.Type.ToString());
+									reasonForFailure = new CompilerExpection(O.Token, O.Type.ToString());
+									return false;
 							}
 
 						} break;
 					default:
-						throw new CompilerExpection(O.Token, O.OperandCount + " operands unsupported.");
+						reasonForFailure = new CompilerExpection(O.Token, O.OperandCount + " operands unsupported.");
+						return false;
 				}
 				LabelsToEvaluate.Remove(O.ExpressionPosition);
 			}
 
-			try {
-				if (LabelsToEvaluate.Count != 1) throw new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many tokens left.");
+
+			if (LabelsToEvaluate.Count != 1) {
+				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many tokens left.");
+			} else {
 				if (!canCreateImplicitLabels) {
-					foreach (Label L in TempLabels) if (!L.Created) throw new InvalidOperationException("Labels cannot be implicitly created.");
+					foreach (Label L in TempLabels) {
+						if (!L.Created) {
+							reasonForFailure = new InvalidExpressionSyntaxExpection(this, string.Format("Label '{0}' cannot be implicitly created.", L.Name));
+						}
+					}
 				}
+			}
 
-				return LabelsToEvaluate.First.Value.Label;
-			} catch {
-
+			if (reasonForFailure != null) {
 				foreach (Label L in TempLabels) {
 					compiler.Labels.Remove(L);
 				}
-
-				throw;
+				return false;
+			} else {
+				result = LabelsToEvaluate.First.Value.Label;
+				return true;
 			}
 
 		}
 
 
-		private class LabelAccessor : ICloneable {
-			private Label label;
-			public Label Label {
-				get {
-					label.AccessingPage = this.AccessesPage;
-					return this.label;
-				}
-				set {
-					this.label = value;
-				}
-			}
-			public bool AccessesPage = false;
-			public LabelAccessor(Label label) {
-				this.label = label;
-			}
+		#endregion
 
-			public object Clone() {
-				Label L = label.Clone() as Label;
-				LabelAccessor LA = new LabelAccessor(L);
-				LA.AccessesPage = this.AccessesPage;
-				return LA;
-			}
+		#region EvaluateExpression
 
-
+		/// <summary>
+		/// Evaluate an entire expression.
+		/// </summary>
+		/// <param name="compiler">The compiler being used to build the current project.</param>
+		/// <returns>The result of the evaluation.</returns>
+		public Label EvaluateExpression(Compiler compiler) {
+			Label L; CompilerExpection E;
+			return ThrowOrReturn(this.TryEvaluateExpression(compiler, out L, out E), L, E);
 		}
+
+		/// <summary>
+		/// Evaluate an expression within the source line.
+		/// </summary>
+		/// <param name="compiler">The compiler being used to build the current project.</param>
+		/// <param name="index">The index of the expression to evaluate.</param>
+		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
+		/// <returns>The result of the evaluation.</returns>
+		public Label EvaluateExpression(Compiler compiler, int index) {
+			Label L; CompilerExpection E;
+			return ThrowOrReturn(this.TryEvaluateExpression(compiler, index, out L, out E), L, E);
+		}
+
+		/// <summary>
+		/// Evaluate an expression within the source line.
+		/// </summary>
+		/// <param name="compiler">The compiler being used to build the current project.</param>
+		/// <param name="index">The index of the expression to evaluate.</param>
+		/// <param name="canCreateImplicitLabels">True if labels can be implicitly created by the evaluation.</param>
+		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
+		/// <returns>The result of the evaluation.</returns>
+		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels) {
+			Label L; CompilerExpection E;
+			return ThrowOrReturn(this.TryEvaluateExpression(compiler, index, canCreateImplicitLabels, out L, out E), L, E);
+		}
+
+		/// <summary>
+		/// Throw an exception (on failure) or return a label (on success).
+		/// </summary>
+		/// <param name="success">True on success, false on failure.</param>
+		/// <param name="result">The label to return if successful.</param>
+		/// <param name="reasonForFailure">The exception to throw if not successful.</param>
+		private Label ThrowOrReturn(bool success, Label result, CompilerExpection reasonForFailure) {
+			if (success) {
+				return result;
+			} else {
+				throw reasonForFailure;
+			}
+		}
+
+		#endregion
 
 	}
 }
