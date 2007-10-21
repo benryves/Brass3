@@ -139,6 +139,7 @@ namespace Brass3 {
 			foreach (IStringEncoder Plugin in this.stringEncoders) if (Plugin.GetType() == type) return Plugin;
 			foreach (IListingWriter Plugin in this.listingWriters) if (Plugin.GetType() == type) return Plugin;
 			foreach (INumberEncoder Plugin in this.numberEncoders) if (Plugin.GetType() == type) return Plugin;
+			foreach (IAssembler Plugin in this.assemblers) if (Plugin.GetType() == type) return Plugin;
 			return null;
 		}
 
@@ -163,6 +164,7 @@ namespace Brass3 {
 			foreach (IStringEncoder Plugin in this.stringEncoders) if (Plugin.GetType().GUID == guid) return Plugin;
 			foreach (IListingWriter Plugin in this.listingWriters) if (Plugin.GetType().GUID == guid) return Plugin;
 			foreach (INumberEncoder Plugin in this.numberEncoders) if (Plugin.GetType().GUID == guid) return Plugin;
+			foreach (IAssembler Plugin in this.assemblers) if (Plugin.GetType().GUID == guid) return Plugin;
 			return null;
 		}
 

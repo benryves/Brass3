@@ -343,6 +343,8 @@ namespace Z80 {
 					// Now we have calculated the values of the various arguments,
 					// We need to build and output the data.
 
+					// The following code is pretty much a copy-and-paste job from Brass 1. Sorry.
+
 					if (I.Class == Instruction.InstructionClass.ZIndex && OperandResults.Count == 1) {
 						OperandResults[0] &= 0xFF;
 					}
@@ -406,8 +408,13 @@ namespace Z80 {
 							}
 							break;
 						case Instruction.InstructionClass.Restart:
-							//TODO: Check valid RST address.
-							OutputData[0] = (byte)((int)OutputData[0] + OperandResults[0]);
+							if (OperandResults[0] < 0x00 || OperandResults[0] > 0x38) {
+								throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses between $00 and $38 inclusive.");
+							} else if ((OperandResults[0] & 0x07) != 0) {
+								throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses divisible by eight.");
+							} else {
+								OutputData[0] = (byte)((int)OutputData[0] + OperandResults[0]);
+							}
 							break;
 						default:
 							throw new NotImplementedException();
@@ -433,32 +440,30 @@ namespace Z80 {
 			foreach (string s in Properties.Resources.TASM80.Split('\n')) {
 				string Source = s.Trim();
 				if (string.IsNullOrEmpty(Source)) continue;
-				Instruction I = new Instruction(Source);
-				AllInstructions.Add(I);
+				this.AddInstruction(new Instruction(Source), false);
 			}
 			AllInstructions.Sort();
-
 			for (int i = 0; i < AllInstructions.Count; ++i) {
 				AllInstructions[i].Identifier = i;				
 			}
+		}
 
-			foreach (Instruction I in AllInstructions) {
-
-				Dictionary<string, List<Instruction>> InstructionsByArgs;
-				if (!this.Instructions.TryGetValue(I.Operands.Length, out InstructionsByArgs)) {
-					InstructionsByArgs = new Dictionary<string, List<Instruction>>();
-					this.Instructions.Add(I.Operands.Length, InstructionsByArgs);
-				}
-
-				List<Instruction> InstructionsByName;
-				if (!InstructionsByArgs.TryGetValue(I.Name, out InstructionsByName)) {
-					InstructionsByName = new List<Instruction>();
-					InstructionsByArgs.Add(I.Name, InstructionsByName);
-				}
-
-				InstructionsByName.Add(I);
-
+		public void AddInstruction(Instruction instruction, bool resort) {
+			instruction.Identifier = this.AllInstructions.Count;
+			this.AllInstructions.Add(instruction);
+			Dictionary<string, List<Instruction>> InstructionsByArgs;
+			if (!this.Instructions.TryGetValue(instruction.Operands.Length, out InstructionsByArgs)) {
+				InstructionsByArgs = new Dictionary<string, List<Instruction>>();
+				this.Instructions.Add(instruction.Operands.Length, InstructionsByArgs);
 			}
+
+			List<Instruction> InstructionsByName;
+			if (!InstructionsByArgs.TryGetValue(instruction.Name, out InstructionsByName)) {
+				InstructionsByName = new List<Instruction>();
+				InstructionsByArgs.Add(instruction.Name, InstructionsByName);
+			}
+			InstructionsByName.Add(instruction);
+			if (resort) InstructionsByName.Sort();
 		}
 
 		#endregion

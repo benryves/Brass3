@@ -34,6 +34,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Directives\AddInstr.cs" />
     <Compile Include="Directives\Asc.cs" />
     <Compile Include="Directives\AsciiMap.cs" />
     <Compile Include="Directives\BinaryMode.cs" />
@@ -54,6 +55,10 @@
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{66020372-54B6-4719-895C-03BC5692292D}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Z80\Z80.csproj">
+      <Project>{0C2EE36C-BD51-4B40-ABC7-9461E358B2CC}</Project>
+      <Name>Z80</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
