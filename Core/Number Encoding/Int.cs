@@ -3,10 +3,12 @@ using System.ComponentModel;
 
 using Brass3;
 using Brass3.Plugins;
+using Brass3.Attributes;
 
 namespace Core.NumberEncoding {
 
 	[Description("Defines a 32-bit integer.")]
+	[PluginName("int"), PluginName("uint")]
 	public class Int : INumberEncoder {
 	
 		public int Size { get { return 4; } }

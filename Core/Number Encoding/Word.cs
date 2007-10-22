@@ -3,10 +3,12 @@ using System.ComponentModel;
 
 using Brass3;
 using Brass3.Plugins;
+using Brass3.Attributes;
 
 namespace Core.NumberEncoding {
 
 	[Description("Defines a 16-bit word.")]
+	[PluginName("word"), PluginName("uword")]
 	public class Word : INumberEncoder {
 		
 		public int Size { get { return 2; } }

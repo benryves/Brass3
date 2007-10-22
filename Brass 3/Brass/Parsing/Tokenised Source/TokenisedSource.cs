@@ -9,7 +9,7 @@ namespace Brass3 {
 	/// <summary>
 	/// Defines a tokenised line of source code.
 	/// </summary>
-	public partial class TokenisedSource :ICloneable {
+	public partial class TokenisedSource : ICloneable {
 
 		#region Constants
 
@@ -202,6 +202,7 @@ namespace Brass3 {
 			for (int i = 0; i < this.tokens.Length; ++i) DuplicatedTokens[i] = (Token)this.Tokens[i].Clone();
 			TokenisedSource Clone = new TokenisedSource(DuplicatedTokens, this.Original);
 			Clone.matchedItem = this.MatchedItem;
+			Clone.parserBehaviourChanges = this.parserBehaviourChanges;
 			return Clone;
 		}
 

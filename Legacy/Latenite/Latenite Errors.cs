@@ -35,7 +35,7 @@ namespace Legacy.Latenite {
 					ErrorFile.WriteStartElement(ErrorFileSection.Key);
 
 					if (Error.LineNumber != 0) ErrorFile.WriteAttributeString("line", Error.LineNumber.ToString(CultureInfo.InvariantCulture));
-					if (!string.IsNullOrEmpty(Error.Filename)) ErrorFile.WriteAttributeString("file", Error.Filename);
+					if (!string.IsNullOrEmpty(Error.Filename)) ErrorFile.WriteAttributeString("file", compiler.GetRelativeFilename(Error.Filename));
 
 					ErrorFile.WriteCData(Error.Message);
 

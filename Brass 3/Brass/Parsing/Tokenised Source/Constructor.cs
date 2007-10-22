@@ -36,6 +36,14 @@ namespace Brass3 {
 			return Result.ToArray();
 		}
 
+		private ParserBehaviourChangeAttribute parserBehaviourChanges = null;
+		/// <summary>
+		/// Gets any parser behaviour changes that were encountered when parsing this source statement.
+		/// </summary>
+		public ParserBehaviourChangeAttribute ParserBehaviourChanges {
+			get { return this.parserBehaviourChanges; }
+		}
+
 		/// <summary>
 		/// Create an instance of the TokenisedSource class by parsing source code from a stream.
 		/// </summary>
@@ -65,7 +73,6 @@ namespace Brass3 {
 			// Keep track of parser-mangling directives.
 			bool FoundDirective = false;
 			int DirectiveIndex = -1;
-			ParserBehaviourChangeAttribute ParserChanger = null;
 
 			// Most recent character:
 			char LastChar = (char)0;
@@ -155,25 +162,25 @@ namespace Brass3 {
 					if ((IsNewLine || IsSeperator) && FoundDirective) {
 						// We have a directive on this line.
 						// Will it prevent us from breaking?
-						if (ParserChanger == null) {
+						if (this.parserBehaviourChanges == null) {
 							string DirectiveName = Tokens[DirectiveIndex].Value.ToString().Substring(1);
 							if (compiler.Directives.PluginExists(DirectiveName)) {
 								object[] o = compiler.Directives[DirectiveName].GetType().GetCustomAttributes(typeof(ParserBehaviourChangeAttribute), false);
 								if (o.Length == 1) {
-									ParserChanger = o[0] as ParserBehaviourChangeAttribute;
+									this.parserBehaviourChanges = o[0] as ParserBehaviourChangeAttribute;
 								}
-								if (ParserChanger == null) ParserChanger = new ParserBehaviourChangeAttribute(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None);
+								if (this.parserBehaviourChanges == null) this.parserBehaviourChanges = new ParserBehaviourChangeAttribute(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None);
 							} else {
-								ParserChanger = new ParserBehaviourChangeAttribute(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None);
+								this.parserBehaviourChanges = new ParserBehaviourChangeAttribute(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None);
 							}
 						}
 						if (IsSeperator &&
-							((ParserChanger.Behaviour & ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreStatementSeperator) != ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None)) CanBreak = false;
+							((this.parserBehaviourChanges.Behaviour & ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreStatementSeperator) != ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None)) CanBreak = false;
 
 						if (IsNewLine &&
 							(
-								((ParserChanger.Behaviour & ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreAllNewLines) != ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None) ||
-								(!IgnoredNewline && (ParserChanger.Behaviour & ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreFirstNewLine) != ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None)
+								((this.parserBehaviourChanges.Behaviour & ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreAllNewLines) != ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None) ||
+								(!IgnoredNewline && (this.parserBehaviourChanges.Behaviour & ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreFirstNewLine) != ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None)
 							)) {
 							IgnoredNewline = true;
 							CanBreak = false;
@@ -311,27 +318,9 @@ namespace Brass3 {
 
 			#endregion
 
-			/*#region Colon Merging (Sounds Fun)
-
-			for (int i = 0; i < FixedTokens.Count; ++i) {
-				if (FixedTokens[i].Type == Token.TokenTypes.Punctuation && FixedTokens[i].Data == ":") {
-
-					if (i > 0 && FixedTokens[i - 1].Type == Token.TokenTypes.None && FixedTokens[i - 1].IsValidLabelName) {
-						FixedTokens[i - 1].type = Token.TokenTypes.Label;
-						FixedTokens[i - 1].Data += ":";
-						FixedTokens.RemoveAt(i);
-					} else if (i < FixedTokens.Count - 1 && FixedTokens[i + 1].Type == Token.TokenTypes.None && FixedTokens[i + 1].IsValidLabelName) {
-						FixedTokens[i + 1].type = Token.TokenTypes.Label;
-						FixedTokens[i + 1].Data = ":" + FixedTokens[i + 1].Data;
-						FixedTokens.RemoveAt(i);
-					}
-
-				}
-			}
-
-			#endregion*/
-
 			this.tokens = FixedTokens.ToArray();
+
+			if (this.parserBehaviourChanges == null) this.parserBehaviourChanges = new ParserBehaviourChangeAttribute(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None);
 
 		}
 
@@ -351,6 +340,7 @@ namespace Brass3 {
 		private TokenisedSource(Token[] tokens, TokenisedSource original) {
 			this.Original = original;
 			this.tokens = tokens;
+			this.parserBehaviourChanges = original.parserBehaviourChanges;
 		}
 	}
 }

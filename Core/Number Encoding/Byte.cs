@@ -3,10 +3,12 @@ using System.ComponentModel;
 
 using Brass3;
 using Brass3.Plugins;
+using Brass3.Attributes;
 
 namespace Core.NumberEncoding {
 
 	[Description("Defines an 8-bit byte.")]
+	[PluginName("byte"), PluginName("ubyte")]
 	public class Byte : INumberEncoder {
 		
 		public int Size { get { return 1; } }

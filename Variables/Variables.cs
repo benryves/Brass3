@@ -93,11 +93,11 @@ namespace Variables {
 				}
 
 				TokenisedSource.Token VarName = T.Clone(compiler.Labels.ModuleGetFullPath(T.Data)) as TokenisedSource.Token;
-				string VarNameLower = VarName.Data.ToLowerInvariant();
+				string VarNameLower = VarName.DataLowerCase;
 
 				if (AlreadyAllocated.Contains(VarNameLower)) throw new CompilerExpection(T, string.Format("Variable '{0}' already declared.", VarName.Data));
 
-				ToAllocate.Add(new VariableToAllocate(T, VarType, ElementCount));
+				ToAllocate.Add(new VariableToAllocate(VarName, VarType, ElementCount));
 				AlreadyAllocated.Add(VarNameLower);
 			}
 			

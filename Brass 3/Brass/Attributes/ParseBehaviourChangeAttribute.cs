@@ -11,6 +11,9 @@ namespace Brass3.Attributes {
 	public class ParserBehaviourChangeAttribute : Attribute {
 
 
+		/// <summary>
+		/// Defines the possible parser modifications that are available.
+		/// </summary>
 		[Flags()]
 		public enum ParserBehaviourModifiers {
 			None = 0,
@@ -21,6 +24,9 @@ namespace Brass3.Attributes {
 		}
 
 		private readonly ParserBehaviourModifiers behaviour;
+		/// <summary>
+		/// Gets the parser behaviour modifiers this attribute represents.
+		/// </summary>
 		public ParserBehaviourModifiers Behaviour {
 			get { return this.behaviour; }
 		}
@@ -30,6 +36,13 @@ namespace Brass3.Attributes {
 		/// </summary>
 		public ParserBehaviourChangeAttribute(ParserBehaviourModifiers change) {
 			this.behaviour = change;
+		}
+
+		/// <summary>
+		/// Returns a formatted string representing the attribute.
+		/// </summary>
+		public override string ToString() {
+			return this.Behaviour.ToString();
 		}
 
 	}

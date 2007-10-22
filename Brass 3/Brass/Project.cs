@@ -188,8 +188,8 @@ namespace Brass3 {
 				FinalPath.Append("..");
 				FinalPath.Append(Path.DirectorySeparatorChar);
 			}
-			FinalPath.Append(string.Join(Path.DirectorySeparatorChar.ToString(), PathA.ToArray()));
-			if (FinalPath.Length > 0) FinalPath.Append(Path.DirectorySeparatorChar);
+			//FinalPath.Append(string.Join(Path.DirectorySeparatorChar.ToString(), PathA.ToArray()));
+			//if (FinalPath.Length > 0) FinalPath.Append(Path.DirectorySeparatorChar);
 			FinalPath.Append(string.Join(Path.DirectorySeparatorChar.ToString(), PathB.ToArray()));
 
 			return Path.Combine(FinalPath.ToString(), Path.GetFileName(filename));

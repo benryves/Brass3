@@ -493,7 +493,19 @@ namespace Brass3 {
 		}
 
 		public static string ModuleCombine(string module1, string module2) {
-			return ((string.IsNullOrEmpty(module1)) ? "" : (module1 + ".")) + module2;
+			string[] ModuleComponents = ((string)(((string.IsNullOrEmpty(module1)) ? "" : (module1 + ".")) + module2)).Split('.');
+
+			List<string> Result = new List<string>();
+
+			for (int i = 0; i < ModuleComponents.Length; ++i) {
+				if (ModuleComponents[i].ToLowerInvariant() == "parent") {
+					Result.RemoveAt(Result.Count - 1);
+				} else {
+					Result.Add(ModuleComponents[i]);
+				}
+			}
+
+			return string.Join(".", Result.ToArray());
 		}
 
 		public static string ModuleGetParent(string path) {

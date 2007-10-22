@@ -13,6 +13,8 @@ namespace Core.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
+			if (compiler.CurrentPass != AssemblyPass.Pass1) return;
+
 			int[] Args = source.GetCommaDelimitedArguments(index + 2);
 
 			TokenisedSource.Token StructName = source.Tokens[index + 1];
@@ -53,7 +55,7 @@ namespace Core.Directives {
 				CurrentFieldOffset += F.Size;
 			}
 
-			compiler.DataStructures.Add(NewStruct);
+			compiler.DataStructures.AddRuntimeAlias(NewStruct, NewStruct.Name);
 
 
 		}

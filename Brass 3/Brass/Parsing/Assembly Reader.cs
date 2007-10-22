@@ -51,35 +51,39 @@ namespace Brass3 {
 
 				//TokenisedSource[] EnMacroed = this.Compiler.PreprocessMacros(FullSource);
 
-				// Macro preprocess:
 				bool AffectedByMacro = false;
-				for (int i = 0; i < FullSource.Tokens.Length; ++i) {
-					TokenisedSource.Token TokenToPreprocess = FullSource.Tokens[i];
-					if (TokenToPreprocess.Type != TokenisedSource.Token.TokenTypes.WhiteSpace) {
-						Compiler.PreprocessMacro MacroFunction;
-						List<string> OldTokenValues = new List<string>(FullSource.Tokens.Length);
-						foreach (TokenisedSource.Token T in FullSource.Tokens) OldTokenValues.Add(T.Data);
 
-						int OldSize = FullSource.Tokens.Length;
+				if ((FullSource.ParserBehaviourChanges.Behaviour & Brass3.Attributes.ParserBehaviourChangeAttribute.ParserBehaviourModifiers.SkipMacroPreprocessor) == Attributes.ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None) {
+
+					// Macro preprocess:
+					for (int i = 0; i < FullSource.Tokens.Length; ++i) {
+						TokenisedSource.Token TokenToPreprocess = FullSource.Tokens[i];
+						if (TokenToPreprocess.Type != TokenisedSource.Token.TokenTypes.WhiteSpace) {
+							Compiler.PreprocessMacro MacroFunction;
+							List<string> OldTokenValues = new List<string>(FullSource.Tokens.Length);
+							foreach (TokenisedSource.Token T in FullSource.Tokens) OldTokenValues.Add(T.Data);
+
+							int OldSize = FullSource.Tokens.Length;
 
 
-						if (Compiler.MacroLookup.TryGetValue(TokenToPreprocess.DataLowerCase, out MacroFunction)) {
-							bool AffectedByMacroThisLoop = false;
-							MacroFunction(this.Compiler, ref FullSource, i);
-							// Has anything changed?
-							if (FullSource.Tokens.Length != OldSize) {
-								AffectedByMacroThisLoop = true;
-							} else {
-								for (int j = 0; j < FullSource.Tokens.Length; ++j) {
-									if (FullSource.Tokens[j].Data != OldTokenValues[j]) {
-										AffectedByMacroThisLoop = true;
-										break;
+							if (Compiler.MacroLookup.TryGetValue(TokenToPreprocess.DataLowerCase, out MacroFunction)) {
+								bool AffectedByMacroThisLoop = false;
+								MacroFunction(this.Compiler, ref FullSource, i);
+								// Has anything changed?
+								if (FullSource.Tokens.Length != OldSize) {
+									AffectedByMacroThisLoop = true;
+								} else {
+									for (int j = 0; j < FullSource.Tokens.Length; ++j) {
+										if (FullSource.Tokens[j].Data != OldTokenValues[j]) {
+											AffectedByMacroThisLoop = true;
+											break;
+										}
 									}
 								}
-							}
-							if (AffectedByMacroThisLoop) {
-								AffectedByMacro = true;
-								i = 0;
+								if (AffectedByMacroThisLoop) {
+									AffectedByMacro = true;
+									i = 0;
+								}
 							}
 						}
 					}
