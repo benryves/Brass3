@@ -42,6 +42,7 @@
     <Compile Include="Directives\IncBmp.cs" />
     <Compile Include="Directives\IncLabels.cs" />
     <Compile Include="Directives\EndAsm.cs" />
+    <Compile Include="Latenite\Latenite Debug.cs" />
     <Compile Include="Other\Environment Variables.cs" />
     <Compile Include="Directives\Equ.cs" />
     <Compile Include="Latenite\Latenite Errors.cs" />
