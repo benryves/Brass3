@@ -11,6 +11,7 @@ namespace Core.Directives {
 	[Syntax(".page <param>number</param>")]
 	[Description("Sets the current page number.")]
 	[CodeExample(".page 2\r\n.echoln \"Current page = \", :$")]
+	[Category("Output Manipulation")]
 	public class Page : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {

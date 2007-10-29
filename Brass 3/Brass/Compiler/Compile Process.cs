@@ -81,6 +81,16 @@ namespace Brass3 {
 			get { return this.statements.ToArray(); }
 		}
 
+		/// <summary>
+		/// Gets the current source statement.
+		/// </summary>
+		public SourceStatement CurrentSourceStatement {
+			get {
+				int StatementIndex = this.CurrentStatement - 1;
+				return StatementIndex >= 0 && StatementIndex < this.statements.Count ? this.statements[StatementIndex] : null;
+			}
+		}
+
 		
 
 		private int compiledStatements;

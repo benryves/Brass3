@@ -11,6 +11,87 @@ namespace Brass3 {
 	/// </summary>
 	public class Label : ICloneable {
 
+		#region Events
+
+		/// <summary>
+		/// Defines the event arguments for a changed value.
+		/// </summary>
+		public class ValueChangedEventArgs : EventArgs {
+
+			/// <summary>
+			/// Defines which field of the label changed.
+			/// </summary>
+			public enum FieldChangedType {
+				/// <summary>
+				/// The numeric value of the label was changed.
+				/// </summary>
+				NumericValue,
+				/// <summary>
+				/// The string value of the label was changed.
+				/// </summary>
+				StringValue,
+				/// <summary>
+				/// The page value of the label was changed.
+				/// </summary>
+				Page,
+			}
+
+			private readonly FieldChangedType changedField;
+			/// <summary>
+			/// Gets the label field that was changed.
+			/// </summary>
+			public FieldChangedType ChangedField {
+				get { return this.changedField; }				
+			}
+
+			private readonly object oldValue;
+			/// <summary>
+			/// Gets the old value of the changed field.
+			/// </summary>
+			public object OldValue {
+				get { return this.oldValue; }
+			}
+			
+
+			private readonly object newValue;
+			/// <summary>
+			/// Gets the new value of the changed field.
+			/// </summary>
+			public object NewValue {
+				get { return this.newValue; }
+			}
+
+			/// <summary>
+			/// Creates an instance of the <see cref="ValueChangedEventArgs"/> class.
+			/// </summary>
+			public ValueChangedEventArgs(FieldChangedType changedField, object oldValue, object newValue) {
+				this.changedField = changedField;
+				this.oldValue = oldValue;
+				this.newValue = newValue;
+			}
+		}
+
+		/// <summary>
+		/// Represents the method that will handle the <see cref="ValueChanged"/> event of a <see cref="Label"/>.
+		/// </summary>
+		/// <param name="sender">The <see cref="Label"/> whose value has changed.</param>
+		/// <param name="e">A <see cref="ValueChangedEventArgs"/> that contains the event data.</param>
+		public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs e);
+
+		/// <summary>
+		/// Event fired when one of the label's values changes.
+		/// </summary>
+		public event ValueChangedEventHandler ValueChanged;
+		
+		/// <summary>
+		/// Event fired when one of the label's values changes.
+		/// </summary>
+		protected virtual void OnValueChanged(ValueChangedEventArgs e) {
+			if (ValueChanged != null) ValueChanged(this, e);
+		}
+
+		#endregion
+
 		#region Properties
 
 		private TokenisedSource.Token token;
@@ -87,7 +168,12 @@ namespace Brass3 {
 		/// </summary>
 		public string StringValue {
 			get { return this.isString ? this.stringValue : this.NumericValue.ToString(CultureInfo.InvariantCulture); }
-			set { this.isString = true; this.stringValue = value; }
+			set {
+				this.isString = true;
+				string Old = this.stringValue;
+				this.stringValue = value;
+				this.OnValueChanged(new ValueChangedEventArgs(ValueChangedEventArgs.FieldChangedType.StringValue, Old, this.stringValue));
+			}
 		}
 
 		private double value;
@@ -116,14 +202,18 @@ namespace Brass3 {
 			}
 			set {
 				if (AccessingPage) {
+					int Old = this.page;
 					this.Page = (int)value;
+					this.OnValueChanged(new ValueChangedEventArgs(ValueChangedEventArgs.FieldChangedType.Page, Old, this.page));
 				} else {
 					if (this.IsConstant) throw new LabelExpection(this.token, "'" + this.Name + "' is a constant and cannot be assigned to.");
 					this.lastAssignedPass = this.collection.Compiler.CurrentPass;
 					if (this.created) ++ChangeCount;
 					this.created = true;
-					this.value = value;
 					this.isString = false;
+					double Old = this.value;
+					this.value = value;
+					this.OnValueChanged(new ValueChangedEventArgs(ValueChangedEventArgs.FieldChangedType.NumericValue, Old, this.value));
 				}
 			}
 		}
@@ -216,7 +306,7 @@ namespace Brass3 {
 			this.created = true;
 			this.collection = collection;
 			this.token = token;
-			if (this.token != null) this.name = GetNameWithoutColon(token.Data, out accessingPage);
+			if (this.token != null) this.name = token.Data;
 			this.value = value;
 			this.page = page;
 			this.type = type;
@@ -236,7 +326,7 @@ namespace Brass3 {
 			this.exported = collection.ExportLabels;
 			this.created = false;
 			this.collection = collection;
-			this.name = GetNameWithoutColon(token.Data, out accessingPage);
+			this.name = token.Data;
 			if (token != null) {
 				this.stringValue = token.Type == TokenisedSource.Token.TokenTypes.String ? token.GetStringConstant(true) : token.Data;
 				this.isString = token.Type == TokenisedSource.Token.TokenTypes.String;
@@ -244,18 +334,7 @@ namespace Brass3 {
 			
 		}
 
-		internal static string GetNameWithoutColon(string name, out bool accessingPage) {
-			if (name[0] == ':') {
-				accessingPage = true;
-				return name.Substring(1);
-			} else if (name[name.Length - 1] == ':') {
-				accessingPage = false;
-				return name.Remove(name.Length - 1);
-			} else {
-				accessingPage = false;
-				return name;
-			}
-		}
+		
 
 		/// <summary>
 		/// Creates a limited instance of a label.

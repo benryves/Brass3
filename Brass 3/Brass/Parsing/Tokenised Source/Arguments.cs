@@ -84,18 +84,82 @@ namespace Brass3 {
 			foreach (Token T in this.Tokens) T.ExpressionGroup = 0;
 		}
 
+		/// <summary>
+		/// Defines an argument type in comma-delimited expressions.
+		/// </summary>
 		[Flags()]
 		public enum ArgumentType {
+			/// <summary>
+			/// No argument type.
+			/// </summary>
 			None = 0x0000,
-			Optional = 0x8000,
-			ImplicitLabelCreation = 0x4000,
+			
+			/// <summary>
+			/// A numeric value (double).
+			/// </summary>
 			Value = 0x0001,
+			/// <summary>
+			/// A string value.
+			/// </summary>
 			String = 0x0002,
+			/// <summary>
+			/// An unescaped string (escape characters are ignored).
+			/// </summary>
 			UnescapedString = 0x0004,
+			/// <summary>
+			/// A filename (filenames are resolved and returned as a full path).
+			/// </summary>
 			Filename = 0x0008,
+			/// <summary>
+			/// A single token (string).
+			/// </summary>
 			SingleToken = 0x0010,
+
+			/// <summary>
+			/// All of the various types available.
+			/// </summary>
+			Types = Value | String | UnescapedString | Filename | SingleToken,
+			
+			/// <summary>
+			/// Allow the argument to cause an implicit label creation.
+			/// </summary>
+			ImplicitLabelCreation = 0x0100,
+			/// <summary>
+			/// The argument is optional.
+			/// </summary>
+			Optional = 0x0200,
+			/// <summary>
+			/// The numeric value of the argument must be positive.
+			/// </summary>
+			Positive = 0x0400,
+
+			/// <summary>
+			/// All of the available argument modifiers.
+			/// </summary>
+			Modifiers = Optional | ImplicitLabelCreation | Positive,
+
 		}
 
+		/// <summary>
+		/// Gets an array of argument types for retrieving a single numeric value from a comma-delimited expression.
+		/// </summary>
+		public static ArgumentType[] ValueArgument { get { return new ArgumentType[] { ArgumentType.Value }; } }
+		/// <summary>
+		/// Gets an array of argument types for retrieving a single string from a comma-delimited expression.
+		/// </summary>
+		public static ArgumentType[] StringArgument { get { return new ArgumentType[] { ArgumentType.String }; } }
+		/// <summary>
+		/// Gets an array of argument types for retrieving a single filename string from a comma-delimited expression.
+		/// </summary>
+		public static ArgumentType[] FilenameArgument { get { return new ArgumentType[] { ArgumentType.Filename }; } }
+
+		/// <summary>
+		/// Get the results of some comma-delimited arguments.
+		/// </summary>
+		/// <param name="compiler">The compiler being used to compile the current project.</param>
+		/// <param name="index">The start index of the comma-delimited argument list.</param>
+		/// <param name="types">An array of types for each argument.</param>
+		/// <returns>An array of objects (either doubles or strings), one for each evaluated argument.</returns>
 		public object[] GetCommaDelimitedArguments(Compiler compiler, int index, ArgumentType[] types) {
 
 			// Work out the number of arguments:
@@ -118,7 +182,7 @@ namespace Brass3 {
 			// Calculate the result:
 			object[] Result = new object[Arguments.Length];
 			for (int i = 0; i < Arguments.Length; ++i) {
-				ArgumentType CurrentArgument = types[i] & ~(ArgumentType.Optional | ArgumentType.ImplicitLabelCreation);
+				ArgumentType CurrentArgument = types[i] & (ArgumentType.Types);
 
 				bool StringExpected = (CurrentArgument & (ArgumentType.String | ArgumentType.UnescapedString | ArgumentType.Filename)) != ArgumentType.None;
 
@@ -139,6 +203,7 @@ namespace Brass3 {
 						Label L = this.EvaluateExpression(compiler, Arguments[i]);
 						if (!L.Created && ((types[i] & ArgumentType.ImplicitLabelCreation) == ArgumentType.ImplicitLabelCreation)) L.SetImplicitlyCreated();
 						Result[i] = L.NumericValue;
+						if (((types[i] & ArgumentType.Positive) != ArgumentType.None) && L.NumericValue < 0) throw new DirectiveArgumentException(this, "Argument " + (i + 1) + " must be positive.");
 						break;
 					case ArgumentType.String:
 					case ArgumentType.UnescapedString:

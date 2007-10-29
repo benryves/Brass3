@@ -97,7 +97,7 @@ namespace Brass3 {
 			Console.Write(errorType + " ");
 			Console.ForegroundColor = ConsoleColor.Gray;
 			if (c.CurrentPass != AssemblyPass.None) Console.Write(c.CurrentPass + " ");
-			Console.WriteLine("[" + c.GetRelativeFilename(e.Filename) + "]: " + e.Message);
+			Console.WriteLine("[" + (e.Filename == null ? "?" :  c.GetRelativeFilename(e.Filename)) + "]: " + e.Message);
 			if (e.SourceStatement != null) {
 				Console.ForegroundColor = ConsoleColor.DarkGreen;
 				Console.BackgroundColor = ConsoleColor.Gray;

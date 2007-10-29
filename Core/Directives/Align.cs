@@ -13,6 +13,7 @@ namespace Core.Directives {
 	[Remarks("If the program counter already sits on a boundary it will not be changed.")]
 	[CodeExample("$ = 10\r\n.align 256\r\n.echoln $ ; Outputs 256.")]
 	[CodeExample("$ = 512\r\n.align 256\r\n.echoln $ ; Outputs 512.")]
+	[Category("Output Manipulation")]
 	public class Align : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {

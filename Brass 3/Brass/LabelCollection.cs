@@ -175,8 +175,7 @@ namespace Brass3 {
 		public Label Create(TokenisedSource.Token name, DataStructure type) {
 			
 			// Get the name and name only.
-			bool AccessesPage;
-			string LabelName = Label.GetNameWithoutColon(name.Data, out AccessesPage);
+			string LabelName = name.Data;
 
 			Label L;
 			if (this.TryParse(name, out L)) {
@@ -197,7 +196,6 @@ namespace Brass3 {
 			Label Result = (Label)this.ImplicitCreationDefault.Clone();
 			Result.Name = FullName;
 			Result.Token = name;
-			Result.AccessingPage = AccessesPage;
 			Result.Type = type;
 
 			// Add to dictionary:
@@ -309,8 +307,6 @@ namespace Brass3 {
 				}
 			} else {
 
-				bool AccessesPage;
-
 				// Search for labels:
 				/*foreach (string AttemptLookup in this.ResolveLabelName(token.Data, out AccessesPage)) {
 					if (this.Lookup.TryGetValue(AttemptLookup.ToLowerInvariant(), out result)) {
@@ -319,9 +315,8 @@ namespace Brass3 {
 					}
 				}*/
 
-				foreach (string AttemptLookup in this.ResolveLabelName(token.Data, out AccessesPage)) {
+				foreach (string AttemptLookup in this.ResolveLabelName(token.Data)) {
 					if (this.TryGetByName(AttemptLookup, out result)) {
-						result.AccessingPage = AccessesPage;
 						return true;
 					}
 				}
@@ -383,10 +378,10 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="source">The source name. This can be any suspected label name, including colon prefix/suffix and module access.</param>
 		/// <param name="accessesPage">Outputs true if you're trying at access the page of a label rather than its value.</param>
-		public string[] ResolveLabelName(string source, out bool accessesPage) {
+		public string[] ResolveLabelName(string source) {
 			List<string> Result = new List<string>();
 
-			string OriginalName = Label.GetNameWithoutColon(source, out accessesPage);
+			string OriginalName = source;
 			Result.Add(ModuleCombine(this.CurrentModule, OriginalName));
 			Result.Add(OriginalName);
 

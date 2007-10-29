@@ -103,7 +103,7 @@ namespace Core.Directives {
 									}
 
 
-									Label Variable = source.EvaluateExpression(compiler, 1, true);
+									Label Variable = source.EvaluateExpression(compiler, 1, true, false);
 									double Start = source.EvaluateExpression(compiler, 2).NumericValue;
 									double End = source.EvaluateExpression(compiler, 3).NumericValue;
 									double Step = CurrentExpressionIndex == 3 ? Math.Sign(End - Start) : source.EvaluateExpression(compiler, 4).NumericValue;
@@ -128,9 +128,9 @@ namespace Core.Directives {
 								break;
 							case 3: {
 									if (LastLoopHit == null) {
-										source.EvaluateExpression(compiler, Args[0]); // Execute the first bit.
+										source.EvaluateExpression(compiler, Args[0], false, true); // Execute the first bit.
 									} else {
-										source.EvaluateExpression(compiler, Args[2]); // Execute the last bit.
+										source.EvaluateExpression(compiler, Args[2], false, true); // Execute the last bit.
 									}
 
 									bool WasSuccessful = source.EvaluateExpression(compiler, Args[1]).NumericValue != 0;

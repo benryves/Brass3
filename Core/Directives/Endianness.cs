@@ -12,7 +12,7 @@ namespace Core.Directives {
 	[Syntax(".little")]
 	[Syntax(".big")]
 	[Remarks("There is no way to ensure that third-party plugins respect the compiler's endian mode. If you encounter problems with a particular plugin, please contact its author.")]
-	[Category("Data")]
+	[Category("Output Manipulation")]
 	[CodeExample(".big\r\n.int $123456 ; Outputs $12, $34, $56.")]
 	[CodeExample(".little\r\n.int $123456 ; Outputs $56, $34, $12.")]
 	[PluginName("big"), PluginName("little")]

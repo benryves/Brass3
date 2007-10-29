@@ -13,7 +13,7 @@
 		<collection source="sega.dll" />
 	</plugins>
 	<input source="test.txt" assembler="z80" />
-	<output destination="test.bin" writer="raw">
+	<output destination="D:\Documents\Documents\Visual Studio 2005\Projects\Stetson\Stetson\bin\Debug\test.rom" writer="rawpages">
 		<listing destination="todo.xml" writer="todo" />
 	</output>
 </brassproject>

@@ -174,7 +174,7 @@ namespace Brass3 {
 
 							compiler.labelEvaluationResult = null;
 							for (int i = 0; i < expressionStatementSplit; ++i) Source.Tokens[i].ExpressionGroup = -1;
-							Label L = Source.EvaluateExpression(compiler, -1, true);
+							Label L = Source.EvaluateExpression(compiler, -1, true, true);
 							if (L.IsConstant && mustMakeAssignment) throw new CompilerExpection(Source, "An assignment must be made.");
 
 							Result = compiler.labelEvaluationResult = L;

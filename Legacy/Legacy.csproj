@@ -35,9 +35,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Directives\AddInstr.cs" />
+    <Compile Include="Directives\Align.cs" />
     <Compile Include="Directives\Asc.cs" />
     <Compile Include="Directives\AsciiMap.cs" />
     <Compile Include="Directives\BinaryMode.cs" />
+    <Compile Include="Directives\LsFirst.cs" />
     <Compile Include="Directives\RleMode.cs" />
     <Compile Include="Directives\IncBmp.cs" />
     <Compile Include="Directives\IncLabels.cs" />

@@ -73,7 +73,7 @@ namespace Brass3 {
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
 		public bool TryEvaluateExpression(Compiler compiler, int index, out Label result, out CompilerExpection reasonForFailure) {
-			return this.TryEvaluateExpression(compiler, index, false, out result, out reasonForFailure);
+			return this.TryEvaluateExpression(compiler, index, false, false, out result, out reasonForFailure);
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace Brass3 {
 		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
-		public bool TryEvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, out Label result, out CompilerExpection reasonForFailure) {
+		public bool TryEvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, bool canPerformAssignments, out Label result, out CompilerExpection reasonForFailure) {
 
 			// Set the default outputs...
 			reasonForFailure = default(CompilerExpection);
@@ -197,6 +197,12 @@ namespace Brass3 {
 									}
 								}
 							}
+
+							if (!canPerformAssignments && Op.IsAssignment) {
+								reasonForFailure = new CompilerExpection(T, "You cannot perform assignments in this expression.");
+								return false;
+							}
+
 							Operators.Add(Op);
 						}
 					} else {
@@ -657,9 +663,9 @@ namespace Brass3 {
 		/// <param name="canCreateImplicitLabels">True if labels can be implicitly created by the evaluation.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>The result of the evaluation.</returns>
-		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels) {
+		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, bool canPerformAssignments) {
 			Label L; CompilerExpection E;
-			return ThrowOrReturn(this.TryEvaluateExpression(compiler, index, canCreateImplicitLabels, out L, out E), L, E);
+			return ThrowOrReturn(this.TryEvaluateExpression(compiler, index, canCreateImplicitLabels, canPerformAssignments, out L, out E), L, E);
 		}
 
 		/// <summary>

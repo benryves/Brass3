@@ -11,7 +11,7 @@ namespace Core.Directives {
 	[Syntax(".defpage page, address, size")]
 	[Description("Defines the base address and size of a page.")]
 	[Remarks("If you use this directive before <c>.page</c> the program counter and output counter values are set for you automatically.")]
-	
+	[Category("Output Manipulation")]
 	[SeeAlso(typeof(Output.RawPages))]
 	[SeeAlso(typeof(Directives.Page))]
 	public class DefPage : IDirective {

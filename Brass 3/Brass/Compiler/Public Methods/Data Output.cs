@@ -91,6 +91,14 @@ namespace Brass3 {
 		}
 
 		/// <summary>
+		/// Writes the empty fill value.
+		/// </summary>
+		/// <param name="amount">The number of bytes to write.</param>
+		public void WriteEmptyFill(int amount) {
+			for (int i = 0; i < amount; ++i) { this.WriteOutput(this.EmptyFill); }
+		}
+
+		/// <summary>
 		/// Try and get an address of a continuous free block of memory.
 		/// </summary>
 		/// <param name="page">The page to search on.</param>
@@ -133,6 +141,18 @@ namespace Brass3 {
 			return Result;
 		}
 
+		/// <summary>
+		/// Check if data exists at a particular output address on a page.
+		/// </summary>
+		/// <param name="page">The page to check.</param>
+		/// <param name="address">The address to check.</param>
+		/// <returns>True if data exists, false otherwise.</returns>
+		public bool DataExists(int page, int address) {
+			foreach (OutputData OD in this.output) {
+				if (OD.Page == page && OD.OutputCounter == address) return true;
+			}
+			return false;
+		}
 
 	}
 }

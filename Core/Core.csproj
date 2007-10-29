@@ -35,6 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Directives\ClearPage.cs" />
+    <Compile Include="Directives\Contiguous.cs" />
+    <Compile Include="Directives\Block.cs" />
+    <Compile Include="Directives\Fill.cs" />
     <Compile Include="Directives\Include Text.cs" />
     <Compile Include="Directives\Define Page.cs" />
     <Compile Include="Directives\List.cs" />

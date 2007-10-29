@@ -41,7 +41,11 @@ namespace Brass3 {
 
 		public virtual void Add(T plugin) {			
 			foreach (string Name in Compiler.GetPluginNames(plugin)) {
-				if (this.Plugins.ContainsKey(Name)) throw new InvalidOperationException("Plugin " + Name + " already loaded.");
+				if (this.Plugins.ContainsKey(Name)) {
+					//throw new InvalidOperationException("Plugin '" + Name + "' already loaded.");
+					this.Plugins.Remove(Name);
+					this.Compiler.OnWarningRaised(new Compiler.NotificationEventArgs(this.Compiler, "Plugin '" + Name + "' loaded twice."));
+				}
 				this.Plugins.Add(Name, plugin);
 			}
 			UniquePlugins.Add(plugin);

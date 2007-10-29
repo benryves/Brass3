@@ -12,6 +12,7 @@ namespace Core.Directives {
 	[Syntax(".org address")]
 	[Description("Sets the value of the current program counter and output counter.")]
 	[CodeExample(".org $9D93")]
+	[Category("Output Manipulation")]
 	public class Org : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
