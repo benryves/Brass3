@@ -12,8 +12,8 @@ namespace Core.Directives {
 	[Syntax(".enum name\r\n\tlabel [= expression],\r\n\tlabel [= expression],\r\n\t...\r\n\tlabel [= expression]")]
 	[ParserBehaviourChange(ParserBehaviourChangeAttribute.ParserBehaviourModifiers.IgnoreFirstNewLine)]
 	[Category("Labels")]
-	[CodeExample("Defines an enumeration for the days of the week.", ".enum Days\r\n\tSunday,\r\n\tMonday,\r\n\tTuesday,\r\n\tWednesday,\r\n\tThursday,\r\n\tFriday,\r\n\tSaturday\r\n\\\r\n\r\n/*\r\nThis creates the following labels:\r\nDays.Sunday   = 0\r\nDays.Monday   = 1\r\nDays.Tuesday  = 2\r\n...\r\nDays.Saturday = 6\r\n*/")]
-	[CodeExample("Initialisers can be used to manually control enumeration values.", ".enum Numbers\r\n\tEleven = 11,\r\n\tTwelve,\r\n\tThirteen,\r\n\tTwenty = 20,\r\n\tVingt = 20,\r\n\tZwanzig = 20,\r\n\tTwentyOne,\r\n\tFour = 4,\r\n\tFive\r\n\\\r\n\r\n.echoln Numbers.Eleven    ; 11\r\n.echoln Numbers.Twelve    ; 12\r\n.echoln Numbers.Thirteen  ; 13\r\n.echoln Numbers.Twenty    ; 20\r\n.echoln Numbers.Vingt     ; 20\r\n.echoln Numbers.Zwanzig   ; 20\r\n.echoln Numbers.TwentyOne ; 21\r\n.echoln Numbers.Four      ; 4\r\n.echoln Numbers.Five      ; 5")]
+	[CodeExample("Defines an enumeration for the days of the week.", ".enum Days\r\n\tSunday,\r\n\tMonday,\r\n\tTuesday,\r\n\tWednesday,\r\n\tThursday,\r\n\tFriday,\r\n\tSaturday\r\n\r\n/*\r\nThis creates the following labels:\r\nDays.Sunday   = 0\r\nDays.Monday   = 1\r\nDays.Tuesday  = 2\r\n...\r\nDays.Saturday = 6\r\n*/")]
+	[CodeExample("Initialisers can be used to manually control enumeration values.", ".enum Numbers\r\n\tEleven = 11,\r\n\tTwelve,\r\n\tThirteen,\r\n\tTwenty = 20,\r\n\tVingt = 20,\r\n\tZwanzig = 20,\r\n\tTwentyOne,\r\n\tFour = 4,\r\n\tFive\r\n\r\n.echoln Numbers.Eleven    ; 11\r\n.echoln Numbers.Twelve    ; 12\r\n.echoln Numbers.Thirteen  ; 13\r\n.echoln Numbers.Twenty    ; 20\r\n.echoln Numbers.Vingt     ; 20\r\n.echoln Numbers.Zwanzig   ; 20\r\n.echoln Numbers.TwentyOne ; 21\r\n.echoln Numbers.Four      ; 4\r\n.echoln Numbers.Five      ; 5")]
 	[Warning("You can manually assign two labels with the same value. This is intended behaviour.")]
 	public class Enum : IDirective {
 
@@ -25,17 +25,27 @@ namespace Core.Directives {
 			
 			Label DefaultCreator = new Label(compiler.Labels, 0, false);
 			compiler.Labels.ImplicitCreationDefault = DefaultCreator;
-			
-			foreach (int i in Args) {
 
-				Label L = source.EvaluateExpression(compiler, i);
-				if (L.Created) DefaultCreator.NumericValue = double.MinValue;
-				L.SetImplicitlyCreated();
+			try {
+				List<double> AssignedValues = new List<double>();
+				foreach (int i in Args) {
+					
+					Label L = source.EvaluateExpression(compiler, i, true, true);
+					L.SetImplicitlyCreated();
 
-				DefaultCreator.NumericValue = Math.Max(DefaultCreator.NumericValue, L.NumericValue) + 1;
+					AssignedValues.Add(L.NumericValue);
+					
+					DefaultCreator.NumericValue = L.NumericValue + 1;
+					while (AssignedValues.Contains(DefaultCreator.NumericValue)) {
+						++DefaultCreator.NumericValue;
+					}
+
+					
+				}
+
+			} finally {
+				compiler.Labels.ImplicitCreationDefault = compiler.Labels.ProgramCounter;
 			}
-
-			compiler.Labels.ImplicitCreationDefault = compiler.Labels.ProgramCounter;
 
 			compiler.Labels.LeaveModule();
 
