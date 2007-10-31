@@ -24,7 +24,7 @@ namespace Core.Output {
 		public struct PageDeclaration {
 			public int Address;
 			public int Size;
-			public PageDeclaration(int address, int size) {
+			public PageDeclaration(int size, int address) {
 				this.Address = address;
 				this.Size = size;
 			}
