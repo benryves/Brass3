@@ -605,12 +605,17 @@ namespace Brass3 {
 
 
 			if (LabelsToEvaluate.Count != 1) {
-				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Too many tokens left.");
+				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Syntax error.");
 			} else {
 				if (!canCreateImplicitLabels) {
 					foreach (Label L in TempLabels) {
 						if (!L.Created) {
-							reasonForFailure = new InvalidExpressionSyntaxExpection(this, string.Format("Label '{0}' cannot be implicitly created.", L.Name));
+							string Error = string.Format("Label '{0}' not found.", L.Name);
+							if (L.Token == null) {
+								reasonForFailure = new InvalidExpressionSyntaxExpection(this, Error);
+							} else {
+								reasonForFailure = new InvalidExpressionSyntaxExpection(L.Token, Error);
+							}
 						}
 					}
 				}

@@ -52,6 +52,6 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(SolutionDir)Brass 3\$(OutDir)$(TargetFileName)"
-Copy "$(TargetDir)CreateBrassProj.brassproj" "$(SolutionDir)Brass 3\$(OutDir)CreateBrassProj.brassproj"</PostBuildEvent>
+Copy "$(TargetDir)..\Debug\CreateBrassProj.brassproj" "$(SolutionDir)Brass 3\$(OutDir)CreateBrassProj.brassproj"</PostBuildEvent>
   </PropertyGroup>
 </Project>

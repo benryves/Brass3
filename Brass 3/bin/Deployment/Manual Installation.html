@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Manual Installation</title>
+	</head>
+	<body>
+		<h1>Manual Installation</h1>
+		<p>For Windows users it is recommended that you simply use the installer package.</p>
+		<p>For other operating systems or situations where you do not have access to administrative rights you can use this zip package instead.</p>
+		<h2>File Installation</h2>
+		<p>Extract the files wherever you like.</p>
+		<p>For practicality reasons, all of the executables and plugins should reside in the same directory.</p>
+		<h2>Environment Variables</h2>
+		<p>The installer creates two environment variables:</p>
+		<ul>
+			<li><tt><b>Brass</b></tt> - directory that contains the Brass executable and plugins (<tt>%programfiles%\Brass</tt>).</li>
+			<li><tt><b>Brass.Include</b></tt> - directory that contains include files (<tt>%programfiles%\Brass\Include</tt>).</li>
+		</ul>
+		<h2>File Associations</h2>
+		<p>The following file can be merged with the Windows registry - though you'll need to modify the path to the <tt>BrassGuiBuild.exe</tt> - to give Brass projects a <i>Build</i> context menu item.</p>
+		<pre>Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.brassproj]
+@="Brass.Project"
+
+[HKEY_CLASSES_ROOT\Brass.Project\shell\Build\command]
+@="\"<u>C:\\Program Files\\Brass\\</u>BrassGuiBuild.exe\" \"%1\""
+
+</pre>
+	</body>
+</html>

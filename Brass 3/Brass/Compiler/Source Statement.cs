@@ -190,7 +190,10 @@ namespace Brass3 {
 					// ...and now we execute the "other" bit:
 					if (expressionStatementSplit != Source.Tokens.Length) {
 						if (this.type == StatementType.Directive) {
-							string DirectiveName = Source.Tokens[expressionStatementSplit].Data.Substring(1).ToLowerInvariant();
+							string DirectiveName = Source.Tokens[expressionStatementSplit].DataLowerCase.Substring(1);
+							if (!compiler.Directives.PluginExists(DirectiveName)) {
+								throw new CompilerExpection(source.Tokens[expressionStatementSplit], string.Format("Invalid directive '{0}'.", Source.Tokens[expressionStatementSplit].Data));
+							}
 							IDirective Directive = compiler.Directives[DirectiveName];
 							if (compiler.IsSwitchedOn || Directive.GetType() == compiler.Reactivator) {
 								this.wasCompiled = true;
@@ -250,7 +253,7 @@ namespace Brass3 {
 
 				for (int i = 0; i < Source.Tokens.Length; ++i) {
 					// Is this a directive?
-					if (Source.Tokens[i].Type == TokenisedSource.Token.TokenTypes.Directive && compiler.Directives.PluginExists(Source.Tokens[i].Data.Substring(1))) {
+					if (Source.Tokens[i].Type == TokenisedSource.Token.TokenTypes.Directive) {
 						LabelInstructionSplit = i;
 						this.type = StatementType.Directive;
 						break;

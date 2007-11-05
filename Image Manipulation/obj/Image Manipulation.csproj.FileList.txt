@@ -5,3 +5,10 @@ bin\Debug\ImageManipulation.dll
 bin\Debug\ImageManipulation.pdb
 obj\Debug\ImageManipulation.dll
 obj\Debug\ImageManipulation.pdb
+bin\Release\ImageManipulation.dll
+bin\Release\ImageManipulation.pdb
+bin\Release\Brass.exe
+bin\Release\Brass.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\ImageManipulation.dll
+obj\Release\ImageManipulation.pdb

@@ -12,3 +12,13 @@ bin\Debug\Brass.pdb
 ..\Brass 3\bin\Debug\Project Editor.pdb
 obj\Debug\ProjectEditor.Editor.resources
 obj\Debug\ProjectEditor.FileTextBox.resources
+..\Brass 3\bin\Release\Project Editor.exe
+..\Brass 3\bin\Release\Project Editor.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\ProjectEditor.EditorInterface.resources
+obj\Release\ProjectEditor.FileTextBox.resources
+obj\Release\ProjectEditor.Editor.resources
+obj\Release\ProjectEditor.Properties.Resources.resources
+obj\Release\Project Editor.csproj.GenerateResource.Cache
+obj\Release\Project Editor.exe
+obj\Release\Project Editor.pdb

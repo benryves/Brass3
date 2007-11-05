@@ -21,33 +21,49 @@ namespace Brass3 {
 		/// <summary>
 		/// Load a project file into the compiler.
 		/// </summary>
-		/// <param name="p">The project to load.</param>
-		public void LoadProject(Project p) {
+		/// <param name="project">The project to load.</param>
+		public void LoadProject(Project project) {
 
-			this.project = p;
+			this.project = project;
 
 			//TODO: Clear state on project load.
 
 			// Plugins:
-			foreach (Project.PluginCollectionInfo Collection in p.Plugins) {
+			foreach (Project.PluginCollectionInfo Collection in project.Plugins) {
 				this.LoadPluginsFromAssembly(Collection.Source, Collection.Exclusions.ToArray());
 			}
 
-			if (!string.IsNullOrEmpty(p.Assembler) && this.assemblers.PluginExists(p.Assembler)) this.CurrentAssembler = this.Assemblers[p.Assembler];
-			this.SourceFile = GetFullFilename(p, p.SourceFile);
-			this.DestinationFile = GetFullFilename(p, p.DestinationFile);
+			if (!string.IsNullOrEmpty(project.Assembler) && this.assemblers.PluginExists(project.Assembler)) this.CurrentAssembler = this.Assemblers[project.Assembler];
+			this.SourceFile = GetFullFilename(project, project.SourceFile);
+			this.DestinationFile = GetFullFilename(project, project.DestinationFile);
+			this.LoadStateFromProject(project);
+		}
 
-			if (this.OutputWriters.PluginExists(p.OutputWriter)) {
-				this.OutputWriter = this.OutputWriters[p.OutputWriter];
+		private void LoadStateFromProject(Project project) {
+
+			
+
+			if (this.OutputWriters.PluginExists(project.OutputWriter)) {
+				this.OutputWriter = this.OutputWriters[project.OutputWriter];
 			} else {
 				this.OnWarningRaised(new NotificationEventArgs(this, "Output writer not set."));
 			}
 
-			foreach (KeyValuePair<string, string> ListingWriter in p.ListingFiles) {
+			if (this.StringEncoders.PluginExists(project.StringEncoder)) {
+				this.StringEncoder = this.StringEncoders[project.StringEncoder];
+			} else {
+				this.OnWarningRaised(new NotificationEventArgs(this, "String encoder not set."));
+			}
+
+
+			this.ListingWriters.Clear();
+
+			foreach (KeyValuePair<string, string> ListingWriter in project.ListingFiles) {
 				if (this.ListingWriters.PluginExists(ListingWriter.Value)) {
-					this.ListingFiles.Add(GetFullFilename(p, ListingWriter.Key), this.ListingWriters[ListingWriter.Value]);
+					this.ListingFiles.Add(GetFullFilename(project, ListingWriter.Key), this.ListingWriters[ListingWriter.Value]);
 				}
 			}
+
 		}
 
 		private static string GetFullFilename(Project p, string relativeName) {

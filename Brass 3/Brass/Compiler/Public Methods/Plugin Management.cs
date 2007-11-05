@@ -33,6 +33,35 @@ namespace Brass3 {
 		}
 
 		/// <summary>
+		/// Gets the display name for a plugin.
+		/// </summary>
+		/// <param name="plugin">The plugin to get the display name of.</param>
+		/// <returns>The plugin's display name.</returns>
+		/// <remarks>If no display name is explicitly defined, the plugin's names are returned delimited by a slash.</remarks>
+		public static string GetPluginDisplayName(Type plugin) {
+
+			string[] Result = Array.ConvertAll<object, string>(plugin.GetCustomAttributes(typeof(System.ComponentModel.DisplayNameAttribute), false), delegate(object o) {
+				return (o as System.ComponentModel.DisplayNameAttribute).DisplayName;
+			});
+
+			if (Result.Length == 0) {
+				Result = GetPluginNames(plugin);
+			}
+			return string.Join("/", Result);
+		}
+
+
+		/// <summary>
+		/// Gets the display name for a plugin.
+		/// </summary>
+		/// <param name="plugin">The plugin to get the display name of.</param>
+		/// <returns>The plugin's display name.</returns>
+		/// <remarks>If no display name is explicitly defined, the plugin's names are returned delimited by a slash.</remarks>
+		public static string GetPluginDisplayName(IPlugin plugin) {
+			return Compiler.GetPluginDisplayName(plugin.GetType());
+		}
+
+		/// <summary>
 		/// Gets the single identifying name for a plugin.
 		/// </summary>
 		/// <param name="plugin">The plugin to get the name of.</param>

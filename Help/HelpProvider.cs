@@ -252,7 +252,7 @@ namespace Help {
 
 			List<Type> ImplementedInterfaces = new List<Type>(T.GetInterfaces());
 
-			if (Plugin != null) Title = string.Join("/", Compiler.GetPluginNames(Plugin));
+			if (Plugin != null) Title = Compiler.GetPluginDisplayName(Plugin);
 
 
 			string CollectionName = PluginAssembly.GetName().Name;
@@ -287,7 +287,7 @@ namespace Help {
 				Result.Append("<div><table>");
 				foreach (T Plugin in Matches) {
 					Result.Append("<tr>");
-					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Compiler.GetPluginName(Plugin))) + "</a></th><td>");
+					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Compiler.GetPluginDisplayName(Plugin))) + "</a></th><td>");
 					
 					string Description = "";
 					object[] DescriptionAttributes = Plugin.GetType().GetCustomAttributes(typeof(DescriptionAttribute), false);

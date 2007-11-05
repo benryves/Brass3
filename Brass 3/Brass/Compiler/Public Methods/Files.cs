@@ -8,6 +8,32 @@ using Brass3.Plugins;
 namespace Brass3 {
 	public partial class Compiler {
 
+		private readonly List<string> includeSearchDirectories;
+		/// <summary>
+		/// Gets the list of directories to search for include files.
+		/// </summary>
+		public List<string> IncludeSearchDirectories {
+			get { return this.includeSearchDirectories; }
+		}
+
+		/// <summary>
+		/// Resolve a filename.
+		/// </summary>
+		/// <param name="filename">The filename to try and resolve.</param>
+		/// <returns>The resolved, full, filename, after checking various directories.</returns>
+		public string ResolveFilename(string filename) {
+			string CurrentFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.CurrentFile), filename));
+			if (File.Exists(CurrentFilename)) return CurrentFilename;
+			string LocalFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), filename));
+			if (File.Exists(LocalFilename)) return LocalFilename;
+
+			foreach (string IncludeDirectory in this.IncludeSearchDirectories) {
+				string IncludePath = Path.GetFullPath(Path.Combine(IncludeDirectory, filename));
+				if (File.Exists(IncludePath)) return IncludePath;
+			}
+
+			return Path.GetFullPath(filename);
+		}
 
 		/// <summary>
 		/// Gets an array of all of the files that were assembled.

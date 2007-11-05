@@ -35,7 +35,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Brass\Directives\IonHeader.cs" />
     <Compile Include="Brass\Directives\TI Variable Name.cs" />
+    <Compile Include="Brass\Functions\BCall.cs" />
     <Compile Include="Brass\Output\TI73.cs" />
     <Compile Include="Brass\Output\TI86.cs" />
     <Compile Include="Brass\Output\TI85.cs" />

@@ -49,6 +49,14 @@ namespace Brass3 {
 		}
 
 		/// <summary>
+		/// Write a <c>ushort</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		public void WriteOutput(ushort data) {
+			this.WriteOutput((short)data);
+		}
+
+		/// <summary>
 		/// Write a <c>short</c> of data to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
@@ -88,6 +96,14 @@ namespace Brass3 {
 				default:
 					throw new InvalidOperationException();
 			}
+		}
+
+		/// <summary>
+		/// Write an <c>uint</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		public void WriteOutput(uint data) {
+			this.WriteOutput((int)data);
 		}
 
 		/// <summary>

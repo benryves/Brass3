@@ -37,6 +37,13 @@ namespace Brass3 {
 			this.stringEncoder = null;
 
 			this.compiledStatements = 0;
+
+			this.includeSearchDirectories.Clear();
+
+			string BrassInclude = Environment.GetEnvironmentVariable("Brass.Include");
+			if (!string.IsNullOrEmpty(BrassInclude)) this.includeSearchDirectories.Add(BrassInclude);
+
+			if (this.Project != null) this.LoadStateFromProject(this.Project);
 		}
 
 	}

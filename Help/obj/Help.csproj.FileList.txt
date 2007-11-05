@@ -15,3 +15,12 @@ bin\Debug\Brass.pdb
 ..\Brass3\bin\Debug\Help.pdb
 ..\Brass 3\bin\Debug\Help.exe
 ..\Brass 3\bin\Debug\Help.pdb
+..\Brass 3\bin\Release\Help.exe
+..\Brass 3\bin\Release\Help.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\Help.HelpInterface.resources
+obj\Release\Help.HelpViewer.resources
+obj\Release\Help.Properties.Resources.resources
+obj\Release\Help.csproj.GenerateResource.Cache
+obj\Release\Help.exe
+obj\Release\Help.pdb

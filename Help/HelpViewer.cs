@@ -91,7 +91,7 @@ namespace Help {
 
 			Comparison<TreeNode> TreeNodeSorter = delegate(TreeNode a, TreeNode b) { return a.Text.CompareTo(b.Text); };
 
-			
+
 			foreach (T D in source) {
 
 				Assembly A = D.GetType().Assembly;
@@ -109,15 +109,11 @@ namespace Help {
 					CategoryNodes.Add(Category, DirectiveNodes);
 				}
 
-				string[] Names = Compiler.GetPluginNames(D);				
-
-				foreach (string DirectiveName in Names) {
-					TreeNode DirectiveNode = new TreeNode(DirectiveName);
-					DirectiveNode.Tag = D;
-					DirectiveNode.ImageIndex = 2;
-					DirectiveNode.SelectedImageIndex = 2;
-					DirectiveNodes.Add(DirectiveNode);
-				}
+				TreeNode DirectiveNode = new TreeNode(Compiler.GetPluginDisplayName(D));
+				DirectiveNode.Tag = D;
+				DirectiveNode.ImageIndex = 2;
+				DirectiveNode.SelectedImageIndex = 2;
+				DirectiveNodes.Add(DirectiveNode);
 			}
 
 			if (CategoryNodes.Count > 0) {

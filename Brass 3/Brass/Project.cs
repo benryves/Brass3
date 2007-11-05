@@ -75,6 +75,15 @@ namespace Brass3 {
 			set { this.destinationFile = value; }
 		}
 
+		private string stringEncoder;
+		/// <summary>
+		/// Gets or sets the string encoder.
+		/// </summary>
+		public string StringEncoder {
+			get { return this.stringEncoder; }
+			set { this.stringEncoder = value; }
+		}
+
 		private string outputWriter;
 		/// <summary>
 		/// Gets or sets the current output writer.
@@ -260,6 +269,7 @@ namespace Brass3 {
 				// Get source:
 				if (TryGetNamedItem(CurrentNodeList[CurrentNodeList.Count - 1], "source", out CurrentAttribute)) this.sourceFile = CurrentAttribute.Value;
 				if (TryGetNamedItem(CurrentNodeList[CurrentNodeList.Count - 1], "assembler", out CurrentAttribute)) this.assembler = CurrentAttribute.Value;
+				if (TryGetNamedItem(CurrentNodeList[CurrentNodeList.Count - 1], "stringencoder", out CurrentAttribute)) this.stringEncoder = CurrentAttribute.Value;
 			}
 
 			// Handle output:			

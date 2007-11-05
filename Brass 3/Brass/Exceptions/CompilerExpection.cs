@@ -7,7 +7,7 @@ namespace Brass3 {
 
 		private readonly TokenisedSource source;
 		public TokenisedSource SourceStatement {
-			get { return this.source == null ? null : this.source.OutermostTokenisedSource; }
+			get { return this.source; }
 		}
 
 		private readonly TokenisedSource.Token token;

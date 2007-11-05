@@ -9,3 +9,10 @@ bin\Debug\Brass.exe
 bin\Debug\Brass.pdb
 ..\Brass 3\bin\Debug\Test Automator.exe
 ..\Brass 3\bin\Debug\Test Automator.pdb
+..\Brass 3\bin\Release\Test Automator.exe
+..\Brass 3\bin\Release\Test Automator.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\Test_Automator.Properties.Resources.resources
+obj\Release\Test Automator.csproj.GenerateResource.Cache
+obj\Release\Test Automator.exe
+obj\Release\Test Automator.pdb

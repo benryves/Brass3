@@ -91,21 +91,11 @@ namespace Brass3 {
 		}
 
 		static void DisplayError(Compiler c, Compiler.NotificationEventArgs e, string errorType, ConsoleColor errorColour) {
-
-			Console.BackgroundColor = ConsoleColor.Black;
-			Console.ForegroundColor = errorColour;
-			Console.Write(errorType + " ");
-			Console.ForegroundColor = ConsoleColor.Gray;
-			if (c.CurrentPass != AssemblyPass.None) Console.Write(c.CurrentPass + " ");
-			Console.WriteLine("[" + (e.Filename == null ? "?" :  c.GetRelativeFilename(e.Filename)) + "]: " + e.Message);
+			Console.WriteLine(string.Format("Error in {0} line {1} column {2}: {3}", string.IsNullOrEmpty(e.Filename) ? "?" : c.GetRelativeFilename(e.Filename), e.LineNumber, e.SourceToken == null ? 0 : e.SourceToken.SourcePosition - e.SourceStatement.OutermostTokenisedSource.Tokens[0].SourcePosition, e.Message));
 			if (e.SourceStatement != null) {
-				Console.ForegroundColor = ConsoleColor.DarkGreen;
-				Console.BackgroundColor = ConsoleColor.Gray;
-				Console.Write("{0,5}", e.LineNumber);
-				RestoreConsoleColours();
-				e.SourceStatement.OutermostTokenisedSource.WriteColouredConsoleOutput(true, e.SourceToken, true);
-				Console.WriteLine();
+				Console.WriteLine(e.SourceStatement.OutermostTokenisedSource.ToString().Trim());
 			}
+			Console.WriteLine();
 		}
 
 		private static ConsoleColor[] OriginalConsoleColours = new ConsoleColor[] { Console.ForegroundColor, Console.BackgroundColor };

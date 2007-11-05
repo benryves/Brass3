@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Texas Instruments Plugins")]
+[assembly: AssemblyTitle("Texas Instruments Calculator Plugins")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bee Development")]
-[assembly: AssemblyProduct("Texas Instruments Plugin Collection")]
+[assembly: AssemblyProduct("Texas Instruments Calculator Plugin Collection")]
 [assembly: AssemblyCopyright("Copyright ©  2007 Bee Development")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

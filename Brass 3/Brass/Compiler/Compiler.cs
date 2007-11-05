@@ -33,6 +33,7 @@ namespace Brass3 {
 			this.invisiblePlugins = new NamedPluginCollection<IPlugin>(this);
 			this.dataStructures = new NamedPluginCollection<IDataStructure>(this);
 			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
+			this.includeSearchDirectories = new List<string>();
 
 			this.statements = new List<SourceStatement>(1024);
 
@@ -49,22 +50,7 @@ namespace Brass3 {
 
 
 
-		#region Misc.
 
-		/// <summary>
-		/// Resolve a filename.
-		/// </summary>
-		/// <param name="filename">The filename to try and resolve.</param>
-		/// <returns>The resolved, full, filename, after checking various directories.</returns>
-		public string ResolveFilename(string filename) {
-			string CurrentFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.CurrentFile), filename));
-			if (File.Exists(CurrentFilename)) return CurrentFilename;
-			string LocalFilename = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), filename));
-			if (File.Exists(LocalFilename)) return LocalFilename;
-			return Path.GetFullPath(filename);
-		}
-
-		#endregion
 
 		#endregion
 

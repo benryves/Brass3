@@ -124,7 +124,7 @@ namespace Z80 {
 					if ((Op.Key & OperandType.Indirect) != OperandType.None) OperandText = "(" + OperandText + ")";
 					OperandStrings.Add(OperandText);
 				}
-				return this.Name + " " + string.Join(", ", OperandStrings.ToArray());
+				return this.Name + " " + string.Join(",", OperandStrings.ToArray());
 			}
 
 
@@ -312,6 +312,14 @@ namespace Z80 {
 							case Instruction.OperandType.Value:
 								// Evaluate:
 								OperandResults.Add((int)source.EvaluateExpression(compiler, SourceArguments[i]).NumericValue);
+
+								if ((I.Operands[i].Key & Instruction.OperandType.Indirect) == Instruction.OperandType.None) {
+									TokenisedSource CheckAccidentalIndirection = (source.GetExpressionTokens(SourceArguments[i]));
+									if (CheckAccidentalIndirection.Tokens[0].Data == "(" && CheckAccidentalIndirection.GetCloseBracketIndex(0) == CheckAccidentalIndirection.Tokens.Length - 1) {
+										string ErrorMessage = string.Format("Attempted use of indirection with an unsupported instruction ({0}).", I);
+										compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(CheckAccidentalIndirection, ErrorMessage)));
+									}
+								}
 								break;
 
 							case Instruction.OperandType.Index:
