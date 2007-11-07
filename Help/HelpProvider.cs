@@ -328,11 +328,21 @@ namespace Help {
 			
 			toEscape = new Regex(@">(\s*?)<", RegexOptions.Multiline).Replace(toEscape, "><");
 
-			
+			toEscape = new Regex(@"(<.*?>)([^<]+?)(</.*?>)", RegexOptions.Singleline).Replace(toEscape, delegate(Match m) {
+				if (m.Groups[2].Value.Contains("\n")) {
+					return m.Groups[1].Value + "<p>" + string.Join("</p><p>", m.Groups[2].Value.Split('\n')) + "</p>" + m.Groups[3].Value;
+				} else {
+					return m.Value;
+				}
+			});
+
+
 			foreach (string s in toEscape.Split('\n')) {
-				Result.Append("<p>" + s + "</p>");
+				Result.Append("<p>" + s + "</p>");				
 			}
+
 			return Result.ToString();
+
 		}
 
 		internal string ExpandTabs(string toExpand) {
