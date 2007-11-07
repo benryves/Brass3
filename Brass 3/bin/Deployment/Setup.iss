@@ -1,6 +1,8 @@
+; Setup Script for Brass 3.
+; Ben Ryves / Bee Development 2007.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 1
+AppVerName=Brass 3 Beta 2
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
@@ -36,6 +38,20 @@ Source: "..\Release\ImageManipulation.dll"; DestDir: "{app}"; Flags: ignoreversi
 ; Includes:
 Source: "Include\TI\ti83plus.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\ti83plus";
 Source: "Include\TI\ti73.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\ti73";
+Source: "Include\TI\ti83.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\ti83";
+Source: "Include\TI\ion83.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83\Ion";
+Source: "Include\TI\venus.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83\Venus";
+Source: "Include\TI\ion8x.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83Plus\Ion";
+Source: "Include\TI\mirage.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83Plus\Mirage";
+
+; Templates:
+Source: "Templates\TI\Program.brassproj"; DestDir: "{app}\Templates\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Templates\TI\Resources\Icons\MirageOS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Templates\TI\Resources\Icons\Venus.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
+
+; Samples:
+Source: "Samples\TI Calculator Program\Demo.brassproj"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Program"; Flags: ignoreversion; Components: "Samples\TIProgram";
+Source: "Samples\TI Calculator Program\Demo.asm"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Program"; Flags: ignoreversion; Components: "Samples\TIProgram";
 
 ; Documentation:
 Source: "Release Notes.rtf"; DestDir: "{app}\Documentation"; Flags: ignoreversion;
@@ -46,6 +62,9 @@ Name: "Brass"; Description: "Brass Compiler"; Types: full compact custom; Flags:
 Name: "Tools"; Description: "Tools"; Types: full custom;
 Name: "Tools\Help"; Description: "Help Viewer"; Types: full custom;
 Name: "Tools\GuiBuilder"; Description: "GUI Builder"; Types: full custom;
+
+Name: "Samples"; Description: "Projects Directory"; Types: full custom;
+Name: "Samples\TIProgram"; Description: "Sample Texas Instruments Calculator Program"; Types: full custom;
 
 Name: "Plugins"; Description: "Plugins"; Types: full compact custom;
 Name: "Plugins\Core"; Description: "Core Collection"; Types: full compact custom;
@@ -59,8 +78,18 @@ Name: "Plugins\ImageManipulation"; Description: "Image Manipulation"; Types: ful
 
 Name: "Include"; Description: "Include Files"; Types: full custom;
 Name: "Include\TI"; Description: "Texas Instruments Calculators"; Types: full custom;
-Name: "Include\TI\ti83plus"; Description: "TI-83 Plus"; Types: full custom;
-Name: "Include\TI\ti73"; Description: "TI-73"; Types: full custom;
+Name: "Include\TI\TI83"; Description: "TI-83"; Types: full custom;
+Name: "Include\TI\TI83\Ion"; Description: "Ion"; Types: full custom;
+Name: "Include\TI\TI83\Venus"; Description: "Venus"; Types: full custom;
+Name: "Include\TI\TI83plus"; Description: "TI-83 Plus"; Types: full custom;
+Name: "Include\TI\TI83Plus\Ion"; Description: "Ion"; Types: full custom;
+Name: "Include\TI\TI83Plus\Mirage"; Description: "MirageOS"; Types: full custom;
+Name: "Include\TI\TI73"; Description: "TI-73"; Types: full custom;
+
+Name: "Templates"; Description: "Project Templates"; Types: full custom;
+Name: "Templates\TI"; Description: "Texas Instruments Calculators"; Types: full custom;
+Name: "Templates\TI\Program"; Description: "TI-83/TI-83 Plus Assembly Program"; Types: full custom;
+
 
 [Registry]
 ; Register .brassproj file type:
@@ -71,6 +100,7 @@ Root: HKCR; Subkey: "Brass.Project\shell\Build\command"; ValueType: string; Valu
 ; Register environment variables:
 Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass"; ValueType: string; ValueData: "{app}";
 Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass.Include"; ValueType: string; ValueData: "{app}\Include";
+Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass.Templates"; ValueType: string; ValueData: "{app}\Templates";
 
 [INI]
 Filename: "{app}\Documentation\Brass Website.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://www.bee-dev.com/?go=brass";
@@ -78,6 +108,7 @@ Filename: "{app}\Documentation\Brass Website.url"; Section: "InternetShortcut"; 
 [Icons]
 Name: "{group}\Release Notes"; Filename: "{app}\Documentation\Release Notes.rtf";
 Name: "{group}\Brass Manual"; Filename: "{app}\Help.exe"; Components: "Tools\Help";
+Name: "{group}\Projects Directory"; Filename: "{userdocs}\Brass Projects"; Components: "Samples";
 Name: "{group}\{cm:ProgramOnTheWeb,Brass}"; Filename: "{app}\Documentation\Brass Website.url";
 Name: "{group}\{cm:UninstallProgram,Brass}"; Filename: "{uninstallexe}";
 

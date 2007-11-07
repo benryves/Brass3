@@ -20,7 +20,7 @@ namespace Core.Functions {
 
 			if (Arguments.Length == 1) {
 				string Plugin = Arguments[0] as string;
-				if (compiler.OutputWriters.PluginExists(Plugin)) {
+				if (compiler.OutputWriters.Contains(Plugin)) {
 					compiler.OutputWriter = compiler.OutputWriters[Plugin];
 				} else {
 					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, string.Format("Output plugin '{0}' not found.", Plugin))));

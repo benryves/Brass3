@@ -61,7 +61,7 @@ namespace ProjectEditor {
 					this.WorkingProject.Plugins.Add(new Project.PluginCollectionInfo(KVP.Key.Location, Exclusions.ToArray()));
 				}
 			}
-			this.WorkingProject.Save("proj.txt");
+			//this.WorkingProject.Save("proj.txt");
 		}
 
 		public Editor() {

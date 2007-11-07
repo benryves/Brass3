@@ -94,7 +94,7 @@ namespace CreateBrassProj {
 					}
 				}
 
-				AutoProject.Save(args[0]);
+				//AutoProject.Save(args[0]);
 			} catch (Exception ex) {
 				Console.WriteLine(ex.Message);
 			}

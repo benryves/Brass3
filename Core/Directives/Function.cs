@@ -120,7 +120,7 @@ namespace Core.Directives {
 
 						Declarations.Add(this.DeclaringFunction);
 
-						if (compiler.Functions.PluginExists(LowerCaseName)) {
+						if (compiler.Functions.Contains(LowerCaseName)) {
 							if (compiler.Functions[LowerCaseName].GetType() != typeof(Functions.UserFunction)) throw new InvalidOperationException("Function " + this.DeclaringFunction.Name.Data + " already natively defined.");
 						} else {
 							compiler.Functions.AddRuntimeAlias((IFunction)compiler.GetPluginInstanceFromType(typeof(Functions.UserFunction)), LowerCaseName);

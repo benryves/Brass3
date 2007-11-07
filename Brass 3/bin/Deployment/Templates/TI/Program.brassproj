@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<brassproject version="3">
+
+	<plugins>
+		<collection source="Core.dll" />
+		<collection source="Z80.dll" />
+		<collection source="TiCalc.dll" />
+	</plugins>
+	
+	<input assembler="Z80" stringencoder="large8x">
+		<label name="Program.Name" type="string" value="PROGRAM" />
+		<label name="Program.Description" type="string" value="Program" />
+		<header append="true">.tivariablename Program.Name</header>
+	</input>
+
+	<buildconfiguration name="TI8X">
+	
+		<input>
+			<header append="true">.include "TI/ti83plus.inc" \ .org $9D93 \ .dw $6DBB</header>
+		</input>
+		
+		<output writer="TI8X" />
+		
+		<buildconfiguration name="Ion">
+			<input>
+				<header append="true">.include "TI/ion8x.inc" \ .ionheader Program.Description</header>
+			</input>
+		</buildconfiguration>
+		
+		<buildconfiguration name="MirageOS">
+			<input>
+				<header append="true">.include "TI/mirage.inc" \ .mirageosheader Program.Description, Program.MirageOS.Icon</header>
+				<label name="Program.MirageOS.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/MirageOS.gif'" />
+			</input>
+		</buildconfiguration>
+		
+	</buildconfiguration>
+	
+	<buildconfiguration name="TI83">
+	
+		<input>
+			<header append="true">.include "TI/ti83.inc" \ .org $9327 \ .unsquish</header>
+			<footer>
+				.squish
+				.db tEnter, tEnd
+				.db tEnter, "0000"
+				.db tEnter, tEnd
+			</footer>
+		</input>
+		
+		<output writer="TI83" />
+		
+		<buildconfiguration name="Ion">
+			<input>
+				<header append="true">.squish \ .include "TI/ion83.inc" \ .ionheader Program.Description</header>
+				<footer></footer>
+			</input>
+		</buildconfiguration>
+		
+		<buildconfiguration name="Venus">
+			<input>
+				<header append="true">.squish \ .include "TI/venus.inc" \ .org $9329 \ .venusheader Program.Description, Program.Venus.Icon</header>
+				<footer></footer>
+				<label name="Program.Venus.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/Venus.gif'" />
+			</input>
+		</buildconfiguration>
+		
+	</buildconfiguration>
+
+</brassproject>

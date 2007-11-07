@@ -15,9 +15,11 @@ namespace GuiBuilder {
 
 
 			string ProjectPath = null;
+			string BuildConfiguration = null;
 
-			if (args.Length == 1) {
+			if (args.Length >= 1 && args.Length <= 2) {
 				ProjectPath = args[0];
+				if (args.Length == 2) BuildConfiguration = args[1];
 			} else {
 				using (OpenFileDialog OpenFile = new OpenFileDialog()) {
 					OpenFile.Filter = "Brass Projects (*.brassproj)|*.brassproj";
@@ -34,6 +36,22 @@ namespace GuiBuilder {
 
 			try {
 				Project.Load(ProjectPath);
+
+				if (BuildConfiguration == null) {
+					string[] PossibleConfigurations = Project.GetBuildConfigurationNames();
+					if (PossibleConfigurations.Length > 0) {
+						using (SelectConfiguration SC = new SelectConfiguration(PossibleConfigurations)) {
+							if (SC.ShowDialog() != DialogResult.OK) {
+								return;
+							} else {
+								BuildConfiguration = SC.Configuration;
+							}
+						}
+					}
+				}
+
+				if (BuildConfiguration != null) Project = Project.GetBuildConfiguration(BuildConfiguration);
+
 				Directory.SetCurrentDirectory(Path.GetDirectoryName(ProjectPath));
 				Compiler = new Brass3.Compiler();
 				Compiler.LoadProject(Project);

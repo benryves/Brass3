@@ -126,55 +126,56 @@ namespace GuiBuilder {
 
 			this.OutputErrorsWriter.WriteElementString("h1", message.Message);
 
-			TokenisedSource OuterSource = message.SourceStatement.OutermostTokenisedSource;
+			if (message.SourceStatement != null) {
+				TokenisedSource OuterSource = message.SourceStatement.OutermostTokenisedSource;
 
-			int FirstHighlightedToken = 0;
-			int LastHighlightedToken = OuterSource.Tokens.Length - 1;
+				int FirstHighlightedToken = 0;
+				int LastHighlightedToken = OuterSource.Tokens.Length - 1;
 
-			if (message.SourceToken != null) {
+				if (message.SourceToken != null) {
+					for (int i = 0; i < OuterSource.Tokens.Length; ++i) {
+						if (OuterSource.Tokens[i] == message.SourceToken) {
+							FirstHighlightedToken = i;
+							LastHighlightedToken = i;
+							break;
+						}
+					}
+				} else if (message.SourceStatement.Tokens.Length > 0) {
+					for (int i = 0; i < OuterSource.Tokens.Length; ++i) {
+						if (OuterSource.Tokens[i] == message.SourceStatement.Tokens[0]) {
+							FirstHighlightedToken = i;
+						}
+						if (OuterSource.Tokens[i] == message.SourceStatement.Tokens[message.SourceStatement.Tokens.Length - 1]) {
+							LastHighlightedToken = i;
+						}
+					}
+				}
+
+				this.OutputErrorsWriter.WriteStartElement("pre");
+				this.OutputErrorsWriter.WriteAttributeString("class", "code");
+
 				for (int i = 0; i < OuterSource.Tokens.Length; ++i) {
-					if (OuterSource.Tokens[i] == message.SourceToken) {
-						FirstHighlightedToken = i;
-						LastHighlightedToken = i;
-						break;
+					TokenisedSource.Token Token = OuterSource.Tokens[i];
+
+					if (i == FirstHighlightedToken) {
+						this.OutputErrorsWriter.WriteStartElement("span");
+						this.OutputErrorsWriter.WriteAttributeString("class", "highlighted " + type);
+					}
+
+					if (!(Token.Type == TokenisedSource.Token.TokenTypes.Seperator && Token.Data.Trim() == "")) {
+						this.OutputErrorsWriter.WriteStartElement("span");
+						this.OutputErrorsWriter.WriteAttributeString("class", Token.Type.ToString().ToLowerInvariant());
+						this.OutputErrorsWriter.WriteValue(Token.Data);
+						this.OutputErrorsWriter.WriteEndElement();
+					}
+
+					if (i == LastHighlightedToken) {
+						this.OutputErrorsWriter.WriteEndElement();
 					}
 				}
-			} else if (message.SourceStatement.Tokens.Length > 0) {
-				for (int i = 0; i < OuterSource.Tokens.Length; ++i) {
-					if (OuterSource.Tokens[i] == message.SourceStatement.Tokens[0]) {
-						FirstHighlightedToken = i;
-					}
-					if (OuterSource.Tokens[i] == message.SourceStatement.Tokens[message.SourceStatement.Tokens.Length - 1]) {
-						LastHighlightedToken = i;
-					}
-				}
+
+				this.OutputErrorsWriter.WriteEndElement(); // </pre>
 			}
-
-			this.OutputErrorsWriter.WriteStartElement("pre");
-			this.OutputErrorsWriter.WriteAttributeString("class", "code");
-
-			for (int i = 0; i < OuterSource.Tokens.Length; ++i) {
-				TokenisedSource.Token Token = OuterSource.Tokens[i];
-
-				if (i == FirstHighlightedToken) {
-					this.OutputErrorsWriter.WriteStartElement("span");
-					this.OutputErrorsWriter.WriteAttributeString("class", "highlighted " + type);
-				}
-
-				if (!(Token.Type == TokenisedSource.Token.TokenTypes.Seperator && Token.Data.Trim() == "")) {
-					this.OutputErrorsWriter.WriteStartElement("span");
-					this.OutputErrorsWriter.WriteAttributeString("class", Token.Type.ToString().ToLowerInvariant());
-					this.OutputErrorsWriter.WriteValue(Token.Data);
-					this.OutputErrorsWriter.WriteEndElement();
-				}
-
-				if (i == LastHighlightedToken) {
-					this.OutputErrorsWriter.WriteEndElement();
-				}
-			}
-
-			this.OutputErrorsWriter.WriteEndElement(); // </pre>
-
 			if (!string.IsNullOrEmpty(message.Filename)) {
 				string ErrorSource = string.Format(@"<a href=""file_{0}"">{1}</a>", message.Filename, Compiler.GetRelativeFilename(message.Filename));
 				if (message.LineNumber > 0) ErrorSource += ", line " + message.LineNumber.ToString();

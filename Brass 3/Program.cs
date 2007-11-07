@@ -18,10 +18,11 @@ namespace Brass3 {
 				Console.Write(e.Message);
 			};
 
-			if (args.Length == 1) {
+			if (args.Length == 1 || args.Length == 2) {
 				try {
 					Project P = new Project();
 					P.Load(args[0]);
+					if (args.Length == 2) P = P.GetBuildConfiguration(args[1]);
 					C.LoadProject(P);
 					C.Compile(true);
 				} catch (Exception ex) {

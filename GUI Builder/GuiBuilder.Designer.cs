@@ -49,6 +49,7 @@ namespace GuiBuilder {
 			this.Controls.Add(this.BrowserOutput);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GuiBuilder";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Load += new System.EventHandler(this.GuiBuilder_Load);
 			this.ResumeLayout(false);
 

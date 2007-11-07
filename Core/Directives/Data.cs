@@ -40,7 +40,7 @@ namespace Core.Directives {
 				Args = source.GetCommaDelimitedArguments(index + 2, 1, int.MaxValue);
 
 				// Encoder for this data type:
-				if (!compiler.NumberEncoders.PluginExists(Type.Data)) throw new CompilerExpection(Type, "Data type '" + Type.Data + "' not defined.");
+				if (!compiler.NumberEncoders.Contains(Type.Data)) throw new CompilerExpection(Type, "Data type '" + Type.Data + "' not defined.");
 				NumberEncoder = compiler.NumberEncoders[Type.Data];
 
 				// Set size of declaring label if applicable.

@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>"D:\Documents\Documents\Brass Projects\Demo\Demo.brassproj"</StartArguments>
-    <StartWorkingDirectory>D:\Documents\Documents\Brass Projects\Demo\</StartWorkingDirectory>
+    <StartArguments>"D:\Documents\Documents\Brass Projects\Samples\TI Calculator Program\Demo.brassproj"</StartArguments>
+    <StartWorkingDirectory>D:\Documents\Documents\Brass Projects\Samples\TI Calculator Program\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

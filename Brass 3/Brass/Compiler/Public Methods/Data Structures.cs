@@ -14,9 +14,9 @@ namespace Brass3 {
 		/// <param name="name">The name of the data structure to search for.</param>
 		/// <returns>The data structure, a number encoder wrapped as a structure, or null if nothing could be found.</returns>
 		public DataStructure GetStructureByName(string name) {
-			if (this.dataStructures.PluginExists(name)) {
+			if (this.dataStructures.Contains(name)) {
 				return this.dataStructures[name] as DataStructure;
-			} else if (this.NumberEncoders.PluginExists(name)) {
+			} else if (this.NumberEncoders.Contains(name)) {
 				return new DataStructure(this.NumberEncoders[name]);
 			} else {
 				return null;

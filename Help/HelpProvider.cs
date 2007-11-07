@@ -141,12 +141,12 @@ namespace Help {
 								string Link = "";
 								switch (Token.Type) {
 									case TokenisedSource.Token.TokenTypes.Function:
-										IsLinked = this.Compiler.Functions.PluginExists(Token.Data);
+										IsLinked = this.Compiler.Functions.Contains(Token.Data);
 										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Functions[Token.Data], forExporting);
 										break;
 									case TokenisedSource.Token.TokenTypes.Directive:
 										string DirectiveName = Token.Data.Substring(1);
-										IsLinked = this.Compiler.Directives.PluginExists(DirectiveName);
+										IsLinked = this.Compiler.Directives.Contains(DirectiveName);
 										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Directives[DirectiveName], forExporting);
 										break;
 								}

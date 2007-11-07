@@ -51,7 +51,13 @@ namespace Brass3 {
 			UniquePlugins.Add(plugin);
 		}
 
-		public bool PluginExists(string name) {
+		/// <summary>
+		/// Check whether a plugin exists by name.
+		/// </summary>
+		/// <param name="name">The name of the plugin to check.</param>
+		/// <returns>True if the plugin exists, false otherwise.</returns>
+		public bool Contains(string name) {
+			if (string.IsNullOrEmpty(name)) return false;
 			name = name.ToLowerInvariant();
 			return this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name);
 		}

@@ -134,12 +134,12 @@ namespace Core.Properties {
         ///&lt;html xmlns=&quot;http://www.w3.org/TR/1999/REC-html-in-xml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot; &gt;
         ///
         ///	&lt;head&gt;
-        ///		&lt;title&gt;Vera source documentation&lt;/title&gt;
+        ///		&lt;title&gt;Vera Source Documentation&lt;/title&gt;
         ///	&lt;/head&gt;
         ///	
         ///	&lt;frameset cols=&quot;220px, *&quot;&gt;
         ///		&lt;frame src =&quot;tree.xml&quot; /&gt;
-        ///		&lt;frame src =&quot;main.xml&quot; name=&quot;file&quot;/&gt;
+        ///		&lt;frame src =&quot;$(main)&quot; name=&quot;file&quot;/&gt;
         ///	&lt;/frameset&gt;
         ///
         ///&lt;/html&gt;

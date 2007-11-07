@@ -223,7 +223,7 @@ namespace Brass3 {
 								}
 							}
 
-							if (!compiler.Functions.PluginExists(T.Data)) {
+							if (!compiler.Functions.Contains(T.Data)) {
 								reasonForFailure = new CompilerExpection(T, "Function '" + T.Data + "' not declared.");
 								return false;
 							}

@@ -62,6 +62,7 @@
     <Compile Include="Directives\Echo.cs" />
     <Compile Include="Directives\Endianness.cs" />
     <Compile Include="Directives\Data.cs" />
+    <Compile Include="Functions\EnvVar.cs" />
     <Compile Include="Functions\Date\Date Component.cs" />
     <Compile Include="Functions\Date\Now.cs" />
     <Compile Include="Functions\File Operations\File Read Text.cs" />

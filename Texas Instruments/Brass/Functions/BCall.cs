@@ -87,8 +87,8 @@ String .byte ""Brass 3"", 0")]
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-
-			bool RequiresVoodoo = compiler.OutputWriter is TexasInstruments.Brass.Output.TI8X || compiler.OutputWriter is TexasInstruments.Brass.Output.TI73;
+			Type OutputWriterType = compiler.OutputWriter.GetType();
+			bool RequiresVoodoo = OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8X) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73);
 
 			int InstructionSize = 3;
 

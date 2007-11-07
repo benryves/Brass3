@@ -164,7 +164,7 @@ namespace Brass3 {
 						// Will it prevent us from breaking?
 						if (this.parserBehaviourChanges == null) {
 							string DirectiveName = Tokens[DirectiveIndex].Value.ToString().Substring(1);
-							if (compiler.Directives.PluginExists(DirectiveName)) {
+							if (compiler.Directives.Contains(DirectiveName)) {
 								object[] o = compiler.Directives[DirectiveName].GetType().GetCustomAttributes(typeof(ParserBehaviourChangeAttribute), false);
 								if (o.Length == 1) {
 									this.parserBehaviourChanges = o[0] as ParserBehaviourChangeAttribute;

@@ -7,6 +7,25 @@ using System.IO;
 namespace Brass3 {
 	public partial class Compiler {
 
+		private string header;
+		/// <summary>
+		/// Gets or sets a an assembly snippet header for the entire compilation process.
+		/// </summary>
+		public string Header {
+			get { return this.header; }
+			set { this.header = value; }
+		}
+
+		private string footer;
+		/// <summary>
+		/// Gets or sets a an assembly snippet footer for the entire compilation process.
+		/// </summary>
+		public string Footer {
+			get { return this.footer; }
+			set { this.footer = value; }
+		}
+
+
 		/// <summary>
 		/// Recompiles a range of statements.
 		/// </summary>
@@ -158,7 +177,13 @@ namespace Brass3 {
 
 				// Run pass 1:
 				this.BeginPass(AssemblyPass.Pass1);
+
+				if (!string.IsNullOrEmpty(this.Header)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Header)), null);
+
 				this.CompileFile(this.SourceFile);
+
+				if (!string.IsNullOrEmpty(this.Footer)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Footer)), null);
+
 				this.OnPassEnded(new EventArgs());
 
 				// TODO: Warn if any output was written?
@@ -183,10 +208,20 @@ namespace Brass3 {
 				// Done!
 
 				// Do we need to write output?
-				if (writeOutput) {
-					using (FileStream OutputStream = new FileStream(this.destinationFile, FileMode.Create)) {
-						this.OutputWriter.WriteOutput(this, OutputStream);
-						OutputStream.Flush();
+				if (writeOutput && this.OutputWriter != null) {
+					string Filename = this.DestinationFile;
+					if (string.IsNullOrEmpty(Filename) && this.OutputWriter != null) {
+						string Basename = this.SourceFile;
+						if (this.Project != null && !string.IsNullOrEmpty(this.Project.ProjectFilename)) Basename = this.Project.ProjectFilename;
+						Filename = Path.Combine(Path.GetDirectoryName(Basename), Path.GetFileNameWithoutExtension(Basename) + "." + this.OutputWriter.DefaultExtension);
+					}
+					if (string.IsNullOrEmpty(Filename)) {
+						this.OnErrorRaised(new NotificationEventArgs(this, "Output filename not specified."));
+					} else {
+						using (FileStream OutputStream = new FileStream(Filename, FileMode.Create)) {
+							this.OutputWriter.WriteOutput(this, OutputStream);
+							OutputStream.Flush();
+						}
 					}
 					foreach (KeyValuePair<string, IListingWriter> Listing in this.listingFiles) {
 						using (FileStream ListingStream = new FileStream(Listing.Key, FileMode.Create)) {
@@ -195,7 +230,6 @@ namespace Brass3 {
 						}
 					}
 				}
-
 				return true;
 			} finally {
 				IsCompiling = false;
@@ -203,14 +237,13 @@ namespace Brass3 {
 		}
 
 		/// <summary>
-		/// Load, parse, and compile a file.
+		/// Parse and compile data from a stream.
 		/// </summary>
-		/// <param name="filename">The name of the file to compile.</param>
+		/// <param name="stream">The stream containing source to compile.</param>
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
-		public void CompileFile(string filename) {
-
+		public void CompileStream(Stream stream, string filename) {
 			if (this.currentPass == AssemblyPass.Pass2) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");
-			using (AssemblyReader AR = new AssemblyReader(this, new MemoryStream(Encoding.Unicode.GetBytes(File.ReadAllText(filename))))) {
+			using (AssemblyReader AR = new AssemblyReader(this, stream)) {
 
 				while (CurrentStatement < this.statements.Count || AR.HasMoreData) {
 
@@ -244,7 +277,15 @@ namespace Brass3 {
 				}
 
 			}
+		}
 
+		/// <summary>
+		/// Load, parse, and compile a file.
+		/// </summary>
+		/// <param name="filename">The name of the file to compile.</param>
+		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
+		public void CompileFile(string filename) {
+			this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(File.ReadAllText(filename))), filename);
 		}
 
 	}

@@ -191,7 +191,7 @@ namespace Brass3 {
 					if (expressionStatementSplit != Source.Tokens.Length) {
 						if (this.type == StatementType.Directive) {
 							string DirectiveName = Source.Tokens[expressionStatementSplit].DataLowerCase.Substring(1);
-							if (!compiler.Directives.PluginExists(DirectiveName)) {
+							if (!compiler.Directives.Contains(DirectiveName)) {
 								throw new CompilerExpection(source.Tokens[expressionStatementSplit], string.Format("Invalid directive '{0}'.", Source.Tokens[expressionStatementSplit].Data));
 							}
 							IDirective Directive = compiler.Directives[DirectiveName];
