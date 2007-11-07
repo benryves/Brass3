@@ -13,13 +13,25 @@ namespace TexasInstruments.Brass.Functions {
 	[PluginName("bcallc"), PluginName("bcallnc")]
 	[PluginName("bcallpe"), PluginName("bcallpo")]
 	[PluginName("bcallp"), PluginName("bcallm")]
-	[DisplayName("bcall")]
+	[PluginName("bjump")]
+	[PluginName("bjumpz"), PluginName("bjumpnz")]
+	[PluginName("bjumpc"), PluginName("bjumpnc")]
+	[PluginName("bjumppe"), PluginName("bjumppo")]
+	[PluginName("bjumpp"), PluginName("bjumpm")]
+	[DisplayName("bcall/bjump")]
 	[Syntax("bcall(_target)")]
 	[Syntax("bcallz(_target)"), Syntax("bcallnz(_target)")]
 	[Syntax("bcallc(_target)"), Syntax("bcallnc(_target)")]
 	[Syntax("bcallpe(_target)"), Syntax("bcallpo(_target)")]
 	[Syntax("bcallp(_target)"), Syntax("bcallm(_target)")]
+	[Syntax("bjump(_target)")]
+	[Syntax("bjumpz(_target)"), Syntax("bjumpnz(_target)")]
+	[Syntax("bjumpc(_target)"), Syntax("bjumpnc(_target)")]
+	[Syntax("bjumppe(_target)"), Syntax("bjumppo(_target)")]
+	[Syntax("bjumpp(_target)"), Syntax("bjumpm(_target)")]
+	[Description("Calls or jumps to a function, switching page if required on compatible hardware.")]
 	[SeeAlso(typeof(TexasInstruments.Brass.Output.TI8X)), SeeAlso(typeof(TexasInstruments.Brass.Output.TI73))]
+	[SeeAlso(typeof(Directives.BCall))]
 	[Remarks(
 @"The function generates Z80 code depending on the current output writer.
 If the output writer is the TI8X or TI73 plugin then the instruction is expanded as follows:
@@ -34,6 +46,15 @@ If the output writer is the TI8X or TI73 plugin then the instruction is expanded
 	<tr><th>bcallpo(target)</th><td><c>jp pe,+ \ rst $28 \ .dw target \ +</td><td>6</td></tr>
 	<tr><th>bcallp(target)</th><td><c>jp m,+ \ rst $28 \ .dw target \ +</td><td>6</td></tr>
 	<tr><th>bcallm(target)</th><td><c>jp p,+ \ rst $28 \ .dw target \ +</td><td>6</td></tr>
+	<tr><th>bjump(target)</th><td><c>call $50 \ .dw target</td><td>5</td></tr>
+	<tr><th>bjumpz(target)</th><td><c>jr nz,+ \ call $50 \ .dw target \ +</td><td>7</td></tr>
+	<tr><th>bjumpnz(target)</th><td><c>jr z,+ \ call $50 \ .dw target \ +</td><td>7</td></tr>
+	<tr><th>bjumpc(target)</th><td><c>jr nc,+ \ call $50 \ .dw target \ +</td><td>7</td></tr>
+	<tr><th>bjumpnc(target)</th><td><c>jr c,+ \ call $50 \ .dw target \ +</td><td>7</td></tr>
+	<tr><th>bjumppe(target)</th><td><c>jp po,+ \ call $50 \ .dw target \ +</td><td>8</td></tr>
+	<tr><th>bjumppo(target)</th><td><c>jp pe,+ \ call $50 \ .dw target \ +</td><td>8</td></tr>
+	<tr><th>bjumpp(target)</th><td><c>jp m,+ \ call $50 \ .dw target \ +</td><td>8</td></tr>
+	<tr><th>bjumpm(target)</th><td><c>jp p,+ \ call $50 \ .dw target \ +</td><td>8</td></tr>
 </table>
 If another output writer is in use, a regular Z80 call (three bytes) is generated.")]
 
@@ -58,7 +79,7 @@ String .byte ""Brass 3"", 0")]
 	[SatisfiesAssignmentRequirement(true)]
 	public class BCall : IFunction {
 
-		public enum Z80Instruction : byte {
+		internal enum Z80Instruction : byte {
 			Rst28h = 0xEF,
 			Call = 0xCD,
 			CallC = 0xDC,
@@ -86,31 +107,44 @@ String .byte ""Brass 3"", 0")]
 			Ret = 0xC9,
 		}
 
-		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
+		internal enum Condition {
+			None,
+			Z, NZ,
+			C, NC,
+			PE, PO,
+			P, M,
+		}
+
+		internal void RomCall(Compiler compiler, string function, ushort address) {
+
 			Type OutputWriterType = compiler.OutputWriter.GetType();
 			bool RequiresVoodoo = OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8X) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73);
 
 			int InstructionSize = 3;
 
 			if (RequiresVoodoo) {
-				switch (function) {
-					case "bcallz":
-					case "bcallnz":
-					case "bcallc":
-					case "bcallnc":
+				switch (function.Substring(5)) {
+					case "z":
+					case "nz":
+					case "c":
+					case "nc":
 						InstructionSize = 5; // jr ?,$+5 \ rst $28 \ .dw xxx
 						break;
-					case "bcallpe":
-					case "bcallpo":
-					case "bcallp":
-					case "bcallm":
+					case "pe":
+					case "po":
+					case "p":
+					case "m":
 						InstructionSize = 6; // jp ?,$+6 \ rst $28 \ .dw xxx
 						break;
 				}
+
+				if (function.StartsWith("bjump")) InstructionSize += 2;
+
 			}
 
+
 			switch (compiler.CurrentPass) {
-				
+
 				case AssemblyPass.Pass1:
 					compiler.IncrementProgramAndOutputCounters(InstructionSize);
 					break;
@@ -123,38 +157,38 @@ String .byte ""Brass 3"", 0")]
 
 						ushort JumpTarget = (ushort)(compiler.Labels.ProgramCounter.NumericValue + InstructionSize);
 
-						switch (function) {
-							case "bcall":
+						switch (function.Substring(5)) {
+							case "":
 								break;
-							case "bcallz":
+							case "z":
 								compiler.WriteOutput((byte)Z80Instruction.JrNZ);
-								compiler.WriteOutput((byte)3);
+								compiler.WriteOutput((byte)(InstructionSize - 2));
 								break;
-							case "bcallnz":
+							case "nz":
 								compiler.WriteOutput((byte)Z80Instruction.JrZ);
-								compiler.WriteOutput((byte)3);
+								compiler.WriteOutput((byte)(InstructionSize - 2));
 								break;
-							case "bcallc":
+							case "c":
 								compiler.WriteOutput((byte)Z80Instruction.JrNC);
-								compiler.WriteOutput((byte)3);
+								compiler.WriteOutput((byte)(InstructionSize - 2));
 								break;
-							case "bcallnc":
+							case "nc":
 								compiler.WriteOutput((byte)Z80Instruction.JrC);
-								compiler.WriteOutput((byte)3);
+								compiler.WriteOutput((byte)(InstructionSize - 2));
 								break;
-							case "bcallpe":
+							case "pe":
 								compiler.WriteOutput((byte)Z80Instruction.JpPO);
 								compiler.WriteOutput(JumpTarget);
 								break;
-							case "bcallpo":
+							case "po":
 								compiler.WriteOutput((byte)Z80Instruction.JpPE);
 								compiler.WriteOutput(JumpTarget);
 								break;
-							case "bcallp":
+							case "p":
 								compiler.WriteOutput((byte)Z80Instruction.JpM);
 								compiler.WriteOutput(JumpTarget);
 								break;
-							case "bcallm":
+							case "m":
 								compiler.WriteOutput((byte)Z80Instruction.JpP);
 								compiler.WriteOutput(JumpTarget);
 								break;
@@ -162,7 +196,12 @@ String .byte ""Brass 3"", 0")]
 								throw new InvalidOperationException();
 						}
 
-						compiler.WriteOutput((byte)Z80Instruction.Rst28h);
+						if (function.StartsWith("bcall")) {
+							compiler.WriteOutput((byte)Z80Instruction.Rst28h);
+						} else {
+							compiler.WriteOutput((byte)Z80Instruction.Call);
+							compiler.WriteOutput((ushort)0x50);
+						}
 
 					} else {
 
@@ -177,14 +216,27 @@ String .byte ""Brass 3"", 0")]
 							case "bcallpo": compiler.WriteOutput((byte)Z80Instruction.CallPO); break;
 							case "bcallp": compiler.WriteOutput((byte)Z80Instruction.CallP); break;
 							case "bcallm": compiler.WriteOutput((byte)Z80Instruction.CallM); break;
+							case "bjump": compiler.WriteOutput((byte)Z80Instruction.Jp); break;
+							case "bjumpz": compiler.WriteOutput((byte)Z80Instruction.JpZ); break;
+							case "bjumpnz": compiler.WriteOutput((byte)Z80Instruction.JpNZ); break;
+							case "bjumpc": compiler.WriteOutput((byte)Z80Instruction.JpC); break;
+							case "bjumpnc": compiler.WriteOutput((byte)Z80Instruction.JpNC); break;
+							case "bjumppe": compiler.WriteOutput((byte)Z80Instruction.JpPE); break;
+							case "bjumppo": compiler.WriteOutput((byte)Z80Instruction.JpPO); break;
+							case "bjumpp": compiler.WriteOutput((byte)Z80Instruction.JpP); break;
+							case "bjumpm": compiler.WriteOutput((byte)Z80Instruction.JpM); break;
 							default: throw new InvalidOperationException();
 						}
 					}
 
-					compiler.WriteOutput((ushort)source.EvaluateExpression(compiler).NumericValue);
+					compiler.WriteOutput(address);
 					break;
 			}
 
+		}
+
+		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
+			this.RomCall(compiler, function, (ushort)(compiler.CurrentPass == AssemblyPass.Pass2 ? source.EvaluateExpression(compiler).NumericValue : 0));			
 			return new Label(compiler.Labels, double.NaN);
 		}
 	}

@@ -16,7 +16,37 @@ namespace TexasInstruments.Brass.Directives {
 	[Syntax(".ionheader \"Description\"")]
 	[Syntax(".mirageosheader \"Description\" [, \"Icon.gif\"]")]
 	[Syntax(".venusheader \"Description\" [, \"Icon.gif\"]")]
+	//[Syntax(".doorscsheader [\"Icon.gif\"]")]
 	[Description("Generates a header for popular calculator shells.")]
+	[Remarks(
+@"The directive generates code (and inserts it at the current point) according to the following table.
+<table>
+	<tr><th>Shell</th><th>Generated Code</th></tr>
+	<tr><th>Ion</th>
+		<td class=""code"">  ret
+  jr nc,Start
+  .byte ""Description"",0
+Start:</td>
+	</tr>
+	<tr>
+		<th>MirageOS</th>
+		<td class=""code"">  ret
+  .byte 1
+  ; 30 bytes for 15x15 icon.
+  .byte ""Description"",0</td>
+	</tr>
+	<tr>
+		<th>Venus</th>
+		<td class=""code"">  .byte $E7,$39,$5F,$5B,$56,$3F,$00
+  jr nc,Start
+  .byte ""Description"",0
+  ; If specified, 32 bytes for 16x16 icon.
+Start:</td>
+	</tr>
+</table>
+You still need to specify the start origin yourself. You will also need to manually add the <c>AsmPrgm</c> header for TI-83 Plus programs.
+The directive will report a warning if there is not two bytes output before this directive (TI-83 Plus) or if data is output before this directive at all (TI-83).")]
+	[Category("Texas Instruments")]
 	public class ShellHeader : IDirective {
 
 
@@ -24,6 +54,7 @@ namespace TexasInstruments.Brass.Directives {
 			Ion,
 			MirageOS,
 			Venus,
+			DoorsCS,
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
@@ -49,11 +80,26 @@ namespace TexasInstruments.Brass.Directives {
 					Shell = ShellType.Venus;
 					HeaderSize = 42;
 					break;
+				case "doorcsheader":
+					Shell = ShellType.DoorsCS;
+					break;
 			}
 
-			TokenisedSource.ArgumentType[] Arguments = Shell == ShellType.Ion ?
-				TokenisedSource.StringArgument :
-				new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String, TokenisedSource.ArgumentType.Filename | TokenisedSource.ArgumentType.Optional };
+			TokenisedSource.ArgumentType[] Arguments = null;
+			switch (Shell) {
+				case ShellType.Ion:
+					Arguments = TokenisedSource.StringArgument;
+					break;
+				case ShellType.DoorsCS:
+					Arguments = new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.Filename | TokenisedSource.ArgumentType.Optional };
+					break;
+				case ShellType.MirageOS:
+				case ShellType.Venus:
+					Arguments = new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String, TokenisedSource.ArgumentType.Filename | TokenisedSource.ArgumentType.Optional };
+					break;
+			}
+				
+				
 
 			object[] ParsedArguments = source.GetCommaDelimitedArguments(compiler, index + 1, Arguments);
 
@@ -135,6 +181,8 @@ namespace TexasInstruments.Brass.Directives {
 									compiler.WriteOutput(Icon);
 								}
 							} break;
+						case ShellType.DoorsCS: {
+							} break; 
 					}					
 					break;
 			}			
