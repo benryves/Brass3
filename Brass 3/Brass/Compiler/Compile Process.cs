@@ -240,6 +240,7 @@ namespace Brass3 {
 		/// Parse and compile data from a stream.
 		/// </summary>
 		/// <param name="stream">The stream containing source to compile.</param>
+		/// <param name="filename">The filename associated with a stream.</param>
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileStream(Stream stream, string filename) {
 			if (this.currentPass == AssemblyPass.Pass2) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");

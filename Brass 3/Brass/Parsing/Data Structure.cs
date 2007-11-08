@@ -45,7 +45,7 @@ namespace Brass3 {
 				set { this.elementCount = value; }
 			}
 
-			public IDataStructure dataType;
+			private IDataStructure dataType;
 			/// <summary>
 			/// Gets or sets the underlying data type.
 			/// </summary>
@@ -85,6 +85,10 @@ namespace Brass3 {
 				: this(null, type, 0, 1) {
 			}
 
+			/// <summary>
+			/// Clones the structure.
+			/// </summary>
+			/// <returns>An copy of the structure.</returns>
 			public object Clone() {
 				return new Field(this.name, this.dataType, this.offset, this.elementCount);
 			}
