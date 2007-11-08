@@ -36,14 +36,14 @@ namespace SegaMasterSystem.Directives {
 				Value = value;
 			}
 
-			public SdscString(Compiler compiler, TokenisedSource source, int argument) {
+			public SdscString(Compiler compiler, object argument) {
 				this.Address = 0xFFFF;
 				this.Value = null;
-				if (source.ExpressionIsStringConstant(compiler, argument)) {
-					this.Value = source.GetExpressionStringConstant(compiler, argument, true);
-					if (this.Value == "") this.Value = null;
+				if (argument is string) {
+					this.Value = argument as string;
+					if (string.IsNullOrEmpty(this.Value)) this.Value = null;
 				} else {
-					this.Address = (int)source.EvaluateExpression(compiler, argument).NumericValue;
+					this.Address = (int)(double)argument;
 					if (this.Address == 0) this.Address = 0xFFFF;
 				}
 			}
@@ -116,7 +116,7 @@ namespace SegaMasterSystem.Directives {
 			c.PassBegun += delegate(object sender, EventArgs e) {
 				if (c.CurrentPass == AssemblyPass.Pass1) {
 					this.Date = DateTime.Now;
-					this.Author = new SdscString("Ben Ryves");
+					this.Author = new SdscString("");
 					this.ProgramName = new SdscString(0xFFFF);
 					this.ReleaseNotes = new SdscString(0xFFFF);
 				}
@@ -130,9 +130,14 @@ namespace SegaMasterSystem.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			if (compiler.CurrentPass == AssemblyPass.Pass2) {
 
-				int[] Args = source.GetCommaDelimitedArguments(index + 1, 4);
+				object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
+					TokenisedSource.ArgumentType.Value,
+					TokenisedSource.ArgumentType.String,
+					TokenisedSource.ArgumentType.String,
+					TokenisedSource.ArgumentType.String,
+				});
 
-				double Version = source.EvaluateExpression(compiler, Args[0]).NumericValue;
+				double Version = (double)Args[0];
 				try{
 					this.MajorVersion = (int)Version;
 				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
@@ -141,9 +146,9 @@ namespace SegaMasterSystem.Directives {
 					this.MinorVersion = ((int)(Math.Abs(Version - Math.Truncate(Version)) * 100));
 				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
-				this.ProgramName = new SdscString(compiler, source, Args[1]);
-				this.ReleaseNotes = new SdscString(compiler, source, Args[2]);
-				this.Author = new SdscString(compiler, source, Args[3]);
+				this.ProgramName = new SdscString(compiler, Args[1]);
+				this.ReleaseNotes = new SdscString(compiler, Args[2]);
+				this.Author = new SdscString(compiler, Args[3]);
 
 			}
 		}
