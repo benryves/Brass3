@@ -177,9 +177,9 @@ namespace Help {
 					}
 				}
 
-				SeeAlsoPlugins.Sort(delegate(IPlugin a, IPlugin b) { return Compiler.GetPluginName(a).CompareTo(Compiler.GetPluginName(b)); });
+				SeeAlsoPlugins.Sort(delegate(IPlugin a, IPlugin b) { return Compiler.GetPluginDisplayName(a).CompareTo(Compiler.GetPluginDisplayName(b)); });
 				foreach (IPlugin P in SeeAlsoPlugins) {
-					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(Compiler.GetPluginName(P)) + "</a></li>");
+					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(Compiler.GetPluginDisplayName(P)) + "</a></li>");
 				}
 				
 

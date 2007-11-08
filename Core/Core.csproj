@@ -47,7 +47,6 @@
     <Compile Include="Directives\Export.cs" />
     <Compile Include="Directives\Function.cs" />
     <Compile Include="Directives\Enum.cs" />
-    <Compile Include="Directives\EchoChar.cs" />
     <Compile Include="Directives\StringEncoder.cs" />
     <Compile Include="Directives\Page.cs" />
     <Compile Include="Directives\Undefine.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="Directives\Echo.cs" />
     <Compile Include="Directives\Endianness.cs" />
     <Compile Include="Directives\Data.cs" />
+    <Compile Include="Functions\PluginIs.cs" />
     <Compile Include="Functions\EnvVar.cs" />
     <Compile Include="Functions\Date\Date Component.cs" />
     <Compile Include="Functions\Date\Now.cs" />

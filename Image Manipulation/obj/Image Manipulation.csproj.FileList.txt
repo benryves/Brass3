@@ -12,3 +12,5 @@ bin\Release\Brass.pdb
 obj\Release\ResolveAssemblyReference.cache
 obj\Release\ImageManipulation.dll
 obj\Release\ImageManipulation.pdb
+bin\Release\Brass.xml
+bin\Debug\Brass.xml

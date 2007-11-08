@@ -12,7 +12,6 @@ namespace Core.Directives {
 	[Description("Writes the text representation of the specified expressions to the console.\r\n<c>echoln</c> writes a new-line sequence at the end of the expression list.")]
 	[Remarks("Expressions can be either numeric or string constants. This directive is only invoked during the second pass.")]
 	[CodeExample(".echoln \"Program counter = \", $")]
-	[SeeAlso(typeof(EchoChar))]
 	[PluginName("echo"), PluginName("echoln")]
 	public class Echo : IDirective {
 
