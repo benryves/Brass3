@@ -51,7 +51,9 @@ namespace Brass3 {
 				this.OnWarningRaised(new NotificationEventArgs(this, "Output writer not set."));
 			}
 
-			if (this.StringEncoders.Contains(project.StringEncoder)) {
+			if (project.StringEncoder == null ) {
+				this.StringEncoder = null;
+			} else if (this.StringEncoders.Contains(project.StringEncoder)) {
 				this.StringEncoder = this.StringEncoders[project.StringEncoder];
 			} else {
 				this.OnWarningRaised(new NotificationEventArgs(this, "String encoder not set."));
