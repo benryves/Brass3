@@ -2,7 +2,7 @@
 ; Ben Ryves / Bee Development 2007.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 2
+AppVerName=Brass 3 Beta 3
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
@@ -48,10 +48,19 @@ Source: "Include\TI\mirage.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversi
 Source: "Templates\TI\Program.brassproj"; DestDir: "{app}\Templates\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
 Source: "Templates\TI\Resources\Icons\MirageOS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
 Source: "Templates\TI\Resources\Icons\Venus.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Templates\TI\Resources\Icons\DoorsCS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
+
+Source: "Templates\SMS\32KB.brassproj"; DestDir: "{app}\Templates\SMS"; Flags: ignoreversion; Components: "Templates\SMS\32KB";
 
 ; Samples:
 Source: "Samples\TI Calculator Program\Demo.brassproj"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Program"; Flags: ignoreversion; Components: "Samples\TIProgram";
 Source: "Samples\TI Calculator Program\Demo.asm"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Program"; Flags: ignoreversion; Components: "Samples\TIProgram";
+
+Source: "Samples\Sega Master System Program\Registers.brassproj"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
+Source: "Samples\Sega Master System Program\Registers.asm"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
+Source: "Samples\Sega Master System Program\Video.asm"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
+Source: "Samples\Sega Master System Program\Font.inc"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
+Source: "Samples\Sega Master System Program\Resources.inc"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
 
 ; Documentation:
 Source: "Release Notes.rtf"; DestDir: "{app}\Documentation"; Flags: ignoreversion;
@@ -65,6 +74,7 @@ Name: "Tools\GuiBuilder"; Description: "GUI Builder"; Types: full custom;
 
 Name: "Samples"; Description: "Projects Directory"; Types: full custom;
 Name: "Samples\TIProgram"; Description: "Sample Texas Instruments Calculator Program"; Types: full custom;
+Name: "Samples\SMS32KB"; Description: "Sample Sega Master System Program"; Types: full custom;
 
 Name: "Plugins"; Description: "Plugins"; Types: full compact custom;
 Name: "Plugins\Core"; Description: "Core Collection"; Types: full compact custom;
@@ -89,6 +99,8 @@ Name: "Include\TI\TI73"; Description: "TI-73"; Types: full custom;
 Name: "Templates"; Description: "Project Templates"; Types: full custom;
 Name: "Templates\TI"; Description: "Texas Instruments Calculators"; Types: full custom;
 Name: "Templates\TI\Program"; Description: "TI-83/TI-83 Plus Assembly Program"; Types: full custom;
+Name: "Templates\SMS"; Description: "Sega Master System"; Types: full custom;
+Name: "Templates\SMS\32KB"; Description: "32KB Master System / Game Gear ROM"; Types: full custom;
 
 
 [Registry]

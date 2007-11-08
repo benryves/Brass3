@@ -38,7 +38,7 @@ namespace GuiBuilder {
 				Project.Load(ProjectPath);
 
 				if (BuildConfiguration == null) {
-					string[] PossibleConfigurations = Project.GetBuildConfigurationNames();
+					KeyValuePair<string, string>[] PossibleConfigurations = Project.GetBuildConfigurationNames();
 					if (PossibleConfigurations.Length > 0) {
 						using (SelectConfiguration SC = new SelectConfiguration(PossibleConfigurations)) {
 							if (SC.ShowDialog() != DialogResult.OK) {

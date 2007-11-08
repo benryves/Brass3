@@ -57,6 +57,15 @@ namespace Brass3 {
 			set { this.configurationName = value; }
 		}
 
+		private string configurationDisplayName;
+		/// <summary>
+		/// Gets or sets a particular build configuration's display name.
+		/// </summary>
+		public string ConfigurationDisplayName {
+			get { return string.IsNullOrEmpty(this.configurationDisplayName) ? this.ConfigurationName : this.configurationDisplayName; }
+			set { this.configurationDisplayName = value; }
+		}
+
 		private string projectFilename;
 		/// <summary>
 		/// Gets or sets the filename of the project.
@@ -471,6 +480,10 @@ namespace Brass3 {
 
 						Project P = new Project();
 						P.ConfigurationName = ConfigurationAttribute.Value;
+
+						XmlAttribute ConfigurationDisplayName;
+						if (TryGetNamedItem(N, "displayname", out ConfigurationDisplayName)) P.ConfigurationDisplayName = ConfigurationDisplayName.Value;
+
 						this.BuildConfigurations.Add(ConfigurationAttribute.Value.ToLowerInvariant(), P);
 						P.LoadFromNode(N);
 
@@ -566,17 +579,22 @@ namespace Brass3 {
 			return Result;
 		}
 
-		public string[] GetBuildConfigurationNames() {
-			List<string> Result = new List<string>();
-			AddBuildConfigurations(null, Result, this);
+		/// <summary>
+		/// Gets an array of configuration names.
+		/// </summary>
+		/// <returns>An array of elements whose key is the configuration name and whose value is the display name.</returns>
+		public KeyValuePair<string, string>[] GetBuildConfigurationNames() {
+			List<KeyValuePair<string, string>> Result = new List<KeyValuePair<string, string>>();
+			AddBuildConfigurations(null, null, Result, this);
 			return Result.ToArray();
 		}
 
-		private void AddBuildConfigurations(string path, List<string> result, Project p) {
+		private void AddBuildConfigurations(string path, string displayPath, List<KeyValuePair<string, string>> result, Project p) {
 			foreach (KeyValuePair<string, Project> BuildConfiguration in p.BuildConfigurations) {
 				string SubPath = (path == null ? "" : path + ".") + BuildConfiguration.Value.ConfigurationName;
-				result.Add(SubPath);
-				AddBuildConfigurations(SubPath, result, BuildConfiguration.Value);
+				string SubDisplayPath = (displayPath == null ? "" : displayPath + ", ") + BuildConfiguration.Value.ConfigurationDisplayName;
+				result.Add(new KeyValuePair<string, string>(SubPath, SubDisplayPath));
+				AddBuildConfigurations(SubPath, SubDisplayPath, result, BuildConfiguration.Value);
 			}
 		}
 

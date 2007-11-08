@@ -13,7 +13,7 @@
 		<header append="true">.tivariablename Program.Name</header>
 	</input>
 
-	<buildconfiguration name="TI8X">
+	<buildconfiguration name="TI8X" displayname="TI-83 Plus">
 	
 		<input>
 			<header append="true">.include "TI/ti83plus.inc" \ .org $9D93 \ .dw $6DBB</header>
@@ -36,7 +36,7 @@
 		
 	</buildconfiguration>
 	
-	<buildconfiguration name="TI83">
+	<buildconfiguration name="TI83" displayname="TI-83">
 	
 		<input>
 			<header append="true">.include "TI/ti83.inc" \ .org $9327 \ .unsquish</header>

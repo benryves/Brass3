@@ -20,11 +20,11 @@
 		
 	</input>
 	
-	<buildconfiguration name="SMS">
+	<buildconfiguration name="SMS" displayname="Sega Master System">
 		<output writer="smsrom" />
 	</buildconfiguration>
 	
-	<buildconfiguration name="GG">
+	<buildconfiguration name="GG" displayname="Sega Game Gear">
 		<output writer="ggrom" />
 	</buildconfiguration>
 	

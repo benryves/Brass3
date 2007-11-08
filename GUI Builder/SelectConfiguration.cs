@@ -14,9 +14,24 @@ namespace GuiBuilder {
 			get { return this.selectedConfiguration; }
 		}
 
-		public SelectConfiguration(string[] options) {
+		public struct BuildConfiguration {
+			public string Name;
+			public string DisplayName;
+			public override string ToString() {
+				return this.DisplayName;
+			}
+			public BuildConfiguration(string name, string displayName) {
+				this.Name = name;
+				this.DisplayName = displayName;
+			}
+		}
+
+		public SelectConfiguration(KeyValuePair<string,string>[] options) {
 			InitializeComponent();
-			this.ListBuildConfigurations.Items.AddRange(options);
+			foreach (KeyValuePair<string, string> KVP in options) {
+				this.ListBuildConfigurations.Items.Add(new BuildConfiguration(KVP.Key, KVP.Value)); ;
+			}
+			
 		}
 
 		private void ListBuildConfigurations_DoubleClick(object sender, EventArgs e) {
@@ -28,7 +43,7 @@ namespace GuiBuilder {
 				this.selectedConfiguration = null;
 				this.ButtonOK.Enabled = false;
 			} else {
-				this.selectedConfiguration = this.ListBuildConfigurations.SelectedItem as string;
+				this.selectedConfiguration = ((BuildConfiguration)this.ListBuildConfigurations.SelectedItem).Name;
 				this.ButtonOK.Enabled = true;
 			}
 		}

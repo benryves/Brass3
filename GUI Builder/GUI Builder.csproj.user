@@ -1,6 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>"D:\Documents\Documents\Brass Projects\Samples\Sega Master System Program\Registers.brassproj"</StartArguments>
-    <StartWorkingDirectory>D:\Documents\Documents\Brass Projects\Samples\Sega Master System Program\</StartWorkingDirectory>
+    <StartArguments>
+    </StartArguments>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
   </PropertyGroup>
 </Project>
