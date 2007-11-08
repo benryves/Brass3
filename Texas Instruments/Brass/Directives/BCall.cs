@@ -7,7 +7,7 @@ using Brass3.Plugins;
 using Brass3.Attributes;
 
 namespace TexasInstruments.Brass.Directives {
-	[Category("Texas Instruments ROM Calls")]
+	[Category("Texas Instruments")]
 	[SeeAlso(typeof(Functions.BCall))]
 	[Syntax(".bcall _target")]
 	[Syntax(".bcall z, _target"), Syntax(".bcall nz, _target")]

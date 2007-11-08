@@ -6,7 +6,7 @@ using Brass3.Attributes;
 using Brass3.Plugins;
 
 namespace TexasInstruments.Brass.Functions {
-	[Category("Texas Instruments ROM Calls")]
+	[Category("Texas Instruments")]
 
 	[PluginName("bcall")]
 	[PluginName("bcallz"), PluginName("bcallnz")]
@@ -105,6 +105,7 @@ String .byte ""Brass 3"", 0")]
 			JpZ = 0xCA,
 			Jp = 0xC3,
 			Ret = 0xC9,
+			LdHl = 0x21,
 		}
 
 		internal enum Condition {
