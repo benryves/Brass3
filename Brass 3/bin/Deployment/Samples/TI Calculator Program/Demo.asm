@@ -8,7 +8,7 @@
  */
  
 	; Clear the screen.
-	bcall(_clrLcdFull)
+	.bcall _clrLcdFull
 	
 	; Move cursor to (0,0).
 	xor a
@@ -17,12 +17,15 @@
 	
 	; Display the message.
 	ld hl,Message
-	bcall(_putS)
-	bcall(_newLine)
+	.bcall _putS
+	.bcall _newLine
+
+
+	; Dummy keyboard read.
+	.bcall _getCSC
 	
 	; Poll the keyboard until we receive a key.
--
-	bcall(_getCSC)
+-	.bcall _getCSC
 	or a
 	jr z,-
 	
