@@ -46,7 +46,7 @@ namespace Brass3 {
 				TemporaryLabels.Add(L.Clone() as Label);
 				this.Remove(L);				
 			}
-
+			this.LeaveModule();
 			return TemporaryLabels.ToArray();
 		}
 
