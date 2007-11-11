@@ -18,6 +18,17 @@ namespace Brass3 {
 		}
 
 		/// <summary>
+		/// Gets a <see cref="TokenisedSource"/> contained within brackets.
+		/// </summary>
+		/// <param name="firstBracketIndex">The index of the first bracket.</param>
+		public TokenisedSource GetTokensInBrackets(int firstBracketIndex) {
+			int lastBracketIndex = this.GetCloseBracketIndex(firstBracketIndex);
+			Token[] SubRange = new Token[lastBracketIndex - firstBracketIndex - 1];
+			Array.Copy(this.tokens, firstBracketIndex + 1, SubRange, 0, SubRange.Length);
+			return new TokenisedSource(SubRange, this);
+		}
+
+		/// <summary>
 		/// Gets an array of comma-delimited arguments, raising an error if the number of arguments is out of range.
 		/// </summary>
 		/// <param name="index">The index to start searching for.</param>

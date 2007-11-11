@@ -71,26 +71,34 @@ namespace Core.Directives {
 				if (!HasParameters) {
 					s.ReplaceToken(i, Replacement.ToArray());
 				} else {
-					// Crud.
-					// Rip out the arguments;
-					if (s.Tokens[i + 1].Data != "(") {
-						return;
+
+					// Check that we're invoking this with name():
+					if (!s.Tokens[i + 1].IsOpenBracket) return;
+
+					int CloseBracketIndex = s.GetCloseBracketIndex(i + 1);
+
+					// Pull out the arguments from the parentheses:
+					TokenisedSource RawArguments = s.GetTokensInBrackets(i + 1);
+
+					// Get argument indices:
+					int[] Arguments = RawArguments.GetCommaDelimitedArguments(0, ParameterNames.Count);
+
+					TokenisedSource[] PassedArguments = new TokenisedSource[ParameterNames.Count];
+					for (int a = 0; a < PassedArguments.Length; ++a) {
+						PassedArguments[a] = RawArguments.GetExpressionTokens(Arguments[a]);
 					}
-					TokenisedSource PassedArguments = GetArguments(s, i);
-					int[] PassedArgumentIndices = PassedArguments.GetCommaDelimitedArguments(0);
 
-					if (PassedArgumentIndices.Length != ParameterNames.Count) throw new CompilerExpection(s, "Macro expects " + ParameterNames.Count + " argument" + (ParameterNames.Count == 1 ? "" : "s") + ".");
-
-					// Perform the substitution:
 					List<TokenisedSource.Token> Result = new List<TokenisedSource.Token>();
 
-					for (int ReplaceIndex = 1 + (2 * ParameterNames.Count); ReplaceIndex < Replacement.Count; ++ReplaceIndex) {
+
+					for (int ReplaceIndex = 2 + Math.Max(0, ((2 * ParameterNames.Count) - 1)); ReplaceIndex < Replacement.Count; ++ReplaceIndex) {
+
 						TokenisedSource.Token T = Replacement[ReplaceIndex];
 
 						bool MatchedArgument = false;
 						for (int ParameterIndex = 0; ParameterIndex < ParameterNames.Count; ++ParameterIndex) {
-							if (T.Data.ToLowerInvariant() == ParameterNames[ParameterIndex]) {
-								foreach (TokenisedSource.Token MatchedParameter in PassedArguments.GetExpressionTokens(PassedArgumentIndices[ParameterIndex]).Tokens) {
+							if (T.DataLowerCase == ParameterNames[ParameterIndex]) {
+								foreach (TokenisedSource.Token MatchedParameter in PassedArguments[ParameterIndex].Tokens) {
 									Result.Add(MatchedParameter);
 								}
 								MatchedArgument = true;
@@ -98,11 +106,10 @@ namespace Core.Directives {
 							}
 						}
 						if (!MatchedArgument) Result.Add(T);
-						
 					}
+					s.ReplaceTokens(i, CloseBracketIndex, Result.ToArray()); // +2 for <macro name> <(>*/
+					return;
 
-
-					s.ReplaceTokens(i, 2 + i + PassedArguments.Tokens.Length, Result.ToArray()); // +2 for <macro name> <(>
 				}
 			});
 

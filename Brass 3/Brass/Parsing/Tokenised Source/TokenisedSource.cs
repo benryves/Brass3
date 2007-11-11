@@ -137,26 +137,30 @@ namespace Brass3 {
 			throw new CompilerExpection(Source, "Could not retrieve a single token value and index from the source.");
 		}
 
-		public int GetCloseBracketIndex(int startBraceIndex) {
-			if (!tokens[startBraceIndex].IsOpenBracket) throw new CompilerExpection(tokens[startBraceIndex], "Invalid starting bracket index.");
+		/// <summary>
+		/// Gets the index of a matching close bracket from the index of the first brace index.
+		/// </summary>
+		/// <param name="firstBraceIndex">The index of the opening bracket you wish to match.</param>
+		public int GetCloseBracketIndex(int firstBraceIndex) {
+			if (!tokens[firstBraceIndex].IsOpenBracket) throw new CompilerExpection(tokens[firstBraceIndex], "Invalid starting bracket index.");
 			int BraceDepth = 1;
 			Stack<string> OpenBraces = new Stack<string>();
-			OpenBraces.Push(tokens[startBraceIndex].Data);
-			for (++startBraceIndex; startBraceIndex < this.tokens.Length && BraceDepth > 0; ++startBraceIndex) {
-				if (this.tokens[startBraceIndex].IsOpenBracket) {
-					OpenBraces.Push(this.tokens[startBraceIndex].Data);
+			OpenBraces.Push(tokens[firstBraceIndex].Data);
+			for (++firstBraceIndex; firstBraceIndex < this.tokens.Length && BraceDepth > 0; ++firstBraceIndex) {
+				if (this.tokens[firstBraceIndex].IsOpenBracket) {
+					OpenBraces.Push(this.tokens[firstBraceIndex].Data);
 					++BraceDepth;
 				}
-				if (this.tokens[startBraceIndex].IsCloseBracket) {
-					if (this.tokens[startBraceIndex].MatchingBracket == OpenBraces.Pop()) {
+				if (this.tokens[firstBraceIndex].IsCloseBracket) {
+					if (this.tokens[firstBraceIndex].MatchingBracket == OpenBraces.Pop()) {
 						--BraceDepth;
 					} else {
-						throw new CompilerExpection(this.tokens[startBraceIndex], "Brackets don't match.");
+						throw new CompilerExpection(this.tokens[firstBraceIndex], "Brackets don't match.");
 					}
 				}
 			}
-			if (BraceDepth == 0) return startBraceIndex - 1;
-			throw new CompilerExpection(tokens[startBraceIndex], "Matching closing bracket not found.");
+			if (BraceDepth == 0) return firstBraceIndex - 1;
+			throw new CompilerExpection(tokens[firstBraceIndex], "Matching closing bracket not found.");
 		}
 
 		/// <summary>
