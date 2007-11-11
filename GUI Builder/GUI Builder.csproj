@@ -83,6 +83,7 @@
     <ProjectReference Include="..\Brass 3\Brass 3.csproj">
       <Project>{75305F27-C13B-4904-9EC4-6FD352230601}</Project>
       <Name>Brass 3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

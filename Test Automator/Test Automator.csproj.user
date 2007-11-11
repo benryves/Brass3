@@ -1,5 +1,0 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartWorkingDirectory>D:\Documents\Documents\Visual Studio 2005\Projects\Brass 3\Brass 3\bin\Debug\</StartWorkingDirectory>
-  </PropertyGroup>
-</Project>

@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<brassprofile name="Classic">
-	<include profile="Z80" />
-	
-</brassprofile>

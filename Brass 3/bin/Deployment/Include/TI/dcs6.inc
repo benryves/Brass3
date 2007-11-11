@@ -1,17 +1,13 @@
-; ==============================================================
-; MIRAGE.INC - Modified to support original ION function names
-; ==============================================================
-
-ionVersion            = $4083
-ionPutSprite          = $4089
-ionLargeSprite        = $408C
-ionGetPixel           = $408F
-ionFastCopy           = $4092
-ionDetect             = $4095
-ionDecompress         = $4098
-ionRandom             = $4086
-
-; Below are standard mirage.inc function names
+;+----------------------------------------+
+;|      Doors CS v6.0 Include File        |
+;|         TI-83+/TI-84+ Version          |
+;|         Revised March 17, 2007         |
+;|           By Kerm Martian              |
+;|                                        |
+;| Please see http://dcs.cemetech.net for |
+;| information and updates including a    |
+;| full Developers' SDK.                  |
+;+----------------------------------------+
 
 iversion              = $4083
 irandom               = $4086
@@ -21,6 +17,24 @@ igetpix               = $408F
 ifastcopy             = $4092
 idetect               = $4095
 idecomp               = $4098
+
+ionversion            = $4083
+ionrandom             = $4086
+ionputsprite          = $4089
+ionlargesprite        = $408C
+iongetpixel           = $408F
+ionfastcopy           = $4092
+iondetect             = $4095
+iondecompress         = $4098
+
+iputsprite            = $4089
+ilargesprite          = $408C
+igetpixel             = $408F
+idecompress           = $4098
+
+;=================================;
+;====== MirageOS Subroutines =====;
+;=================================;
 
 directin              = $409B
 sendbytetios          = $409E
@@ -127,40 +141,55 @@ getchecksum           = $41CA
 freearc               = $41CD
 swapram               = $41D0
 hideall               = $41D3
+Small_Window 	      = $41D6
+ClrDialogFull 	      = $41D9
+LargeWindow 	      = $41DC
+ClrWinFull            = $41DF
+PlaySound 	          = $41E2
+VDispHL 	          = $41E5
+Pause 	              = $41E8
+hDetect 	          = $41EB
+OpenGUIStack 	      = $41EE
+CloseGUIStack	      = $41F1
+PushGUIStack 	      = $41F4
+PopGUIStack 	      = $41F7
+RenderGUI 	          = $41FA
+PopGUIStacks	      = $41FD
+GUIMouse 	          = $4200
+GUIFindFirst 	      = $4203
+GUIFindNext 	      = $4206
+ResetAppPage 	      = $4000
+Cn2_Setup	          = $4209
+Cn2_Clear_SendBuf     = $420C
+Cn2_Clear_RecBuf      = $420F
+Cn2_Setdown	          = $4212
+FileOpen 	          = $4215
+FileSave 	          = $4218
+FileSaveAs 	          = $421B
+DispLongInt	          = $421E
 
-;=================================;
-;====== MirageOS Ram Equates =====;
-;=================================;
-
-mlinebitmap           = $FFFF-399
-timer1                = $8a3a
-timer1max             = $8a3b
-timer2                = $8a3c
-timer2max             = $8a3d
-timer3                = $8a3e
-custintaddr           = $966F
-
-saferam1              = SavesScreen
-saferam2              = AppBackUpScreen
-saferam3              = TempSwapArea
-
-mirflags              = $21
-rightalign            = $07
-lcdinstport           = $10
-lcddataport           = $11
-
-numscrollpixels       = CmdShadow+104
-scrollbarcoords       = CmdShadow+105
-old_element           = CmdShadow+107
-cur_element           = CmdShadow+109
-old_max_elem          = CmdShadow+111
-max_elements          = CmdShadow+113
-
-; =================================
-; ===== Various Other Equates =====
-; =================================
-
-gbuf                  = PlotsScreen
-LargeSprite           = ilsprite
-SmallSprite           = isprite
-FastCopy              = ifastcopy
+null					=$00
+LargeWin				=$01
+SmallWin				=$02
+FullScreenImg			=$03
+Text					=$04
+WinButtons				=$05
+WrappedText				=$06
+ButtonText				=$07
+ButtonImg				=$08
+TextLineIn				=$09
+Radio					=$0A
+Checkbox				=$0B
+ByteInt					=$0C
+WordInt					=$0D
+Hotspot					=$0E
+TextMultiline			=$0F
+Sprite					=$10
+LargeSprite				=$11
+PassIn					=$12
+ScrollVert				=$13
+ScrollHoriz				=$14
+Border					=$15
+Rect					=$16
+Custom					=$17
+MouseCursor				=$18

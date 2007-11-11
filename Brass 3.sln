@@ -13,19 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legacy", "Legacy\Legacy.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Texas Instruments", "Texas Instruments\Texas Instruments.csproj", "{FDCF6436-DC44-4B1A-A142-AD5ACE5EDA38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Editor", "Project Editor\Project Editor.csproj", "{190E98C2-6456-4B0E-91C6-89B519AB61D7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image Manipulation", "Image Manipulation\Image Manipulation.csproj", "{A8DA54FF-1E03-48E9-8650-1C436EABF987}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test Automator", "Test Automator\Test Automator.csproj", "{8A52BE45-9886-4971-8802-3C96A866DE93}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chip-8", "Chip-8\Chip-8.csproj", "{E84BD9FF-65F4-4199-8675-DAD88281E979}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Variables", "Variables\Variables.csproj", "{5F4A5E72-E6FB-4897-AC0B-0B5F20535B9B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sega Master System", "Sega Master System\Sega Master System.csproj", "{E48B587A-8FC9-4272-8086-7E8646CDE6F4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Create Brass Project", "CreateBrassProj\Create Brass Project.csproj", "{E25EDA41-3463-4984-B8BA-715FE7029853}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI Builder", "GUI Builder\GUI Builder.csproj", "{BA03094E-6C13-4297-81FD-84EFD9B4C456}"
 EndProject
@@ -59,18 +53,10 @@ Global
 		{FDCF6436-DC44-4B1A-A142-AD5ACE5EDA38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDCF6436-DC44-4B1A-A142-AD5ACE5EDA38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDCF6436-DC44-4B1A-A142-AD5ACE5EDA38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{190E98C2-6456-4B0E-91C6-89B519AB61D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{190E98C2-6456-4B0E-91C6-89B519AB61D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{190E98C2-6456-4B0E-91C6-89B519AB61D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{190E98C2-6456-4B0E-91C6-89B519AB61D7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A8DA54FF-1E03-48E9-8650-1C436EABF987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A8DA54FF-1E03-48E9-8650-1C436EABF987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8DA54FF-1E03-48E9-8650-1C436EABF987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8DA54FF-1E03-48E9-8650-1C436EABF987}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A52BE45-9886-4971-8802-3C96A866DE93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A52BE45-9886-4971-8802-3C96A866DE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A52BE45-9886-4971-8802-3C96A866DE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A52BE45-9886-4971-8802-3C96A866DE93}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E84BD9FF-65F4-4199-8675-DAD88281E979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E84BD9FF-65F4-4199-8675-DAD88281E979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E84BD9FF-65F4-4199-8675-DAD88281E979}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,10 +69,6 @@ Global
 		{E48B587A-8FC9-4272-8086-7E8646CDE6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E48B587A-8FC9-4272-8086-7E8646CDE6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E48B587A-8FC9-4272-8086-7E8646CDE6F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E25EDA41-3463-4984-B8BA-715FE7029853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E25EDA41-3463-4984-B8BA-715FE7029853}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E25EDA41-3463-4984-B8BA-715FE7029853}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E25EDA41-3463-4984-B8BA-715FE7029853}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA03094E-6C13-4297-81FD-84EFD9B4C456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA03094E-6C13-4297-81FD-84EFD9B4C456}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA03094E-6C13-4297-81FD-84EFD9B4C456}.Release|Any CPU.ActiveCfg = Release|Any CPU
