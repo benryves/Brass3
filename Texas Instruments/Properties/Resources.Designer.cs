@@ -59,15 +59,5 @@ namespace TexasInstruments.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Data is output sequentially in order of the output counter. Gaps are not inserted between non-consecutive addresses; output modifiers that change the size of the output data are fully supported.
-        ///A new program variable is created within the output file for each page - use this to create groups..
-        /// </summary>
-        internal static string HelpGroupWriterRemarks {
-            get {
-                return ResourceManager.GetString("HelpGroupWriterRemarks", resourceCulture);
-            }
-        }
     }
 }

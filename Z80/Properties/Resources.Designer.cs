@@ -61,27 +61,30 @@ namespace Z80.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ADC  A,(HL)  8E   1 NOP 1
-        ///ADC  A,(IX*) 8EDD 3 ZIX 1
-        ///ADC  A,(IY*) 8EFD 3 ZIX 1
-        ///ADC  A,A     8F   1 NOP 1
-        ///ADC  A,B     88   1 NOP 1
-        ///ADC  A,C     89   1 NOP 1
-        ///ADC  A,D     8A   1 NOP 1
-        ///ADC  A,E     8B   1 NOP 1
-        ///ADC  A,H     8C   1 NOP 1
+        ///   Looks up a localized string similar to ADC	A,(HL)	8E	1	NOP	1
+        ///ADC	A,(IX*)	8EDD	3	ZIX	1
+        ///ADC	A,(IY*)	8EFD	3	ZIX	1
+        ///ADC	A,A	8F	1	NOP	1
+        ///ADC	A,B	88	1	NOP	1
+        ///ADC	A,C	89	1	NOP	1
+        ///ADC	A,D	8A	1	NOP	1
+        ///ADC	A,E	8B	1	NOP	1
+        ///ADC	A,H	8C	1	NOP	1
         ///ADC	A,IXH	8CDD	2	NOP	1
         ///ADC	A,IXL	8DDD	2	NOP	1
         ///ADC	A,IYH	8CFD	2	NOP	1
         ///ADC	A,IYL	8DFD	2	NOP	1
-        ///ADC  A,L     8D   1 NOP 1
-        ///ADC  A,*     CE   2 NOP 1
-        ///ADC  HL,BC   4AED 2 NOP 1
-        ///ADC  HL,DE   5AED 2 NOP 1
-        ///ADC  HL,HL   6AED 2 NOP 1
-        ///ADC  HL,SP   7AED 2 NOP 1
+        ///ADC	A,L	8D	1	NOP	1
+        ///ADC	A,*	CE	2	NOP	1
+        ///ADC	HL,BC	4AED	2	NOP	1
+        ///ADC	HL,DE	5AED	2	NOP	1
+        ///ADC	HL,HL	6AED	2	NOP	1
+        ///ADC	HL,SP	7AED	2	NOP	1
         ///
-        ///ADD  A,(H [rest of string was truncated]&quot;;.
+        ///ADD	A,(HL)	86	1	NOP	1
+        ///ADD	A,(IX*)	86DD	3	ZIX	1
+        ///ADD	A,(IY*)	86FD	3	ZIX	1
+        ///ADD	A,A	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TASM80 {
             get {

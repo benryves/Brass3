@@ -163,6 +163,14 @@ namespace Brass3 {
 		/// Gets an array of argument types for retrieving a single filename string from a comma-delimited expression.
 		/// </summary>
 		public static ArgumentType[] FilenameArgument { get { return new ArgumentType[] { ArgumentType.Filename }; } }
+		/// <summary>
+		/// Gets an array of argument types for retrieving a single token string from a comma-delimited expression.
+		/// </summary>
+		public static ArgumentType[] TokenArgument { get { return new ArgumentType[] { ArgumentType.SingleToken }; } }
+		/// <summary>
+		/// Gets an array of argument types for retrieving a single token (or string) string from a comma-delimited expression.
+		/// </summary>
+		public static ArgumentType[] StringOrTokenArgument { get { return new ArgumentType[] { ArgumentType.SingleToken | ArgumentType.String }; } }
 
 		/// <summary>
 		/// Get the results of some comma-delimited arguments.

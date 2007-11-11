@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\TASM80.tab" />
+    <None Include="TASM80.tab" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
