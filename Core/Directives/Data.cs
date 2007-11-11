@@ -15,6 +15,7 @@ namespace Core.Directives {
 	[Warning("The type of argument - string or number - is determined during the first pass. If the evaluation fails, the result is assumed to be a number. This can cause problems for forward-referenced strings.")]
 	[CodeExample(".word 512, 4 ** 4, 1 << 10")]
 	[CodeExample(".db \"Brass\", 0")]
+	[DisplayName("data")]
 	[Category("Data")]
 	[PluginName("data"), PluginName("db"), PluginName("byte"), PluginName("dw"), PluginName("word"), PluginName("di"), PluginName("int")]
 	public class DataDeclaration : IDirective {

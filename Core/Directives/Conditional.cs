@@ -14,6 +14,7 @@ namespace Core.Directives {
 	[CodeExample("x = 10 \\ y = 20\r\n\r\n.if x > y\r\n\t.echoln \"X is greater than Y.\"\r\n.endif")]
 	[CodeExample("age = 18\r\n\r\n#if age > 300\r\n\t.echoln \"Sorry, we don't serve spirits.\"\r\n#elseif age < 18\r\n\t.echoln \"You are below the legal drinking age.\"\r\n#elseif age < 21\r\n\t.echoln \"Can I see some ID, please?\"\r\n#else\r\n\t.echoln \"Here, have a pint.\"\r\n#endif")]
 	[Category("Flow Control")]
+	[DisplayName("if")]
 	[PluginName("if"), PluginName("elseif"), PluginName("else"), PluginName("endif"), PluginName("ifdef"), PluginName("ifndef"), PluginName("elseifdef"), PluginName("elseifndef")]
 	public class Conditional : IDirective {
 

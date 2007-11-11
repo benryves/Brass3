@@ -11,6 +11,7 @@ namespace Core.Functions {
 
 	
 	[SatisfiesAssignmentRequirement(true)]
+	[DocumentationUsage(DocumentationUsageAttribute.DocumentationType.FunctionalityOnly)]
 	public class UserFunction : IFunction {
 
 		int ModuleAllocation = 0;
