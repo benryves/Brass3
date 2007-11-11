@@ -29,8 +29,15 @@
 		
 		<buildconfiguration name="MirageOS">
 			<input>
-				<header append="true">.include "TI/mirage.inc" \ .mirageosheader Program.Description, Program.MirageOS.Icon</header>
-				<label name="Program.MirageOS.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/MirageOS.gif'" />
+				<header append="true">.include "TI/mirage.inc" \ .mirageosheader Program.Description, Program.Icon</header>
+				<label name="Program.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/MirageOS.gif'" />
+			</input>
+		</buildconfiguration>
+		
+		<buildconfiguration name="DoorsCS">
+			<input>
+				<header append="true">.include "TI/dcs6.inc" \ .doorscsheader Program.Description, Program.Icon</header>
+				<label name="Program.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/DoorsCS.gif'" />
 			</input>
 		</buildconfiguration>
 		
@@ -59,9 +66,9 @@
 		
 		<buildconfiguration name="Venus">
 			<input>
-				<header append="true">.squish \ .include "TI/venus.inc" \ .org $9329 \ .venusheader Program.Description, Program.Venus.Icon</header>
+				<header append="true">.squish \ .include "TI/venus.inc" \ .org $9329 \ .venusheader Program.Description, Program.Icon</header>
 				<footer></footer>
-				<label name="Program.Venus.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/Venus.gif'" />
+				<label name="Program.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/Venus.gif'" />
 			</input>
 		</buildconfiguration>
 		

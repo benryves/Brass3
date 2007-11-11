@@ -106,6 +106,7 @@ String .byte ""Brass 3"", 0")]
 			Jp = 0xC3,
 			Ret = 0xC9,
 			LdHl = 0x21,
+			XorD = 0xAA,
 		}
 
 		internal enum Condition {

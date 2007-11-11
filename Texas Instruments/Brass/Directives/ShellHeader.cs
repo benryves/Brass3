@@ -12,11 +12,11 @@ using System.ComponentModel;
 
 namespace TexasInstruments.Brass.Directives {
 
-	[PluginName("ionheader"), PluginName("mirageosheader"), PluginName("venusheader")]
+	[PluginName("ionheader"), PluginName("mirageosheader"), PluginName("venusheader"), PluginName("doorscsheader")]
 	[Syntax(".ionheader \"Description\"")]
 	[Syntax(".mirageosheader \"Description\" [, \"Icon.gif\"]")]
 	[Syntax(".venusheader \"Description\" [, \"Icon.gif\"]")]
-	//[Syntax(".doorscsheader [\"Icon.gif\"]")]
+	[Syntax(".doorscsheader [\"Icon.gif\"]")]
 	[Description("Generates a header for popular calculator shells.")]
 	[Remarks(
 @"The directive generates code (and inserts it at the current point) according to the following table.
@@ -49,7 +49,6 @@ The directive will report a warning if there is not two bytes output before this
 	[Category("Texas Instruments")]
 	public class ShellHeader : IDirective {
 
-
 		enum ShellType {
 			Ion,
 			MirageOS,
@@ -61,8 +60,6 @@ The directive will report a warning if there is not two bytes output before this
 
 			// Determine current machine type.
 			bool Is83Plus = false;
-
-		
 
 			int HeaderSize = 0;
 
@@ -80,8 +77,9 @@ The directive will report a warning if there is not two bytes output before this
 					Shell = ShellType.Venus;
 					HeaderSize = 42;
 					break;
-				case "doorcsheader":
+				case "doorscsheader":
 					Shell = ShellType.DoorsCS;
+					HeaderSize = 12;
 					break;
 			}
 
@@ -91,7 +89,10 @@ The directive will report a warning if there is not two bytes output before this
 					Arguments = TokenisedSource.StringArgument;
 					break;
 				case ShellType.DoorsCS:
-					Arguments = new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.Filename | TokenisedSource.ArgumentType.Optional };
+					Arguments = new TokenisedSource.ArgumentType[] {
+						TokenisedSource.ArgumentType.String  | TokenisedSource.ArgumentType.Optional,
+						TokenisedSource.ArgumentType.Filename | TokenisedSource.ArgumentType.Optional 
+					};
 					break;
 				case ShellType.MirageOS:
 				case ShellType.Venus:
@@ -128,6 +129,9 @@ The directive will report a warning if there is not two bytes output before this
 
 			byte[] ProgramName = compiler.StringEncoder.GetData(ParsedArguments[0] as string);
 
+			if (ProgramName.Length != 0 && Shell == ShellType.DoorsCS) ++HeaderSize;
+			if (Shell == ShellType.DoorsCS && ParsedArguments.Length == 2) HeaderSize += 32;
+
 			/* 
 			 * Ion:
 			 * ret \ jr nc,+         // 3 bytes.
@@ -144,11 +148,18 @@ The directive will report a warning if there is not two bytes output before this
 			 * jr nc,+               // 2 bytes.
 			 * .db "Description", 0  // Length of description + 1 bytes.
 			 * .db [icon]            // 32 bytes.
+			 * 
+			 * DoorsCS 6:
+			 * xor d \ ret \ jr nc,+ // 4 bytes.
+			 * .dw Description       // 2 bytes.
+			 * .dw $0005             // 2 bytes.
+			 * .dw Icon              // 2 bytes.
+			 * .dw ALE               // 2 bytes.
 			 */
 
 			switch (compiler.CurrentPass) {
 				case AssemblyPass.Pass1:
-					compiler.IncrementProgramAndOutputCounters(ProgramName.Length + HeaderSize);
+					compiler.IncrementProgramAndOutputCounters(HeaderSize + ProgramName.Length);
 					break;
 				case AssemblyPass.Pass2:
 					switch (Shell) {
@@ -182,8 +193,27 @@ The directive will report a warning if there is not two bytes output before this
 								}
 							} break;
 						case ShellType.DoorsCS: {
-							} break; 
-					}					
+								if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "DoorsCS header is only valid with the TI-83 Plus output writer.")));
+								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.XorD);
+								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Ret);
+								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Jr);
+
+								if (ProgramName.Length != 0) {
+									Array.Resize<byte>(ref ProgramName, ProgramName.Length + 1);
+								}
+
+								byte[] IconData = new byte[0];
+								if (ParsedArguments.Length == 2) IconData = GetIcon(ParsedArguments[1] as string, 16);
+								compiler.WriteOutput((byte)(8 + ProgramName.Length + IconData.Length));
+								compiler.WriteOutput((ushort)(ProgramName.Length == 0 ? 0x0000 : compiler.Labels.ProgramCounter.NumericValue + 8));
+								compiler.WriteOutput((ushort)0x0005);
+								compiler.WriteOutput((ushort)(IconData.Length == 0 ? 0x0000 : compiler.Labels.ProgramCounter.NumericValue + 4 + ProgramName.Length));
+								compiler.WriteOutput((ushort)0x0000);
+								compiler.WriteOutput(ProgramName);
+								compiler.WriteOutput(IconData);
+								
+							} break;
+					}
 					break;
 			}			
 		}
