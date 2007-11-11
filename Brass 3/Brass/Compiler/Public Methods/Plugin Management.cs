@@ -155,6 +155,7 @@ namespace Brass3 {
 			}
 		}
 
+
 		/// <summary>
 		/// Get a plugin instance from a type.
 		/// </summary>
@@ -169,6 +170,24 @@ namespace Brass3 {
 			foreach (IListingWriter Plugin in this.listingWriters) if (Plugin.GetType() == type) return Plugin;
 			foreach (INumberEncoder Plugin in this.numberEncoders) if (Plugin.GetType() == type) return Plugin;
 			foreach (IAssembler Plugin in this.assemblers) if (Plugin.GetType() == type) return Plugin;
+			return null;
+		}
+
+		/// <summary>
+		/// Get a plugin instance from its name.
+		/// </summary>
+		/// <param name="name">The name of the plugin to retrieve.</param>
+		/// <returns>An instance of the plugin, or null if one wasn't found matching the name.</returns>
+		public IPlugin GetPluginInstanceFromName(string name) {
+			IPlugin Plugin;
+			if (this.directives.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.functions.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.outputModifiers.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.outputWriters.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.stringEncoders.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.listingWriters.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.numberEncoders.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.assemblers.TryGetPlugin(name, out Plugin)) return Plugin;
 			return null;
 		}
 

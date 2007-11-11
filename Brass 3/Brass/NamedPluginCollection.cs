@@ -62,6 +62,40 @@ namespace Brass3 {
 			return this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name);
 		}
 
+		/// <summary>
+		/// Try and get a plugin by its name.
+		/// </summary>
+		/// <param name="name">The name of the plugin to retrieve.</param>
+		/// <param name="plugin">If found, an instance of the requested plugin.</param>
+		/// <returns>True if the plugin was found, false otherwise.</returns>
+		public bool TryGetPlugin(string name, out T plugin) {
+			if (string.IsNullOrEmpty(name)) {
+				plugin = default(T);
+				return false;
+			}
+			return this.Plugins.TryGetValue(name.ToLowerInvariant(), out plugin);
+		}
+
+		/// <summary>
+		/// Try and get a plugin by its name.
+		/// </summary>
+		/// <param name="name">The name of the plugin to retrieve.</param>
+		/// <param name="plugin">If found, an instance of the requested plugin.</param>
+		/// <returns>True if the plugin was found, false otherwise.</returns>
+		public bool TryGetPlugin(string name, out IPlugin plugin) {
+
+			plugin = default(IPlugin);
+
+			if (string.IsNullOrEmpty(name)) return false;
+
+			T Plugin;
+			if (!this.Plugins.TryGetValue(name.ToLowerInvariant(), out Plugin)) return false;
+
+			plugin = (IPlugin)Plugin;
+
+			return true;
+		}
+
 		public IEnumerator<T> GetEnumerator() {
 			return this.UniquePlugins.GetEnumerator();
 		}
