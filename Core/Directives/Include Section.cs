@@ -8,6 +8,9 @@ using Brass3.Plugins;
 using Brass3.Attributes;
 
 namespace Core.Directives {
+	[Category("Code Structure")]
+	[Description("Inserts a code section at the current location.")]
+	[SeeAlso(typeof(Section))]
 	public class IncSection : IDirective {
 
 	

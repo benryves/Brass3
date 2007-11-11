@@ -13,6 +13,7 @@ namespace Core.Directives {
 	[Description("Loads and compiles <c>file</c> at the current source file position.")]
 	[Remarks("Use this break up a project into multiple source files. This greatly aids code readability and allows you to easily incorporate source from other projects into your own without having to manually copy and paste it in.")]
 	[CodeExample(".include \"graphics.asm\"")]
+	[Category("Code Structure")]
 	public class Include : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {

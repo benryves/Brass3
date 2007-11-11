@@ -8,7 +8,49 @@ using Brass3.Plugins;
 using Brass3.Attributes;
 
 namespace Core.Directives {
+	
+	[Category("Code Structure")]
+	[Description("Defines a code section.")]
+	[Remarks(@"There are instances when you need to control the structure of the program. For example, hardware constraints might dictate that all executable code must fit in the first 8KB of the binary, but data resources can appear after this point.
+Code inside sections isn't compiled immediately. To compile it, you need to use the <see cref=""incsection""/> directive.")]
+	[CodeExample(@"/* Main.asm */
+
+.include ""File1.asm""
+.include ""File2.asm""
+.incsection Code
+.incsection Data
+
+/* File1.asm */
+
+.section Code
+.include ""Code1.asm""
+.endsection
+
+.section Data
+.include ""Data1.inc""
+.endsection
+
+/* File2.asm */
+
+.section Code
+.include ""Code2.asm""
+.endsection
+
+.section Data
+.include ""Data2.inc""
+.endsection
+
+/*
+   This would assemble as the following:
+   
+   .include ""Code1.asm""
+   .include ""Code2.asm""
+   .include ""Data1.inc""
+   .include ""Data2.inc""
+   
+*/")]
 	[PluginName("section"), PluginName("endsection")]
+	[SeeAlso(typeof(IncSection))]
 	public class Section : IDirective {
 
 		internal class SectionRange {
@@ -45,7 +87,11 @@ namespace Core.Directives {
 					if (compiler.CurrentPass == AssemblyPass.Pass1) {
 						if (CurrentSection == null) throw new CompilerExpection(source, "No section to end.");
 						SectionRangeData = this.Sections[this.CurrentSection];
-						SectionRangeData[SectionRangeData.Count - 1].LastStatement = compiler.RememberPosition() - 1;
+						SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
+						Range.LastStatement = compiler.RememberPosition() - 1;
+						if (Range.LastStatement < Range.FirstStatement) {
+							SectionRangeData.Remove(Range);
+						}
 						this.CurrentSection = null;
 					}
 					compiler.SwitchOn();

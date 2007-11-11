@@ -13,7 +13,7 @@ namespace Core.Directives {
 	[Syntax(".endmodule")]
 	[CodeExample(".module People\r\n\r\n\tCount = 2\r\n\r\n\t.module Ben\r\n\t\tAge = 21\r\n\t.endmodule\r\n\r\n\t.module Steve\r\n\t\tAge = 22\r\n\t.endmodule\r\n\r\n.endmodule\r\n\r\n.echoln \"There are \", People.Count, \" people.\"\r\n.echoln \"Ben is \", People.Ben.Age, \" years old.\"\r\n.echoln \"Steve is \", People.Steve.Age, \" years old.\"\r\n")]
 	[Remarks("Modules can be used to group labels into logical blocks.")]
-	[Category("Labels")]
+	[Category("Code Structure")]
 	[Warning("Unlike TASM and previous versions of Brass, all labels are automatically local in scope.")]
 	[PluginName("module"), PluginName("endmodule")]
 	public class Module : IDirective {
