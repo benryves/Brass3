@@ -33,34 +33,37 @@ namespace Help {
 
 				List<Assembly> PluginCollections = new List<Assembly>();
 
+				TreeNode GeneralHelp = GetHelpForPlugin<IPlugin>(this.helpProvider.Compiler.InvisiblePlugins, "Help", PluginCollections, DocumentationUsageAttribute.DocumentationType.DocumentationOnly);
+				if (GeneralHelp != null) this.Contents.Nodes.Add(GeneralHelp);
+
 				TreeNode Collections = new TreeNode("Collections");
 				this.Contents.Nodes.Add(Collections);
 
-				TreeNode Directives = GetHelpForPlugin<IDirective>(this.helpProvider.Compiler.Directives, "Directives", PluginCollections);
+				TreeNode Directives = GetHelpForPlugin<IDirective>(this.helpProvider.Compiler.Directives, "Directives", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Directives != null) this.Contents.Nodes.Add(Directives);
 
-				TreeNode Functions = GetHelpForPlugin<IFunction>(this.helpProvider.Compiler.Functions, "Functions", PluginCollections);
+				TreeNode Functions = GetHelpForPlugin<IFunction>(this.helpProvider.Compiler.Functions, "Functions", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Functions != null) this.Contents.Nodes.Add(Functions);
 
-				TreeNode Encoders = GetHelpForPlugin<IStringEncoder>(this.helpProvider.Compiler.StringEncoders, "String Encoding", PluginCollections);
+				TreeNode Encoders = GetHelpForPlugin<IStringEncoder>(this.helpProvider.Compiler.StringEncoders, "String Encoding", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Encoders != null) this.Contents.Nodes.Add(Encoders);
 
-				TreeNode NumberEncoders = GetHelpForPlugin<INumberEncoder>(this.helpProvider.Compiler.NumberEncoders, "Number Encoding", PluginCollections);
+				TreeNode NumberEncoders = GetHelpForPlugin<INumberEncoder>(this.helpProvider.Compiler.NumberEncoders, "Number Encoding", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (NumberEncoders != null) this.Contents.Nodes.Add(NumberEncoders);
 
-				TreeNode OutputWriters = GetHelpForPlugin<IOutputWriter>(this.helpProvider.Compiler.OutputWriters, "Output Writers", PluginCollections);
+				TreeNode OutputWriters = GetHelpForPlugin<IOutputWriter>(this.helpProvider.Compiler.OutputWriters, "Output Writers", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (OutputWriters != null) this.Contents.Nodes.Add(OutputWriters);
 
-				TreeNode OutputModifiers = GetHelpForPlugin<IOutputModifier>(this.helpProvider.Compiler.OutputModifiers, "Output Modifiers", PluginCollections);
+				TreeNode OutputModifiers = GetHelpForPlugin<IOutputModifier>(this.helpProvider.Compiler.OutputModifiers, "Output Modifiers", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (OutputModifiers != null) this.Contents.Nodes.Add(OutputModifiers);
 
-				TreeNode ListingWriters = GetHelpForPlugin<IListingWriter>(this.helpProvider.Compiler.ListingWriters, "Listing Writers", PluginCollections);
+				TreeNode ListingWriters = GetHelpForPlugin<IListingWriter>(this.helpProvider.Compiler.ListingWriters, "Listing Writers", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (ListingWriters != null) this.Contents.Nodes.Add(ListingWriters);
 
-				TreeNode Assemblers = GetHelpForPlugin<IAssembler>(this.helpProvider.Compiler.Assemblers, "Assemblers", PluginCollections);
+				TreeNode Assemblers = GetHelpForPlugin<IAssembler>(this.helpProvider.Compiler.Assemblers, "Assemblers", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Assemblers != null) this.Contents.Nodes.Add(Assemblers);
 
-				TreeNode Other = GetHelpForPlugin<IPlugin>(this.helpProvider.Compiler.InvisiblePlugins, "Other Plugins", PluginCollections);
+				TreeNode Other = GetHelpForPlugin<IPlugin>(this.helpProvider.Compiler.InvisiblePlugins, "Other Plugins", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Other != null) this.Contents.Nodes.Add(Other);
 
 				List<TreeNode> CollectionNodes = new List<TreeNode>();
@@ -85,7 +88,7 @@ namespace Help {
 			}
 		}
 
-		private TreeNode GetHelpForPlugin<T>(IEnumerable<T> source, string sectionName, List<Assembly> assemblies) where T : IPlugin {
+		private TreeNode GetHelpForPlugin<T>(IEnumerable<T> source, string sectionName, List<Assembly> assemblies, DocumentationUsageAttribute.DocumentationType documentationType) where T : IPlugin {
 
 			Dictionary<string, List<TreeNode>> CategoryNodes = new Dictionary<string, List<TreeNode>>();
 
@@ -97,8 +100,17 @@ namespace Help {
 				Assembly A = D.GetType().Assembly;
 				if (!assemblies.Contains(A)) assemblies.Add(A);
 
+				object[] o;
+				o = D.GetType().GetCustomAttributes(typeof(DocumentationUsageAttribute), false);
+				if (o.Length == 1) {
+					DocumentationUsageAttribute.DocumentationType DocumentationType = (o[0] as DocumentationUsageAttribute).Documentation;
+					if (DocumentationType != documentationType) continue;
+				} else {
+					if (documentationType == DocumentationUsageAttribute.DocumentationType.DocumentationOnly) continue;
+				}
+
 				string Category = "";
-				object[] o = D.GetType().GetCustomAttributes(typeof(CategoryAttribute), false);
+				o = D.GetType().GetCustomAttributes(typeof(CategoryAttribute), false);
 				if (o.Length == 1) {
 					Category = (o[0] as CategoryAttribute).Category;
 				}

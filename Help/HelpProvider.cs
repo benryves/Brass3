@@ -202,7 +202,6 @@ namespace Help {
 		public string GetHelpHtml(Assembly pluginCollection, bool forExporting) {
 			StringBuilder HelpFile = new StringBuilder(1024);
 
-
 			string CollectionName = pluginCollection.GetName().Name;
 			object[] CollectionTitle = pluginCollection.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
 			if (CollectionTitle.Length == 1) {
@@ -233,6 +232,7 @@ namespace Help {
 			return HelpFile.ToString();
 
 		}
+
 
 
 		private string GetHeader(object plugin, bool forExporting) {

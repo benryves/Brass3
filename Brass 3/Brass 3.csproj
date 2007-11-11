@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Brass\Attributes\CodeExampleAttribute.cs" />
+    <Compile Include="Brass\Attributes\DocumentationAttribute.cs" />
     <Compile Include="Brass\Attributes\PluginNameAttribute.cs" />
     <Compile Include="Brass\Attributes\SatisfiesAssignmentRequirementAttribute.cs" />
     <Compile Include="Brass\Attributes\ParseBehaviourChangeAttribute.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Brass\Compiler\Public Methods\Plugin Management.cs" />
     <Compile Include="Brass\Compiler\Defined.cs" />
     <Compile Include="Brass\Default String Encoder.cs" />
+    <Compile Include="Brass\Documentation\Labels.cs" />
     <Compile Include="Brass\Exceptions\CompilerExpection.cs" />
     <Compile Include="Brass\Exceptions\DirectiveArgumentException.cs" />
     <Compile Include="Brass\Exceptions\ParseErrorException.cs" />
