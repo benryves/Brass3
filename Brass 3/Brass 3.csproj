@@ -100,17 +100,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\test.txt" />
-    <Content Include="Documentation\Directives.txt" />
-    <Content Include="Documentation\Expressions.txt" />
-    <Content Include="Documentation\Known Issues.txt" />
-    <Content Include="Documentation\Source Syntax.txt" />
     <Content Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\Test.brassproj" />
-    <None Include="Profiles\Classic.brpf" />
-    <None Include="Profiles\Z80.brpf" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
