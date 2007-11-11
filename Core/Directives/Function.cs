@@ -19,7 +19,9 @@ namespace Core.Directives {
 	[CodeExample("Passing a string via the <c>macro</c> keyword.", ".function repeatstring(macro str, repeat)\r\n\t.for i = 0, i < repeat, ++i\r\n\t\t.db str\r\n\t.loop\r\n.endfunction\r\n\r\nrepeatstring(\"Hello\", 3)")]
 	[CodeExample("Passing by reference.", ".function increment(macro label)\r\n\t++label\r\n.endfunction\r\n\r\nx = 1\r\n.echoln \"x=\", x\r\n\r\nincrement(x)\r\n.echoln \"x=\", x")]
 	[Category("Functions")]
+	[DisplayName("function/macro")]
 	[PluginName("function"), PluginName("endfunction")]
+	[PluginName("macro"), PluginName("endmacro")]
 	public class Function : IDirective {
 
 		internal class FunctionDeclaration {
@@ -51,6 +53,7 @@ namespace Core.Directives {
 
 			switch (directive) {
 				case "function":
+				case "macro":
 
 					if (!compiler.IsSwitchedOn) return;
 
@@ -83,9 +86,11 @@ namespace Core.Directives {
 
 						if (Argument.Tokens.Length == 1 || Argument.Tokens.Length == 2) {
 							this.DeclaringFunction.Arguments[i] = Argument.Tokens[Argument.Tokens.Length - 1];
+							this.DeclaringFunction.ArgumentTypes[i] = directive == "macro" ? FunctionDeclaration.ArgumentType.Macro : FunctionDeclaration.ArgumentType.Value;
 							if (Argument.Tokens.Length == 2) {
 								switch (Argument.Tokens[0].DataLowerCase) {
 									case "value":
+										this.DeclaringFunction.ArgumentTypes[i] = FunctionDeclaration.ArgumentType.Value;
 										break;
 									case "macro":
 										this.DeclaringFunction.ArgumentTypes[i] = FunctionDeclaration.ArgumentType.Macro;
@@ -107,6 +112,7 @@ namespace Core.Directives {
 					compiler.SwitchOff(typeof(Function));
 					break;
 				case "endfunction":
+				case "endmacro":
 					if (this.DeclaringFunction != null) {
 						// We've finished declaring a function.
 						string LowerCaseName = this.DeclaringFunction.Name.Data.ToLowerInvariant();
