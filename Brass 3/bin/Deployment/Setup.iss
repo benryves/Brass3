@@ -43,6 +43,7 @@ Source: "Include\TI\ion83.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversio
 Source: "Include\TI\venus.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83\Venus";
 Source: "Include\TI\ion8x.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83Plus\Ion";
 Source: "Include\TI\mirage.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83Plus\Mirage";
+Source: "Include\TI\dcs6.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\TI83Plus\DoorsCS";
 
 ; Templates:
 Source: "Templates\TI\Program.brassproj"; DestDir: "{app}\Templates\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
@@ -94,6 +95,7 @@ Name: "Include\TI\TI83\Venus"; Description: "Venus"; Types: full custom;
 Name: "Include\TI\TI83plus"; Description: "TI-83 Plus"; Types: full custom;
 Name: "Include\TI\TI83Plus\Ion"; Description: "Ion"; Types: full custom;
 Name: "Include\TI\TI83Plus\Mirage"; Description: "MirageOS"; Types: full custom;
+Name: "Include\TI\TI83Plus\DoorsCS"; Description: "DoorsCS"; Types: full custom;
 Name: "Include\TI\TI73"; Description: "TI-73"; Types: full custom;
 
 Name: "Templates"; Description: "Project Templates"; Types: full custom;
