@@ -37,12 +37,14 @@
     <Compile Include="Directives\ClearPage.cs" />
     <Compile Include="Directives\Contiguous.cs" />
     <Compile Include="Directives\Block.cs" />
+    <Compile Include="Directives\Include Section.cs" />
     <Compile Include="Directives\Fill.cs" />
     <Compile Include="Directives\Include Text.cs" />
     <Compile Include="Directives\Define Page.cs" />
     <Compile Include="Directives\List.cs" />
     <Compile Include="Directives\EmptyFill.cs" />
     <Compile Include="Directives\Org.cs" />
+    <Compile Include="Directives\Section.cs" />
     <Compile Include="Directives\Struct.cs" />
     <Compile Include="Directives\Export.cs" />
     <Compile Include="Directives\Function.cs" />
