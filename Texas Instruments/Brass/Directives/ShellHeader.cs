@@ -17,6 +17,7 @@ namespace TexasInstruments.Brass.Directives {
 	[Syntax(".mirageosheader \"Description\" [, \"Icon.gif\"]")]
 	[Syntax(".venusheader \"Description\" [, \"Icon.gif\"]")]
 	[Syntax(".doorscsheader [\"Icon.gif\"]")]
+	[DisplayName("shellheader")]
 	[Description("Generates a header for popular calculator shells.")]
 	[Remarks(
 @"The directive generates code (and inserts it at the current point) according to the following table.
