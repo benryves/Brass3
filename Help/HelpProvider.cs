@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Help {
 	public class HelpProvider : IDisposable {
@@ -86,7 +87,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(DescriptionAttribute), false)) {
 				DescriptionAttribute D = (o as DescriptionAttribute);
 				if (D != null) {
-					HelpFile.Append("<div class=\"description\">" + NewLinesToParagraphs(DocumentationToHtml(D.Description)) + "</div>");
+					HelpFile.Append("<div class=\"description\">" + NewLinesToParagraphs(DocumentationToHtml(D.Description, forExporting)) + "</div>");
 				}
 			}
 
@@ -98,7 +99,7 @@ namespace Help {
 				foreach (object o in SyntaxAttributes) {
 					SyntaxAttribute S = (o as SyntaxAttribute);
 					if (S != null) {
-						HelpFile.AppendLine("<pre class=\"syntax\">" + DocumentationToHtml(S.Syntax) + "</pre>");
+						HelpFile.AppendLine("<pre class=\"syntax\">" + DocumentationToHtml(S.Syntax, forExporting) + "</pre>");
 					}
 				}
 			}
@@ -110,7 +111,7 @@ namespace Help {
 				foreach (object o in RemarksAttributes) {
 					RemarksAttribute R = (o as RemarksAttribute);
 					if (R != null) {
-						HelpFile.Append("<div class=\"remarks\">" + NewLinesToParagraphs(DocumentationToHtml(R.Remarks)) + "</div>");
+						HelpFile.Append("<div class=\"remarks\">" + NewLinesToParagraphs(DocumentationToHtml(R.Remarks, forExporting)) + "</div>");
 					}
 				}
 			}
@@ -119,7 +120,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(WarningAttribute), false)) {
 				WarningAttribute W = (o as WarningAttribute);
 				if (W != null) {
-					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + NewLinesToParagraphs(DocumentationToHtml(W.Warning)) + "</div>");
+					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + NewLinesToParagraphs(DocumentationToHtml(W.Warning, forExporting)) + "</div>");
 				}
 			}
 
@@ -131,7 +132,7 @@ namespace Help {
 					CodeExampleAttribute C = (o as CodeExampleAttribute);
 					if (C != null && C.Example != null) {
 						if (C.Caption != null && !string.IsNullOrEmpty(C.Caption.Trim())) {
-							HelpFile.Append("<h3 class=\"example\">" + DocumentationToHtml(C.Caption) + "</h3>");
+							HelpFile.Append("<h3 class=\"example\">" + DocumentationToHtml(C.Caption, forExporting) + "</h3>");
 						}
 						TokenisedSource[] CompiledExample = TokenisedSource.FromString(this.Compiler, this.ExpandTabs(C.Example.Replace("\r\n", "\n")));
 						StringBuilder OutputExample = new StringBuilder(C.Example.Length);
@@ -179,7 +180,7 @@ namespace Help {
 
 				SeeAlsoPlugins.Sort(delegate(IPlugin a, IPlugin b) { return Compiler.GetPluginDisplayName(a).CompareTo(Compiler.GetPluginDisplayName(b)); });
 				foreach (IPlugin P in SeeAlsoPlugins) {
-					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(Compiler.GetPluginDisplayName(P)) + "</a></li>");
+					HelpFile.AppendLine("<li><a href=\"" + GetSeeAlsoUrl(P, forExporting) + "\">" + DocumentationToHtml(Compiler.GetPluginDisplayName(P), forExporting) + "</a></li>");
 				}
 				
 
@@ -263,11 +264,11 @@ namespace Help {
 
 			if (Title == null) Title = CollectionName;
 
-			string Result = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>" + DocumentationToHtml(Title) + "</title><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>";
+			string Result = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head><title>" + DocumentationToHtml(Title, forExporting) + "</title><style>" + Properties.Resources.ViewerCss.Replace("WarningImgUrl", GetImagePath(Properties.Resources.Icon_Error, "icon_error.png", forExporting)) + "</style></head><body>";
 
 			if (forExporting) Result += Properties.Resources.FrameForcingScript;
 
-			Result += "<div class=\"header\"><p class=\"plugincollection\"><a href=\"" + GetSeeAlsoUrl(PluginAssembly, forExporting) + "\">" + DocumentationToHtml(CollectionName) + "</a></p><h1>" + DocumentationToHtml(Title) + "</h1></div><div class=\"content\">";
+			Result += "<div class=\"header\"><p class=\"plugincollection\"><a href=\"" + GetSeeAlsoUrl(PluginAssembly, forExporting) + "\">" + DocumentationToHtml(CollectionName, forExporting) + "</a></p><h1>" + DocumentationToHtml(Title, forExporting) + "</h1></div><div class=\"content\">";
 			return Result;
 		}
 
@@ -287,14 +288,14 @@ namespace Help {
 				Result.Append("<div><table>");
 				foreach (T Plugin in Matches) {
 					Result.Append("<tr>");
-					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Compiler.GetPluginDisplayName(Plugin))) + "</a></th><td>");
+					Result.Append("<th style=\"width: 100px;\"><a href=\"" + GetSeeAlsoUrl(Plugin, forExporting) + "\">" + SomethingOrNbsp(DocumentationToHtml(Compiler.GetPluginDisplayName(Plugin), forExporting)) + "</a></th><td>");
 					
 					string Description = "";
 					object[] DescriptionAttributes = Plugin.GetType().GetCustomAttributes(typeof(DescriptionAttribute), false);
 					if (DescriptionAttributes.Length == 1) {
 						Description = (DescriptionAttributes[0] as DescriptionAttribute).Description;
 					}
-					Result.Append(NewLinesToParagraphs(SomethingOrNbsp(DocumentationToHtml(Description))));
+					Result.Append(NewLinesToParagraphs(SomethingOrNbsp(DocumentationToHtml(Description, forExporting))));
 
 
 					Result.Append("</td></tr>");
@@ -342,8 +343,8 @@ namespace Help {
 			}
 
 			return Result.ToString();
-
 		}
+
 
 		internal string ExpandTabs(string toExpand) {
 			StringBuilder Result = new StringBuilder(toExpand.Length * 2);
@@ -369,14 +370,25 @@ namespace Help {
 		}
 
 
-		internal static string DocumentationToHtml(string toEscape) {
-			return DocumentationToHtml(toEscape, false);
+		internal string DocumentationToHtml(string toEscape, bool forExporting) {
+			return DocumentationToHtml(toEscape, false, forExporting);
 		}
-		internal static string DocumentationToHtml(string toEscape, bool escapeEntities) {
+		internal string DocumentationToHtml(string toEscape, bool escapeEntities, bool forExporting) {
 			if (escapeEntities) toEscape = toEscape
 					.Replace("&", "&amp;")
 					.Replace("<", "&lt;")
 					.Replace(">", "&gt;");
+
+
+			toEscape = new Regex(@"<see\s+?cref\s*?=\s*?""([^""]*?)""\s*?/>").Replace(toEscape, delegate(Match m) {
+				IPlugin P = this.Compiler.GetPluginInstanceFromName(m.Groups[1].Value);
+				if (P == null) {
+					return DocumentationToHtml(m.Groups[1].Value, escapeEntities, forExporting);
+				} else {
+					return string.Format(@"<a href=""{0}"">{1}</a>", GetSeeAlsoUrl(P, forExporting), DocumentationToHtml(Compiler.GetPluginDisplayName(P), escapeEntities, forExporting));
+				}
+			});
+			
 
 			return toEscape
 					.Replace("<c>", "<tt class=\"code\">")

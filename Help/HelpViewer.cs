@@ -409,6 +409,8 @@ namespace Help {
 
 		private void Latenite1XmlWriteTreeNodes(TreeNodeCollection nodes, Dictionary<Assembly, XmlWriter> writers, string baseDirectory, List<IPlugin> exported) {
 
+			bool forExporting = true;
+
 			foreach (TreeNode N in nodes) {
 				IPlugin Plugin;
 				if (N.Tag != null && (Plugin = N.Tag as IPlugin) != null && !exported.Contains(Plugin)) {
@@ -451,24 +453,24 @@ namespace Help {
 					}
 
 					DescriptionAttribute DA = HelpProvider.GetCustomAttribute<DescriptionAttribute>(Plugin);
-					if (DA != null) Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(DA.Description));
+					if (DA != null) Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(DA.Description, true));
 
 					SyntaxAttribute[] SA = HelpProvider.GetCustomAttributes<SyntaxAttribute>(Plugin);
 					if (SA.Length > 0) {
 						Writer.WriteAttributeString("syntax", string.Join(string.Format("{0}{1}{0}{1}", "<br />", Environment.NewLine), Array.ConvertAll<SyntaxAttribute, string>(SA, delegate(SyntaxAttribute S) {
-							return HelpProvider.DocumentationToHtml(S.Syntax);
+							return HelpProvider.DocumentationToHtml(S.Syntax, forExporting);
 						})));
 					}
 
 					foreach (WarningAttribute Warning in HelpProvider.GetCustomAttributes<WarningAttribute>(Plugin)) {
 						Writer.WriteStartElement("note");
-						Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(Warning.Warning));
+						Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(Warning.Warning, forExporting));
 						Writer.WriteEndElement();
 					}
 
 					foreach (RemarksAttribute Remarks in HelpProvider.GetCustomAttributes<RemarksAttribute>(Plugin)) {
 						Writer.WriteStartElement("note");
-						Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(Remarks.Remarks));
+						Writer.WriteAttributeString("description", HelpProvider.DocumentationToHtml(Remarks.Remarks, forExporting));
 						Writer.WriteEndElement();
 					}
 
