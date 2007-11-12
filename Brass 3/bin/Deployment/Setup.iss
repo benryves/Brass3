@@ -2,7 +2,7 @@
 ; Ben Ryves / Bee Development 2007.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 3
+AppVerName=Brass 3 Beta 4
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
