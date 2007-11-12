@@ -11,8 +11,7 @@ namespace Brass3 {
 	public partial class Compiler {
 
 		private void ResetState() {
-			this.NextStatementToCompile = this.statements.First;
-			this.currentStatement = this.statements.First;
+			
 
 			this.SwitchOn();
 			this.AllowPositionToChange = true;
@@ -46,6 +45,9 @@ namespace Brass3 {
 			if (!string.IsNullOrEmpty(BrassInclude)) this.includeSearchDirectories.Add(BrassInclude);
 
 			if (this.Project != null) this.LoadStateFromProject(this.Project);
+
+			this.NextStatementToCompile = this.statements.First;
+			this.currentStatement = this.statements.First;
 		}
 
 	}

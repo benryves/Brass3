@@ -68,7 +68,9 @@ namespace Brass3 {
 					}
 				}
 
-				Result = this.CompileCurrentStatement();
+				this.currentStatement = this.nextStatementToCompile;
+				this.nextStatementToCompile = this.nextStatementToCompile.Next;
+				Result = ToCompile.Compile();
 
 			} while (this.currentStatement != lastStatement);
 
@@ -98,7 +100,10 @@ namespace Brass3 {
 		/// </summary>
 		public LinkedListNode<SourceStatement> NextStatementToCompile {
 			get { return this.nextStatementToCompile; }
-			set { this.nextStatementToCompile = value; }
+			set {
+				if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled."); 
+				this.nextStatementToCompile = value;
+			}
 		}
 
 		
