@@ -54,12 +54,12 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 	public class Section : IDirective {
 
 		internal class SectionRange {
-			public int FirstStatement;
-			public int LastStatement;
-			public SectionRange(int firstStatement, int lastStatement) {
+			public LinkedListNode<Compiler.SourceStatement> FirstStatement;
+			public LinkedListNode<Compiler.SourceStatement> LastStatement;
+			public SectionRange(LinkedListNode<Compiler.SourceStatement> firstStatement, LinkedListNode<Compiler.SourceStatement> lastStatement) {
 				this.FirstStatement = firstStatement; this.LastStatement = lastStatement;
 			}
-			public SectionRange(int statement)
+			public SectionRange(LinkedListNode<Compiler.SourceStatement> statement)
 				: this(statement, statement) {
 			}
 		}
@@ -79,7 +79,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 							SectionRangeData = new List<SectionRange>();
 							this.Sections.Add(this.CurrentSection, SectionRangeData);
 						}
-						SectionRangeData.Add(new SectionRange(compiler.RememberPosition() + 1));
+						SectionRangeData.Add(new SectionRange(compiler.CurrentStatement));
 					}
 					compiler.SwitchOff(typeof(Section));
 					break;
@@ -88,8 +88,8 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 						if (CurrentSection == null) throw new CompilerExpection(source, "No section to end.");
 						SectionRangeData = this.Sections[this.CurrentSection];
 						SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
-						Range.LastStatement = compiler.RememberPosition() - 1;
-						if (Range.LastStatement < Range.FirstStatement) {
+						Range.LastStatement = compiler.CurrentStatement.Previous;
+						if (Range.LastStatement == Range.FirstStatement) {
 							SectionRangeData.Remove(Range);
 						}
 						this.CurrentSection = null;

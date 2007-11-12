@@ -24,7 +24,7 @@ namespace Core.Directives {
 			if (!S.Sections.TryGetValue(SectionName.ToLowerInvariant(), out SectionRange)) throw new CompilerExpection(source, string.Format("Section '{0}' not defined.", SectionName));
 
 			foreach (Section.SectionRange Range	in SectionRange) {
-				compiler.RecompileRange(Range.FirstStatement, Range.LastStatement);
+				compiler.RecompileRange(Range.FirstStatement.Next, Range.LastStatement);
 			}
 
 		}

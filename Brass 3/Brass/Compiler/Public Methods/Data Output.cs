@@ -32,7 +32,7 @@ namespace Brass3 {
 				TranslatedData = NewOutput.ToArray();
 			}
 
-			this.output.Add(new OutputData(this.statements[CurrentStatement - 1], 
+			this.output.Add(new OutputData(this.CurrentStatement.Value, 
 				this.labels.ProgramCounter.Page, (int)this.labels.ProgramCounter.NumericValue,
 				(int)this.labels.OutputCounter.NumericValue, TranslatedData));
 

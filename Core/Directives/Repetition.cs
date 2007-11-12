@@ -23,13 +23,13 @@ namespace Core.Directives {
 
 		private class RepetitionStackEntry {
 			public bool WasSuccessful = false;
-			public int SourcePosition = 0;
+			public LinkedListNode<Compiler.SourceStatement> SourcePosition;
 
 			public int RepeatCount;
 
 			public string RepeatType;
 
-			public RepetitionStackEntry(string repeatType, bool wasSuccessful, int sourcePosition) {
+			public RepetitionStackEntry(string repeatType, bool wasSuccessful, LinkedListNode<Compiler.SourceStatement> sourcePosition) {
 				this.RepeatType = repeatType;
 				this.WasSuccessful = wasSuccessful;
 				this.SourcePosition = sourcePosition;
@@ -63,7 +63,7 @@ namespace Core.Directives {
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0]).NumericValue != 0;
-						int WhileLoopIndex = compiler.RememberPosition();
+						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition();
 						if (!WasSuccessful) {
 							compiler.SwitchOff(typeof(Repetition));
 						}
@@ -118,7 +118,7 @@ namespace Core.Directives {
 									}
 
 									bool WasSuccessful = (Start < End) ? (Variable.NumericValue <= End) : (Variable.NumericValue >= End);
-									int WhileLoopIndex = compiler.RememberPosition();
+									LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition();
 									if (!WasSuccessful) {
 										compiler.SwitchOff(typeof(Repetition));
 									}
@@ -134,7 +134,7 @@ namespace Core.Directives {
 									}
 
 									bool WasSuccessful = source.EvaluateExpression(compiler, Args[1]).NumericValue != 0;
-									int WhileLoopIndex = compiler.RememberPosition();
+									LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition();
 									if (!WasSuccessful) {
 										compiler.SwitchOff(typeof(Repetition));
 									}
@@ -153,7 +153,7 @@ namespace Core.Directives {
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 						int RepeatCount = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
-						int WhileLoopIndex = compiler.RememberPosition() + 1;
+						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition().Next;
 						if (RepeatCount < 1) compiler.SwitchOff(typeof(Repetition));
 						RepetitionStackEntry RSE = new RepetitionStackEntry("rept", RepeatCount > 0, WhileLoopIndex);
 						RSE.RepeatCount = RepeatCount;

@@ -35,7 +35,7 @@ namespace Brass3 {
 			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
 			this.includeSearchDirectories = new List<string>();
 
-			this.statements = new List<SourceStatement>(1024);
+			this.statements = new LinkedList<SourceStatement>();
 
 			this.allErrors = new List<NotificationEventArgs>();
 			this.allWarnings = new List<NotificationEventArgs>();

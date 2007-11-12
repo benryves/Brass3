@@ -30,8 +30,8 @@ If you develop a complex function that is frequently used in your source file co
 
 		internal class FunctionDeclaration {
 			public TokenisedSource.Token Name;
-			public int EntryPoint;
-			public int ExitPoint;
+			public LinkedListNode<Compiler.SourceStatement> EntryPoint;
+			public LinkedListNode<Compiler.SourceStatement> ExitPoint;
 			public TokenisedSource.Token[] Arguments;
 			public enum ArgumentType {
 				Value,
@@ -110,7 +110,7 @@ If you develop a complex function that is frequently used in your source file co
 		
 					
 					// Set entry point;
-					this.DeclaringFunction.EntryPoint = compiler.RememberPosition() + 1;
+					this.DeclaringFunction.EntryPoint = compiler.RememberPosition().Next;
 
 					// Don't compile the contents of the function!
 					compiler.SwitchOff(typeof(Function));

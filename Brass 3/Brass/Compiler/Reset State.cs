@@ -11,7 +11,9 @@ namespace Brass3 {
 	public partial class Compiler {
 
 		private void ResetState() {
-			this.CurrentStatement = 0;
+			this.NextStatementToCompile = this.statements.First;
+			this.currentStatement = this.statements.First;
+
 			this.SwitchOn();
 			this.AllowPositionToChange = true;
 			this.Reactivator = null;

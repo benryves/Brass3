@@ -32,7 +32,7 @@ namespace Brass3 {
 		/// <param name="firstStatement">The index of the first statement to recompile.</param>
 		/// <param name="lastStatement">The index of the last statement to recompile.</param>
 		/// <returns>The result of the last statement's label assignment.</returns>
-		public Label RecompileRange(int firstStatement, int lastStatement) {
+		public Label RecompileRange(LinkedListNode<SourceStatement> firstStatement, LinkedListNode<SourceStatement> lastStatement) {
 			return this.RecompileRange(firstStatement, lastStatement, null);
 		}
 
@@ -44,33 +44,35 @@ namespace Brass3 {
 		/// <param name="tokenReplacements">An array of Token-&gt;TokenisedSource replacement macros that only apply for the duration of the recompilation stage.</param>
 		/// <remarks>Use the <paramref name="tokenReplacements"/> parameter to register temporary macro replacements (for example: when recompiling a range as a function call).</remarks>
 		/// <returns>The result of the last statement's label assignment.</returns>
-		public Label RecompileRange(int firstStatement, int lastStatement, KeyValuePair<TokenisedSource.Token, TokenisedSource>[] tokenReplacements) {
-			if (Math.Min(firstStatement, lastStatement) < 0 || Math.Max(firstStatement, lastStatement) >= this.statements.Count) {
-				throw new InvalidOperationException("Cannot recompile a source range that hasn't been parsed.");
-			}
-			int PreservePosition = this.CurrentStatement;
+		public Label RecompileRange(LinkedListNode<SourceStatement> firstStatement, LinkedListNode<SourceStatement> lastStatement, KeyValuePair<TokenisedSource.Token, TokenisedSource>[] tokenReplacements) {
+
+			LinkedListNode<SourceStatement> PreservePosition = this.NextStatementToCompile;
 			Label Result = null;
-			for (this.CurrentStatement = firstStatement; this.CurrentStatement <= lastStatement; ++this.CurrentStatement) {
-				if (tokenReplacements == null) {
-					this.statements[this.CurrentStatement].Compile();
-				} else {
-					SourceStatement Duplicate = (SourceStatement)this.statements[this.CurrentStatement].Clone();
+			this.NextStatementToCompile = firstStatement;
+
+			do  {
+
+				SourceStatement ToCompile = this.NextStatementToCompile.Value;
+
+				if (tokenReplacements != null) {
+
+					ToCompile = ToCompile.Clone() as SourceStatement;
 
 					foreach (KeyValuePair<TokenisedSource.Token, TokenisedSource> MacroArguments in tokenReplacements) {
-						for (int i = 0; i < Duplicate.Source.Tokens.Length; ++i) {
-							if (Duplicate.Source.Tokens[i].DataLowerCase == MacroArguments.Key.DataLowerCase) {
+						for (int i = 0; i < ToCompile.Source.Tokens.Length; ++i) {
+							if (ToCompile.Source.Tokens[i].DataLowerCase == MacroArguments.Key.DataLowerCase) {
 								TokenisedSource.Token[] Replacement = MacroArguments.Value.Tokens;
-								Duplicate.Source.ReplaceToken(i, Replacement);
-								//i = 0;
+								ToCompile.Source.ReplaceToken(i, Replacement);
 							}
 						}
 					}
-
-					Result = Duplicate.Compile();
-
 				}
-			}
-			this.CurrentStatement = PreservePosition;
+
+				Result = this.CompileCurrentStatement();
+
+			} while (this.currentStatement != lastStatement);
+
+			this.NextStatementToCompile = PreservePosition;
 			return Result;
 		}
 
@@ -89,28 +91,34 @@ namespace Brass3 {
 
 		#region Private Members
 
-		private int CurrentStatement = 0;
+		private LinkedListNode<SourceStatement> nextStatementToCompile;
+		
+		/// <summary>
+		/// Gets or sets the next source statement to compile.
+		/// </summary>
+		public LinkedListNode<SourceStatement> NextStatementToCompile {
+			get { return this.nextStatementToCompile; }
+			set { this.nextStatementToCompile = value; }
+		}
 
-		private List<SourceStatement> statements;
+		
+		private LinkedListNode<SourceStatement> currentStatement;
+		/// <summary>
+		/// Gets the current statement.
+		/// </summary>
+		public LinkedListNode<SourceStatement> CurrentStatement {
+			get { return this.currentStatement; }
+		}
+
+
+		private readonly LinkedList<SourceStatement> statements;
 		/// <summary>
 		/// Gets an array of all of the parsed assembly source statements.
 		/// </summary>
 		/// <remarks>During the first pass this will still be in a process of being populated, but it will remain constant during the second pass.</remarks>
 		public SourceStatement[] Statements {
-			get { return this.statements.ToArray(); }
+			get { return new List<SourceStatement>(this.statements).ToArray(); }
 		}
-
-		/// <summary>
-		/// Gets the current source statement.
-		/// </summary>
-		public SourceStatement CurrentSourceStatement {
-			get {
-				int StatementIndex = this.CurrentStatement - 1;
-				return StatementIndex >= 0 && StatementIndex < this.statements.Count ? this.statements[StatementIndex] : null;
-			}
-		}
-
-		
 
 		private int compiledStatements;
 		/// <summary>
@@ -198,9 +206,8 @@ namespace Brass3 {
 
 				// Run pass 2:
 				this.BeginPass(AssemblyPass.Pass2);
-				while (CurrentStatement < statements.Count) {
-					SourceStatement PAS = statements[CurrentStatement++];
-					PAS.Compile();
+				while (NextStatementToCompile != null) {
+					this.CompileCurrentStatement();
 				}
 				this.OnPassEnded(new EventArgs());
 
@@ -244,15 +251,15 @@ namespace Brass3 {
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileStream(Stream stream, string filename) {
 			if (this.currentPass == AssemblyPass.Pass2) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");
+
 			using (AssemblyReader AR = new AssemblyReader(this, stream)) {
 
-				while (CurrentStatement < this.statements.Count || AR.HasMoreData) {
+				while (AR.HasMoreData || NextStatementToCompile != null) {
 
-					// Source to compile:
-					SourceStatement PAS;
+					if (NextStatementToCompile == null) {
 
-					if (CurrentStatement >= this.statements.Count) {
-
+						// Source to compile:
+						SourceStatement PAS;
 
 						int StartLineNumber = AR.LineNumber;
 						TokenisedSource FullSource = AR.ReadAssemblySource();
@@ -268,16 +275,29 @@ namespace Brass3 {
 							StartLineNumber
 						);
 
-						statements.Add(PAS);
-					} else {
-						PAS = statements[CurrentStatement];
+						if (this.NextStatementToCompile == null) {
+							statements.AddLast(PAS);
+							this.nextStatementToCompile = statements.Last;
+						} else {
+							statements.AddAfter(NextStatementToCompile, PAS);
+							this.nextStatementToCompile = nextStatementToCompile.Next;
+						}
+
 					}
-					++CurrentStatement;
-
-					PAS.Compile();
+					this.CompileCurrentStatement();
 				}
-
 			}
+		}
+
+
+		/// <summary>
+		/// Compile the current statement and move on to the next one (if required).
+		/// </summary>
+		/// <returns>The value returned by the statement's label expression.</returns>
+		private Label CompileCurrentStatement() {
+			this.currentStatement = this.nextStatementToCompile;
+			this.nextStatementToCompile = this.nextStatementToCompile.Next;
+			return this.currentStatement.Value.Compile();
 		}
 
 		/// <summary>

@@ -93,7 +93,7 @@ This plugin will automatically add explicit output data to fill the holes. It wi
 					if (IsContiguous) {
 
 						if (End < Start) {
-							throw new CompilerExpection(c.CurrentSourceStatement.Source, "Contiguous output can only handle increasing output counter values.");
+							throw new CompilerExpection(c.CurrentStatement.Value.Source, "Contiguous output can only handle increasing output counter values.");
 						} else {
 
 							this.Filling = true;

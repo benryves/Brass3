@@ -18,11 +18,9 @@ namespace Core.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.Pass2) return; // ONLY include extra source files during pass 1.
+			if (compiler.CurrentPass != AssemblyPass.Pass1) return; // ONLY include extra source files during pass 1.
 
-			int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-
-			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(compiler, Args[0], false));
+			string Filename = source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.FilenameArgument)[0] as string;
 
 			if (!File.Exists(Filename)) throw new DirectiveArgumentException(source.Tokens[index], "File '" + Filename + "' not found.");
 

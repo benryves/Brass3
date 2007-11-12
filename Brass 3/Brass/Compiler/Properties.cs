@@ -253,13 +253,8 @@ namespace Brass3 {
 		/// Gets the name of the source file currently being compiled.
 		/// </summary>
 		public string CurrentFile {
-			get { 
-				int StatementNumber = this.CurrentStatement -1;
-				if (StatementNumber < 0 || StatementNumber >= this.statements.Count) {
-					return null;
-				} else {
-					return this.statements[this.CurrentStatement - 1].Filename;
-				}
+			get {
+				return (this.CurrentStatement == null || this.CurrentStatement.Value == null) ? null : this.CurrentStatement.Value.Filename;
 			}
 		}
 
@@ -269,12 +264,7 @@ namespace Brass3 {
 		/// </summary>
 		public int CurrentLineNumber {
 			get {
-				int StatementNumber = this.CurrentStatement - 1;
-				if (StatementNumber < 0 || StatementNumber >= this.statements.Count) {
-					return 0;
-				} else {
-					return this.statements[this.CurrentStatement - 1].LineNumber;
-				}
+				return (this.CurrentStatement == null || this.CurrentStatement.Value == null) ? 0 : this.CurrentStatement.Value.LineNumber;
 			}
 
 		}
