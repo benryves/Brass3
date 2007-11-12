@@ -9,6 +9,79 @@
 ;| full Developers' SDK.                  |
 ;+----------------------------------------+
 
+;=================================;
+;====== DoorsCS Subroutines ======;
+;=================================;
+
+#macro PushGUIStack(xx,yyyy,zzzz)
+	ld a,xx
+	ld hl,yyyy
+	ld de,zzzz
+	call PushGUIStack
+#endmacro
+#macro PopGUIStack()
+	call PopGUIStack
+#endmacro
+#macro PopGUIStacks(xx)
+	ld b,xx
+	call PopGUIStackS
+#endmacro
+#macro OpenGUIStack()
+	call OpenGUIStack
+#endmacro
+#macro CloseGUIStack()
+	call CloseGUIStack
+#endmacro
+#macro GUIMouse(xxxx)
+	ld hl,xxxx
+	call GUIMouse
+#endmacro
+#macro GUIRender()
+	call RenderGUI
+#endmacro
+#macro RenderGUI()
+	call RenderGUI
+#endmacro
+#macro FileSaveAs(location,filetypepointer,size)
+	ld hl,location
+	ld de,filetypepointer
+	ld bc,size
+	call FileSaveAs
+#endmacro
+#macro FileSave(location,filetypepointer,size)
+	ld hl,location
+	ld de,filetypepointer
+	ld bc,size
+	call FileSave
+#endmacro
+#macro FileOpen()
+	call FileOpen
+#endmacro
+#macro MouseRecover()
+	call ResetAppPage
+#endmacro
+#macro Pause()
+	call Pause
+#endmacro
+#macro GUIFindFirst()
+	call GUIFindFirst
+#endmacro
+;#macro GUIFindNext(xxxx,yyyy)
+;	ld hl,xxxx
+;	ld de,yyyy
+;	call GUIFindNext
+;#endmacro
+;#macro GUIFindNext(hl,de)
+;	call GUIFindNext
+;#endmacro
+#macro GUIFindNext()
+	call GUIFindNext
+#endmacro
+
+;=================================;
+;======== Ion Subroutines ========;
+;=================================;
+
 iversion              = $4083
 irandom               = $4086
 isprite               = $4089
