@@ -149,7 +149,7 @@ namespace Brass3 {
 			/// <param name="mustMakeAssignment">True if an assignment must be made; false otherwise.</param>
 			public Label Compile(bool mustMakeAssignment) {
 
-				Console.WriteLine("{0}:={1}", this.compiler.currentPass, this.ToString());
+				//Console.WriteLine("{0}:={1}", this.compiler.currentPass, this.ToString());
 				
 				++this.compiler.compiledStatements;
 
@@ -162,15 +162,7 @@ namespace Brass3 {
 					this.compilerWasOnBefore = this.compiler.IsSwitchedOn;
 					this.wasCompiled = false;
 
-					/*if (compiler.currentPass == AssemblyPass.Pass2) {
-						Console.Write(compiler.IsSwitchedOn ? "*" : " ");
-						Console.Write("{0:X4}:", (int)compiler.Labels.ProgramCounter.Value);
-						Console.WriteLine(this.Source);
-					}*/
-
-					//if (compiler.CurrentPass == AssemblyPass.Pass2) Console.WriteLine(((int)compiler.Labels.ProgramCounter.Value).ToString("X4") + ":" + this.Source);
-
-					// OK, so we first execute the "label" bit:
+								// OK, so we first execute the "label" bit:
 					if (!compiler.JustRecalledPosition && compiler.IsSwitchedOn) {
 						if (expressionStatementSplit != 0) {
 
@@ -184,7 +176,6 @@ namespace Brass3 {
 							// Check for (implicit) duplicate label creation:
 							if (compiler.CurrentPass == AssemblyPass.Pass1 && expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], "Duplicate label '" + L.Name + "'.");
 							L.Created = true;
-							//L.NumericValue = L.NumericValue; ?
 						}
 					}
 					compiler.JustRecalledPosition = false;
