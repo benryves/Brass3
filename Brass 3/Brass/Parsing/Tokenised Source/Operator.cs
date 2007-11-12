@@ -190,8 +190,8 @@ namespace Brass3 {
 			/// Creates an instance of an Operator from a token.
 			/// </summary>
 			/// <param name="token">The token to create the operator for.</param>
-			/// <param name="position">The position in the expression of the operator.</param>
-			/// <param name="braceIndex">How deeply nested the operator is in the expression.</param>
+			/// <param name="expressionPosition">The position in the expression of the operator.</param>
+			/// <param name="braceDepth">How deeply nested the operator is in the expression.</param>
 			public Operator(Token token, LinkedListNode<LabelAccessor> expressionPosition, int braceDepth) {
 				this.Token = token;
 				this.ExpressionPosition = expressionPosition;
@@ -230,7 +230,7 @@ namespace Brass3 {
 					case "<<=": this.Type = OperatorType.AssignmentShiftLeft; break;
 					case ">>=": this.Type = OperatorType.AssignmentShiftRight; break;
 					case ":": this.Type = OperatorType.LabelAccess; break;
-					case "?": this.Type = OperatorType.ConditionalQuery; break;
+					//case "?": this.Type = OperatorType.ConditionalQuery; break;
 					case "~": this.Type = OperatorType.UnaryBitwiseNot; break;
 					case "[": this.Type = OperatorType.IndexingOpen; break;
 					//case "]": this.Type = OperatorType.IndexingClose; break;

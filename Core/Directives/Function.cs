@@ -9,9 +9,13 @@ using System.ComponentModel;
 namespace Core.Directives {
 
 	[Syntax(".function name([arg1 [, arg2 [, ...]]])\r\n\t[statements]\r\n.endfunction")]
-	[Description("Defines a function. The function can contain any code, including mathematical expressions, directives and assembly source.\r\nTo return a value from the function, simply assign a label with the name of the function itself.\r\nIf you put the <c>macro</c> keyword in front of an argument name the passed argument is substituted into the function via a macro replacement rather than an as an evaluated label.")]
+	[Description("Defines a function.")]
 	[Warning("If a return value is not explicitly set, the function returns NaN.")]
-	[Remarks("If you develop a complex function that is frequently used in your source file consider converting it to a function plugin, as they execute significantly faster and have much better control over the compilation process.")]
+	[Remarks(
+@"The function can contain any code, including mathematical expressions, directives and assembly source.
+To return a value from the function, simply assign a label with the name of the function itself.
+If you put the <c>macro</c> keyword in front of an argument name the passed argument is substituted into the function via a macro replacement rather than an as an evaluated label.
+If you develop a complex function that is frequently used in your source file consider converting it to a function plugin, as they execute significantly faster and have much better control over the compilation process.")]
 	[CodeExample("A recursive function that calculates n!", "#function f(n)\r\n\t.if n == 0\r\n\t\tf = 1\r\n\t.else\r\n\t\tf = n * f(n - 1)\r\n\t.endif\r\n#endfunction\r\n\r\n.echoln f(30) ; Outputs 2.65252859812191E+32.")]
 	[CodeExample("Distance function using the Pythagorean theorem.", ".function distance(x,y)\r\n\tdistance = sqrt(x * x + y * y)\r\n.endfunction\r\n\r\n.echoln distance(3, 4) ; Outputs 5.")]
 	[CodeExample("Z80 TI calculator <c>bcall()</c> implementation.", "/* Enumeration for different calculator models */\r\n#enum Model\r\n\tTI8X, ; TI-83 Plus\r\n\tTI83  ; TI-83\r\n\r\n/* Set to TI8X or TI83 */\r\nModel = Model.TI83\r\n\r\n/* Use bcall() to invoke ROM calls */\r\n#function bcall(label)\r\n\t.if Model == Model.TI8X\r\n\t\trst 28h\r\n\t\t.dw label\r\n\t.else\r\n\t\tcall label\r\n\t.endif\r\n#endfunction")]

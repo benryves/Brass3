@@ -59,7 +59,9 @@
     <Compile Include="Brass\Compiler\Public Methods\Plugin Management.cs" />
     <Compile Include="Brass\Compiler\Defined.cs" />
     <Compile Include="Brass\Default String Encoder.cs" />
+    <Compile Include="Brass\Documentation\CodeSyntax.cs" />
     <Compile Include="Brass\Documentation\Labels.cs" />
+    <Compile Include="Brass\Documentation\Operators.cs" />
     <Compile Include="Brass\Exceptions\CompilerExpection.cs" />
     <Compile Include="Brass\Exceptions\DirectiveArgumentException.cs" />
     <Compile Include="Brass\Exceptions\ParseErrorException.cs" />

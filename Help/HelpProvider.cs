@@ -87,7 +87,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(DescriptionAttribute), false)) {
 				DescriptionAttribute D = (o as DescriptionAttribute);
 				if (D != null) {
-					HelpFile.Append("<div class=\"description\">" + NewLinesToParagraphs(DocumentationToHtml(D.Description, forExporting)) + "</div>");
+					HelpFile.Append("<div class=\"description\">" + DocumentationToHtml(NewLinesToParagraphs(D.Description), forExporting) + "</div>");
 				}
 			}
 
@@ -111,7 +111,7 @@ namespace Help {
 				foreach (object o in RemarksAttributes) {
 					RemarksAttribute R = (o as RemarksAttribute);
 					if (R != null) {
-						HelpFile.Append("<div class=\"remarks\">" + NewLinesToParagraphs(DocumentationToHtml(R.Remarks, forExporting)) + "</div>");
+						HelpFile.Append("<div class=\"remarks\">" + DocumentationToHtml(NewLinesToParagraphs(R.Remarks), forExporting) + "</div>");
 					}
 				}
 			}
@@ -120,7 +120,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(WarningAttribute), false)) {
 				WarningAttribute W = (o as WarningAttribute);
 				if (W != null) {
-					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + NewLinesToParagraphs(DocumentationToHtml(W.Warning, forExporting)) + "</div>");
+					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + DocumentationToHtml(NewLinesToParagraphs(W.Warning), forExporting) + "</div>");
 				}
 			}
 
@@ -134,33 +134,7 @@ namespace Help {
 						if (C.Caption != null && !string.IsNullOrEmpty(C.Caption.Trim())) {
 							HelpFile.Append("<h3 class=\"example\">" + DocumentationToHtml(C.Caption, forExporting) + "</h3>");
 						}
-						TokenisedSource[] CompiledExample = TokenisedSource.FromString(this.Compiler, this.ExpandTabs(C.Example.Replace("\r\n", "\n")));
-						StringBuilder OutputExample = new StringBuilder(C.Example.Length);
-						foreach (TokenisedSource TS in CompiledExample) {
-							foreach (TokenisedSource.Token Token in TS.Tokens) {
-								bool IsLinked = false;
-								string Link = "";
-								switch (Token.Type) {
-									case TokenisedSource.Token.TokenTypes.Function:
-										IsLinked = this.Compiler.Functions.Contains(Token.Data);
-										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Functions[Token.Data], forExporting);
-										break;
-									case TokenisedSource.Token.TokenTypes.Directive:
-										string DirectiveName = Token.Data.Substring(1);
-										IsLinked = this.Compiler.Directives.Contains(DirectiveName);
-										if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Directives[DirectiveName], forExporting);
-										break;
-								}
-								if (IsLinked) OutputExample.Append("<a href=\"" + Link + "\">");
-								OutputExample.Append("<span class=\"" + Token.Type.ToString().ToLowerInvariant() + "\">");
-								OutputExample.Append(DocumentationToHtml(Token.Data, true));
-								OutputExample.Append("</span>");
-								if (IsLinked) OutputExample.Append("</a>");
-							}
-						}
-						HelpFile.Append("<pre class=\"example\"");
-						if (!forExporting) HelpFile.Append(" base64code=\"" + Convert.ToBase64String(Encoding.Unicode.GetBytes(C.Example)) + "\"");
-						HelpFile.Append(">" + OutputExample.ToString() + "</pre>");
+						HelpFile.Append(GetHighlightedExample(C.Example, forExporting));
 					}
 				}
 			}
@@ -380,7 +354,7 @@ namespace Help {
 					.Replace(">", "&gt;");
 
 
-			toEscape = new Regex(@"<see\s+?cref\s*?=\s*?""([^""]*?)""\s*?/>").Replace(toEscape, delegate(Match m) {
+			toEscape = new Regex(@"<see\s+?cref\s*?=\s*?""([^""]*?)""\s*?/>", RegexOptions.IgnoreCase).Replace(toEscape, delegate(Match m) {
 				IPlugin P = this.Compiler.GetPluginInstanceFromName(m.Groups[1].Value);
 				if (P == null) {
 					return DocumentationToHtml(m.Groups[1].Value, escapeEntities, forExporting);
@@ -388,7 +362,10 @@ namespace Help {
 					return string.Format(@"<a href=""{0}"">{1}</a>", GetSeeAlsoUrl(P, forExporting), DocumentationToHtml(Compiler.GetPluginDisplayName(P), escapeEntities, forExporting));
 				}
 			});
-			
+
+			toEscape = new Regex(@"<code>(.*?)</code>", RegexOptions.IgnoreCase | RegexOptions.Singleline).Replace(toEscape, delegate(Match m) {
+				return GetHighlightedExample(m.Groups[1].Value.Replace("<p>", "").Replace("</p>", ""), forExporting);
+			});
 
 			return toEscape
 					.Replace("<c>", "<tt class=\"code\">")
@@ -399,7 +376,37 @@ namespace Help {
 					.Replace("</param>", "</span>");
 		}
 
-
+		private string GetHighlightedExample(string code, bool forExporting) {
+			StringBuilder HelpFile = new StringBuilder(1024);
+			TokenisedSource[] CompiledExample = TokenisedSource.FromString(this.Compiler, this.ExpandTabs(code.Replace("\r\n", "\n")));
+			StringBuilder OutputExample = new StringBuilder(code.Length);
+			foreach (TokenisedSource TS in CompiledExample) {
+				foreach (TokenisedSource.Token Token in TS.Tokens) {
+					bool IsLinked = false;
+					string Link = "";
+					switch (Token.Type) {
+						case TokenisedSource.Token.TokenTypes.Function:
+							IsLinked = this.Compiler.Functions.Contains(Token.Data);
+							if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Functions[Token.Data], forExporting);
+							break;
+						case TokenisedSource.Token.TokenTypes.Directive:
+							string DirectiveName = Token.Data.Substring(1);
+							IsLinked = this.Compiler.Directives.Contains(DirectiveName);
+							if (IsLinked) Link = GetSeeAlsoUrl(Compiler.Directives[DirectiveName], forExporting);
+							break;
+					}
+					if (IsLinked) OutputExample.Append("<a href=\"" + Link + "\">");
+					OutputExample.Append("<span class=\"" + Token.Type.ToString().ToLowerInvariant() + "\">");
+					OutputExample.Append(DocumentationToHtml(Token.Data, true));
+					OutputExample.Append("</span>");
+					if (IsLinked) OutputExample.Append("</a>");
+				}
+			}
+			HelpFile.Append("<pre class=\"example\"");
+			if (!forExporting) HelpFile.Append(" base64code=\"" + Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) + "\"");
+			HelpFile.Append(">" + OutputExample.ToString() + "</pre>");
+			return HelpFile.ToString();
+		}
 
 		public void Dispose() {
 			foreach (string s in ImagePaths.Values) {
