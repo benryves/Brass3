@@ -86,7 +86,7 @@ namespace Core.Functions {
 				}
 
 				// Execute the function:
-				compiler.RecompileRange(FunctionDeclaration.EntryPoint, FunctionDeclaration.ExitPoint.Previous, MacroArguments.ToArray());
+				compiler.RecompileRange(FunctionDeclaration.EntryPoint.Next, FunctionDeclaration.ExitPoint.Previous, MacroArguments.ToArray());
 
 				Label Result;
 				if (compiler.Labels.TryParse(FunctionDeclaration.Name, out Result)) {

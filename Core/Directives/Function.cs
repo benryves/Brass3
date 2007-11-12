@@ -110,7 +110,7 @@ If you develop a complex function that is frequently used in your source file co
 		
 					
 					// Set entry point;
-					this.DeclaringFunction.EntryPoint = compiler.RememberPosition().Next;
+					this.DeclaringFunction.EntryPoint = compiler.CurrentStatement;
 
 					// Don't compile the contents of the function!
 					compiler.SwitchOff(typeof(Function));
@@ -120,7 +120,7 @@ If you develop a complex function that is frequently used in your source file co
 					if (this.DeclaringFunction != null) {
 						// We've finished declaring a function.
 						string LowerCaseName = this.DeclaringFunction.Name.Data.ToLowerInvariant();
-						this.DeclaringFunction.ExitPoint = compiler.RememberPosition();
+						this.DeclaringFunction.ExitPoint = compiler.CurrentStatement;
 
 						List<FunctionDeclaration> Declarations;
 						if (!this.UserDefinedFunctions.TryGetValue(LowerCaseName, out Declarations)) {
