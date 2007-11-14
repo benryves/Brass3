@@ -10,11 +10,12 @@ using System.IO;
 using Brass3;
 using Brass3.Plugins;
 using Brass3.Attributes;
+using System.Globalization;
 
 namespace Scripting {
 
 	[Category("Scripting")]
-	[Syntax(".incscript \"source.cs\" [, \"language\"]")]
+	[Syntax(".incscript \"source.cs\" [, \"reference\" [, \"reference\" [, ...]]]")]
 	[Description("Loads a script file.")]
 	[Remarks(
 @"Script files can be written in any .NET-compatible language, such as C# or Visual Basic.
@@ -93,6 +94,71 @@ x = 10            ; Initialise to 10.
 #incrementlabel x ; Increments X.
 .echoln x         ; Outputs 11.")]
 
+	[CodeExample("Using Windows Forms.", 
+@"/* File: WinForms.cs
+
+using Brass3;
+using System.Windows.Forms;
+using System.Collections.Generic;
+
+public class ConfirmBox {
+
+	#region Private Fields
+	private readonly Compiler Compiler;
+	private Queue<bool> Results;
+	#endregion
+	
+	#region Constructor
+	public ConfirmBox(Compiler compiler) {
+		this.Compiler = compiler;
+		this.Results = new Queue<bool>();
+	}
+	#endregion
+
+	#region Public Methods
+	
+	public void Alert(string prompt) {
+		if (this.Compiler.CurrentPass == AssemblyPass.Pass1) {
+			MessageBox.Show(
+				prompt,
+				""Information"",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Information
+			);
+		}
+	}
+	
+	public bool Confirm(string prompt) {
+		if (this.Compiler.CurrentPass == AssemblyPass.Pass1) {
+			
+			bool Result = MessageBox.Show(
+				prompt,
+				""Question"",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question
+			) == DialogResult.Yes;
+			
+			Results.Enqueue(Result);
+			return Result;
+		} else {
+			return Results.Dequeue();
+		}
+	}
+	
+	#endregion
+
+} */
+
+.incscript ""WinForms.cs"",
+           ""System.dll"", ""System.Windows.Forms.dll""
+
+ClickCount = 0
+.while Confirm(""Would you like to increment "" + ClickCount + ""?""))
+	++ClickCount
+.loop
+
+.Alert ""Final value: "" + ClickCount + "".""")]
+
 	public class IncScript : IDirective {
 
 		private Queue<List<ScriptWrapper>> WrappedFunctions;
@@ -115,24 +181,25 @@ x = 10            ; Initialise to 10.
 				// Try - if we throw an exception we'll add a dummy anyway to keep the queue happy.
 				try {
 
-					object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.FilenameArgument);
+					object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1,
+						new TokenisedSource.ArgumentType[] {
+							TokenisedSource.ArgumentType.Filename,
+							TokenisedSource.ArgumentType.String | TokenisedSource.ArgumentType.Optional | TokenisedSource.ArgumentType.RepeatForever,
+						}
+					);
 
 					string ScriptFile = Args[0] as string;
-					CodeDomProvider Provider = null;
 
-					if (Args.Length > 1) {
-						Provider = CodeDomProvider.CreateProvider(Args[1] as string);
-					} else {
-						// Hunt through all available compilers and dig out one with a matching extension.
-						string Extension = Path.GetExtension(ScriptFile).ToLowerInvariant();
-						if (Extension.Length > 0 && Extension[0] == '.') Extension = Extension.Substring(1);
-						foreach (CompilerInfo Info in CodeDomProvider.GetAllCompilerInfo()) {
-							if (Info.IsCodeDomProviderTypeValid) {
-								CodeDomProvider TestProvider = Info.CreateProvider();
-								if (TestProvider.FileExtension.ToLowerInvariant() == Extension) {
-									Provider = TestProvider;
-									break;
-								}
+					// Hunt through all available compilers and dig out one with a matching extension.
+					CodeDomProvider Provider = null;
+					string Extension = Path.GetExtension(ScriptFile).ToLowerInvariant();
+					if (Extension.Length > 0 && Extension[0] == '.') Extension = Extension.Substring(1);
+					foreach (CompilerInfo Info in CodeDomProvider.GetAllCompilerInfo()) {
+						if (Info.IsCodeDomProviderTypeValid) {
+							CodeDomProvider TestProvider = Info.CreateProvider();
+							if (TestProvider.FileExtension.ToLowerInvariant() == Extension) {
+								Provider = TestProvider;
+								break;
 							}
 						}
 					}
@@ -145,6 +212,9 @@ x = 10            ; Initialise to 10.
 					Parameters.GenerateInMemory = true;
 					Parameters.TreatWarningsAsErrors = false;
 					Parameters.ReferencedAssemblies.Add("Brass.exe"); // Goes without saying, eh? :)
+
+					for (int i = 1; i < Args.Length; ++i) Parameters.ReferencedAssemblies.Add(Args[i] as string);
+
 					CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFile);
 
 					// Errors?
@@ -164,6 +234,21 @@ x = 10            ; Initialise to 10.
 					// Grab the public classes from the script.
 					foreach (Type T in Results.CompiledAssembly.GetExportedTypes()) {
 						if (!T.IsClass) continue;
+
+						// Try and create an instance of the class.
+						object ClassInstance = null;
+
+						// Dig out a constructor.
+						ConstructorInfo InstanceConstructor = null;
+						object[] ConstructorArgs = new object[]{compiler};
+						if ((InstanceConstructor = T.GetConstructor(new Type[] { typeof(Compiler) })) == null) {
+							InstanceConstructor = T.GetConstructor(Type.EmptyTypes);
+							ConstructorArgs = new object[] { };
+						}
+
+						if (ConstructorArgs != null) {
+							ClassInstance = InstanceConstructor.Invoke(BindingFlags.Default, null, ConstructorArgs, CultureInfo.InvariantCulture);
+						}
 
 						List<Type> ValidTypes = new List<Type>(
 							new Type[] { typeof(string), typeof(double), typeof(float), typeof(int), typeof(uint), typeof(short), typeof(ushort), typeof(byte), typeof(sbyte), typeof(bool) }
@@ -200,9 +285,9 @@ x = 10            ; Initialise to 10.
 							if (IsValid) {
 								// Create the wrapper!
 								if (Method.ReturnType == typeof(void)) {
-									Wrappers.Add(new ScriptDirectiveWrapper(Method, MethodParameters.ToArray()));
+									Wrappers.Add(new ScriptDirectiveWrapper(ClassInstance, Method, MethodParameters.ToArray()));
 								} else {
-									Wrappers.Add(new ScriptFunctionWrapper(Method, MethodParameters.ToArray()));
+									Wrappers.Add(new ScriptFunctionWrapper(ClassInstance, Method, MethodParameters.ToArray()));
 								}
 							}
 

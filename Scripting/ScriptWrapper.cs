@@ -17,12 +17,14 @@ namespace Scripting {
 		private readonly MethodInfo WrappedMethod;
 		private readonly TokenisedSource.ArgumentType[] BrassArguments;
 		private readonly ParameterInfo[] DotNetArguments;
+		private readonly object ContainerInstance;
 
 		public string Name {
 			get { return this.WrappedMethod.Name; }
 		}
 
-		public ScriptWrapper(MethodInfo wrappedMethod, TokenisedSource.ArgumentType[] arguments) {
+		public ScriptWrapper(object containerInstance, MethodInfo wrappedMethod, TokenisedSource.ArgumentType[] arguments) {
+			this.ContainerInstance = containerInstance;
 			this.WrappedMethod = wrappedMethod;
 			this.BrassArguments = arguments;
 			this.DotNetArguments = wrappedMethod.GetParameters();
@@ -42,7 +44,11 @@ namespace Scripting {
 				}
 			}
 
-			return WrappedMethod.Invoke(null, BindingFlags.Default, null, ArgumentsToDotNet, CultureInfo.InvariantCulture);
+			try {
+				return WrappedMethod.Invoke(this.ContainerInstance, BindingFlags.Default, null, ArgumentsToDotNet, CultureInfo.InvariantCulture);
+			} catch (Exception ex) {
+				throw ex.InnerException;				
+			}
 	
 		}
 	}
@@ -50,8 +56,8 @@ namespace Scripting {
 	[DocumentationUsage(DocumentationUsageAttribute.DocumentationType.FunctionalityOnly)]
 	public class ScriptFunctionWrapper : ScriptWrapper, IFunction {
 
-		public ScriptFunctionWrapper(MethodInfo wrappedMethod, TokenisedSource.ArgumentType[] arguments)
-			: base(wrappedMethod, arguments) {
+		public ScriptFunctionWrapper(object containerInstance, MethodInfo wrappedMethod, TokenisedSource.ArgumentType[] arguments)
+			: base(containerInstance, wrappedMethod, arguments) {
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
@@ -70,8 +76,8 @@ namespace Scripting {
 	[DocumentationUsage(DocumentationUsageAttribute.DocumentationType.FunctionalityOnly)]
 	public class ScriptDirectiveWrapper : ScriptWrapper, IDirective {
 
-		public ScriptDirectiveWrapper(MethodInfo wrappedMethod, TokenisedSource.ArgumentType[] arguments)
-			: base(wrappedMethod, arguments) {
+		public ScriptDirectiveWrapper(object containerInstance, MethodInfo wrappedMethod, TokenisedSource.ArgumentType[] arguments)
+			: base(containerInstance, wrappedMethod, arguments) {
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
