@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Scripting")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Scripting Plugin")]
+[assembly: AssemblyDescription("Adds scripting capabilities to Brass.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Scripting")]
-[assembly: AssemblyCopyright("Copyright ©  2007")]
+[assembly: AssemblyCompany("Bee Development")]
+[assembly: AssemblyProduct("Scripting Plugin")]
+[assembly: AssemblyCopyright("Copyright © Bee Development 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
