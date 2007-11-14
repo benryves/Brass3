@@ -57,13 +57,12 @@ namespace Core.Directives {
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-
 			switch (directive) {
 				case "while":
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0]).NumericValue != 0;
-						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition();
+						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.CurrentStatement;
 						if (!WasSuccessful) {
 							compiler.SwitchOff(typeof(Repetition));
 						}
@@ -83,6 +82,7 @@ namespace Core.Directives {
 										source.Tokens[i].ExpressionGroup = 0;
 										switch (source.Tokens[i].Data.ToLowerInvariant()) {
 											case "is":
+											case "=":
 												if (CurrentExpressionIndex != 1) throw BasicStyleForExection;
 												++CurrentExpressionIndex;
 												break;
@@ -118,7 +118,7 @@ namespace Core.Directives {
 									}
 
 									bool WasSuccessful = (Start < End) ? (Variable.NumericValue <= End) : (Variable.NumericValue >= End);
-									LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition();
+									LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.CurrentStatement;
 									if (!WasSuccessful) {
 										compiler.SwitchOff(typeof(Repetition));
 									}
@@ -153,7 +153,7 @@ namespace Core.Directives {
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 						int RepeatCount = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
-						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.RememberPosition().Next;
+						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.CurrentStatement;
 						if (RepeatCount < 1) compiler.SwitchOff(typeof(Repetition));
 						RepetitionStackEntry RSE = new RepetitionStackEntry("rept", RepeatCount > 0, WhileLoopIndex);
 						RSE.RepeatCount = RepeatCount;
@@ -179,7 +179,8 @@ namespace Core.Directives {
 							}
 
 							if (CanRepeat) {
-								compiler.RecallPosition(LastLoopHit.SourcePosition, LastLoopHit.RepeatType == "while");
+								bool IsWhile = LastLoopHit.RepeatType == "while";
+								compiler.RecallPosition(IsWhile ? LastLoopHit.SourcePosition : LastLoopHit.SourcePosition.Next, IsWhile);
 							} else {
 								LastLoopHit = null;
 							}
