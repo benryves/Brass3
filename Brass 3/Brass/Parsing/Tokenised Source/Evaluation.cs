@@ -647,7 +647,6 @@ namespace Brass3 {
 			Label L; CompilerExpection E;
 			return ThrowOrReturn(this.TryEvaluateExpression(compiler, out L, out E), L, E);
 		}
-
 		/// <summary>
 		/// Evaluate an expression within the source line.
 		/// </summary>

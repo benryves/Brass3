@@ -147,11 +147,15 @@ namespace Brass3 {
 			/// The numeric value of the argument must be positive.
 			/// </summary>
 			Positive = 0x0400,
+			/// <summary>
+			/// This argument is optionally available forever.
+			/// </summary>
+			RepeatForever = 0x0800,
 
 			/// <summary>
 			/// All of the available argument modifiers.
 			/// </summary>
-			Modifiers = Optional | ImplicitLabelCreation | Positive,
+			Modifiers = Optional | ImplicitLabelCreation | Positive | RepeatForever,
 
 		}
 
@@ -190,7 +194,16 @@ namespace Brass3 {
 			int MinArgs = 0;
 			int MaxArgs = types.Length;
 			
-			foreach (ArgumentType AT in types) {
+			for (int i = 0; i < types.Length; ++i) {
+				ArgumentType AT = types[i];
+
+				if ((AT & ArgumentType.RepeatForever) == ArgumentType.RepeatForever) {
+					if (i != types.Length-1) {
+						throw new ArgumentException("RepeatForever can only apply to the last argument.");
+					}
+					MaxArgs = int.MaxValue;
+				}
+
 				if ((AT & ArgumentType.Optional) == ArgumentType.Optional) {
 					HitOptional = true;
 				} else {
@@ -205,7 +218,10 @@ namespace Brass3 {
 			// Calculate the result:
 			object[] Result = new object[Arguments.Length];
 			for (int i = 0; i < Arguments.Length; ++i) {
-				ArgumentType CurrentArgument = types[i] & (ArgumentType.Types);
+
+				ArgumentType BaseType = types[i < types.Length ? i : types.Length - 1];
+
+				ArgumentType CurrentArgument = BaseType & (ArgumentType.Types);
 
 				bool StringExpected = (CurrentArgument & (ArgumentType.String | ArgumentType.UnescapedString | ArgumentType.Filename)) != ArgumentType.None;
 
@@ -224,9 +240,9 @@ namespace Brass3 {
 				switch (CurrentArgument) {
 					case ArgumentType.Value:
 						Label L = this.EvaluateExpression(compiler, Arguments[i]);
-						if (!L.Created && ((types[i] & ArgumentType.ImplicitLabelCreation) == ArgumentType.ImplicitLabelCreation)) L.SetImplicitlyCreated();
+						if (!L.Created && ((BaseType & ArgumentType.ImplicitLabelCreation) == ArgumentType.ImplicitLabelCreation)) L.SetImplicitlyCreated();
 						Result[i] = L.NumericValue;
-						if (((types[i] & ArgumentType.Positive) != ArgumentType.None) && L.NumericValue < 0) throw new DirectiveArgumentException(this, "Argument " + (i + 1) + " must be positive.");
+						if (((BaseType & ArgumentType.Positive) != ArgumentType.None) && L.NumericValue < 0) throw new DirectiveArgumentException(this, "Argument " + (i + 1) + " must be positive.");
 						break;
 					case ArgumentType.String:
 					case ArgumentType.UnescapedString:

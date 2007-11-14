@@ -162,7 +162,7 @@ namespace Brass3 {
 					this.compilerWasOnBefore = this.compiler.IsSwitchedOn;
 					this.wasCompiled = false;
 
-								// OK, so we first execute the "label" bit:
+					// OK, so we first execute the "label" bit:
 					if (!compiler.JustRecalledPosition && compiler.IsSwitchedOn) {
 						if (expressionStatementSplit != 0) {
 
