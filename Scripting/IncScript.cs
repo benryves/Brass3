@@ -1,0 +1,234 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+using System.CodeDom.Compiler;
+using System.Reflection;
+using System.ComponentModel;
+using System.IO;
+
+using Brass3;
+using Brass3.Plugins;
+using Brass3.Attributes;
+
+namespace Scripting {
+
+	[Category("Scripting")]
+	[Syntax(".incscript \"source.cs\" [, \"language\"]")]
+	[Description("Loads a script file.")]
+	[Remarks(
+@"Script files can be written in any .NET-compatible language, such as C# or Visual Basic.
+Script files should contain at least one public class containing public static (<c>Shared</c> in Visual Basic) methods.
+The following argument and return value types are valid:
+<table>
+	<tr>
+		<th>Arguments and Return</th>
+		<td><c>String</c>.
+<c>Double</c>, <c>Float</c>, <c>Int32</c>, <c>UInt32</c>, <c>Int16</c>, <c>UInt16</c>, <c>Byte</c>, <c>SByte</c>.
+<c>Bool</c>.</td>
+	</tr>
+	<tr>
+		<th>Arguments Only</th>
+		<td><c>Brass3.Compiler</c>, <c>Brass3.Label</c>.</td>
+	</tr>
+	<tr>
+		<th>Return Only</th>
+		<td><c>void</c> (<c>Sub</c> in Visual Basic).</td>
+	</tr>
+</table>
+Brass itself only understands double-precision floats and strings, so data types are converted before your function is called and converted again when returned.
+The <c>Brass3.Compiler</c> argument is a special case. If you specify it, do not pass a value for it from your assembly source file. It will be populated with the instance of the compiler object building the current file so that your script file can control the compiler directly if need be.")]
+	[CodeExample("C# script.",
+@"/* File: Script.cs
+
+public class ScriptSample {
+
+	public static double Multiply(double a, double b) {
+		return a * b; 
+	}
+
+} */
+
+.incscript ""Script.cs""
+.echoln Multiply(4, 5) ; Outputs 20.")]
+
+	[CodeExample("Visual Basic script.",
+@"/* File: Script.vb
+
+Public Class ScriptSample
+
+	Public Shared Function RepeatString( _
+		ByVal str As String, _
+		ByVal amount As Integer) As String
+		
+		RepeatString = String.Empty
+		
+		For i As Integer = 1 to amount
+			RepeatString &= str
+		Next i
+		
+	End Function
+
+End Class */
+
+.incscript ""Script.vb""
+.echoln ""Pot"" + RepeatString(""o"", 8)")]
+
+	[CodeExample("Passing a <c>Label</c> to a directive.",
+@"/* File: Script.cs
+
+using Brass3;
+public class ScriptSample {
+
+	public static void IncrementLabel(Label label) {
+		++label.NumericValue;
+	}
+
+} */
+
+.incscript ""Script.cs""
+
+x = 10            ; Initialise to 10.
+.echoln x         ; Outputs 10.
+#incrementlabel x ; Increments X.
+.echoln x         ; Outputs 11.")]
+
+	public class IncScript : IDirective {
+
+		private Queue<List<ScriptWrapper>> WrappedFunctions;
+
+		public IncScript(Compiler compiler) {
+			this.WrappedFunctions = new Queue<List<ScriptWrapper>>();
+			compiler.PassBegun += delegate(object sender, EventArgs e) {
+				if (compiler.CurrentPass == AssemblyPass.Pass1) this.WrappedFunctions.Clear();
+			};
+		}
+
+		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
+
+			if (compiler.CurrentPass == AssemblyPass.Pass1) {
+
+				// Runtime-created wrapper function around the .NET method.
+				List<ScriptWrapper> Wrappers = new List<ScriptWrapper>();
+
+
+				// Try - if we throw an exception we'll add a dummy anyway to keep the queue happy.
+				try {
+
+					object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.FilenameArgument);
+
+					string ScriptFile = Args[0] as string;
+					CodeDomProvider Provider = null;
+
+					if (Args.Length > 1) {
+						Provider = CodeDomProvider.CreateProvider(Args[1] as string);
+					} else {
+						// Hunt through all available compilers and dig out one with a matching extension.
+						string Extension = Path.GetExtension(ScriptFile).ToLowerInvariant();
+						if (Extension.Length > 0 && Extension[0] == '.') Extension = Extension.Substring(1);
+						foreach (CompilerInfo Info in CodeDomProvider.GetAllCompilerInfo()) {
+							if (Info.IsCodeDomProviderTypeValid) {
+								CodeDomProvider TestProvider = Info.CreateProvider();
+								if (TestProvider.FileExtension.ToLowerInvariant() == Extension) {
+									Provider = TestProvider;
+									break;
+								}
+							}
+						}
+					}
+
+					if (Provider == null) throw new CompilerExpection(source, "Script language not found.");
+
+					// Compile the bugger:
+					CompilerParameters Parameters = new CompilerParameters();
+					Parameters.GenerateExecutable = false;
+					Parameters.GenerateInMemory = true;
+					Parameters.TreatWarningsAsErrors = false;
+					Parameters.ReferencedAssemblies.Add("Brass.exe"); // Goes without saying, eh? :)
+					CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFile);
+
+					// Errors?
+					foreach (CompilerError Error in Results.Errors) {
+						Compiler.NotificationEventArgs Notification = new Compiler.NotificationEventArgs(compiler, Error.ErrorText, Error.FileName, Error.Line);
+						if (Error.IsWarning) {
+							compiler.OnWarningRaised(Notification);
+						} else {
+							compiler.OnErrorRaised(Notification);
+						}
+					}
+
+					// Do nothing if there were errors.
+					if (Results.Errors.HasErrors) return;
+
+
+					// Grab the public classes from the script.
+					foreach (Type T in Results.CompiledAssembly.GetExportedTypes()) {
+						if (!T.IsClass) continue;
+
+						List<Type> ValidTypes = new List<Type>(
+							new Type[] { typeof(string), typeof(double), typeof(float), typeof(int), typeof(uint), typeof(short), typeof(ushort), typeof(byte), typeof(sbyte), typeof(bool) }
+						);
+
+						// Hunt public static methods.
+						foreach (MethodInfo Method in T.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)) {
+
+							// Valid type?
+							if (!(Method.ReturnType == typeof(void) || ValidTypes.Contains(Method.ReturnType))) continue;
+
+							// Create an array of method parameters.
+							List<TokenisedSource.ArgumentType> MethodParameters = new List<TokenisedSource.ArgumentType>();
+
+							// Iterate over all of them...
+							bool IsValid = true;
+
+							foreach (ParameterInfo Parameter in Method.GetParameters()) {
+
+								if (Parameter.ParameterType == typeof(Compiler)) {
+									// ... :)
+								} else if (Parameter.ParameterType == typeof(Label)) {
+									MethodParameters.Add(TokenisedSource.ArgumentType.Label);
+								} else if (Parameter.ParameterType == typeof(string)) {
+									MethodParameters.Add(TokenisedSource.ArgumentType.String);
+								} else if (ValidTypes.Contains(Parameter.ParameterType)) {
+									MethodParameters.Add(TokenisedSource.ArgumentType.Value);
+								} else {
+									IsValid = false;
+									break;
+								}
+							}
+
+							if (IsValid) {
+								// Create the wrapper!
+								if (Method.ReturnType == typeof(void)) {
+									Wrappers.Add(new ScriptDirectiveWrapper(Method, MethodParameters.ToArray()));
+								} else {
+									Wrappers.Add(new ScriptFunctionWrapper(Method, MethodParameters.ToArray()));
+								}
+							}
+
+						}
+
+					}
+				} finally {
+					this.WrappedFunctions.Enqueue(Wrappers);
+					foreach (ScriptWrapper Wrapper in Wrappers) AddWrapperToCompiler(compiler, Wrapper);
+				}
+			} else {
+				List<ScriptWrapper> Functions = this.WrappedFunctions.Dequeue();
+				foreach (ScriptWrapper Function in Functions) AddWrapperToCompiler(compiler, Function);
+			}
+		}
+
+		private void AddWrapperToCompiler(Compiler compiler, ScriptWrapper wrapper) {
+			if (wrapper is IDirective) {
+				compiler.Directives.AddRuntimeAlias(wrapper as IDirective, wrapper.Name);
+			} else if (wrapper is IFunction) {
+				compiler.Functions.AddRuntimeAlias(wrapper as IFunction, wrapper.Name);
+			} else {
+				throw new InvalidOperationException();
+			}
+		}
+
+
+	}
+}
