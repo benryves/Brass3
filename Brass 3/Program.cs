@@ -92,7 +92,7 @@ namespace Brass3 {
 		}
 
 		static void DisplayError(Compiler c, Compiler.NotificationEventArgs e, string errorType, ConsoleColor errorColour) {
-			Console.WriteLine(string.Format("Error in {0} line {1} column {2}: {3}", string.IsNullOrEmpty(e.Filename) ? "?" : c.GetRelativeFilename(e.Filename), e.LineNumber, e.SourceToken == null ? 0 : e.SourceToken.SourcePosition - e.SourceStatement.OutermostTokenisedSource.Tokens[0].SourcePosition, e.Message));
+			Console.WriteLine(string.Format(errorType + " in {0} line {1} column {2}: {3}", string.IsNullOrEmpty(e.Filename) ? "?" : c.GetRelativeFilename(e.Filename), e.LineNumber, e.SourceToken == null ? 0 : e.SourceToken.SourcePosition - e.SourceStatement.OutermostTokenisedSource.Tokens[0].SourcePosition, e.Message));
 			if (e.SourceStatement != null) {
 				Console.WriteLine(e.SourceStatement.OutermostTokenisedSource.ToString().Trim());
 			}

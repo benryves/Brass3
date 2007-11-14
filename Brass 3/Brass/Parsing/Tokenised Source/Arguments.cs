@@ -125,11 +125,15 @@ namespace Brass3 {
 			/// A single token (string).
 			/// </summary>
 			SingleToken = 0x0010,
+			/// <summary>
+			/// A label object.
+			/// </summary>
+			Label = 0x0020,
 
 			/// <summary>
 			/// All of the various types available.
 			/// </summary>
-			Types = Value | String | UnescapedString | Filename | SingleToken,
+			Types = Value | String | UnescapedString | Filename | SingleToken | Label,
 			
 			/// <summary>
 			/// Allow the argument to cause an implicit label creation.
@@ -229,6 +233,9 @@ namespace Brass3 {
 					case ArgumentType.Filename:
 						Result[i] = this.GetExpressionStringConstant(compiler, Arguments[i], CurrentArgument == ArgumentType.String);
 						if (CurrentArgument == ArgumentType.Filename) Result[i] = compiler.ResolveFilename(Result[i] as string);
+						break;
+					case ArgumentType.Label:
+						Result[i] = compiler.Labels[this.GetExpressionToken(Arguments[i]).Data];
 						break;
 					default:
 						throw new ArgumentException("Argument type " + types[0].ToString() + " not supported.");

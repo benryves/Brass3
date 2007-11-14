@@ -102,7 +102,7 @@ namespace Brass3 {
 			get {
 				Label Label;
 				if (TryGetByName(name, out Label)) return Label;
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(string.Format("Label '{0}' not found.", name));
 			}
 		}
 
