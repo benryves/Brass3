@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Brass\Directives\AppHeader.cs" />
     <Compile Include="Brass\Directives\BCall.cs" />
     <Compile Include="Brass\Directives\ShellHeader.cs" />
     <Compile Include="Brass\Directives\TI Variable Name.cs" />
