@@ -98,8 +98,7 @@
     <Compile Include="Brass\Parsing\Assembly Reader.cs" />
     <Compile Include="Brass\Plugins\StringEncodingWrapper.cs" />
     <Compile Include="Brass\Project.cs" />
-    <Compile Include="Brass\Utility\CrapZip.cs" />
-    <Compile Include="Brass\Utility\ZipWriter.cs" />
+    <Compile Include="Brass\Utility\Zip.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

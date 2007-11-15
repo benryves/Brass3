@@ -246,7 +246,7 @@ namespace Help {
 			return Result;
 		}
 
-		private string GetPluginList<T>(Assembly collection, NamedPluginCollection<T> source, string name, bool forExporting) where T : class, IPlugin {
+		private string GetPluginList<T>(Assembly collection, PluginCollection<T> source, string name, bool forExporting) where T : class, IPlugin {
 			StringBuilder Result = new StringBuilder(1024);
 			
 			List<T> Matches = new List<T>();

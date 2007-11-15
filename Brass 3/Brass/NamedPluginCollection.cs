@@ -9,21 +9,29 @@ namespace Brass3 {
 	/// <summary>
 	/// Defines a collection of directives.
 	/// </summary>
-	public class NamedPluginCollection<T> : ICollection<T> where T : class, IPlugin {
+	public class PluginCollection<T> : ICollection<T> where T : class, IPlugin {
 
-		protected Dictionary<string, T> Plugins;
-		protected Dictionary<string, T> RuntimeAliases;
-		protected List<T> UniquePlugins;
+		private Dictionary<string, T> Plugins;
+		private Dictionary<string, T> RuntimeAliases;
+		private List<T> UniquePlugins;
 
 		private readonly Compiler Compiler;
 
-		public NamedPluginCollection(Compiler compiler) {
+		/// <summary>
+		/// Creates an instance of a plugin collection.
+		/// </summary>
+		/// <param name="compiler">The compiler that contains the collection.</param>
+		public PluginCollection(Compiler compiler) {
 			this.Compiler = compiler;
 			this.Plugins = new Dictionary<string, T>();
 			this.RuntimeAliases = new Dictionary<string, T>();
 			this.UniquePlugins = new List<T>();
 		}
 
+		/// <summary>
+		/// Gets a plugin by its name.
+		/// </summary>
+		/// <param name="name">The name of the plugin to retrieve.</param>
 		public virtual T this[string name] {
 			get {
 				name = name.ToLowerInvariant();
@@ -39,6 +47,10 @@ namespace Brass3 {
 			}
 		}
 
+		/// <summary>
+		/// Adds a plugin to the collection.
+		/// </summary>
+		/// <param name="plugin">The plugin to add.</param>
 		public virtual void Add(T plugin) {			
 			foreach (string Name in Compiler.GetPluginNames(plugin)) {
 				if (this.Plugins.ContainsKey(Name)) {
@@ -96,36 +108,66 @@ namespace Brass3 {
 			return true;
 		}
 
+		/// <summary>
+		/// Gets an enumerator for the collection.
+		/// </summary>
 		public IEnumerator<T> GetEnumerator() {
 			return this.UniquePlugins.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Gets an enumerator for the collection.
+		/// </summary>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return this.UniquePlugins.GetEnumerator();
 		}
 
 
+		/// <summary>
+		/// Remove all plugins from the collection.
+		/// </summary>
 		public void Clear() {
 			this.Plugins.Clear();
 			this.UniquePlugins.Clear();
 		}
 
+		/// <summary>
+		/// Check if a plugin exists within the collection.
+		/// </summary>
+		/// <param name="item">The plugin to search for.</param>
+		/// <returns>True if the collection contains the plugin, false otherwise.</returns>
 		public bool Contains(T item) {
 			return this.UniquePlugins.Contains(item);
 		}
 
+		/// <summary>
+		/// Copy the plugins to an array.
+		/// </summary>
+		/// <param name="array">The array to copy the plugins to.</param>
+		/// <param name="arrayIndex">The index to start copying the plugins to.</param>
 		public void CopyTo(T[] array, int arrayIndex) {
 			this.UniquePlugins.CopyTo(array, arrayIndex);
 		}
 
+		/// <summary>
+		/// Gets the number of unique plugins inside the collection.
+		/// </summary>
 		public int Count {
 			get { return this.UniquePlugins.Count; }
 		}
 
+		/// <summary>
+		/// Returns false.
+		/// </summary>
 		public bool IsReadOnly {
 			get { return false; }
 		}
 
+		/// <summary>
+		/// Remove a plugin from the collection.
+		/// </summary>
+		/// <param name="item">The plugin to remove.</param>
+		/// <returns>True if the plugin was removed, false otherwise.</returns>
 		public bool Remove(T item) {
 			List<string> ToRemove = new List<string>();
 			foreach (KeyValuePair<string, T> Remove in this.Plugins) {
@@ -140,14 +182,23 @@ namespace Brass3 {
 
 		}
 
+		/// <summary>
+		/// Clear all runtime aliases.
+		/// </summary>
 		public void ClearRuntimeAliases() {
 			RuntimeAliases.Clear();
 		}
 
-		public void AddRuntimeAlias(T function, string name) {
+		/// <summary>
+		/// Adds a runtime alias.
+		/// </summary>
+		/// <param name="plugin">The plugin to add an alias for.</param>
+		/// <param name="name">The aliased name.</param>
+		/// <remarks>An alias can be used to reference a single plugin by multiple names.</remarks>
+		public void AddRuntimeAlias(T plugin, string name) {
 			name = name.ToLowerInvariant();
 			if (this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name)) throw new InvalidOperationException("Plugin '" + name + "' already loaded.");
-			RuntimeAliases.Add(name, function);
+			RuntimeAliases.Add(name, plugin);
 		}
 	}
 }

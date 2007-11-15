@@ -25,7 +25,7 @@ namespace Legacy.Directives {
 
 			int AlignOffset = Destination - Source;
 
-			if (compiler.CurrentPass == AssemblyPass.Pass1) {
+			if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 				compiler.IncrementProgramAndOutputCounters(AlignOffset);
 			} else {
 				compiler.WriteEmptyFill(AlignOffset);

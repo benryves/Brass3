@@ -196,9 +196,9 @@ namespace Brass3 {
 		/// <param name="filename">The absolute path to transform.</param>
 		public string GetRelativeFilename(string filename) {
 			if (this.project == null) {
-				return Project.GetRelativeFilename(this.sourceFile, filename);
+				return Project.GetRelativePath(this.sourceFile, filename);
 			} else {
-				return Project.GetRelativeFilename(this.project.ProjectFilename, filename);
+				return Project.GetRelativePath(this.project.ProjectFilename, filename);
 			}
 		}
 

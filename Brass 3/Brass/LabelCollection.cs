@@ -28,11 +28,19 @@ namespace Brass3 {
 			}
 		}
 
+		/// <summary>
+		/// Enter a temporary module.
+		/// </summary>
 		public void EnterTemporaryModule() {
 			int ModuleSuffix = (ushort)DateTime.Now.Ticks;
 			this.EnterModule(string.Format("TEMP_MODULE_#{0:X4}", ModuleSuffix));
 			
 		}
+
+		/// <summary>
+		/// Leave a temporary module.
+		/// </summary>
+		/// <returns>An array of the <see cref="Label"/> objects created within the temporary module.</returns>
 		public Label[] LeaveTemporaryModule() {
 			List<Label> TemporaryLabels = new List<Label>();
 			List<Label> ToPurge = new List<Label>();
@@ -51,6 +59,11 @@ namespace Brass3 {
 		}
 
 		private Label implicitCreationDefault;
+		/// <summary>
+		/// Gets or sets the label that is implicitly assigned to new labels.
+		/// </summary>
+		/// <remarks>This defaults to the program counter label, <c>$</c>.</remarks>
+		/// <warning>Changing this to your own label can cause serious bugs if your plugin is programmed incorrectly. Consider reverting it to its default value (ProgramCounter) in a <c>finally</c> block.</warning>
 		public Label ImplicitCreationDefault {
 			get { return this.implicitCreationDefault ?? this.programCounter; }
 			set { this.implicitCreationDefault = value; }
@@ -168,10 +181,21 @@ namespace Brass3 {
 		}
 
 
+		/// <summary>
+		/// Create a new <see cref="Label"/> with a particular name.
+		/// </summary>
+		/// <param name="name">The name of the label to create.</param>
+		/// <returns>The newly created label.</returns>
 		public Label Create(TokenisedSource.Token name) {
 			return Create(name, null);
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Label"/> with a particular name and type.
+		/// </summary>
+		/// <param name="name">The name of the label to create.</param>
+		/// <param name="type">The data structure of the new label.</param>
+		/// <returns>The newly created label.</returns>
 		public Label Create(TokenisedSource.Token name, DataStructure type) {
 			
 			// Get the name and name only.
@@ -214,9 +238,13 @@ namespace Brass3 {
 		}
 
 
-		public void Remove(Label L) {
-			if (L == this.programCounter) throw new InvalidOperationException("You cannot remove the predefined program counter label.");
-			this.Lookup.Remove(L.Name.ToLowerInvariant());
+		/// <summary>
+		/// Remove a label from the collection.
+		/// </summary>
+		/// <param name="label">The label to remove.</param>
+		public void Remove(Label label) {
+			if (label == this.programCounter) throw new InvalidOperationException("You cannot remove the predefined program counter label.");
+			this.Lookup.Remove(label.Name.ToLowerInvariant());
 		}
 
 		#endregion
@@ -226,7 +254,7 @@ namespace Brass3 {
 		/// <summary>
 		/// Try and parse a string into a label.
 		/// </summary>
-		/// <param name="value">The value to parse.</param>
+		/// <param name="token">The value to parse.</param>
 		/// <param name="result">The place to store the resulting label.</param>
 		/// <returns>True if the string was parsed successfully, false otherwise.</returns>
 		public bool TryParse(TokenisedSource.Token token, out Label result) {
@@ -377,7 +405,6 @@ namespace Brass3 {
 		/// Gets an array of strings of the resolved label name.
 		/// </summary>
 		/// <param name="source">The source name. This can be any suspected label name, including colon prefix/suffix and module access.</param>
-		/// <param name="accessesPage">Outputs true if you're trying at access the page of a label rather than its value.</param>
 		public string[] ResolveLabelName(string source) {
 			List<string> Result = new List<string>();
 
@@ -447,6 +474,10 @@ namespace Brass3 {
 
 		#region Constructor
 
+		/// <summary>
+		/// Creates an instance of the <see cref="LabelCollection"/> class.
+		/// </summary>
+		/// <param name="compiler">The compiler that contains this collection.</param>
 		public LabelCollection(Compiler compiler) {
 			this.compiler = compiler;
 			this.Lookup = new Dictionary<string, Label>(1024);
@@ -462,10 +493,16 @@ namespace Brass3 {
 
 		#region IEnumerable<Label> Members
 
+		/// <summary>
+		/// Gets an enumerator for the collection.
+		/// </summary>
 		public IEnumerator<Label> GetEnumerator() {
 			return this.Lookup.Values.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Gets an enumerator for the collection.
+		/// </summary>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return this.Lookup.Values.GetEnumerator();
 		}
@@ -487,7 +524,14 @@ namespace Brass3 {
 			this.CurrentModule = ModuleGetParent(this.CurrentModule);
 		}
 
+		/// <summary>
+		/// Combine the names of two modules.
+		/// </summary>
+		/// <param name="module1">The first module name.</param>
+		/// <param name="module2">The second module name.</param>
+		/// <returns>The combined path, taking into consideration module path rules.</returns>
 		public static string ModuleCombine(string module1, string module2) {
+
 			string[] ModuleComponents = ((string)(((string.IsNullOrEmpty(module1)) ? "" : (module1 + ".")) + module2)).Split('.');
 
 			List<string> Result = new List<string>();
@@ -503,6 +547,10 @@ namespace Brass3 {
 			return string.Join(".", Result.ToArray());
 		}
 
+		/// <summary>
+		/// Gets the name of a module's parent.
+		/// </summary>
+		/// <param name="path">The module path to get the parent of.</param>
 		public static string ModuleGetParent(string path) {
 			string[] ModulePath = path.Split('.');
 			if (ModulePath.Length == 0) throw new ArgumentException("Already at the top module level.");
@@ -510,12 +558,22 @@ namespace Brass3 {
 			return string.Join(".", ModulePath);
 		}
 
+		/// <summary>
+		/// Gets the name of a module.
+		/// </summary>
+		/// <param name="path">The module path to get the name of.</param>
+		/// <returns>The name of the module with no path information.</returns>
 		public static string ModuleGetName(string path) {
 			string[] ModulePath = path.Split('.');
 			return ModulePath[path.Length - 1];
 		}
 
-		public string ModuleGetFullPath(string name) {
+		/// <summary>
+		/// Resolves the full path of a label's name.
+		/// </summary>
+		/// <param name="name">The relative name of the label to get a full path of.</param>
+		/// <returns>The full path of the label.</returns>
+		public string ModuleGetFullLabelPath(string name) {
 			if (this.Lookup.ContainsKey(name.ToLower())) return name;
 			Label L;
 			if (this.TryGetByName(name, out L)) return L.Name;

@@ -64,7 +64,7 @@ namespace Variables {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.Pass2) return;
+			if (compiler.CurrentPass == AssemblyPass.WritingOutput) return;
 
 			if (index > source.Tokens.Length - 3) throw new DirectiveArgumentException(source.Tokens[index], "Variable declarations require at least a type and a name.");
 
@@ -92,7 +92,7 @@ namespace Variables {
 					throw new CompilerExpection(T, string.Format("Invalid variable name '{0}'.", T.Data));
 				}
 
-				TokenisedSource.Token VarName = T.Clone(compiler.Labels.ModuleGetFullPath(T.Data)) as TokenisedSource.Token;
+				TokenisedSource.Token VarName = T.Clone(compiler.Labels.ModuleGetFullLabelPath(T.Data)) as TokenisedSource.Token;
 				string VarNameLower = VarName.DataLowerCase;
 
 				if (AlreadyAllocated.Contains(VarNameLower)) throw new CompilerExpection(T, string.Format("Variable '{0}' already declared.", VarName.Data));
@@ -116,7 +116,7 @@ namespace Variables {
 			// Perform the allocation..!
 			Compiler compiler = sender as Compiler;
 
-			if (compiler.CurrentPass == AssemblyPass.Pass1 && this.ToAllocate.Count > 0) {
+			if (compiler.CurrentPass == AssemblyPass.CreatingLabels && this.ToAllocate.Count > 0) {
 
 				compiler.Labels.CurrentModule = "";
 

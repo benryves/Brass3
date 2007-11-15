@@ -19,7 +19,7 @@ namespace Legacy.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			// Only invoke this bugger in pass 1:
-			if (compiler.CurrentPass != AssemblyPass.Pass1) return;
+			if (compiler.CurrentPass != AssemblyPass.CreatingLabels) return;
 
 			// Fetch the filename.
 			string Filename = compiler.ResolveFilename(

@@ -189,7 +189,7 @@ namespace Brass3 {
 				this.output.Clear();
 
 				// Run pass 1:
-				this.BeginPass(AssemblyPass.Pass1);
+				this.BeginPass(AssemblyPass.CreatingLabels);
 
 				if (!string.IsNullOrEmpty(this.Header)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Header)), null);
 
@@ -210,7 +210,7 @@ namespace Brass3 {
 				foreach (Label L in ToRemove) this.labels.Remove(L);
 
 				// Run pass 2:
-				this.BeginPass(AssemblyPass.Pass2);
+				this.BeginPass(AssemblyPass.WritingOutput);
 				while (NextStatementToCompile != null) {
 					this.CompileCurrentStatement();
 				}
@@ -255,7 +255,7 @@ namespace Brass3 {
 		/// <param name="filename">The filename associated with a stream.</param>
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileStream(Stream stream, string filename) {
-			if (this.currentPass == AssemblyPass.Pass2) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");
+			if (this.currentPass == AssemblyPass.WritingOutput) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");
 
 			using (AssemblyReader AR = new AssemblyReader(this, stream)) {
 

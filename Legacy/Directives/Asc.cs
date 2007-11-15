@@ -24,7 +24,7 @@ namespace Legacy.Directives {
 		public Asc(Compiler compiler) {
 
 			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.Pass1) {
+				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 					compiler.RegisterMacro(".asc", delegate(Compiler c, ref TokenisedSource src, int index) {
 						src.ReplaceToken(index, new TokenisedSource.Token[] { new TokenisedSource.Token(".db") });
 					});

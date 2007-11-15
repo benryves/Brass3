@@ -22,7 +22,7 @@ namespace Brass3.Attributes {
 		/// <summary>
 		/// Creates a new instance of the RemarksAttribute class.
 		/// </summary>
-		/// <param name="syntax">The remarks for the type.</param>
+		/// <param name="remarks">The remarks for the type.</param>
 		public RemarksAttribute(string remarks) {
 			this.remarks = remarks;
 

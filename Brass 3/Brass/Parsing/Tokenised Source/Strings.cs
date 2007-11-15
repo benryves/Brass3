@@ -11,6 +11,7 @@ namespace Brass3 {
 		/// Check whether an expression is a string constant.
 		/// </summary>
 		/// <param name="index">The expression string to check.</param>
+		/// <param name="compiler">The <see cref="Compiler"/> that contains the source.</param>
 		/// <returns>True if it's a string constant, false otherwise.</returns>
 		public bool ExpressionIsStringConstant(Compiler compiler, int index) {
 			bool HasSeenString = false;
@@ -31,7 +32,7 @@ namespace Brass3 {
 		/// Gets a string constant from an expression.
 		/// </summary>
 		/// <param name="index">The index of the expression to retrieve as a string constant.</param>
-		/// <param name="escape">Decode escape sequences in the literal.</param>
+		/// <param name="compiler">The <see cref="Compiler"/> that contains the source.</param>
 		/// <returns>The decoded string.</returns>
 		public string GetExpressionStringConstant(Compiler compiler, int index) {
 			return this.EvaluateExpression(compiler, index).StringValue;
@@ -42,6 +43,7 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="index">The index of the expression to retrieve as a string constant.</param>
 		/// <param name="escape">Decode escape sequences in the literal.</param>
+		/// <param name="compiler">The <see cref="Compiler"/> that contains the source.</param>
 		/// <returns>The decoded string.</returns>
 		public string GetExpressionStringConstant(Compiler compiler, int index, bool escape) {
 			if (escape) {

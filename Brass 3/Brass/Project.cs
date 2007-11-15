@@ -5,10 +5,17 @@ using System.Xml;
 using System.IO;
 
 namespace Brass3 {
+
+	/// <summary>
+	/// Describes a <see cref="Project"/>.
+	/// </summary>
 	public class Project {
 
 		#region Types
 
+		/// <summary>
+		/// Represents information about loading plugin collections.
+		/// </summary>
 		public class PluginCollectionInfo {
 			private string source;
 			/// <summary>
@@ -173,6 +180,9 @@ namespace Brass3 {
 		}
 
 		private Dictionary<string, Project> buildConfigurations = new Dictionary<string, Project>();
+		/// <summary>
+		/// Gets a dictionary describing the build configurations within the current project.
+		/// </summary>
 		public Dictionary<string, Project> BuildConfigurations {
 			get { return this.buildConfigurations; }
 		}
@@ -181,16 +191,46 @@ namespace Brass3 {
 		/// Describes a predefined label.
 		/// </summary>
 		public struct PredefinedLabel {
+
+			/// <summary>
+			/// Gets or sets the name of the predefined label to create.
+			/// </summary>
 			public string Name;
 			
+			/// <summary>
+			/// Defines the type of the label to create.
+			/// </summary>
 			public enum CreationType {
-				String, Number, Evaluation
+				/// <summary>
+				/// The predefined label is a string.
+				/// </summary>
+				String,
+				/// <summary>
+				/// The predefined label is a number.
+				/// </summary>
+				Number,
+				/// <summary>
+				/// The predefined label is the result of an evaluation.
+				/// </summary>
+				Evaluation
 			}
 
+			/// <summary>
+			/// Gets or sets the type of the label to create. 
+			/// </summary>
 			public CreationType Type;
 
+			/// <summary>
+			/// Gets or sets the string representation of the label.
+			/// </summary>
 			public string Value;
 
+			/// <summary>
+			/// Creates an instance of a <see cref="PredefinedLabel"/>.
+			/// </summary>
+			/// <param name="name">The name of the label to create.</param>
+			/// <param name="type">The type of the label to create.</param>
+			/// <param name="value">The string representation of the label's value.</param>
 			public PredefinedLabel(string name, CreationType type, string value) {
 				this.Name = name;
 				this.Type = type;
@@ -213,6 +253,9 @@ namespace Brass3 {
 
 		#region Constructor
 		
+		/// <summary>
+		/// Creates a new instance of the <see cref="Project"/> class.
+		/// </summary>
 		public Project() {
 			this.plugins = new List<PluginCollectionInfo>();
 			this.listingFiles = new Dictionary<string, string>();
@@ -247,7 +290,13 @@ namespace Brass3 {
 			return char.ToUpperInvariant(WorkingPath[0]) + WorkingPath.Substring(1);
 		}
 
-		public static string GetRelativeFilename(string relativeTo, string filename) {
+		/// <summary>
+		/// Gets the relative path between two files.
+		/// </summary>
+		/// <param name="relativeTo">The path to compare the second one to.</param>
+		/// <param name="filename">The filename to find the relative path to.</param>
+		/// <returns>The relative path between the two files.</returns>
+		public static string GetRelativePath(string relativeTo, string filename) {
 
 			string a = CorrectFilename(relativeTo);
 			string b = CorrectFilename(filename);
@@ -307,6 +356,10 @@ namespace Brass3 {
 			return false;
 		}
 
+		/// <summary>
+		/// Load a project from an <see cref="XmlDocument"/>.
+		/// </summary>
+		/// <param name="project">The <see cref="XmlDocument"/> to load the project from.</param>
 		public void Load(XmlDocument project) {
 			this.Load(project, true);
 		}
@@ -598,6 +651,10 @@ namespace Brass3 {
 			}
 		}
 
+		/// <summary>
+		/// Load a project from a file.
+		/// </summary>
+		/// <param name="filename">The name of the file to load the project from.</param>
 		public void Load(string filename) {
 			this.ProjectFilename = filename;
 			XmlDocument XmlDoc = new XmlDocument();

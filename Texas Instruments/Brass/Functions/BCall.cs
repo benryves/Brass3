@@ -147,11 +147,11 @@ String .byte ""Brass 3"", 0")]
 
 			switch (compiler.CurrentPass) {
 
-				case AssemblyPass.Pass1:
+				case AssemblyPass.CreatingLabels:
 					compiler.IncrementProgramAndOutputCounters(InstructionSize);
 					break;
 
-				case AssemblyPass.Pass2:
+				case AssemblyPass.WritingOutput:
 
 					if (RequiresVoodoo) {
 
@@ -238,7 +238,7 @@ String .byte ""Brass 3"", 0")]
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			this.RomCall(compiler, function, (ushort)(compiler.CurrentPass == AssemblyPass.Pass2 ? source.EvaluateExpression(compiler).NumericValue : 0));			
+			this.RomCall(compiler, function, (ushort)(compiler.CurrentPass == AssemblyPass.WritingOutput ? source.EvaluateExpression(compiler).NumericValue : 0));			
 			return new Label(compiler.Labels, double.NaN);
 		}
 	}

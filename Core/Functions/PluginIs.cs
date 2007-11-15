@@ -55,7 +55,7 @@ namespace Core.Functions {
 
 		}
 
-		private static T GetPlugin<T>(NamedPluginCollection<T> plugins, string name) where T : class, IPlugin {
+		private static T GetPlugin<T>(PluginCollection<T> plugins, string name) where T : class, IPlugin {
 			return plugins.Contains(name) ? plugins[name] : null;
 		}
 

@@ -115,7 +115,7 @@ The directive will report a warning if there is not two bytes output before this
 				compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Output writer is neither TI83 nor TI8X; assuming TI-83.")));
 			}
 
-			if (compiler.CurrentPass == AssemblyPass.Pass2) {
+			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
 				if (Is83Plus) {
 					if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length != 2) {
 						compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Invalid data before the the header.")));
@@ -159,10 +159,10 @@ The directive will report a warning if there is not two bytes output before this
 			 */
 
 			switch (compiler.CurrentPass) {
-				case AssemblyPass.Pass1:
+				case AssemblyPass.CreatingLabels:
 					compiler.IncrementProgramAndOutputCounters(HeaderSize + ProgramName.Length);
 					break;
-				case AssemblyPass.Pass2:
+				case AssemblyPass.WritingOutput:
 					switch (Shell) {
 						case ShellType.Ion: {
 								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Ret);

@@ -82,6 +82,7 @@ namespace Brass3 {
 		/// <param name="compiler">The compiler being used to build the current project.</param>
 		/// <param name="index">The index of the expression to evaluate.</param>
 		/// <param name="canCreateImplicitLabels">True if labels can be implicitly created by the evaluation.</param>
+		/// <param name="canPerformAssignments">True if the assignments can be made during the evaluation.</param>
 		/// <param name="result">Outputs the result, if successful.</param>
 		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
@@ -146,7 +147,7 @@ namespace Brass3 {
 
 
 				Label Reusable;
-				if (canCreateImplicitLabels && compiler.CurrentPass == AssemblyPass.Pass1) {
+				if (canCreateImplicitLabels && compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 					Reusable = compiler.Labels.CreateReusable(ReusableName);
 					Reusable.Created = false;
 				} else {
@@ -665,6 +666,7 @@ namespace Brass3 {
 		/// <param name="compiler">The compiler being used to build the current project.</param>
 		/// <param name="index">The index of the expression to evaluate.</param>
 		/// <param name="canCreateImplicitLabels">True if labels can be implicitly created by the evaluation.</param>
+		/// <param name="canPerformAssignments">True if the assignments can be made during the evaluation.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>The result of the evaluation.</returns>
 		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, bool canPerformAssignments) {

@@ -71,7 +71,7 @@ namespace Core.Directives {
 				Label Result = null;
 
 				bool IsString = false;
-				if (compiler.CurrentPass == AssemblyPass.Pass1) {
+				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 
 					CompilerExpection ReasonForFailure;
 					if(source.TryEvaluateExpression(compiler, Arg, out Result, out ReasonForFailure)) {
@@ -88,14 +88,14 @@ namespace Core.Directives {
 
 				// Which pass?
 				switch (compiler.CurrentPass) {
-					case AssemblyPass.Pass1: // Just $+=sizeof(data)
+					case AssemblyPass.CreatingLabels: // Just $+=sizeof(data)
 						if (IsString) {
 							compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size * Result.StringValue.Length);
 						} else {
 							compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size);
 						}
 						break;
-					case AssemblyPass.Pass2: // Evaluate and write the data!
+					case AssemblyPass.WritingOutput: // Evaluate and write the data!
 						Result = source.EvaluateExpression(compiler, Arg);
 						if (IsString) {
 							foreach (byte b in compiler.StringEncoder.GetData(Result.StringValue)) compiler.WriteOutput(NumberEncoder.GetBytes(compiler, b));
@@ -116,7 +116,7 @@ namespace Core.Directives {
 			WordEncoder = new Core.NumberEncoding.Word();
 			IntEncoder = new Core.NumberEncoding.Int();
 			c.PassBegun += delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.Pass1) {
+				if (c.CurrentPass == AssemblyPass.CreatingLabels) {
 					this.IsStringQueue.Clear();
 				}
 			};

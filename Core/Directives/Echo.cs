@@ -16,7 +16,7 @@ namespace Core.Directives {
 	public class Echo : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass != AssemblyPass.Pass2) return;
+			if (compiler.CurrentPass != AssemblyPass.WritingOutput) return;
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {
 				compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, (source.EvaluateExpression(compiler, Expression).StringValue)));
 			}

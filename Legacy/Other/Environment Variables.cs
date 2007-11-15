@@ -20,7 +20,7 @@ namespace Legacy.Other {
 
 		public EnvVars(Compiler compiler) {
 			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.Pass1) {
+				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 
 					foreach (DictionaryEntry Variable in Process.GetCurrentProcess().StartInfo.EnvironmentVariables) {
 						string Key = Variable.Key as string;

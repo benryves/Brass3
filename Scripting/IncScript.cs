@@ -166,13 +166,13 @@ ClickCount = 0
 		public IncScript(Compiler compiler) {
 			this.WrappedFunctions = new Queue<List<ScriptWrapper>>();
 			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.Pass1) this.WrappedFunctions.Clear();
+				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) this.WrappedFunctions.Clear();
 			};
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.Pass1) {
+			if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 
 				// Runtime-created wrapper function around the .NET method.
 				List<ScriptWrapper> Wrappers = new List<ScriptWrapper>();

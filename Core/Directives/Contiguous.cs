@@ -58,7 +58,7 @@ This plugin will automatically add explicit output data to fill the holes. It wi
 		private bool Filling;
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.Pass2) {
+			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
 				bool WasContiguous = this.IsContiguous;
 				this.IsContiguous = directive == "contiguous";
 			}
@@ -75,7 +75,7 @@ This plugin will automatically add explicit output data to fill the holes. It wi
 			};
 
 			c.Labels.OutputCounter.ValueChanged += delegate(object sender, Label.ValueChangedEventArgs e) {
-				if (!Filling && c.CurrentPass == AssemblyPass.Pass2) {
+				if (!Filling && c.CurrentPass == AssemblyPass.WritingOutput) {
 					
 					// Get the output counter:
 					Label Label = sender as Label;
@@ -122,7 +122,7 @@ This plugin will automatically add explicit output data to fill the holes. It wi
 			};
 
 			c.PassEnded += delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.Pass2) {
+				if (c.CurrentPass == AssemblyPass.WritingOutput) {
 				}
 			};
 		}

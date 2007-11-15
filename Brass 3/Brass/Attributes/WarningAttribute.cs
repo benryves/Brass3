@@ -5,7 +5,7 @@ using System.Text;
 namespace Brass3.Attributes {
 
 	/// <summary>
-	/// Defines a syntax example attribute.
+	/// Defines a warning attribute.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
 	public class WarningAttribute : Attribute {
@@ -20,9 +20,9 @@ namespace Brass3.Attributes {
 		}
 
 		/// <summary>
-		/// Creates a new instance of the WarningAttribute class.
+		/// Creates a new instance of the <see cref="WarningAttribute"/> class.
 		/// </summary>
-		/// <param name="syntax">The warning for the type.</param>
+		/// <param name="warning">The warning for the type.</param>
 		public WarningAttribute(string warning) {
 			this.warning = warning;
 

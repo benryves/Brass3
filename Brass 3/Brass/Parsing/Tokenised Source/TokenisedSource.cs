@@ -123,7 +123,8 @@ namespace Brass3 {
 		/// <summary>
 		/// Get the single token for a subexpression and a index.
 		/// </summary>
-		/// <param name="index">The index of the expression.</param>
+		/// <param name="expressionIndex">The index of the expression.</param>
+		/// <param name="indexExpression">Outputs the subexpression containing the index.</param>
 		public TokenisedSource.Token GetExpressionTokenAndIndex(int expressionIndex, out TokenisedSource indexExpression) {
 			TokenisedSource Source = this.GetExpressionTokens(expressionIndex);
 			indexExpression = null;

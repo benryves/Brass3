@@ -5,8 +5,12 @@ using System.Text;
 namespace Brass3.Attributes {
 
 	/// <summary>
-	/// Defines a syntax example attribute.
+	/// Defines a plugin name attribute.
 	/// </summary>
+	/// <remarks>
+	/// By default a plugin is given the name of its class.
+	/// However, if you want your plugin to respond to multiple aliases or give it a name that is invalid in C#, mark the plugin class with this attribute.
+	/// </remarks>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class PluginNameAttribute : Attribute {
 
@@ -19,7 +23,8 @@ namespace Brass3.Attributes {
 			set { this.name = value; }
 		}
 
-		/// <param name="syntax">The name for the plugin.</param>
+		/// <summary>Creates an instance of the <see cref="PluginNameAttribute"/> attribute.</summary>
+		/// <param name="name">The name for the plugin.</param>
 		public PluginNameAttribute(string name) {
 			this.name = name;
 		}

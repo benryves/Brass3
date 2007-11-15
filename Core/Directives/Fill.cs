@@ -27,10 +27,10 @@ namespace Core.Directives {
 			byte FillValue = Args.Length == 2 ? (byte)(double)Args[1] : compiler.EmptyFill;
 
 			switch (compiler.CurrentPass) {
-				case AssemblyPass.Pass1:
+				case AssemblyPass.CreatingLabels:
 					compiler.IncrementProgramAndOutputCounters(Amount);
 					break;
-				case AssemblyPass.Pass2:
+				case AssemblyPass.WritingOutput:
 					for (int i = 0; i < Amount; ++i) {
 						compiler.WriteOutput(FillValue);						
 					}

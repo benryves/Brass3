@@ -17,7 +17,7 @@ namespace Core.Directives {
 	public class DefPage : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass != AssemblyPass.Pass1) return;
+			if (compiler.CurrentPass != AssemblyPass.CreatingLabels) return;
 			Output.RawPages PagedRawWriter;
 			if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) == null) throw new CompilerExpection(source, "Paged raw writer plugin not loaded.");
 

@@ -22,17 +22,20 @@ namespace Brass3 {
 		}
 
 		/// <summary>
-		/// Creates an instance of the AssemblyReader to read from a stream.
+		/// Creates an instance of the <see cref="AssemblyReader"/> class to read from a stream.
 		/// </summary>
+		/// <param name="compiler">The compiler that is using this reader.</param>
 		/// <param name="s">The stream to read from.</param>
-		public AssemblyReader(Compiler c, Stream s)
+		public AssemblyReader(Compiler compiler, Stream s)
 			: base(s) {
 			this.lineNumber = 1;
-			this.Compiler = c;
+			this.Compiler = compiler;
 			this.QueuedProcessedSource = new Queue<TokenisedSource>(16);
 		}
 
-
+		/// <summary>
+		/// Returns true if there are more <see cref="TokenisedSource"/> statements to read, false if there are none.
+		/// </summary>
 		public bool HasMoreData {
 			get { return this.QueuedProcessedSource.Count > 0 || this.BaseStream.Position != this.BaseStream.Length; }
 		}

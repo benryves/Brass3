@@ -26,7 +26,7 @@ See <c>TASMTABS.HTM</c> in TASM's zip file for more information.")]
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.Pass1) {
+			if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 
 				Z80.Z80 Assembler = compiler.GetPluginInstanceFromType<Z80.Z80>();
 				if (Assembler == null) throw new CompilerExpection(source.Tokens[index], ".addinstr needs the Z80 assembler plugin to be loaded.");

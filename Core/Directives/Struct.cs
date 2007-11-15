@@ -13,7 +13,7 @@ namespace Core.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass != AssemblyPass.Pass1) return;
+			if (compiler.CurrentPass != AssemblyPass.CreatingLabels) return;
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 2);
 

@@ -8,8 +8,9 @@ namespace Brass3 {
 	public partial class TokenisedSource {
 
 		/// <summary>
-		/// Gets an array of tokenised source data from a string.
+		/// Gets an array of <see cref="TokenisedSource"/> data from a string.
 		/// </summary>
+		/// <param name="compiler">The compiler that contains the source.</param>
 		/// <param name="s">The string to parse.</param>
 		/// <returns>An array of tokenised source data.</returns>
 		public static TokenisedSource[] FromString(Compiler compiler, string s) {
@@ -47,7 +48,9 @@ namespace Brass3 {
 		/// <summary>
 		/// Create an instance of the TokenisedSource class by parsing source code from a stream.
 		/// </summary>
-		/// <param name="tokens">The stream to parse data from.</param>
+		/// <param name="compiler">The compiler that contains the source.</param>
+		/// <param name="s">The stream to parse data from.</param>
+		/// <param name="lineNumberCounter">A reference to a line number counter that is incremented with each line of source read.</param>
 		public TokenisedSource(Compiler compiler, Stream s, ref int lineNumberCounter) {
 			BinaryReader LineReader = new BinaryReader(s, Encoding.Unicode);
 

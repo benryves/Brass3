@@ -31,7 +31,7 @@ namespace Brass3.Attributes {
 		/// <summary>
 		/// Creates a new instance of the CodeExampleAttribute class.
 		/// </summary>
-		/// <param name="syntax">The example for the type.</param>
+		/// <param name="example">The example for the type.</param>
 		public CodeExampleAttribute(string example) {
 			this.example = example;
 		}
@@ -41,7 +41,7 @@ namespace Brass3.Attributes {
 		/// Creates a new instance of the CodeExampleAttribute class.
 		/// </summary>
 		/// <param name="caption">The caption for the example.</param>
-		/// <param name="syntax">The example for the type.</param>
+		/// <param name="example">The example for the type.</param>
 		public CodeExampleAttribute(string caption, string example) {
 			this.caption = caption;
 			this.example = example;

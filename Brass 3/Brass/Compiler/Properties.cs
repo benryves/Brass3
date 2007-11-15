@@ -14,11 +14,11 @@ namespace Brass3 {
 
 		#region Assembler
 
-		private readonly NamedPluginCollection<IAssembler> assemblers;
+		private readonly PluginCollection<IAssembler> assemblers;
 		/// <summary>
 		/// Gets the loaded assemblers.
 		/// </summary>
-		public NamedPluginCollection<IAssembler> Assemblers {
+		public PluginCollection<IAssembler> Assemblers {
 			get { return this.assemblers; }
 		}
 
@@ -35,11 +35,11 @@ namespace Brass3 {
 
 		#region Directives
 
-		private readonly NamedPluginCollection<IDirective> directives;
+		private readonly PluginCollection<IDirective> directives;
 		/// <summary>
 		/// Gets the directives being used by the compiler.
 		/// </summary>
-		public NamedPluginCollection<IDirective> Directives {
+		public PluginCollection<IDirective> Directives {
 			get { return this.directives; }
 		}
 
@@ -47,11 +47,11 @@ namespace Brass3 {
 
 		#region Output Writer
 
-		private readonly NamedPluginCollection<IOutputWriter> outputWriters;
+		private readonly PluginCollection<IOutputWriter> outputWriters;
 		/// <summary>
 		/// Gets the output writers available to the compiler.
 		/// </summary>
-		public NamedPluginCollection<IOutputWriter> OutputWriters {
+		public PluginCollection<IOutputWriter> OutputWriters {
 			get { return this.outputWriters; }
 		}
 
@@ -68,11 +68,11 @@ namespace Brass3 {
 
 		#region Listing Writer
 
-		private readonly NamedPluginCollection<IListingWriter> listingWriters;
+		private readonly PluginCollection<IListingWriter> listingWriters;
 		/// <summary>
 		/// Gets the listing writers available to the compiler.
 		/// </summary>
-		public NamedPluginCollection<IListingWriter> ListingWriters {
+		public PluginCollection<IListingWriter> ListingWriters {
 			get { return this.listingWriters; }
 		}
 
@@ -88,11 +88,11 @@ namespace Brass3 {
 
 		#region Functions
 
-		private readonly NamedPluginCollection<IFunction> functions;
+		private readonly PluginCollection<IFunction> functions;
 		/// <summary>
 		/// Gets the functions being used by the compiler.
 		/// </summary>
-		public NamedPluginCollection<IFunction> Functions {
+		public PluginCollection<IFunction> Functions {
 			get { return this.functions; }
 		}
 
@@ -103,11 +103,11 @@ namespace Brass3 {
 		/// <summary>
 		/// Gets the output modifiers being used by the compiler.
 		/// </summary>
-		private readonly NamedPluginCollection<IOutputModifier> outputModifiers;
+		private readonly PluginCollection<IOutputModifier> outputModifiers;
 		/// <summary>
 		/// Gets the output modifiers being used by the compiler.
 		/// </summary>
-		public NamedPluginCollection<IOutputModifier> OutputModifiers {
+		public PluginCollection<IOutputModifier> OutputModifiers {
 			get { return this.outputModifiers; }
 		}
 
@@ -115,11 +115,11 @@ namespace Brass3 {
 		
 		#region String Encoding
 
-		private readonly NamedPluginCollection<IStringEncoder> stringEncoders;
+		private readonly PluginCollection<IStringEncoder> stringEncoders;
 		/// <summary>
 		/// Gets the string encoders available to the compiler.
 		/// </summary>
-		public NamedPluginCollection<IStringEncoder> StringEncoders {
+		public PluginCollection<IStringEncoder> StringEncoders {
 			get { return this.stringEncoders; }
 		}
 
@@ -151,11 +151,11 @@ namespace Brass3 {
 
 		#region Number Encoding
 
-		private readonly NamedPluginCollection<INumberEncoder> numberEncoders;
+		private readonly PluginCollection<INumberEncoder> numberEncoders;
 		/// <summary>
 		/// Gets the number encoders available to the compiler.
 		/// </summary>
-		public NamedPluginCollection<INumberEncoder> NumberEncoders {
+		public PluginCollection<INumberEncoder> NumberEncoders {
 			get { return this.numberEncoders; }
 		}
 
@@ -163,11 +163,11 @@ namespace Brass3 {
 
 		#region Misc
 
-		private readonly NamedPluginCollection<IPlugin> invisiblePlugins;
+		private readonly PluginCollection<IPlugin> invisiblePlugins;
 		/// <summary>
 		/// Gets the "invisible" plugins loaded by the compiler.
 		/// </summary>
-		public NamedPluginCollection<IPlugin> InvisiblePlugins {
+		public PluginCollection<IPlugin> InvisiblePlugins {
 			get { return this.invisiblePlugins; }
 		}
 
@@ -175,11 +175,11 @@ namespace Brass3 {
 
 		#endregion
 
-		private readonly NamedPluginCollection<IDataStructure> dataStructures;
+		private readonly PluginCollection<IDataStructure> dataStructures;
 		/// <summary>
 		/// Gets the registered data structures.
 		/// </summary>
-		public NamedPluginCollection<IDataStructure> DataStructures {
+		public PluginCollection<IDataStructure> DataStructures {
 			get { return this.dataStructures; }
 		}
 

@@ -42,10 +42,10 @@ My_Err_Handle:
 			switch (function) {
 				case "apponerr":
 					switch (compiler.CurrentPass) {
-						case AssemblyPass.Pass1:
+						case AssemblyPass.CreatingLabels:
 							compiler.IncrementProgramAndOutputCounters(6);
 							break;
-						case AssemblyPass.Pass2:
+						case AssemblyPass.WritingOutput:
 							compiler.WriteOutput((byte)BCall.Z80Instruction.LdHl);
 							compiler.WriteOutput((ushort)(double)source.GetCommaDelimitedArguments(compiler, 0, TokenisedSource.ValueArgument)[0]);
 							compiler.WriteOutput((byte)BCall.Z80Instruction.Call);
@@ -55,10 +55,10 @@ My_Err_Handle:
 					break;
 				case "appofferr":
 					switch (compiler.CurrentPass) {
-						case AssemblyPass.Pass1:
+						case AssemblyPass.CreatingLabels:
 							compiler.IncrementProgramAndOutputCounters(3);
 							break;
-						case AssemblyPass.Pass2:
+						case AssemblyPass.WritingOutput:
 							source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] { });
 							compiler.WriteOutput((byte)BCall.Z80Instruction.Call);
 							compiler.WriteOutput((ushort)0x5C);

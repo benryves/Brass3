@@ -27,10 +27,10 @@ namespace Core.Directives {
 			try {
 				using (FileStream FS = File.OpenRead(Filename)) {
 					switch (compiler.CurrentPass) {
-						case AssemblyPass.Pass1:
+						case AssemblyPass.CreatingLabels:
 							compiler.IncrementProgramAndOutputCounters((int)FS.Length);
 							break;
-						case AssemblyPass.Pass2:
+						case AssemblyPass.WritingOutput:
 							int Data = 0;
 							while ((Data = FS.ReadByte()) != -1) compiler.WriteOutput((byte)Data);
 							break;

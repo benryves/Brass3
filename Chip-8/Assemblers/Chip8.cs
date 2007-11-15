@@ -327,10 +327,10 @@ namespace Chip8.Assemblers {
 
 		public void Assemble(Compiler compiler, TokenisedSource source, int index) {
 			switch (compiler.CurrentPass) {
-				case AssemblyPass.Pass1:
+				case AssemblyPass.CreatingLabels:
 					compiler.IncrementProgramAndOutputCounters(2); // If only it was always this easy, huh?
 					break;
-				case AssemblyPass.Pass2:
+				case AssemblyPass.WritingOutput:
 
 					InstructionType Instruction = (InstructionType)source.MatchedItem;
 

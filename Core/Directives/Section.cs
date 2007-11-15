@@ -72,7 +72,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 			List<SectionRange> SectionRangeData;
 			switch (directive) {
 				case "section":
-					if (compiler.CurrentPass == AssemblyPass.Pass1) {
+					if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 						if (CurrentSection != null) throw new CompilerExpection(source, string.Format("Currently inside section '{0}'.", this.CurrentSection));
 						this.CurrentSection = (source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.StringOrTokenArgument)[0] as string).ToLowerInvariant();
 						if (!this.Sections.TryGetValue(this.CurrentSection, out SectionRangeData)) {
@@ -84,7 +84,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 					compiler.SwitchOff(typeof(Section));
 					break;
 				case "endsection":
-					if (compiler.CurrentPass == AssemblyPass.Pass1) {
+					if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 						if (CurrentSection == null) throw new CompilerExpection(source, "No section to end.");
 						SectionRangeData = this.Sections[this.CurrentSection];
 						SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
@@ -107,7 +107,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 			// Clear sections at start of pass 1.
 			compiler.PassBegun += delegate(object sender, EventArgs e) {
 				this.CurrentSection = null;
-				if (compiler.CurrentPass == AssemblyPass.Pass1) {
+				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 					this.Sections.Clear();
 				}
 			};

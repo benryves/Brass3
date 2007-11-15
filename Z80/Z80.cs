@@ -290,12 +290,12 @@ namespace Z80 {
 
 			switch (compiler.CurrentPass) {
 
-				case AssemblyPass.Pass1:
+				case AssemblyPass.CreatingLabels:
 					// We get off lightly in pass 1.
 					compiler.IncrementProgramAndOutputCounters(I.Size);
 					break;
 
-				case AssemblyPass.Pass2:
+				case AssemblyPass.WritingOutput:
 
 					// Storage for the results of the evaluation:
 					List<int> OperandResults = new List<int>(I.Operands.Length);

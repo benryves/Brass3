@@ -31,6 +31,7 @@ Source: "..\Release\Z80.dll"; DestDir: "{app}"; Flags: ignoreversion; Components
 Source: "..\Release\Chip8.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Chip8";
 Source: "..\Release\TiCalc.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\TiCalc";
 Source: "..\Release\Sega.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Sega";
+Source: "..\Release\Scripting.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Scripting";
 Source: "..\Release\Variables.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Variables";
 Source: "..\Release\Legacy.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Legacy";
 Source: "..\Release\ImageManipulation.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\ImageManipulation";
@@ -66,6 +67,10 @@ Source: "Samples\Sega Master System Program\Resources.inc"; DestDir: "{userdocs}
 ; Documentation:
 Source: "Release Notes.rtf"; DestDir: "{app}\Documentation"; Flags: ignoreversion;
 
+; Developer Notes:
+Source: "..\Release\Brass.chm"; DestDir: "{app}\Documentation"; Flags: ignoreversion; Components: "Developer\Reference";
+Source: "..\Release\Brass.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: "Developer\XML";
+
 [Components]
 Name: "Brass"; Description: "Brass Compiler"; Types: full compact custom; Flags: fixed;
 
@@ -83,6 +88,7 @@ Name: "Plugins\Z80"; Description: "Z80 Assembler"; Types: full custom;
 Name: "Plugins\Chip8"; Description: "Chip-8 Assembler"; Types: full custom;
 Name: "Plugins\TiCalc"; Description: "Texas Instruments Calculator Collection"; Types: full custom;
 Name: "Plugins\Sega"; Description: "Sega 8-bit Collection"; Types: full custom;
+Name: "Plugins\Scripting"; Description: "Scripting"; Types: full custom;
 Name: "Plugins\Variables"; Description: "Variable Allocation"; Types: full custom;
 Name: "Plugins\Legacy"; Description: "Legacy Collection"; Types: full custom;
 Name: "Plugins\ImageManipulation"; Description: "Image Manipulation"; Types: full custom;
@@ -104,6 +110,10 @@ Name: "Templates\TI\Program"; Description: "TI-83/TI-83 Plus Assembly Program"; 
 Name: "Templates\SMS"; Description: "Sega Master System"; Types: full custom;
 Name: "Templates\SMS\32KB"; Description: "32KB Master System / Game Gear ROM"; Types: full custom;
 
+Name: "Developer"; Description: "Developer Information"; Types: full custom;
+Name: "Developer\Reference"; Description: "Class Library Reference"; Types: full custom;
+Name: "Developer\XML"; Description: "XML Documentation Comments"; Types: full custom;
+
 
 [Registry]
 ; Register .brassproj file type:
@@ -123,6 +133,7 @@ Filename: "{app}\Documentation\Brass Website.url"; Section: "InternetShortcut"; 
 Name: "{group}\Release Notes"; Filename: "{app}\Documentation\Release Notes.rtf";
 Name: "{group}\Brass Manual"; Filename: "{app}\Help.exe"; Components: "Tools\Help";
 Name: "{group}\Projects Directory"; Filename: "{userdocs}\Brass Projects"; Components: "Samples";
+Name: "{group}\Class Library Reference"; Filename: "{app}\Documentation\Brass.chm"; Components: "Developer\Reference";
 Name: "{group}\{cm:ProgramOnTheWeb,Brass}"; Filename: "{app}\Documentation\Brass Website.url";
 Name: "{group}\{cm:UninstallProgram,Brass}"; Filename: "{uninstallexe}";
 

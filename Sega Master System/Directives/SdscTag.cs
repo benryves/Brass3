@@ -114,7 +114,7 @@ namespace SegaMasterSystem.Directives {
 
 		public SdscTag(Compiler c) {
 			c.PassBegun += delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.Pass1) {
+				if (c.CurrentPass == AssemblyPass.CreatingLabels) {
 					this.Date = DateTime.Now;
 					this.Author = new SdscString("");
 					this.ProgramName = new SdscString(0xFFFF);
@@ -128,7 +128,7 @@ namespace SegaMasterSystem.Directives {
 		public string[] Names { get { return new string[] { "sdsctag" }; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.Pass2) {
+			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
 
 				object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
 					TokenisedSource.ArgumentType.Value,

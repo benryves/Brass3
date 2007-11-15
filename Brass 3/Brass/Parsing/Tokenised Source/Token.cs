@@ -14,18 +14,48 @@ namespace Brass3 {
 		public class Token : ICloneable {
 
 			/// <summary>
-			/// Defines flags which can be applied to a token describing its use.
+			/// Defines a token's use.
 			/// </summary>
 			public enum TokenTypes {
+				/// <summary>
+				/// The token does not have any special functionality.
+				/// </summary>
 				None,
+				/// <summary>
+				/// The token is a string literal.
+				/// </summary>
 				String,
+				/// <summary>
+				/// The token contains whitespace.
+				/// </summary>
 				WhiteSpace,
+				/// <summary>
+				/// The token is a comment.
+				/// </summary>
 				Comment,
+				/// <summary>
+				/// The token is a directive name.
+				/// </summary>
 				Directive,
+				/// <summary>
+				/// The token is a label name.
+				/// </summary>
 				Label,
+				/// <summary>
+				/// The token is punctuation (such as an operator).
+				/// </summary>
 				Punctuation,
+				/// <summary>
+				/// The token is an instruction.
+				/// </summary>
 				Instruction,
+				/// <summary>
+				/// The token is a statement seperator.
+				/// </summary>
 				Seperator,
+				/// <summary>
+				/// The token is a function name.
+				/// </summary>
 				Function,
 			}
 
@@ -81,7 +111,13 @@ namespace Brass3 {
 				internal set { this.sourcePosition = value; }
 			}
 
-
+			/// <summary>
+			/// Creates an instance of a token.
+			/// </summary>
+			/// <param name="source">The <see cref="TokenisedSource"/> that contains the token.</param>
+			/// <param name="flags">The token's type.</param>
+			/// <param name="data">The string value of the token.</param>
+			/// <param name="sourcePosition">The position of the token in the source file.</param>
 			public Token(TokenisedSource source, TokenTypes flags, string data, int sourcePosition) {
 				this.source = source;
 				this.type = flags;
@@ -89,6 +125,11 @@ namespace Brass3 {
 				this.sourcePosition = sourcePosition;
 			}
 
+
+			/// <summary>
+			/// Creates an instance of a token.
+			/// </summary>
+			/// <param name="data">The string value of the token.</param>
 			public Token(string data) {
 				this.data = data;
 			}
@@ -125,6 +166,9 @@ namespace Brass3 {
 				get { return this.data == ")" || this.data == "]"; }
 			}
 
+			/// <summary>
+			/// Gets the matching bracket for the current token.
+			/// </summary>
 			public string MatchingBracket {
 				get {
 					if (this.IsOpenBracket) {
@@ -250,6 +294,9 @@ namespace Brass3 {
 				return Result.ToString();
 			}
 
+			/// <summary>
+			/// Returns true if a token contains a valid label name.
+			/// </summary>
 			public bool IsValidLabelName {
 				get {
 					return Label.IsValidLabelName(this.data);
@@ -269,7 +316,9 @@ namespace Brass3 {
 			}
 
 
-
+			/// <summary>
+			/// Creates a copy of a token.
+			/// </summary>
 			public object Clone() {
 				Token Clone = new Token(this.Source, this.Type, this.Data, this.SourcePosition);
 				Clone.TypeLocked = this.TypeLocked;
@@ -277,6 +326,10 @@ namespace Brass3 {
 				return Clone;
 			}
 
+			/// <summary>
+			/// Creates a copy of a token and replaces its string value with another.
+			/// </summary>
+			/// <param name="data">The replacement string value.</param>
 			public object Clone(string data) {
 				Token T = this.Clone() as Token;
 				T.data = data;
