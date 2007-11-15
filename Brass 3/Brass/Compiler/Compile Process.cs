@@ -209,12 +209,22 @@ namespace Brass3 {
 				}
 				foreach (Label L in ToRemove) this.labels.Remove(L);
 
+				if (this.allErrors.Count > 0) {
+					this.OnErrorRaised(new NotificationEventArgs(this, string.Format("{0} error{1} found: Cancelling build.", allErrors.Count, allErrors.Count == 1 ? "" : "s")));
+					return false; // An error!
+				}
+
 				// Run pass 2:
 				this.BeginPass(AssemblyPass.WritingOutput);
 				while (NextStatementToCompile != null) {
 					this.CompileCurrentStatement();
 				}
 				this.OnPassEnded(new EventArgs());
+
+				if (this.allErrors.Count > 0) {
+					this.OnErrorRaised(new NotificationEventArgs(this, string.Format("{0} error{1} found: Cancelling build.", allErrors.Count, allErrors.Count == 1 ? "" : "s")));
+					return false; // An error!
+				}
 
 
 				// Done!

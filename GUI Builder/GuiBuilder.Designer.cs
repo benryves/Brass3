@@ -38,7 +38,6 @@ namespace GuiBuilder {
 			this.BrowserOutput.ScriptErrorsSuppressed = true;
 			this.BrowserOutput.Size = new System.Drawing.Size(495, 212);
 			this.BrowserOutput.TabIndex = 0;
-			this.BrowserOutput.WebBrowserShortcutsEnabled = false;
 			this.BrowserOutput.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.BrowserOutput_Navigating);
 			// 
 			// GuiBuilder

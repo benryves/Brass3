@@ -118,7 +118,7 @@ public class ConfirmBox {
 	#region Public Methods
 	
 	public void Alert(string prompt) {
-		if (this.Compiler.CurrentPass == AssemblyPass.Pass1) {
+		if (this.Compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 			MessageBox.Show(
 				prompt,
 				""Information"",
@@ -129,7 +129,7 @@ public class ConfirmBox {
 	}
 	
 	public bool Confirm(string prompt) {
-		if (this.Compiler.CurrentPass == AssemblyPass.Pass1) {
+		if (this.Compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 			
 			bool Result = MessageBox.Show(
 				prompt,
@@ -168,6 +168,11 @@ ClickCount = 0
 			compiler.PassBegun += delegate(object sender, EventArgs e) {
 				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) this.WrappedFunctions.Clear();
 			};
+		}
+
+		private static string ResolveAssemblyName(string name) {
+			string LocalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), name);
+			return (File.Exists(LocalPath)) ? LocalPath : name;
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
@@ -211,9 +216,11 @@ ClickCount = 0
 					Parameters.GenerateExecutable = false;
 					Parameters.GenerateInMemory = true;
 					Parameters.TreatWarningsAsErrors = false;
-					Parameters.ReferencedAssemblies.Add("Brass.exe"); // Goes without saying, eh? :)
 
-					for (int i = 1; i < Args.Length; ++i) Parameters.ReferencedAssemblies.Add(Args[i] as string);
+
+					Parameters.ReferencedAssemblies.Add(ResolveAssemblyName("Brass.exe")); // Goes without saying, eh? :)
+
+					for (int i = 1; i < Args.Length; ++i) Parameters.ReferencedAssemblies.Add(ResolveAssemblyName(Args[i] as string));
 
 					CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFile);
 
