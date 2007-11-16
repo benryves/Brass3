@@ -62,7 +62,7 @@ namespace Brass3 {
 			this.header = project.Header;
 			this.footer = project.Footer;
 
-			this.ListingWriters.Clear();
+			this.ListingFiles.Clear();
 
 			foreach (KeyValuePair<string, string> ListingWriter in project.ListingFiles) {
 				if (this.ListingWriters.Contains(ListingWriter.Value)) {
