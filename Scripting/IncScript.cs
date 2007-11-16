@@ -15,8 +15,8 @@ using System.Globalization;
 namespace Scripting {
 
 	[Category("Scripting")]
-	[Syntax(".incscript \"source.cs\" [, \"reference\" [, \"reference\" [, ...]]]")]
-	[Description("Loads a script file.")]
+	[Syntax(".incscript \"source\" [, \"source\" [, ...]]")]
+	[Description("Loads a script file (or series of script files).")]
 	[Remarks(
 @"Script files can be written in any .NET-compatible language, such as C# or Visual Basic.
 Script files should contain at least one public class containing public static (<c>Shared</c> in Visual Basic) methods.
@@ -149,8 +149,8 @@ public class ConfirmBox {
 
 } */
 
-.incscript ""WinForms.cs"",
-           ""System.dll"", ""System.Windows.Forms.dll""
+.scriptreference ""System.Windows.Forms.dll""
+.incscript ""WinForms.cs""
 
 ClickCount = 0
 .while Confirm(""Would you like to increment "" + ClickCount + ""?""))
@@ -158,6 +158,8 @@ ClickCount = 0
 .loop
 
 .Alert ""Final value: "" + ClickCount + "".""")]
+
+	[SeeAlso(typeof(ScriptReference))]
 
 	public class IncScript : IDirective {
 
@@ -170,10 +172,7 @@ ClickCount = 0
 			};
 		}
 
-		private static string ResolveAssemblyName(string name) {
-			string LocalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), name);
-			return (File.Exists(LocalPath)) ? LocalPath : name;
-		}
+
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
@@ -193,11 +192,11 @@ ClickCount = 0
 						}
 					);
 
-					string ScriptFile = Args[0] as string;
+					string[] ScriptFiles = Array.ConvertAll<object, string>(Args, delegate(object o) { return o as string; });
 
 					// Hunt through all available compilers and dig out one with a matching extension.
 					CodeDomProvider Provider = null;
-					string Extension = Path.GetExtension(ScriptFile).ToLowerInvariant();
+					string Extension = Path.GetExtension(ScriptFiles[0]).ToLowerInvariant();
 					if (Extension.Length > 0 && Extension[0] == '.') Extension = Extension.Substring(1);
 					foreach (CompilerInfo Info in CodeDomProvider.GetAllCompilerInfo()) {
 						if (Info.IsCodeDomProviderTypeValid) {
@@ -217,12 +216,12 @@ ClickCount = 0
 					Parameters.GenerateInMemory = true;
 					Parameters.TreatWarningsAsErrors = false;
 
+					ScriptReference Refs = compiler.GetPluginInstanceFromType<ScriptReference>();
+					if (Refs != null) {
+						Parameters.ReferencedAssemblies.AddRange(Refs.References.ToArray()); // Goes without saying, eh? :)
+					}
 
-					Parameters.ReferencedAssemblies.Add(ResolveAssemblyName("Brass.exe")); // Goes without saying, eh? :)
-
-					for (int i = 1; i < Args.Length; ++i) Parameters.ReferencedAssemblies.Add(ResolveAssemblyName(Args[i] as string));
-
-					CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFile);
+					CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFiles);
 
 					// Errors?
 					foreach (CompilerError Error in Results.Errors) {

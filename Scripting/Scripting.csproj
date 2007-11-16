@@ -33,6 +33,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScriptReference.cs" />
     <Compile Include="ScriptWrapper.cs" />
     <Compile Include="IncScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
