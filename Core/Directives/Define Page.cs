@@ -35,20 +35,18 @@ namespace Core.Directives {
 						if (PagedRawWriter.PageDeclarations.ContainsKey(Args[0])) PagedRawWriter.PageDeclarations.Remove(Args[0]);
 						PagedRawWriter.PageDeclarations.Add(Args[0], new Core.Output.RawPages.PageDeclaration(Args[1], Args[2]));
 
-					} break;
-				case AssemblyPass.WritingOutput: {
-
-						if (compiler.GetOutputDataOnPage(Args[0]).Length > 0) {
-							compiler.OnWarningRaised(string.Format("Data already output on page {0}.", Args[0]));
-						} else {
-							Page P;
-							if ((P = compiler.GetPluginInstanceFromType<Page>()) != null) {
-								if (P.SwitchedToPages.Contains(Args[0])) {
-									compiler.OnWarningRaised(string.Format("Page directive used before page {0} was defined.", Args[0]));
-								}
+						Page P;
+						if ((P = compiler.GetPluginInstanceFromType<Page>()) != null) {
+							if (P.SwitchedToPages.Contains(Args[0])) {
+								compiler.OnWarningRaised(string.Format("Page directive used before page {0} was defined.", Args[0]));
 							}
 						}
 
+					} break;
+				case AssemblyPass.WritingOutput: {
+						if (compiler.GetOutputDataOnPage(Args[0]).Length > 0) {
+							compiler.OnWarningRaised(string.Format("Data already output on page {0}.", Args[0]));
+						}
 					} break;
 
 			}
