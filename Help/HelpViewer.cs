@@ -316,7 +316,7 @@ namespace Help {
 
 
 		private void IndexResults_AfterSelect(object sender, TreeViewEventArgs e) {
-			SelectHelpEntry(e.Node);
+			SelectHelpEntry(e.Node, true);
 		}
 
 		private void IndexSearch_TextChanged(object sender, EventArgs e) {
@@ -371,9 +371,24 @@ namespace Help {
 			}
 		}
 
-		private void SelectHelpEntry(TreeNode node) {
+		private TreeNode FindMatchingNodeFromContents(TreeNodeCollection root, TreeNode node) {
+			foreach (TreeNode N in root) {
+				if (N.Tag == node.Tag) return N;
+				TreeNode Found = FindMatchingNodeFromContents(N.Nodes, node);
+				if (Found != null) return Found;
+			}
+			return null;
+
+
+		}
+
+		private void SelectHelpEntry(TreeNode node, bool fromIndex) {
 			if (node == null) return;
 			if (node.Tag == null) return;
+
+			if (fromIndex) {
+				node = FindMatchingNodeFromContents(Contents.Nodes, node);
+			}
 
 			string Help = null;
 
@@ -399,7 +414,7 @@ namespace Help {
 		#region Misc
 
 		private void Contents_AfterSelect(object sender, TreeViewEventArgs e) {
-			SelectHelpEntry(e.Node);
+			SelectHelpEntry(e.Node, false);
 		}
 
 
