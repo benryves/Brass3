@@ -8,13 +8,14 @@
 	</plugins>
 	
 	<input assembler="Z80" stringencoder="large8x">
-		<label name="Program.Name" type="string" value="PROGRAM" />
+		<label name="Application.Name" type="string" value="PROGRAM" />
 		<header append="true">
 			.for page = 00 to 99
 				.defpage page, kb(16), $4000
 			.loop
 			.page 0
-			.tivariablename Program.Name
+			.tivariablename Application.Name
+			.appheader
 		</header>
 	</input>
 

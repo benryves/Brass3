@@ -2,7 +2,7 @@
 ; Ben Ryves / Bee Development 2007.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 5
+AppVerName=Brass 3 Beta 6
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
@@ -52,6 +52,7 @@ Source: "Templates\TI\Program.brassproj"; DestDir: "{app}\Templates\TI"; Flags: 
 Source: "Templates\TI\Resources\Icons\MirageOS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
 Source: "Templates\TI\Resources\Icons\Venus.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
 Source: "Templates\TI\Resources\Icons\DoorsCS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Templates\TI\Application.brassproj"; DestDir: "{app}\Templates\TI"; Flags: ignoreversion; Components: "Templates\TI\Application";
 
 Source: "Templates\SMS\32KB.brassproj"; DestDir: "{app}\Templates\SMS"; Flags: ignoreversion; Components: "Templates\SMS\32KB";
 
@@ -108,6 +109,7 @@ Name: "Include\TI\TI73"; Description: "TI-73"; Types: full custom;
 Name: "Templates"; Description: "Project Templates"; Types: full custom;
 Name: "Templates\TI"; Description: "Texas Instruments Calculators"; Types: full custom;
 Name: "Templates\TI\Program"; Description: "TI-83/TI-83 Plus Assembly Program"; Types: full custom;
+Name: "Templates\TI\Application"; Description: "TI-73/TI-83 Plus Application"; Types: full custom;
 Name: "Templates\SMS"; Description: "Sega Master System"; Types: full custom;
 Name: "Templates\SMS\32KB"; Description: "32KB Master System / Game Gear ROM"; Types: full custom;
 
