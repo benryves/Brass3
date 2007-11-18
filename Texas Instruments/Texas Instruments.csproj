@@ -38,10 +38,13 @@
   <ItemGroup>
     <Compile Include="Brass\Directives\AppHeader.cs" />
     <Compile Include="Brass\Directives\BCall.cs" />
+    <Compile Include="Brass\Directives\AppField.cs" />
     <Compile Include="Brass\Directives\ShellHeader.cs" />
     <Compile Include="Brass\Directives\TI Variable Name.cs" />
     <Compile Include="Brass\Functions\AppOnError.cs" />
     <Compile Include="Brass\Functions\BCall.cs" />
+    <Compile Include="Brass\Output\TI73App.cs" />
+    <Compile Include="Brass\Output\TI8XApp.cs" />
     <Compile Include="Brass\Output\TI73.cs" />
     <Compile Include="Brass\Output\TI86.cs" />
     <Compile Include="Brass\Output\TI85.cs" />
@@ -63,12 +66,17 @@
     <Compile Include="Types\Float.cs" />
     <Compile Include="Types\Variables\Program.cs" />
     <Compile Include="Types\Variables\Variable.cs" />
+    <Compile Include="Utility\AppSigner.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Brass 3\Brass 3.csproj">
       <Project>{75305F27-C13B-4904-9EC4-6FD352230601}</Project>
       <Name>Brass 3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{66020372-54B6-4719-895C-03BC5692292D}</Project>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

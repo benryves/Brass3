@@ -36,7 +36,7 @@ namespace TexasInstruments.Brass.Output {
 
 			GroupFile Group = new GroupFile(this.Model);
 
-			foreach (int Page in compiler.UniquePageIndices) {
+			foreach (int Page in compiler.GetUniquePageIndices()) {
 
 				Program Prog = new Program();
 				

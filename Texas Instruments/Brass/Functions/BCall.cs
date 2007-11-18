@@ -34,7 +34,7 @@ namespace TexasInstruments.Brass.Functions {
 	[SeeAlso(typeof(Directives.BCall))]
 	[Remarks(
 @"The function generates Z80 code depending on the current output writer.
-If the output writer is the TI8X or TI73 plugin then the instruction is expanded as follows:
+If the output writer is the <see cref=""ti8x""/>, <see cref=""ti73""/>, <see cref=""ti8xapp""/> or <see cref=""ti73app""/> plugin then the instruction is expanded as follows:
 <table>
 	<tr><th>Call</th><th>Generated Code</th><th>Size</th></tr>
 	<tr><th>bcall(target)</th><td><c>rst $28 \ .dw target</td><td>3</td></tr>
@@ -117,10 +117,14 @@ String .byte ""Brass 3"", 0")]
 			P, M,
 		}
 
+		internal static bool RequiresOSHandler(Compiler compiler) {
+			Type OutputWriterType = compiler.OutputWriter.GetType();
+			return OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8X) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8XApp) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73App);
+		}
+
 		internal void RomCall(Compiler compiler, string function, ushort address) {
 
-			Type OutputWriterType = compiler.OutputWriter.GetType();
-			bool RequiresVoodoo = OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8X) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73);
+			bool RequiresVoodoo = BCall.RequiresOSHandler(compiler);
 
 			int InstructionSize = 3;
 
