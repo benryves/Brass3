@@ -23,6 +23,7 @@ ChangesAssociations=yes
 ; Main executables:
 Source: "..\Release\Brass.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Brass";
 Source: "..\Release\Help.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\Help";
+Source: "..\Release\Skybound.VisualStyles.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\Help";
 Source: "..\Release\BrassGuiBuild.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\GuiBuilder";
 
 ; Bundled plugins:
