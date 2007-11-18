@@ -13,15 +13,13 @@ namespace Brass3 {
 		/// <summary>
 		/// Gets the unique page indices in the output data.
 		/// </summary>
-		public int[] UniquePageIndices {
-			get {
-				//TODO: Raise error if accessed after bad build.
-				List<int> PageIndices = new List<int>();
-				foreach (OutputData O in this.Output) {
-					if (!PageIndices.Contains(O.Page)) PageIndices.Add(O.Page);
-				}
-				return PageIndices.ToArray();
+		public int[] GetUniquePageIndices() {
+			//TODO: Raise error if accessed after bad build.
+			List<int> PageIndices = new List<int>();
+			foreach (OutputData O in this.Output) {
+				if (!PageIndices.Contains(O.Page)) PageIndices.Add(O.Page);
 			}
+			return PageIndices.ToArray();
 		}
 
 		

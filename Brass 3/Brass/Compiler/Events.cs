@@ -159,6 +159,25 @@ namespace Brass3 {
 			}
 		}
 
+		/// <summary>Raise a warning.</summary>
+		/// <param name="message">A message describing the warning.</param>
+		public void OnWarningRaised(string message) { this.OnWarningRaised(new NotificationEventArgs(this, message)); }
+
+		/// <summary>Raise a warning.</summary>
+		/// <param name="message">A message describing the warning.</param>
+		/// <param name="statement">The statement that the warning relates to.</param>
+		public void OnWarningRaised(string message, SourceStatement statement) { this.OnWarningRaised(new NotificationEventArgs(this, message, statement)); }
+
+		/// <summary>Raise a warning.</summary>
+		/// <param name="message">A message describing the warning.</param>
+		/// <param name="source">The source that the warning relates to.</param>
+		public void OnWarningRaised(string message, TokenisedSource source) { this.OnWarningRaised(new NotificationEventArgs(this, new CompilerExpection(source, message))); }
+
+		/// <summary>Raise a warning.</summary>
+		/// <param name="message">A message describing the warning.</param>
+		/// <param name="token">The token that the warning relates to.</param>
+		public void OnWarningRaised(string message, TokenisedSource.Token token) { this.OnWarningRaised(new NotificationEventArgs(this, new CompilerExpection(token, message))); }
+
 		/// <summary>
 		/// Event raised on compiler errors.
 		/// </summary>
@@ -173,6 +192,26 @@ namespace Brass3 {
 				ErrorRaised(this, e); 
 			}
 		}
+
+		/// <summary>Raise a error.</summary>
+		/// <param name="message">A message describing the error.</param>
+		public void OnErrorRaised(string message) { this.OnErrorRaised(new NotificationEventArgs(this, message)); }
+
+		/// <summary>Raise a error.</summary>
+		/// <param name="message">A message describing the error.</param>
+		/// <param name="statement">The statement that the error relates to.</param>
+		public void OnErrorRaised(string message, SourceStatement statement) { this.OnErrorRaised(new NotificationEventArgs(this, message, statement)); }
+
+		/// <summary>Raise a error.</summary>
+		/// <param name="message">A message describing the error.</param>
+		/// <param name="source">The source that the error relates to.</param>
+		public void OnErrorRaised(string message, TokenisedSource source) { this.OnErrorRaised(new NotificationEventArgs(this, new CompilerExpection(source, message))); }
+
+		/// <summary>Raise a error.</summary>
+		/// <param name="message">A message describing the error.</param>
+		/// <param name="token">The token that the error relates to.</param>
+		public void OnErrorRaised(string message, TokenisedSource.Token token) { this.OnErrorRaised(new NotificationEventArgs(this, new CompilerExpection(token, message))); }
+
 
 		/// <summary>
 		/// Event raised on compiler messages.
