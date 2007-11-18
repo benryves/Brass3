@@ -32,7 +32,7 @@
 	<buildconfiguration name="TI73" displayname="TI-73">
 
 		<input>
-			<header append="true">.include "TI/ti73plus.inc"</header>
+			<header append="true">.include "TI/ti73.inc"</header>
 		</input>
 
 		<output writer="TI73App" />
