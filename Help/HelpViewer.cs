@@ -17,16 +17,32 @@ using System.Diagnostics;
 namespace Help {
 	public partial class HelpViewer : UserControl {
 
+		#region Constructor
+
+		public HelpViewer() {
+			InitializeComponent();
+			this.IconImages.Images.Add(Properties.Resources.Icon_BookClosed);
+			this.IconImages.Images.Add(Properties.Resources.Icon_BookOpen);
+			this.IconImages.Images.Add(Properties.Resources.Icon_PageBlue);
+			this.History = new LinkedList<TreeNode>();
+			History.AddFirst(null as TreeNode);
+			this.CurrentHistoryPosition = History.First;
+		}
+
+		#endregion
+
+		#region Accessing Help
+
 		private HelpProvider helpProvider;
 		/// <summary>
 		/// Gets or sets the help provider used by this viewer.
 		/// </summary>
 		public HelpProvider HelpProvider {
 			get { return this.helpProvider; }
-			set { 
+			set {
 				this.helpProvider = value;
 
-				
+
 				this.Contents.Nodes.Clear();
 
 				if (this.HelpProvider == null) return;
@@ -83,7 +99,10 @@ namespace Help {
 					CollectionNodes.Sort(delegate(TreeNode a, TreeNode b) { return a.Text.CompareTo(b.Text); });
 					Collections.Nodes.AddRange(CollectionNodes.ToArray());
 				}
-				
+
+				this.RepopulateIndex();
+				this.SearchIndex("");
+
 
 			}
 		}
@@ -130,16 +149,16 @@ namespace Help {
 
 			if (CategoryNodes.Count > 0) {
 				TreeNode Directives = new TreeNode(sectionName);
-				
+
 				Directives.ImageIndex = 0;
 				Directives.SelectedImageIndex = 0;
 
 				List<string> Categories = new List<string>(CategoryNodes.Keys);
-				
+
 				Categories.Sort(delegate(string a, string b) { // Custom sorter that sticks "" after everything.
 					if (a == "" && b == "") {
 						return 0;
-					} else if (a =="") {
+					} else if (a == "") {
 						return 1;
 					} else if (b == "") {
 						return -1;
@@ -172,16 +191,142 @@ namespace Help {
 
 		}
 
-		public HelpViewer() {
-			InitializeComponent();
-			this.IconImages.Images.Add(Properties.Resources.Icon_BookClosed);
-			this.IconImages.Images.Add(Properties.Resources.Icon_BookOpen);
-			this.IconImages.Images.Add(Properties.Resources.Icon_PageBlue);
-			this.History = new LinkedList<TreeNode>();
-			History.AddFirst(null as TreeNode);
-			this.CurrentHistoryPosition = History.First;
+
+		#endregion
+
+		#region Index
+
+		private Dictionary<string, TreeNode> Index;
+
+		private void RepopulateIndex() {
+			Dictionary<string, List<TreeNode>> NewIndex = new Dictionary<string, List<TreeNode>>();
+
+			this.RepopulateIndex<IDirective>(this.HelpProvider.Compiler.Directives, NewIndex);
+			this.RepopulateIndex<IFunction>(this.HelpProvider.Compiler.Functions, NewIndex);
+			this.RepopulateIndex<IAssembler>(this.HelpProvider.Compiler.Assemblers, NewIndex);
+			this.RepopulateIndex<IOutputWriter>(this.HelpProvider.Compiler.OutputWriters, NewIndex);
+			this.RepopulateIndex<IOutputModifier>(this.HelpProvider.Compiler.OutputModifiers, NewIndex);
+			this.RepopulateIndex<IStringEncoder>(this.HelpProvider.Compiler.StringEncoders, NewIndex);
+			this.RepopulateIndex<INumberEncoder>(this.HelpProvider.Compiler.NumberEncoders, NewIndex);
+			this.RepopulateIndex<IListingWriter>(this.HelpProvider.Compiler.ListingWriters, NewIndex);
+			this.RepopulateIndex<IPlugin>(this.HelpProvider.Compiler.InvisiblePlugins, NewIndex);
+
+
+
+			KeyValuePair<Type, string>[] PossibleTypes = new KeyValuePair<Type, string>[] { 
+				new KeyValuePair<Type, string>(typeof(IDirective), "directive"),
+				new KeyValuePair<Type, string>(typeof(IFunction), "function"),
+				new KeyValuePair<Type, string>(typeof(IOutputWriter), "output writer"),
+				new KeyValuePair<Type, string>(typeof(IOutputModifier), "output modifier"),
+				new KeyValuePair<Type, string>(typeof(IStringEncoder), "string encoder"),
+				new KeyValuePair<Type, string>(typeof(INumberEncoder), "number encoder"),
+				new KeyValuePair<Type, string>(typeof(IAssembler), "assembler"),
+				new KeyValuePair<Type, string>(typeof(IListingWriter), "listing writer")				
+			};
+
+			foreach (KeyValuePair<string, List<TreeNode>> CollapseLikeNames in NewIndex) {
+
+				if (CollapseLikeNames.Value.Count == 1) continue;
+
+
+				TreeNode N = new TreeNode(CollapseLikeNames.Value[0].Text);
+
+				foreach (TreeNode Subsection in CollapseLikeNames.Value) {
+
+					List<Type> PluginTypes = new List<Type>(Subsection.Tag.GetType().GetInterfaces());
+					if (Subsection.Tag is Assembly) PluginTypes.Add(typeof(Assembly));
+
+					List<string> Types = new List<string>();
+					foreach (KeyValuePair<Type, string> CheckType in PossibleTypes) {
+						if (PluginTypes.Contains(CheckType.Key)) {
+							Types.Add(CheckType.Value);
+						}
+					}
+
+					if (Types.Count > 0) {
+						Subsection.Text += " " + string.Join("/", Types.ToArray());
+					}
+
+					N.Nodes.Add(Subsection);
+				}
+
+				CollapseLikeNames.Value.Clear();
+				CollapseLikeNames.Value.Add(N);
+			}
+
+
+			List<string> SortedKeys = new List<string>(NewIndex.Keys);
+			SortedKeys.Sort();
+
+			this.Index = new Dictionary<string, TreeNode>(SortedKeys.Count);
+			foreach (string Key in SortedKeys) {
+				this.Index.Add(Key, NewIndex[Key][0]);				
+			}
+
 		}
 
+		private void SearchIndex(string search) {
+
+			List<TreeNode> Results = new List<TreeNode>(this.Index.Count);
+
+			search = search.Trim().ToLowerInvariant();
+
+			foreach (KeyValuePair<string, TreeNode> Searcher in this.Index) {
+				if (Searcher.Key.StartsWith(search)) Results.Add(Searcher.Value);
+			}
+
+			this.IndexResults.Visible = false;
+			this.IndexResults.Nodes.Clear();
+			this.IndexResults.Nodes.AddRange(Results.ToArray());
+			this.IndexResults.Visible = true;
+			this.IndexResults.ExpandAll();
+		}
+
+		private void RepopulateIndex<T>(PluginCollection<T> plugins, Dictionary<string, List<TreeNode>> totalIndex) where T : class, IPlugin {
+
+			foreach (T CurrentPlugin in plugins) {
+
+				string[] IndexKeys = Compiler.GetPluginNames(CurrentPlugin);
+
+				foreach (string IndexKeyOriginal in IndexKeys) {
+					string IndexKey = IndexKeyOriginal.ToLowerInvariant();
+					List<TreeNode> LN;
+					if (!totalIndex.TryGetValue(IndexKey, out LN)) {
+						LN = new List<TreeNode>();
+						totalIndex.Add(IndexKey, LN);
+					}
+
+					bool AlreadyAdded =false;
+					foreach (TreeNode N in LN) {
+						if (N.Tag == CurrentPlugin) {
+							AlreadyAdded = true;
+							break;
+						}
+					}
+					if (!AlreadyAdded) {
+						TreeNode Node = new TreeNode(IndexKeyOriginal);
+						Node.Tag = CurrentPlugin;
+						LN.Add(Node);
+					}
+				}
+			}
+		}
+
+		private void IndexResults_BeforeCollapse(object sender, TreeViewCancelEventArgs e) { e.Cancel = true; }
+
+
+		private void IndexResults_AfterSelect(object sender, TreeViewEventArgs e) {
+			SelectHelpEntry(e.Node);
+		}
+
+		private void IndexSearch_TextChanged(object sender, EventArgs e) {
+			this.SearchIndex(IndexSearch.Text);
+		}
+
+
+		#endregion
+
+		#region History Navigation
 
 		private LinkedList<TreeNode> History;
 		private LinkedListNode<TreeNode> CurrentHistoryPosition;
@@ -226,20 +371,20 @@ namespace Help {
 			}
 		}
 
-		private void Contents_AfterSelect(object sender, TreeViewEventArgs e) {
-			if (e.Node == null) return;
-			if (e.Node.Tag == null) return;
+		private void SelectHelpEntry(TreeNode node) {
+			if (node == null) return;
+			if (node.Tag == null) return;
 
 			string Help = null;
 
-			IPlugin P = e.Node.Tag as IPlugin;
+			IPlugin P = node.Tag as IPlugin;
 			if (P != null) {
-				this.SetHistory(e.Node);
+				this.SetHistory(node);
 				Help = this.HelpProvider.GetHelpHtml(P, false);
 			} else {
-				Assembly PluginCollection = e.Node.Tag as Assembly;
+				Assembly PluginCollection = node.Tag as Assembly;
 				if (PluginCollection != null) {
-					this.SetHistory(e.Node);
+					this.SetHistory(node);
 					Help = this.HelpProvider.GetHelpHtml(PluginCollection, false);
 				}
 			}
@@ -249,13 +394,15 @@ namespace Help {
 			this.Viewer.Document.MouseDown += new HtmlElementEventHandler(Document_MouseDown);
 		}
 
-		private HtmlElement LastSelectedElement;
-		void Document_MouseDown(object sender, HtmlElementEventArgs e) {
-			LastSelectedElement = this.Viewer.Document.GetElementFromPoint(e.MousePosition);
-			while (LastSelectedElement != null && LastSelectedElement.TagName.ToLowerInvariant() != "pre") {
-				LastSelectedElement = LastSelectedElement.Parent;
-			}
+		#endregion
+
+		#region Misc
+
+		private void Contents_AfterSelect(object sender, TreeViewEventArgs e) {
+			SelectHelpEntry(e.Node);
 		}
+
+
 
 		private void Contents_AfterExpand(object sender, TreeViewEventArgs e) {
 			if (e.Node != null && e.Node.ImageIndex < 2) {
@@ -328,6 +475,11 @@ namespace Help {
 			return null;
 		}
 
+		#endregion
+
+		#region Printing
+
+
 		public void Print() {
 			this.Viewer.Print();
 		}
@@ -340,6 +492,17 @@ namespace Help {
 			this.Viewer.ShowPrintDialog();
 		}
 
+		#endregion
+
+		#region Copying
+
+		private HtmlElement LastSelectedElement;
+		void Document_MouseDown(object sender, HtmlElementEventArgs e) {
+			LastSelectedElement = this.Viewer.Document.GetElementFromPoint(e.MousePosition);
+			while (LastSelectedElement != null && LastSelectedElement.TagName.ToLowerInvariant() != "pre") {
+				LastSelectedElement = LastSelectedElement.Parent;
+			}
+		}
 
 		private void ViewerContext_Opening(object sender, CancelEventArgs e) {
 			ViewerContextCopy.Enabled = ExampleWasClicked;
@@ -356,6 +519,10 @@ namespace Help {
 				Clipboard.SetText(Encoding.Unicode.GetString(Convert.FromBase64String(LastSelectedElement.GetAttribute("base64code"))));
 			}
 		}
+
+		#endregion
+
+		#region Exporting
 
 		public void ExportWebsite(string indexFile) {
 			string BasePath = Path.GetDirectoryName(indexFile);
@@ -409,7 +576,7 @@ namespace Help {
 		}
 
 		public void ExportLatenite1Xml(string lateniteDirectory) {
-			Dictionary<Assembly, XmlWriter> Writers = new Dictionary<Assembly,XmlWriter>();
+			Dictionary<Assembly, XmlWriter> Writers = new Dictionary<Assembly, XmlWriter>();
 			List<IPlugin> Exported = new List<IPlugin>();
 			Latenite1XmlWriteTreeNodes(this.Contents.Nodes, Writers, lateniteDirectory, Exported);
 			foreach (KeyValuePair<Assembly, XmlWriter> KVP in Writers) {
@@ -489,18 +656,23 @@ namespace Help {
 					foreach (CodeExampleAttribute CEO in HelpProvider.GetCustomAttributes<CodeExampleAttribute>(Plugin)) {
 						Writer.WriteStartElement("example");
 						string Code = CEO.Example;
-						Writer.WriteAttributeString("code",  this.HelpProvider.ExpandTabs(HelpProvider.DocumentationToHtml(Code, false)));
+						Writer.WriteAttributeString("code", this.HelpProvider.ExpandTabs(HelpProvider.DocumentationToHtml(Code, false)));
 						Writer.WriteEndElement();
 					}
 
 					Writer.WriteEndElement();
 
-				
+
 				}
 				Latenite1XmlWriteTreeNodes(N.Nodes, writers, baseDirectory, exported);
 			}
 
 		}
 
+
+
+		#endregion
+
+	
 	}
 }

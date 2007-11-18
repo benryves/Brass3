@@ -29,6 +29,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Skybound.VisualStyles, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f2d73a45b3e75a83">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Skybound VisualStyles\Skybound.VisualStyles.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />

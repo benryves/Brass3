@@ -11,7 +11,9 @@ namespace Help {
 		static void Main() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new HelpInterface());
+			using (Skybound.VisualStyles.VisualStyleContext.Create()) {
+				Application.Run(new HelpInterface());
+			}
 		}
 	}
 }
