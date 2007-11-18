@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<brassproject version="3">
+
+	<plugins>
+		<collection source="Core.dll" />
+		<collection source="Z80.dll" />
+		<collection source="TiCalc.dll" />
+	</plugins>
+	
+	<input assembler="Z80" stringencoder="large8x">
+		<label name="Program.Name" type="string" value="PROGRAM" />
+		<header append="true">
+			.for page = 00 to 99
+				.defpage page, kb(16), $4000
+			.loop
+			.page 0
+			.tivariablename Program.Name
+		</header>
+	</input>
+
+	<buildconfiguration name="TI8X" displayname="TI-83 Plus">
+	
+		<input>
+			<header append="true">.include "TI/ti83plus.inc"</header>
+		</input>
+		
+		<output writer="TI8XApp" />
+				
+	</buildconfiguration>
+	
+	<buildconfiguration name="TI73" displayname="TI-73">
+
+		<input>
+			<header append="true">.include "TI/ti73plus.inc"</header>
+		</input>
+
+		<output writer="TI73App" />
+
+	</buildconfiguration>
+
+</brassproject>
