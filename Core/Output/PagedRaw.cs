@@ -55,7 +55,7 @@ namespace Core.Output {
 			List<int> DeclaredPages = new List<int>(this.PageDeclarations.Keys);
 			DeclaredPages.Sort();
 
-			foreach (int Page in compiler.UniquePageIndices) {
+			foreach (int Page in compiler.GetUniquePageIndices()) {
 				if (!DeclaredPages.Contains(Page)) {
 					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, string.Format("Page {0} is used but never defined, so its data isn't output.", Page)));
 				}

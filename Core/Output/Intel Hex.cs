@@ -20,6 +20,9 @@ namespace Core.Output {
 		public void WriteOutput(Compiler compiler, Stream stream) {
 			if (compiler.Output.Length == 0) return;
 			IntelHexWriter Writer = new IntelHexWriter(stream);
+
+			Writer.WritePageNumbers = compiler.GetUniquePageIndices().Length > 1;
+
 			foreach (OutputData Output in compiler.Output) {
 				if (Output.Data.Length > 0) {
 					Writer.Write((ushort)Output.OutputCounter, (ushort)Output.Page, Output.Data[0]);
@@ -58,6 +61,15 @@ namespace Core.Output {
 		ushort CurrentAddress = 0;
 		ushort? LastWrittenPage = null;
 
+		private bool writePageNumbers;
+		/// <summary>
+		/// Gets or sets whether to write page numbers in extended segment address records.
+		/// </summary>
+		public bool WritePageNumbers {
+			get { return this.writePageNumbers; }
+			set { this.writePageNumbers = value; }
+		}
+
 		public void Write(ushort address, ushort page, byte data) {
 			if (address != (CurrentAddress + WorkingData.Count) || page != CurrentPage) {
 				this.Flush();
@@ -69,7 +81,7 @@ namespace Core.Output {
 
 		public override void Flush() {
 			if (this.WorkingData.Count > 0) {
-				if (!LastWrittenPage.HasValue || CurrentPage != LastWrittenPage) {
+				if (this.WritePageNumbers && (!LastWrittenPage.HasValue || CurrentPage != LastWrittenPage)) {
 					this.Write(Record.ExtendedSegmentAddress, 0, new byte[] { (byte)CurrentPage, (byte)(CurrentPage >> 8) });
 					LastWrittenPage = CurrentPage;
 				}
@@ -92,25 +104,31 @@ namespace Core.Output {
 					throw new ArgumentException(record + " is not a valid record type.");
 			}
 
-			byte[] ChunkedData = new byte[16];
+			byte[] ChunkedData = new byte[32];
 
 			if (data == null) data = new byte[] { };
 
-			for (int i = 0; i < data.Length; i += ChunkedData.Length) {
-				int ActualDataLength = Math.Min(ChunkedData.Length, data.Length - i);
+			if (data.Length > 0) {
 
-				byte Checksum = (byte)((byte)ActualDataLength + (byte)record + (byte)address);//+ (byte)(address >> 8));
+				for (int i = 0; i < data.Length; i += ChunkedData.Length) {
+					int ActualDataLength = Math.Min(ChunkedData.Length, data.Length - i);
 
-				base.Write(":{0:X2}{1:X4}{2:X2}", ActualDataLength, address, (int)record);
+					byte Checksum = (byte)((byte)ActualDataLength + (byte)record + (byte)address + (byte)(address >> 8));
 
-				for (int j = i; j < i + ActualDataLength; ++j) {
-					base.Write(data[j].ToString("X2"));
-					Checksum += data[j];
+					base.Write(":{0:X2}{1:X4}{2:X2}", ActualDataLength, address, (int)record);
+
+					for (int j = i; j < i + ActualDataLength; ++j) {
+						base.Write(data[j].ToString("X2"));
+						Checksum += data[j];
+					}
+
+					base.WriteLine("{0:X2}", (byte)(-Checksum));
+
+					address += (ushort)ActualDataLength;
 				}
+			} else {
+				base.WriteLine(":00{0:X4}{1:X2}FF", address, (int)record);
 
-				base.WriteLine("{0:X2}", (byte)(~Checksum));
-
-				address += (ushort)ActualDataLength;
 			}
 		}
 
