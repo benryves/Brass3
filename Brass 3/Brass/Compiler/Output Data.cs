@@ -35,6 +35,12 @@ namespace Brass3 {
 		/// </summary>
 		public readonly Compiler.SourceStatement Source;
 
+
+		/// <summary>
+		/// Gets whether the output data can be overwritten.
+		/// </summary>
+		public readonly bool Background;
+
 		/// <summary>
 		/// Creates an instance of the <see cref="OutputData"/> structure.
 		/// </summary>
@@ -43,12 +49,14 @@ namespace Brass3 {
 		/// <param name="programCounter">The program counter that the output data starts at.</param>
 		/// <param name="outputCounter">The output counter that the output data starts at.</param>
 		/// <param name="data">The raw data that the structure is to represent.</param>
-		public OutputData(Compiler.SourceStatement source, int page, int programCounter, int outputCounter, byte[] data) {
+		/// <param name="background">True if the data can be overwritten.</param>
+		public OutputData(Compiler.SourceStatement source, int page, int programCounter, int outputCounter, byte[] data, bool background) {
 			this.Source = source;
 			this.ProgramCounter = programCounter;
 			this.OutputCounter = outputCounter;
 			this.Page = page;
 			this.Data = data;
+			this.Background = background;
 		}
 
 
@@ -61,9 +69,22 @@ namespace Brass3 {
 			OutputData other = (OutputData)obj;
 			if (this.Page != other.Page) {
 				return this.Page.CompareTo(other.Page);
-			} else {
+			} else if (this.OutputCounter != other.OutputCounter) {
 				return this.OutputCounter.CompareTo(other.OutputCounter);
+			} else {
+				return ((int)(this.Background ? 0 : 1)).CompareTo(other.Background ? 0 : 1);
 			}
+		}
+
+		/// <summary>
+		/// Returns a formatted string describing the data.
+		/// </summary>
+		public override string ToString() {
+			string s = string.Format("{0}:{1} {2}", this.Page, this.OutputCounter, (this.Source == null ? "?" : this.Source.ToString()));
+			if (this.Background) {
+				s = "(" + s + ")";
+			}
+			return s;
 		}
 	}
 }

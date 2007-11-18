@@ -21,7 +21,8 @@ namespace Brass3 {
 		/// Write a <c>byte</c> of data to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		public void WriteOutput(byte data) {
+		/// <param name="background">True if the data can be overwritten by other data.</param>
+		public void WriteOutput(byte data, bool background) {
 
 
 			byte[] TranslatedData = new byte[] { data };
@@ -34,26 +35,66 @@ namespace Brass3 {
 
 			this.output.Add(new OutputData(this.CurrentStatement.Value, 
 				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
-				(int)this.labels.OutputCounter.NumericValue, TranslatedData));
+				(int)this.labels.OutputCounter.NumericValue, TranslatedData, background));
 
 			++this.Labels.ProgramCounter.NumericValue;
 			++this.Labels.OutputCounter.NumericValue;
 		}
 
 		/// <summary>
+		/// Write a <c>byte</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		public void WriteOutput(byte data) { this.WriteOutput(data, false); }
+
+		/// <summary>
 		/// Write an array of <c>byte</c>s of data to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		public void WriteOutput(byte[] data) {
-			foreach (byte b in data) this.WriteOutput(b);
+		/// <param name="background">True if the data can be overwritten.</param>
+		public void WriteOutput(byte[] data, bool background) {
+			foreach (byte b in data) this.WriteOutput(b, background);
+		}
+
+		/// <summary>
+		/// Write an array of <c>byte</c>s of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		public void WriteOutput(byte[] data) { this.WriteOutput(data, false); }
+
+		/// <summary>
+		/// Write a <c>ushort</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		/// <param name="background">True if the data can be overwritten.</param>
+		public void WriteOutput(ushort data, bool background) {
+			this.WriteOutput((short)data, background);
 		}
 
 		/// <summary>
 		/// Write a <c>ushort</c> of data to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		public void WriteOutput(ushort data) {
-			this.WriteOutput((short)data);
+		public void WriteOutput(ushort data) { this.WriteOutput(data, false); }
+
+		/// <summary>
+		/// Write a <c>short</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		/// <param name="background">True if the data can be overwritten.</param>
+		public void WriteOutput(short data, bool background) {
+			switch (this.Endianness) {
+				case Endianness.Little:
+					this.WriteOutput((byte)(data), background);
+					this.WriteOutput((byte)(data >> 8), background);
+					break;
+				case Endianness.Big:
+					this.WriteOutput((byte)(data >> 8), background);
+					this.WriteOutput((byte)(data), background);
+					break;
+				default:
+					throw new InvalidOperationException();
+			}
 		}
 
 		/// <summary>
@@ -61,14 +102,27 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="data">The data to write.</param>
 		public void WriteOutput(short data) {
+			this.WriteOutput(data, false);
+		}
+
+		/// <summary>
+		/// Write an <c>int</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		/// <param name="background">True if the data can be overwritten.</param>
+		public void WriteOutput(int data, bool background) {
 			switch (this.Endianness) {
 				case Endianness.Little:
-					this.WriteOutput((byte)(data));
-					this.WriteOutput((byte)(data >> 8));
+					this.WriteOutput((byte)(data), background);
+					this.WriteOutput((byte)(data >> 8), background);
+					this.WriteOutput((byte)(data >> 16), background);
+					this.WriteOutput((byte)(data >> 24), background);
 					break;
 				case Endianness.Big:
-					this.WriteOutput((byte)(data >> 8));
-					this.WriteOutput((byte)(data));
+					this.WriteOutput((byte)(data >> 24), background);
+					this.WriteOutput((byte)(data >> 16), background);
+					this.WriteOutput((byte)(data >> 8), background);
+					this.WriteOutput((byte)(data), background);
 					break;
 				default:
 					throw new InvalidOperationException();
@@ -80,22 +134,16 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="data">The data to write.</param>
 		public void WriteOutput(int data) {
-			switch (this.Endianness) {
-				case Endianness.Little:
-					this.WriteOutput((byte)(data));
-					this.WriteOutput((byte)(data >> 8));
-					this.WriteOutput((byte)(data >> 16));
-					this.WriteOutput((byte)(data >> 24));
-					break;
-				case Endianness.Big:
-					this.WriteOutput((byte)(data >> 24));
-					this.WriteOutput((byte)(data >> 16));
-					this.WriteOutput((byte)(data >> 8));
-					this.WriteOutput((byte)(data));
-					break;
-				default:
-					throw new InvalidOperationException();
-			}
+			this.WriteOutput(data, false);
+		}
+
+		/// <summary>
+		/// Write an <c>uint</c> of data to the output.
+		/// </summary>
+		/// <param name="data">The data to write.</param>
+		/// <param name="background">True if the data can be overwritten.</param>
+		public void WriteOutput(uint data, bool background) {
+			this.WriteOutput((int)data, background);
 		}
 
 		/// <summary>
@@ -103,7 +151,7 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="data">The data to write.</param>
 		public void WriteOutput(uint data) {
-			this.WriteOutput((int)data);
+			this.WriteOutput(data, false);
 		}
 
 		/// <summary>
@@ -168,6 +216,36 @@ namespace Brass3 {
 				if (OD.Page == page && OD.OutputCounter == address) return true;
 			}
 			return false;
+		}
+
+		/// <summary>
+		/// Removes redundant data (such as overwritten background data) from the output.
+		/// </summary>
+		public void RemoveRedundantOutputData() {
+
+			this.output.Sort();
+
+			List<OutputData> DataToPurge = new List<OutputData>();
+			Dictionary<int, OutputData> CleanPage = new Dictionary<int,OutputData>();
+
+			foreach (int Page in this.GetUniquePageIndices()) {
+				CleanPage.Clear();
+				OutputData[] DataOnPage = this.GetOutputDataOnPage(Page);
+
+				for (int i = DataOnPage.Length - 1; i >= 0; i--) {
+					if (CleanPage.ContainsKey(DataOnPage[i].OutputCounter)) {
+						DataToPurge.Add(DataOnPage[i]);
+					} else {
+						CleanPage.Add(DataOnPage[i].OutputCounter, DataOnPage[i]);
+					}
+				}
+
+			}
+
+			foreach (OutputData Purging in DataToPurge) {
+				this.output.Remove(Purging);				
+			}			
+
 		}
 
 	}

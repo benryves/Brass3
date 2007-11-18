@@ -228,6 +228,7 @@ namespace Brass3 {
 
 
 				// Done!
+				this.RemoveRedundantOutputData();
 
 				// Do we need to write output?
 				if (writeOutput && this.OutputWriter != null) {
