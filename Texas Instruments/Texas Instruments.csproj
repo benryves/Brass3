@@ -39,6 +39,7 @@
     <Compile Include="Brass\Directives\AppHeader.cs" />
     <Compile Include="Brass\Directives\BCall.cs" />
     <Compile Include="Brass\Directives\AppField.cs" />
+    <Compile Include="Brass\Directives\Branch.cs" />
     <Compile Include="Brass\Directives\ShellHeader.cs" />
     <Compile Include="Brass\Directives\TI Variable Name.cs" />
     <Compile Include="Brass\Functions\AppOnError.cs" />

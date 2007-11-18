@@ -151,21 +151,20 @@ namespace TexasInstruments.Brass.Directives {
 					this.MaximumHardwareRevision = null;
 					this.LowestBasecode = null;
 					this.Name = "MYAPP";
+					this.Invoked = false;
+					this.ProgramCounter = null;
+					this.OutputCounter = null;
 				}
 			};
-		}
 
-		#endregion
+			compiler.PassEnded += delegate(object sender, EventArgs e) {
 
-		#region Public Methods
+				if (this.Invoked && compiler.CurrentPass == AssemblyPass.WritingOutput) {
 
-		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels:
-					// 128 bytes of headery goodness.
-					compiler.IncrementProgramAndOutputCounters(128);
-					break;
-				case AssemblyPass.WritingOutput:
+					compiler.Labels.ProgramCounter.NumericValue = this.ProgramCounter.NumericValue;
+					compiler.Labels.ProgramCounter.Page = this.ProgramCounter.Page;
+					compiler.Labels.OutputCounter.NumericValue = this.OutputCounter.NumericValue;
+					compiler.Labels.OutputCounter.Page = this.OutputCounter.Page;
 
 					TIVariableName VariableName = compiler.GetPluginInstanceFromType<TIVariableName>();
 					if (VariableName != null) {
@@ -178,17 +177,20 @@ namespace TexasInstruments.Brass.Directives {
 					List<byte> HeaderData = new List<byte>(128);
 
 					AddAppField(HeaderData, AppField.ProgramLength, (int)0);
-					AddAppField(HeaderData, AppField.DeveloperKey, (ushort)(this.DeveloperKey.HasValue ? this.DeveloperKey : 0x0104));
+					AddAppField(HeaderData, AppField.DeveloperKey, (ushort)(this.DeveloperKey.HasValue ? this.DeveloperKey : (ushort)(
+						compiler.OutputWriter.GetType() == typeof(Output.TI73App) ? 0x0102 : 0x0104
+					)));
 					AddAppField(HeaderData, AppField.ProgramRevision, this.ProgramRevision);
 					AddAppField(HeaderData, AppField.BuildNumber, this.BuildNumber);
 
 					if (this.Name.Length > 8) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, "Application name truncated to 8 characters."));
 					byte[] NameData = new Large8X().GetData(this.Name);
-					Array.Resize<byte>(ref NameData, 8);					
+					Array.Resize<byte>(ref NameData, 8);
 					AddAppField(HeaderData, AppField.Name, NameData);
 
 
-					AddAppField(HeaderData, AppField.PageCount, (byte)1); // TODO: Fix.				
+					int PageCount = (compiler.GetUniquePageIndices().Length);
+					AddAppField(HeaderData, AppField.PageCount, (byte)PageCount);
 
 					if (this.DisableTISplashScreen) AddAppField(HeaderData, AppField.DisableTISplashScreen);
 
@@ -217,7 +219,31 @@ namespace TexasInstruments.Brass.Directives {
 					Array.Resize<byte>(ref RawHeaderData, 128);
 
 					compiler.WriteOutput(RawHeaderData);
-			
+				}
+
+			};
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		private Label OutputCounter;
+		private Label ProgramCounter;
+		private bool Invoked = false;
+		
+
+		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
+			switch (compiler.CurrentPass) {
+				case AssemblyPass.CreatingLabels:
+					// 128 bytes of headery goodness.
+					compiler.IncrementProgramAndOutputCounters(128);
+					break;
+				case AssemblyPass.WritingOutput:
+					Invoked = true;
+					this.OutputCounter = compiler.Labels.OutputCounter.Clone() as Label;
+					this.ProgramCounter = compiler.Labels.ProgramCounter.Clone() as Label;
+					compiler.WriteOutput(new byte[128], true); // 128 bytes of dud data.
 					break;
 			}
 		}
