@@ -35,7 +35,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Directives\AddInstr.cs" />
-    <Compile Include="Directives\Align.cs" />
     <Compile Include="Directives\Asc.cs" />
     <Compile Include="Directives\AsciiMap.cs" />
     <Compile Include="Directives\BinaryMode.cs" />
