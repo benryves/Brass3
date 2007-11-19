@@ -31,6 +31,7 @@ OffPageCall
 			switch (compiler.CurrentPass) {
 				case AssemblyPass.CreatingLabels: {
 						Label Target = compiler.Labels.Create(new TokenisedSource.Token("_" + source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.TokenArgument)[0] as string));
+						Target.NumericValue -= 0x4000;
 						compiler.IncrementProgramAndOutputCounters(3);
 					} break;
 				case AssemblyPass.WritingOutput: {
