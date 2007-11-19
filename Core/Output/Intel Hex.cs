@@ -82,7 +82,7 @@ namespace Core.Output {
 		public override void Flush() {
 			if (this.WorkingData.Count > 0) {
 				if (this.WritePageNumbers && (!LastWrittenPage.HasValue || CurrentPage != LastWrittenPage)) {
-					this.Write(Record.ExtendedSegmentAddress, 0, new byte[] { (byte)CurrentPage, (byte)(CurrentPage >> 8) });
+					this.Write(Record.ExtendedSegmentAddress, 0, new byte[] { (byte)(CurrentPage >> 8), (byte)CurrentPage });
 					LastWrittenPage = CurrentPage;
 				}
 				this.Write(Record.Data, this.CurrentAddress, this.WorkingData.ToArray());
