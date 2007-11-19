@@ -32,8 +32,6 @@ Main
 	; Call a function on page 1 (note the _underscore).
 	.bcall _OffPageCall
 	
-	.echoln strformat("{0:X4}", _OffPageCall)
-	
 	; Wait for a key.
 	.bcall _getKey
 
