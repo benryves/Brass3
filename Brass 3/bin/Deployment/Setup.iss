@@ -60,6 +60,9 @@ Source: "Templates\SMS\32KB.brassproj"; DestDir: "{app}\Templates\SMS"; Flags: i
 Source: "Samples\TI Calculator Program\Demo.brassproj"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Program"; Flags: ignoreversion; Components: "Samples\TIProgram";
 Source: "Samples\TI Calculator Program\Demo.asm"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Program"; Flags: ignoreversion; Components: "Samples\TIProgram";
 
+Source: "Samples\TI Calculator Application\Demo.brassproj"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Application"; Flags: ignoreversion; Components: "Samples\TIApplication";
+Source: "Samples\TI Calculator Application\Demo.asm"; DestDir: "{userdocs}\Brass Projects\Samples\TI Calculator Application"; Flags: ignoreversion; Components: "Samples\TIApplication";
+
 Source: "Samples\Sega Master System Program\Registers.brassproj"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
 Source: "Samples\Sega Master System Program\Registers.asm"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
 Source: "Samples\Sega Master System Program\Video.asm"; DestDir: "{userdocs}\Brass Projects\Samples\Sega Master System Program"; Flags: ignoreversion; Components: "Samples\SMS32KB";
@@ -82,6 +85,7 @@ Name: "Tools\GuiBuilder"; Description: "GUI Builder"; Types: full custom;
 
 Name: "Samples"; Description: "Projects Directory"; Types: full custom;
 Name: "Samples\TIProgram"; Description: "Sample Texas Instruments Calculator Program"; Types: full custom;
+Name: "Samples\TIApplication"; Description: "Sample Texas Instruments Calculator Application"; Types: full custom;
 Name: "Samples\SMS32KB"; Description: "Sample Sega Master System Program"; Types: full custom;
 
 Name: "Plugins"; Description: "Plugins"; Types: full compact custom;
