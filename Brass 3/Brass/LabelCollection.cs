@@ -300,7 +300,7 @@ namespace Brass3 {
 							case '+':
 								ReusableClassDictionary = this.ReusableForwards;
 								Step = +1;
-								End = Compiler.Statements.Length;
+								End = Compiler.Statements.Length + 1;
 								break;
 							case '-':
 								ReusableClassDictionary = this.ReusableBackwards;
