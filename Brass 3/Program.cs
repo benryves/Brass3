@@ -11,12 +11,10 @@ namespace Brass3 {
 			Compiler C = new Compiler();
 
 
-			C.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { DisplayError(C, e, "Error", ConsoleColor.Red); };
-			C.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { DisplayError(C, e, "Warning", ConsoleColor.Yellow); };
+			C.ErrorRaised += (sender, e) => DisplayError(C, e, "Error", ConsoleColor.Red);
+			C.WarningRaised += (sender, e) => DisplayError(C, e, "Warning", ConsoleColor.Yellow);
 
-			C.MessageRaised += delegate(object sender, Compiler.NotificationEventArgs e) {
-				Console.Write(e.Message);
-			};
+			C.MessageRaised += (sender, e) => Console.Write(e.Message);
 
 			if (args.Length == 1 || args.Length == 2) {
 				try {
@@ -51,7 +49,7 @@ namespace Brass3 {
 							return;
 						case "list":
 							List<Label> ToSort = new List<Label>(C.Labels);
-							ToSort.Sort(delegate(Label a, Label b) { return a.Name.CompareTo(b.Name); });
+							ToSort.Sort((a, b) => a.Name.CompareTo(b.Name));
 							foreach (Label L in ToSort) {
 								if (L.Created) {
 									Console.WriteLine(L.Name + "\t" + L.NumericValue);

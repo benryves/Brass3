@@ -14,9 +14,7 @@ namespace Brass3 {
 		/// <param name="plugin">The plugin to get the names of.</param>
 		/// <returns>An array of the plugin's names.</returns>
 		public static string[] GetPluginNames(Type plugin) {
-			string[] Result = Array.ConvertAll<object, string>(plugin.GetCustomAttributes(typeof(Attributes.PluginNameAttribute), false), delegate(object o) {
-				return (o as Attributes.PluginNameAttribute).Name.ToLowerInvariant();
-			});
+			string[] Result = Array.ConvertAll<object, string>(plugin.GetCustomAttributes(typeof(Attributes.PluginNameAttribute), false), o=>(o as Attributes.PluginNameAttribute).Name.ToLowerInvariant());
 			if (Result.Length == 0) {
 				Result = new string[] { plugin.Name.ToLowerInvariant() };
 			}
@@ -40,9 +38,7 @@ namespace Brass3 {
 		/// <remarks>If no display name is explicitly defined, the plugin's names are returned delimited by a slash.</remarks>
 		public static string GetPluginDisplayName(Type plugin) {
 
-			string[] Result = Array.ConvertAll<object, string>(plugin.GetCustomAttributes(typeof(System.ComponentModel.DisplayNameAttribute), false), delegate(object o) {
-				return (o as System.ComponentModel.DisplayNameAttribute).DisplayName;
-			});
+			string[] Result = Array.ConvertAll<object, string>(plugin.GetCustomAttributes(typeof(System.ComponentModel.DisplayNameAttribute), false), o=>(o as System.ComponentModel.DisplayNameAttribute).DisplayName);
 
 			if (Result.Length == 0) {
 				Result = GetPluginNames(plugin);
@@ -92,9 +88,7 @@ namespace Brass3 {
 		/// <param name="exclusions">An array of strings corresponding to names of plugins that are not to be loaded.</param>
 		public void LoadPluginsFromAssembly(string assemblyName, string[] exclusions) {
 
-			List<string> ExclusionList = new List<string>(
-				Array.ConvertAll<string, string>(exclusions, delegate(string a) { return a.ToLowerInvariant(); })
-			);
+			List<string> ExclusionList = new List<string>(Array.ConvertAll<string, string>(exclusions, a => a.ToLowerInvariant()));
 
 			string AssemblyName = Path.GetFullPath(assemblyName);
 			if (!File.Exists(AssemblyName)) AssemblyName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Path.GetFileName(AssemblyName));

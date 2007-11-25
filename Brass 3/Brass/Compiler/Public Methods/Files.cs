@@ -52,7 +52,7 @@ namespace Brass3 {
 			}
 			Filenames.Sort();
 			if (relative) {
-				return Array.ConvertAll<string, string>(Filenames.ToArray(), delegate(string s) { return this.GetRelativeFilename(s); });
+				return Array.ConvertAll<string, string>(Filenames.ToArray(), s => this.GetRelativeFilename(s));
 			} else {
 				return Filenames.ToArray();
 			}
@@ -220,9 +220,7 @@ namespace Brass3 {
 
 			List<KeyValuePair<string, SourceStatement[]>> Result = new List<KeyValuePair<string, SourceStatement[]>>();
 			foreach (KeyValuePair<string, List<SourceStatement>> Statement in FileToStatements) {
-				Statement.Value.Sort(delegate(SourceStatement a, SourceStatement b) {
-					return a.index.CompareTo(b.index);
-				});
+				Statement.Value.Sort((a, b) => a.index.CompareTo(b.index));
 				Result.Add(new KeyValuePair<string, SourceStatement[]>(
 					relativePaths ? this.GetRelativeFilename(Statement.Key) : Statement.Key,
 					Statement.Value.ToArray()

@@ -253,7 +253,7 @@ namespace Brass3 {
 
 
 							TokenisedSource SourceInsideFunction = new TokenisedSource(InsideFunctionTokens.ToArray(), this.OutermostTokenisedSource);
-							int[] OriginalExpressionIndices = Array.ConvertAll<Token, int>(SourceInsideFunction.Tokens, delegate(Token Tok) { return Tok.ExpressionGroup; });
+							int[] OriginalExpressionIndices = Array.ConvertAll<Token, int>(SourceInsideFunction.Tokens, Tok => Tok.ExpressionGroup);
 
 							// Call function...
 
