@@ -53,7 +53,7 @@ namespace Brass3 {
 		/// <param name="position">The position to jump back to, retrieved by <seealso cref="RememberPosition"/>.</param>
 		/// <remarks>The label assignment component of the statement jumped to will not be re-evaluated.</remarks>
 		public void RecallPosition(LinkedListNode<SourceStatement> position) {
-			if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled.");
+			if (!this.AllowPositionToChange) throw new InvalidOperationException(Strings.ErrorFlowControlDisabled);
 			RecallPosition(position, true);
 		}
 
@@ -63,7 +63,7 @@ namespace Brass3 {
 		/// <param name="position">The position to jump back to, retrieved by <seealso cref="RememberPosition"/>.</param>
 		/// <param name="doNotReparseLabel">Set to true to stop the label assignment component of the remembered statement from being re-evaluated.</param>
 		public void RecallPosition(LinkedListNode<SourceStatement> position, bool doNotReparseLabel) {
-			if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled.");
+			if (!this.AllowPositionToChange) throw new InvalidOperationException(Strings.ErrorFlowControlDisabled);
 			NextStatementToCompile = position;
 			if (doNotReparseLabel) JustRecalledPosition = true;
 		}

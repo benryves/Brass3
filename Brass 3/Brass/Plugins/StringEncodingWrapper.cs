@@ -35,7 +35,7 @@ namespace Brass3.Plugins {
 		/// <param name="encoding">The .NET Encoding to wrap.</param>
 		/// <remarks>Only single-byte encodings are supported.</remarks>
 		public StringEncodingWrapper(Compiler compiler, string name, Encoding encoding) {
-			if (!encoding.IsSingleByte) throw new NotSupportedException("Automatically wrapped encodings must be single-byte only.");
+			if (!encoding.IsSingleByte) throw new NotSupportedException(Strings.ErrorAutomaticStringEncoderIsMultibyte);
 			this.compiler = compiler;
 			this.name = name;
 			this.encoding = encoding;

@@ -152,7 +152,7 @@ namespace Brass3 {
 					Reusable.Created = false;
 				} else {
 					if (!compiler.Labels.TryParse(new Token(ReusableName), out Reusable)) {
-						reasonForFailure = new CompilerExpection(this, string.Format("Couldn't get value for reusable label '{0}'.", ReusableName));
+						reasonForFailure = new CompilerExpection(this, string.Format(Strings.ErrorLabelReusableNotFound, ReusableName));
 						return false;
 					}
 				}
@@ -163,7 +163,7 @@ namespace Brass3 {
 			List<Label> TempLabels = new List<Label>();
 
 			if (this.tokens.Length == 0) {
-				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Nothing to evaluate.");
+				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, Strings.ErrorEvaluationNothingToEvaluate);
 				return false;
 			}
 
@@ -200,7 +200,7 @@ namespace Brass3 {
 							}
 
 							if (!canPerformAssignments && Op.IsAssignment) {
-								reasonForFailure = new CompilerExpection(T, "You cannot perform assignments in this expression.");
+								reasonForFailure = new CompilerExpection(T, Strings.ErrorEvaluationAssignmentsNotPermitted);
 								return false;
 							}
 
@@ -225,7 +225,7 @@ namespace Brass3 {
 							}
 
 							if (!compiler.Functions.Contains(T.Data)) {
-								reasonForFailure = new CompilerExpection(T, "Function '" + T.Data + "' not declared.");
+								reasonForFailure = new CompilerExpection(T, string.Format(Strings.ErrorEvaluationFunctionNotDeclared, T.Data));
 								return false;
 							}
 
@@ -312,14 +312,14 @@ namespace Brass3 {
 									LabelToAccess = O.ExpressionPosition.Previous.Value;
 									LabelToAccess.AccessesPage = false;
 								} else {
-									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "No label found for label access operator.");
+									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationAccessorLabelNotFound);
 									return false;
 								}
 
 							} else {
 
 								if (O.ExpressionPosition.Next == null) {
-									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
 									return false;
 								}
 
@@ -370,12 +370,12 @@ namespace Brass3 {
 
 
 							if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
 								return false;
 							}
 
 							if (O.ExpressionPosition.Next == null || O.ExpressionPosition.Next.Value == null) {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand after operator.");
+								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandAfterOperator);
 								return false;
 							}
 
@@ -536,7 +536,7 @@ namespace Brass3 {
 									if (O.ExpressionPosition.Next.Next != null && O.ExpressionPosition.Next.Next.Value != null) {
 										LabelAccessor FieldName = O.ExpressionPosition.Next.Next.Value;
 										if (OpA.Label.Type == null) {
-											reasonForFailure = new CompilerExpection(OpA.Label.Token, "Couldn't get type information.");
+											reasonForFailure = new CompilerExpection(OpA.Label.Token, Strings.ErrorEvaluationTypeInformationMissing);
 											return false;
 										}
 										if (FieldName.Label.Name.Length > 0 && FieldName.Label.Name[0] == '.') {
@@ -547,7 +547,7 @@ namespace Brass3 {
 											if (!FieldName.Label.Created) compiler.Labels.Remove(FieldName.Label);
 											LabelsToEvaluate.Remove(O.ExpressionPosition.Next.Next);
 										} else {
-											reasonForFailure = new CompilerExpection(FieldName.Label.Token, "Expected field access.");
+											reasonForFailure = new CompilerExpection(FieldName.Label.Token, Strings.ErrorEvaluationExpectedFieldAccess);
 											return false;
 										}
 									}
@@ -565,7 +565,7 @@ namespace Brass3 {
 							switch (O.Type) {
 								case Operator.OperatorType.ConditionalQuery:
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) {
-										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Expected operand before operator.");
+										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
 										return false;
 									}
 									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.NumericValue != 0);
@@ -573,7 +573,7 @@ namespace Brass3 {
 								case Operator.OperatorType.ConditionalResultSplitter:
 
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Previous == null || !EvaluatedTernaries.ContainsKey(O.ExpressionPosition.Previous.Previous.Value)) {
-										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, "Missing matching conditional operator '?'.");
+										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationMissingConditionalOperator);
 										return false;
 									}
 
@@ -598,7 +598,7 @@ namespace Brass3 {
 
 						} break;
 					default:
-						reasonForFailure = new CompilerExpection(O.Token, O.OperandCount + " operands unsupported.");
+						reasonForFailure = new CompilerExpection(O.Token, string.Format(Strings.ErrorEvaluationOperandsUnsupported, O.OperandCount));
 						return false;
 				}
 				LabelsToEvaluate.Remove(O.ExpressionPosition);
@@ -606,12 +606,12 @@ namespace Brass3 {
 
 
 			if (LabelsToEvaluate.Count != 1) {
-				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, "Syntax error.");
+				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, Strings.ErrorEvaluationNoSingleResult);
 			} else {
 				if (!canCreateImplicitLabels) {
 					foreach (Label L in TempLabels) {
 						if (!L.Created) {
-							string Error = string.Format("Label '{0}' not found.", L.Name);
+							string Error = string.Format(Strings.ErrorLabelNotFound, L.Name);
 							if (L.Token == null) {
 								reasonForFailure = new InvalidExpressionSyntaxExpection(this, Error);
 							} else {

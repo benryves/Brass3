@@ -38,18 +38,18 @@ namespace Brass3 {
 		public int[] GetCommaDelimitedArguments(int index, int min, int max) {
 			int[] Result = this.GetCommaDelimitedArguments(index);
 			if (Result.Length < min || Result.Length > max) {
-				string Expected = 
-					max == int.MaxValue 
-					?  (
-						string.Format("{0} or more", min)
+
+
+				string Expected =
+					max == int.MaxValue
+					? (
+						string.Format(Strings.ErrorArgumentCountMismatchEndlessRange, min, max)
 					)
-					: string.Format(
-						min == max ? "{0}" : (min + 1 == max ? "{0} or {1}" : "{0} to {2}"), 
-						(min == 0 ? "no" : min.ToString()), 
-						(max == 0 ? "no" : max.ToString())
-					);
-				string Arguments = min == 1 ? "argument" : "arguments";
-				throw new DirectiveArgumentException(this.OutermostTokenisedSource, string.Format("Expected {0} {1} (you passed {2}).", Expected, Arguments, Result.Length == 0 ? "none" : Result.Length.ToString()));
+					: (max == min ?
+						  string.Format(Strings.ErrorArgumentCountMismatch, min, max)
+						: string.Format(Strings.ErrorArgumentCountMismatchRange, min, max));
+
+				throw new DirectiveArgumentException(this.OutermostTokenisedSource, Expected);
 			}
 			return Result;
 		}
@@ -199,7 +199,7 @@ namespace Brass3 {
 
 				if ((AT & ArgumentType.RepeatForever) == ArgumentType.RepeatForever) {
 					if (i != types.Length-1) {
-						throw new ArgumentException("RepeatForever can only apply to the last argument.");
+						throw new ArgumentException(Strings.ErrorArgumentRepeatForeverNotLast);
 					}
 					MaxArgs = int.MaxValue;
 				}
@@ -207,7 +207,7 @@ namespace Brass3 {
 				if ((AT & ArgumentType.Optional) == ArgumentType.Optional) {
 					HitOptional = true;
 				} else {
-					if (HitOptional) throw new ArgumentException("Argument types cannot have mandatory arguments following optional arguments.");
+					if (HitOptional) throw new ArgumentException(Strings.ErrorArgumentOptionalNotLast);
 					++MinArgs;
 				}
 			}
@@ -232,7 +232,7 @@ namespace Brass3 {
 						continue;
 					}
 					CurrentArgument &= ~ArgumentType.SingleToken;
-					if (CurrentArgument == ArgumentType.None) throw new DirectiveArgumentException(this, "Expected a single token value for argument " + (i + 1) + ".");
+					if (CurrentArgument == ArgumentType.None) throw new DirectiveArgumentException(this, string.Format(Strings.ErrorArgumentExpectedSingleToken, i + 1));
 				}
 
 				
@@ -242,7 +242,7 @@ namespace Brass3 {
 						Label L = this.EvaluateExpression(compiler, Arguments[i]);
 						if (!L.Created && ((BaseType & ArgumentType.ImplicitLabelCreation) == ArgumentType.ImplicitLabelCreation)) L.SetImplicitlyCreated();
 						Result[i] = L.NumericValue;
-						if (((BaseType & ArgumentType.Positive) != ArgumentType.None) && L.NumericValue < 0) throw new DirectiveArgumentException(this, "Argument " + (i + 1) + " must be positive.");
+						if (((BaseType & ArgumentType.Positive) != ArgumentType.None) && L.NumericValue < 0) throw new DirectiveArgumentException(this, string.Format(Strings.ErrorArgumentExpectedPositive, i + 1));
 						break;
 					case ArgumentType.String:
 					case ArgumentType.UnescapedString:
@@ -254,7 +254,7 @@ namespace Brass3 {
 						Result[i] = compiler.Labels[this.GetExpressionToken(Arguments[i]).Data];
 						break;
 					default:
-						throw new ArgumentException("Argument type " + types[0].ToString() + " not supported.");
+						throw new ArgumentException(string.Format(Strings.ErrorArgumentUnsupportedType, types[0].ToString()));
 				}
 			}
 

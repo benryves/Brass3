@@ -68,7 +68,7 @@ namespace Brass3 {
 			public TokenTypes Type {
 				get { return this.type; }
 				set {
-					if (TypeLocked || value != TokenTypes.Instruction) throw new CompilerExpection(this, "Type can only be set to TokenType.Instruction by assembler plugins.");
+					if (TypeLocked || value != TokenTypes.Instruction) throw new CompilerExpection(this, Strings.ErrorTokenTypeToInstruction);
 					this.type = value; 
 				}
 			}
@@ -186,7 +186,7 @@ namespace Brass3 {
 							default: throw new InvalidOperationException();
 						}
 					} else {
-						throw new CompilerExpection(this, "This token isn't an open or close bracket.");
+						throw new CompilerExpection(this, Strings.ErrorBracketExpected);
 					}
 				}
 			}

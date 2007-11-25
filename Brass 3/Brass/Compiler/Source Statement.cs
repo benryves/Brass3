@@ -169,12 +169,12 @@ namespace Brass3 {
 							compiler.labelEvaluationResult = null;
 							for (int i = 0; i < expressionStatementSplit; ++i) Source.Tokens[i].ExpressionGroup = -1;
 							Label L = Source.EvaluateExpression(compiler, -1, true, true);
-							if (L.IsConstant && mustMakeAssignment) throw new CompilerExpection(Source, "An assignment must be made.");
+							if (L.IsConstant && mustMakeAssignment) throw new CompilerExpection(Source, Strings.ErrorExpectedAssignment);
 
 							Result = compiler.labelEvaluationResult = L;
 
 							// Check for (implicit) duplicate label creation:
-							if (compiler.CurrentPass == AssemblyPass.CreatingLabels && expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], "Duplicate label '" + L.Name + "'.");
+							if (compiler.CurrentPass == AssemblyPass.CreatingLabels && expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], string.Format(Strings.ErrorLabelAlreadyDefined , L.Name));
 							L.Created = true;
 						}
 					}
@@ -185,7 +185,7 @@ namespace Brass3 {
 						if (this.type == StatementType.Directive) {
 							string DirectiveName = Source.Tokens[expressionStatementSplit].DataLowerCase.Substring(1);
 							if (!compiler.Directives.Contains(DirectiveName)) {
-								throw new CompilerExpection(source.Tokens[expressionStatementSplit], string.Format("Invalid directive '{0}'.", Source.Tokens[expressionStatementSplit].Data));
+								throw new CompilerExpection(source.Tokens[expressionStatementSplit], string.Format(Strings.ErrorDirectiveNotDeclared, Source.Tokens[expressionStatementSplit].Data));
 							}
 							IDirective Directive = compiler.Directives[DirectiveName];
 							if (compiler.IsSwitchedOn || Directive.GetType() == compiler.Reactivator) {

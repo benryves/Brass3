@@ -42,7 +42,7 @@ namespace Brass3 {
 				if (typeof(T) == typeof(IStringEncoder)) {
 					return new StringEncodingWrapper(this.Compiler, name, Encoding.GetEncoding(name)) as T;
 				} else {
-					throw new InvalidOperationException("Handler for '" + name + "' not found.");
+					throw new InvalidOperationException(string.Format(Strings.ErrorPluginNotFound, name));
 				}
 			}
 		}
@@ -54,9 +54,8 @@ namespace Brass3 {
 		public virtual void Add(T plugin) {			
 			foreach (string Name in Compiler.GetPluginNames(plugin)) {
 				if (this.Plugins.ContainsKey(Name)) {
-					//throw new InvalidOperationException("Plugin '" + Name + "' already loaded.");
 					this.Plugins.Remove(Name);
-					this.Compiler.OnWarningRaised(new Compiler.NotificationEventArgs(this.Compiler, "Plugin '" + Name + "' loaded twice."));
+					this.Compiler.OnWarningRaised(new Compiler.NotificationEventArgs(this.Compiler, string.Format(Strings.WarningPluginLoadedTwice, Name)));
 				}
 				this.Plugins.Add(Name, plugin);
 			}
@@ -197,7 +196,7 @@ namespace Brass3 {
 		/// <remarks>An alias can be used to reference a single plugin by multiple names.</remarks>
 		public void AddRuntimeAlias(T plugin, string name) {
 			name = name.ToLowerInvariant();
-			if (this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name)) throw new InvalidOperationException("Plugin '" + name + "' already loaded.");
+			if (this.Plugins.ContainsKey(name) || this.RuntimeAliases.ContainsKey(name)) throw new InvalidOperationException(string.Format(Strings.ErrorPluginAlreadyAliased, name));
 			RuntimeAliases.Add(name, plugin);
 		}
 	}

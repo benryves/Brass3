@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Reflection;
+using System.Globalization;
+using System.Threading;
 
 namespace Brass3 {
 	class Program {
@@ -11,8 +13,8 @@ namespace Brass3 {
 			Compiler C = new Compiler();
 
 
-			C.ErrorRaised += (sender, e) => DisplayError(C, e, "Error", ConsoleColor.Red);
-			C.WarningRaised += (sender, e) => DisplayError(C, e, "Warning", ConsoleColor.Yellow);
+			C.ErrorRaised += (sender, e) => DisplayError(C, e, Strings.CommandLineError, ConsoleColor.Red);
+			C.WarningRaised += (sender, e) => DisplayError(C, e, Strings.CommandLineWarning, ConsoleColor.Yellow);
 
 			C.MessageRaised += (sender, e) => Console.Write(e.Message);
 
@@ -24,12 +26,12 @@ namespace Brass3 {
 					C.LoadProject(P);
 					C.Compile(true);
 				} catch (Exception ex) {
-					Console.Error.WriteLine("Fatal error! " + ex.Message);
+					Console.Error.WriteLine(Strings.CommandLineFatalError + " " + ex.Message);
 				}
 			} else {
 
-				Console.WriteLine("Usage: Brass ProjectFile");
-				Console.WriteLine("Running in interactive calculator mode. Type exit to quit.");
+				Console.WriteLine(Strings.CommandLineSyntax);
+				Console.WriteLine(Strings.CommandLineCalculatorMode);
 				Console.WriteLine();
 
 				foreach (string s in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")) {
@@ -90,7 +92,7 @@ namespace Brass3 {
 		}
 
 		static void DisplayError(Compiler c, Compiler.NotificationEventArgs e, string errorType, ConsoleColor errorColour) {
-			Console.WriteLine(string.Format(errorType + " in {0} line {1} column {2}: {3}", string.IsNullOrEmpty(e.Filename) ? "?" : c.GetRelativeFilename(e.Filename), e.LineNumber, e.SourceToken == null ? 0 : e.SourceToken.SourcePosition - e.SourceStatement.OutermostTokenisedSource.Tokens[0].SourcePosition, e.Message));
+			Console.WriteLine(string.Format(errorType, e.Message, string.IsNullOrEmpty(e.Filename) ? "?" : c.GetRelativeFilename(e.Filename), e.LineNumber, e.SourceToken == null ? 0 : e.SourceToken.SourcePosition - e.SourceStatement.OutermostTokenisedSource.Tokens[0].SourcePosition));
 			if (e.SourceStatement != null) {
 				Console.WriteLine(e.SourceStatement.OutermostTokenisedSource.ToString().Trim());
 			}

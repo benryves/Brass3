@@ -138,8 +138,8 @@ namespace Brass3 {
 		/// <param name="names">Array of aliased names.</param>
 		public DataStructure(string[] names) {
 			this.fields = new List<Field>(8);
-			if (names == null) throw new ArgumentNullException("You must specify a name.");
-			if (names.Length == 0) throw new ArgumentException("You must specify a name.");
+			if (names == null) throw new ArgumentNullException(Strings.ErrorUnspecifiedName);
+			if (names.Length == 0) throw new ArgumentException(Strings.ErrorUnspecifiedName);
 			this.names = names;
 
 		}
@@ -171,7 +171,7 @@ namespace Brass3 {
 				foreach (Field F in this.fields) {
 					if (F.Name.ToLowerInvariant() == SearchName) return F;
 				}
-				throw new IndexOutOfRangeException("Field '" + fieldName + "' not defined.");
+				throw new IndexOutOfRangeException(string.Format(Strings.ErrorFieldNotDeclared, fieldName));
 			}
 		}
 

@@ -115,7 +115,7 @@ namespace Brass3 {
 			get {
 				Label Label;
 				if (TryGetByName(name, out Label)) return Label;
-				throw new InvalidOperationException(string.Format("Label '{0}' not found.", name));
+				throw new InvalidOperationException(string.Format(Strings.ErrorLabelNotFound, name));
 			}
 		}
 
@@ -139,12 +139,12 @@ namespace Brass3 {
 		public Label CreateReusable(string reusable) {
 
 			// Check there is *some* sort of name being passed.
-			if (string.IsNullOrEmpty(reusable)) throw new ArgumentException("No name specified.");
+			if (string.IsNullOrEmpty(reusable)) throw new ArgumentException(Strings.ErrorUnspecifiedName);
 
 			// Verify that each character in the name is the same.
 			char Class = reusable[0];
 			foreach (char c in reusable) {
-				if (c != Class) throw new ArgumentException("Invalid reusable label name.");				
+				if (c != Class) throw new ArgumentException(Strings.ErrorLabelReusableInvalidName);				
 			}
 
 			// Grab the dictionary to store the label in.
@@ -158,7 +158,7 @@ namespace Brass3 {
 					ReusableDictionary = this.ReusableForwards;
 					break;
 				default:
-					throw new ArgumentException(string.Format("'{0}' is not a valid reusable label class.", Class));
+					throw new ArgumentException(string.Format(Strings.ErrorLabelReusableInvalidClass, Class));
 			}
 
 			// Add!
@@ -171,7 +171,7 @@ namespace Brass3 {
 			}
 
 			// Sanity check;
-			if (Reusables.ContainsKey(this.Compiler.CompiledStatements)) throw new InvalidOperationException("A reusable label already exists at this position.");
+			if (Reusables.ContainsKey(this.Compiler.CompiledStatements)) throw new InvalidOperationException(Strings.ErrorLabelReusableAlreadyExistsAtPosition);
 
 			// Create, add, and return the new label.
 			Label CreatedLabel = this.ImplicitCreationDefault.Clone() as Label;
@@ -204,10 +204,10 @@ namespace Brass3 {
 			Label L;
 			if (this.TryParse(name, out L)) {
 				if (L.IsConstant) {
-					throw new LabelExpection(name, "Invalid name '" + name.Data + "' (looks like a number).");
+					throw new LabelExpection(name, string.Format(Strings.ErrorLabelInvalidNameNumber, name.Data));
 				} else {
 					if (this.Lookup.ContainsKey(name.DataLowerCase)) {
-						throw new LabelExpection(name, "Label '" + name.Data + "' already defined.");
+						throw new LabelExpection(name, string.Format(Strings.ErrorLabelAlreadyDefined, name.Data));
 					}
 				}
 			}
@@ -233,7 +233,7 @@ namespace Brass3 {
 		/// <param name="label">The label to add.</param>
 		public void Add(Label label) {
 			string SearchName = label.Name.ToLowerInvariant();
-			if (this.Lookup.ContainsKey(SearchName)) throw new LabelExpection(label.Token, "Label '" + label.Name + "' already created.");
+			if (this.Lookup.ContainsKey(SearchName)) throw new LabelExpection(label.Token, string.Format(Strings.ErrorLabelAlreadyDefined, label.Name));
 			this.Lookup.Add(SearchName, label);
 		}
 
@@ -243,7 +243,8 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="label">The label to remove.</param>
 		public void Remove(Label label) {
-			if (label == this.programCounter) throw new InvalidOperationException("You cannot remove the predefined program counter label.");
+			if (label == this.programCounter) throw new InvalidOperationException(Strings.ErrorLabelCannotRemoveProgramCounter);
+			if (label == this.outputCounter) throw new InvalidOperationException(Strings.ErrorLabelCannotRemoveOutputCounter);
 			this.Lookup.Remove(label.Name.ToLowerInvariant());
 		}
 
@@ -423,7 +424,7 @@ namespace Brass3 {
 		public Label Parse(TokenisedSource.Token value) {
 			Label Result;
 			if (this.TryParse(value, out Result)) return Result;
-			throw new ParseErrorExpection(value, "Could not parse '" + value.Data + "'.");
+			throw new ParseErrorExpection(value, string.Format(Strings.ErrorLabelCannotParse, value.Data));
 		}
 
 
@@ -451,7 +452,7 @@ namespace Brass3 {
 					Shift = 4;
 					break;
 				default:
-					throw new InvalidOperationException("Must be base 2, 8 or 16.");
+					throw new InvalidOperationException(Strings.ErrorBaseMustByTwoEightSixteen);
 			}
 
 			string BaseChars = "0123456789abcdef";
@@ -553,7 +554,7 @@ namespace Brass3 {
 		/// <param name="path">The module path to get the parent of.</param>
 		public static string ModuleGetParent(string path) {
 			string[] ModulePath = path.Split('.');
-			if (ModulePath.Length == 0) throw new ArgumentException("Already at the top module level.");
+			if (ModulePath.Length == 0) throw new ArgumentException(Strings.ErrorModuleAlreadyAtTopLevel);
 			Array.Resize<string>(ref ModulePath, ModulePath.Length - 1);
 			return string.Join(".", ModulePath);
 		}

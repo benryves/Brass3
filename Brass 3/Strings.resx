@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CommandLineCalculatorMode" xml:space="preserve">
+    <value>Running in interactive calculator mode. Type exit to quit.</value>
+  </data>
+  <data name="CommandLineError" xml:space="preserve">
+    <value>Error in {1} line {2} column {3}: {0}</value>
+    <comment>0 = Error text, 1 = File, 2 = Line, 3 = Column.</comment>
+  </data>
+  <data name="CommandLineFatalError" xml:space="preserve">
+    <value>Fatal Error.</value>
+  </data>
+  <data name="CommandLineSyntax" xml:space="preserve">
+    <value>Usage: Brass ProjectFile</value>
+  </data>
+  <data name="CommandLineWarning" xml:space="preserve">
+    <value>Warning in {1} line {2} column {3}: {0}</value>
+    <comment>0 = Error text, 1 = File, 2 = Line, 3 = Column.</comment>
+  </data>
+  <data name="ErrorArgumentCountMismatch" xml:space="preserve">
+    <value>Expected {0} argument(s).</value>
+  </data>
+  <data name="ErrorArgumentCountMismatchEndlessRange" xml:space="preserve">
+    <value>Expected {0} or more arguments.</value>
+  </data>
+  <data name="ErrorArgumentCountMismatchRange" xml:space="preserve">
+    <value>Expected {0} to {1} argument(s).</value>
+  </data>
+  <data name="ErrorArgumentExpectedPositive" xml:space="preserve">
+    <value>Argument {0} must be positive.</value>
+  </data>
+  <data name="ErrorArgumentExpectedSingleToken" xml:space="preserve">
+    <value>Expected a single token value for argument {0}.</value>
+  </data>
+  <data name="ErrorArgumentExpectedSingleTokenAndIndex" xml:space="preserve">
+    <value>Couldn't extract a single token and index.</value>
+  </data>
+  <data name="ErrorArgumentOptionalNotLast" xml:space="preserve">
+    <value>Argument types cannot have mandatory arguments following optional arguments</value>
+  </data>
+  <data name="ErrorArgumentRepeatForeverNotLast" xml:space="preserve">
+    <value>RepeatForever can only apply to the last argument.</value>
+  </data>
+  <data name="ErrorArgumentUnsupportedType" xml:space="preserve">
+    <value>Argument type {0} not supported.</value>
+  </data>
+  <data name="ErrorAssemblerNotSet" xml:space="preserve">
+    <value>No assembler set.</value>
+  </data>
+  <data name="ErrorAssemblerNotSetAssumeDefault" xml:space="preserve">
+    <value>Assembler not explicitly set, so assuming {0}.</value>
+  </data>
+  <data name="ErrorAutomaticStringEncoderIsMultibyte" xml:space="preserve">
+    <value>Automatically wrapped encodings must be single-byte only.</value>
+  </data>
+  <data name="ErrorBaseMustByTwoEightSixteen" xml:space="preserve">
+    <value>Must be base 2, 8 or 16.</value>
+  </data>
+  <data name="ErrorBracketExpected" xml:space="preserve">
+    <value>This token isn't an open or close bracket.</value>
+  </data>
+  <data name="ErrorBracketMismatch" xml:space="preserve">
+    <value>Brackets don't match.</value>
+  </data>
+  <data name="ErrorBracketNotClosed" xml:space="preserve">
+    <value>Matching closing bracket not found.</value>
+  </data>
+  <data name="ErrorBracketStartIndexOutOfBounds" xml:space="preserve">
+    <value>Invalid starting bracket index.</value>
+  </data>
+  <data name="ErrorCancellingBuild" xml:space="preserve">
+    <value>{0} error(s) found: Cancelling build.</value>
+  </data>
+  <data name="ErrorDirectiveNotDeclared" xml:space="preserve">
+    <value>Invalid directive '{0}'.</value>
+  </data>
+  <data name="ErrorEnvironmentNotSetTemplates" xml:space="preserve">
+    <value>Environment variable Brass.Templates not set.</value>
+  </data>
+  <data name="ErrorEvaluationAccessorLabelNotFound" xml:space="preserve">
+    <value>No label found for label access operator.</value>
+  </data>
+  <data name="ErrorEvaluationAssignmentsNotPermitted" xml:space="preserve">
+    <value>You cannot perform assignments in this expression.</value>
+  </data>
+  <data name="ErrorEvaluationExpectedFieldAccess" xml:space="preserve">
+    <value>Expected field access.</value>
+  </data>
+  <data name="ErrorEvaluationExpectedOperandAfterOperator" xml:space="preserve">
+    <value>Expected operand after operator.</value>
+  </data>
+  <data name="ErrorEvaluationExpectedOperandBeforeOperator" xml:space="preserve">
+    <value>Expected operand before operator.</value>
+  </data>
+  <data name="ErrorEvaluationFunctionNotDeclared" xml:space="preserve">
+    <value>Function '{0}' not declared.</value>
+  </data>
+  <data name="ErrorEvaluationMissingConditionalOperator" xml:space="preserve">
+    <value>Missing matching conditional operator '?'.</value>
+  </data>
+  <data name="ErrorEvaluationNoSingleResult" xml:space="preserve">
+    <value>Syntax error.</value>
+    <comment>At the end of evaluation, there should only be one label left.</comment>
+  </data>
+  <data name="ErrorEvaluationNothingToEvaluate" xml:space="preserve">
+    <value>Nothing to evaluate.</value>
+  </data>
+  <data name="ErrorEvaluationOperandsUnsupported" xml:space="preserve">
+    <value>{0} operands unsupported.</value>
+    <comment>Unary and binary operators are supported. This is likely to never appear.</comment>
+  </data>
+  <data name="ErrorEvaluationTypeInformationMissing" xml:space="preserve">
+    <value>Couldn't get type information.</value>
+  </data>
+  <data name="ErrorExpectedAssignment" xml:space="preserve">
+    <value>An assignment must be made.</value>
+  </data>
+  <data name="ErrorFieldNotDeclared" xml:space="preserve">
+    <value>Field '{0}' not defined.</value>
+  </data>
+  <data name="ErrorFlowControlDisabled" xml:space="preserve">
+    <value>Flow control has been temporarily disabled.</value>
+  </data>
+  <data name="ErrorLabelAlreadyDefined" xml:space="preserve">
+    <value>Duplicate label '{0}'.</value>
+  </data>
+  <data name="ErrorLabelCannotParse" xml:space="preserve">
+    <value>Could not parse '{0}'.</value>
+  </data>
+  <data name="ErrorLabelCannotRemoveOutputCounter" xml:space="preserve">
+    <value>You cannot remove the predefined output counter label.</value>
+  </data>
+  <data name="ErrorLabelCannotRemoveProgramCounter" xml:space="preserve">
+    <value>You cannot remove the predefined program counter label.</value>
+  </data>
+  <data name="ErrorLabelInvalidNameNumber" xml:space="preserve">
+    <value>Invalid name '{0}' (looks like a number).</value>
+  </data>
+  <data name="ErrorLabelIsConstant" xml:space="preserve">
+    <value>Label '{0}' is constant and cannot be assigned to.</value>
+  </data>
+  <data name="ErrorLabelNotFound" xml:space="preserve">
+    <value>Label '{0}' not found.</value>
+  </data>
+  <data name="ErrorLabelPageNotFound" xml:space="preserve">
+    <value>Page value for label '{0}' not found.</value>
+  </data>
+  <data name="ErrorLabelReusableAlreadyExistsAtPosition" xml:space="preserve">
+    <value>A reusable label already exists at this position.</value>
+  </data>
+  <data name="ErrorLabelReusableInvalidClass" xml:space="preserve">
+    <value>'{0}' is not a valid reusable label class.</value>
+    <comment>'+' and '-' are the valid classes.</comment>
+  </data>
+  <data name="ErrorLabelReusableInvalidName" xml:space="preserve">
+    <value>Invalid reusable label name.</value>
+  </data>
+  <data name="ErrorLabelReusableNotFound" xml:space="preserve">
+    <value>Couldn't get value for reusable label '{0}'.</value>
+  </data>
+  <data name="ErrorMacroAlreadyDefined" xml:space="preserve">
+    <value>Macro {0} already defined.</value>
+  </data>
+  <data name="ErrorModuleAlreadyAtTopLevel" xml:space="preserve">
+    <value>Already at the top module level.</value>
+  </data>
+  <data name="ErrorOnlyLoadDuringInitialPass" xml:space="preserve">
+    <value>You can only load and compile a file during the initial pass.</value>
+  </data>
+  <data name="ErrorOutputFilenameNotSet" xml:space="preserve">
+    <value>Output filename not specified.</value>
+  </data>
+  <data name="ErrorPluginAlreadyAliased" xml:space="preserve">
+    <value>Plugin '{0}' already loaded.</value>
+  </data>
+  <data name="ErrorPluginNotFound" xml:space="preserve">
+    <value>Plugin '{0}' not found.</value>
+  </data>
+  <data name="ErrorProjectInvalidBuildConfigurationComponent" xml:space="preserve">
+    <value>Invalid build configuration component '{0}'.</value>
+  </data>
+  <data name="ErrorProjectTemplateNotFound" xml:space="preserve">
+    <value>Could not load template {0}.</value>
+  </data>
+  <data name="ErrorTokenTypeToInstruction" xml:space="preserve">
+    <value>Type can only be set to TokenType.Instruction by assembler plugins.</value>
+  </data>
+  <data name="ErrorUnspecifiedName" xml:space="preserve">
+    <value>No name specified.</value>
+  </data>
+  <data name="WarningPluginLoadedTwice" xml:space="preserve">
+    <value>Plugin '{0}' loaded twice.</value>
+  </data>
+</root>

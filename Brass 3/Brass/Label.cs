@@ -186,7 +186,7 @@ namespace Brass3 {
 				if (AccessingPage) {
 					return this.Page;
 				} else {
-					if (!this.Created) throw new LabelNotFoundExpection(this.Token, "Value for label '" + this.Name + "' not found.");
+					if (!this.Created) throw new LabelNotFoundExpection(this.Token, string.Format(Strings.ErrorLabelNotFound, this.Name));
 					if (this.IsString) {
 						byte[] Data = this.collection.Compiler.StringEncoder.GetData(this.StringValue);
 						double ParsedValue = 0;
@@ -206,7 +206,7 @@ namespace Brass3 {
 					this.Page = (int)value;
 					this.OnValueChanged(new ValueChangedEventArgs(ValueChangedEventArgs.FieldChangedType.Page, Old, this.page));
 				} else {
-					if (this.IsConstant) throw new LabelExpection(this.token, "'" + this.Name + "' is a constant and cannot be assigned to.");
+					if (this.IsConstant) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
 					this.lastAssignedPass = this.collection.Compiler.CurrentPass;
 					if (this.created) ++ChangeCount;
 					this.created = true;
@@ -224,11 +224,11 @@ namespace Brass3 {
 		/// </summary>
 		public int Page {
 			get {
-				if (!this.Created) throw new LabelExpection(this.token, "Page value for label '" + this.Name + "' not found.");
+				if (!this.Created) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelPageNotFound, this.Name));
 				return this.page;
 			}
 			set {
-				if (this.IsConstant) throw new LabelExpection(this.token, "'" + this.Name + "' is a constant and cannot be assigned to.");
+				if (this.IsConstant) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
 				this.lastAssignedPass = this.collection.Compiler.CurrentPass;
 				this.created = true;
 				this.page = value;

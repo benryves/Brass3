@@ -101,7 +101,7 @@ namespace Brass3 {
 		public LinkedListNode<SourceStatement> NextStatementToCompile {
 			get { return this.nextStatementToCompile; }
 			set {
-				if (!this.AllowPositionToChange) throw new InvalidOperationException("Flow control has been temporarily disabled."); 
+				if (!this.AllowPositionToChange) throw new InvalidOperationException(Strings.ErrorFlowControlDisabled); 
 				this.nextStatementToCompile = value;
 			}
 		}
@@ -146,7 +146,7 @@ namespace Brass3 {
 		/// <param name="function">The macro replacement to perform.</param>
 		public void RegisterMacro(string name, PreprocessMacro function) {
 			string Name = name.ToLowerInvariant();
-			if (this.MacroLookup.ContainsKey(Name)) throw new InvalidOperationException("Macro " + name + " already defined.");
+			if (this.MacroLookup.ContainsKey(Name)) throw new InvalidOperationException(string.Format(Strings.ErrorMacroAlreadyDefined, name));
 			this.MacroLookup.Add(Name, function);
 		}
 
@@ -177,9 +177,9 @@ namespace Brass3 {
 					if (this.assemblers.Count == 1) {
 
 						this.assembler = this.assemblers.GetEnumerator().Current;
-						this.OnWarningRaised(new NotificationEventArgs(this, "Assembler not explicitly set, so assuming " + Compiler.GetPluginName(this.assembler) + "."));
+						this.OnWarningRaised(new NotificationEventArgs(this, string.Format(Strings.ErrorAssemblerNotSetAssumeDefault, Compiler.GetPluginName(this.assembler))));
 					} else {
-						this.OnErrorRaised(new NotificationEventArgs(this, "No assembler set."));
+						this.OnErrorRaised(new NotificationEventArgs(this, Strings.ErrorAssemblerNotSet));
 						return false;
 					}
 				}
@@ -210,7 +210,7 @@ namespace Brass3 {
 				foreach (Label L in ToRemove) this.labels.Remove(L);
 
 				if (this.allErrors.Count > 0) {
-					this.OnErrorRaised(new NotificationEventArgs(this, string.Format("{0} error{1} found: Cancelling build.", allErrors.Count, allErrors.Count == 1 ? "" : "s")));
+					this.OnErrorRaised(new NotificationEventArgs(this, string.Format(Strings.ErrorCancellingBuild, allErrors.Count)));
 					return false; // An error!
 				}
 
@@ -222,7 +222,7 @@ namespace Brass3 {
 				this.OnPassEnded(new EventArgs());
 
 				if (this.allErrors.Count > 0) {
-					this.OnErrorRaised(new NotificationEventArgs(this, string.Format("{0} error{1} found: Cancelling build.", allErrors.Count, allErrors.Count == 1 ? "" : "s")));
+					this.OnErrorRaised(new NotificationEventArgs(this,string.Format(Strings.ErrorCancellingBuild, allErrors.Count)));
 					return false; // An error!
 				}
 
@@ -239,7 +239,7 @@ namespace Brass3 {
 						Filename = Path.Combine(Path.GetDirectoryName(Basename), Path.GetFileNameWithoutExtension(Basename) + "." + this.OutputWriter.DefaultExtension);
 					}
 					if (string.IsNullOrEmpty(Filename)) {
-						this.OnErrorRaised(new NotificationEventArgs(this, "Output filename not specified."));
+						this.OnErrorRaised(new NotificationEventArgs(this, Strings.ErrorOutputFilenameNotSet));
 					} else {
 						using (FileStream OutputStream = new FileStream(Filename, FileMode.Create)) {
 							this.OutputWriter.WriteOutput(this, OutputStream);
@@ -266,7 +266,7 @@ namespace Brass3 {
 		/// <param name="filename">The filename associated with a stream.</param>
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileStream(Stream stream, string filename) {
-			if (this.currentPass == AssemblyPass.WritingOutput) throw new InvalidOperationException("You can only load and compile a file during the initial pass.");
+			if (this.currentPass == AssemblyPass.WritingOutput) throw new InvalidOperationException(Strings.ErrorOnlyLoadDuringInitialPass);
 
 			using (AssemblyReader AR = new AssemblyReader(this, stream)) {
 

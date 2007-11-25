@@ -433,7 +433,7 @@ namespace Brass3 {
 							}
 
 							if (!LoadedTemplate) {
-								throw new FileNotFoundException(string.Format("Could not load template {0}{1}.", CurrentAttribute.Value, string.IsNullOrEmpty(TemplateDirectory) ?  " (environment variable Brass.Templates not set)" : ""));
+								throw new FileNotFoundException(string.Format(Strings.ErrorProjectTemplateNotFound, CurrentAttribute.Value) + (string.IsNullOrEmpty(TemplateDirectory) ? (" " + Strings.ErrorEnvironmentNotSetTemplates) : ""));
 							}
 					}
 				}
@@ -625,7 +625,7 @@ namespace Brass3 {
 			Project CurrentConfiguration = this;
 			foreach (string Component in configuration.Split('.')) {
 				string Hash = Component.ToLowerInvariant();
-				if (!CurrentConfiguration.BuildConfigurations.ContainsKey(Hash)) throw new InvalidOperationException(string.Format("Invalid build configuration component '{0}'.", Component));
+				if (!CurrentConfiguration.BuildConfigurations.ContainsKey(Hash)) throw new InvalidOperationException(string.Format(Strings.ErrorProjectInvalidBuildConfigurationComponent, Component));
 				Result = Merge(Result, CurrentConfiguration.BuildConfigurations[Hash]);
 				CurrentConfiguration = CurrentConfiguration.BuildConfigurations[Hash];
 			}
