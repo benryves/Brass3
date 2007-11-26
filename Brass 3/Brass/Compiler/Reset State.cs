@@ -25,6 +25,7 @@ namespace Brass3 {
 			this.labels.ProgramCounter.Page = 0;
 			this.labels.OutputCounter.NumericValue = 0;
 			this.labels.OutputCounter.Page = 0;
+			this.labels.CurrentModule = "";
 
 			this.labels.ImplicitCreationDefault = this.labels.ProgramCounter;
 			this.labels.ExportLabels = true;
