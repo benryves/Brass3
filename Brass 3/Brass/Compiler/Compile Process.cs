@@ -175,8 +175,9 @@ namespace Brass3 {
 				// Set the assembler:
 				if (this.assembler == null) {
 					if (this.assemblers.Count == 1) {
-
-						this.assembler = this.assemblers.GetEnumerator().Current;
+						IEnumerator<IAssembler> IEA=assemblers.GetEnumerator();
+						IEA.MoveNext();
+						this.assembler = IEA.Current;
 						this.OnWarningRaised(new NotificationEventArgs(this, string.Format(Strings.ErrorAssemblerNotSetAssumeDefault, Compiler.GetPluginName(this.assembler))));
 					} else {
 						this.OnErrorRaised(new NotificationEventArgs(this, Strings.ErrorAssemblerNotSet));
