@@ -262,6 +262,9 @@ namespace Brass3 {
 		/// <returns>True if the string was parsed successfully, false otherwise.</returns>
 		public bool TryParse(TokenisedSource.Token token, out Label result) {
 
+			// Handle $ and @:
+			if (token.Data == "$") { result = this.programCounter; return true; }
+			if (token.Data == "@") { result = this.outputCounter; return true; }
 
 			double ParsedValue = double.NaN;
 
@@ -345,6 +348,7 @@ namespace Brass3 {
 						return true;
 					}
 				}*/
+
 
 				if (this.TryGetByName(ModuleCombine(this.currentModule, token.Data), out result)) {
 					return true;
