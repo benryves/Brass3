@@ -123,7 +123,7 @@ namespace Brass3 {
 		private bool TryGetByName(string name, out Label label) {
 			string CheckModule = this.CurrentModule;
 			bool Found = false;
-			while (!(Found = this.Lookup.TryGetValue(ModuleCombine(CheckModule, name).ToLowerInvariant(), out label)) && !string.IsNullOrEmpty(CheckModule)) {
+			while (!((Found = this.Lookup.TryGetValue(ModuleCombine(CheckModule, name).ToLowerInvariant(), out label)) && label != null && label.Created)  && !string.IsNullOrEmpty(CheckModule)) {
 				CheckModule = ModuleGetParent(CheckModule);
 			}
 			return Found;
