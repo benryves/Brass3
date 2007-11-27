@@ -394,6 +394,15 @@ namespace Brass3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected a single token..
+        /// </summary>
+        internal static string ErrorExpectedSingleToken {
+            get {
+                return ResourceManager.GetString("ErrorExpectedSingleToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Field &apos;{0}&apos; not defined..
         /// </summary>
         internal static string ErrorFieldNotDeclared {

@@ -232,6 +232,9 @@
   <data name="ErrorExpectedAssignment" xml:space="preserve">
     <value>An assignment must be made.</value>
   </data>
+  <data name="ErrorExpectedSingleToken" xml:space="preserve">
+    <value>Expected a single token.</value>
+  </data>
   <data name="ErrorFieldNotDeclared" xml:space="preserve">
     <value>Field '{0}' not defined.</value>
   </data>
