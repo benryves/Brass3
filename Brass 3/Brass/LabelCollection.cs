@@ -201,19 +201,21 @@ namespace Brass3 {
 			// Get the name and name only.
 			string LabelName = name.Data;
 
+			// Get the full label path name:
+			string FullName = ModuleCombine(this.CurrentModule, LabelName);
+
 			Label L;
-			if (this.TryParse(name, out L)) {
+			if (this.TryParse(new TokenisedSource.Token(FullName), out L)) {
 				if (L.IsConstant) {
 					throw new LabelExpection(name, string.Format(Strings.ErrorLabelInvalidNameNumber, name.Data));
 				} else {
-					if (this.Lookup.ContainsKey(name.DataLowerCase)) {
+					if (this.Lookup.ContainsKey(FullName.ToLowerInvariant())) {
 						throw new LabelExpection(name, string.Format(Strings.ErrorLabelAlreadyDefined, name.Data));
 					}
 				}
 			}
 
-			// Get the full label path name:
-			string FullName = ModuleCombine(this.CurrentModule, LabelName);
+
 
 
 			// Clone and create;
@@ -344,10 +346,8 @@ namespace Brass3 {
 					}
 				}*/
 
-				foreach (string AttemptLookup in this.ResolveLabelName(token.Data)) {
-					if (this.TryGetByName(AttemptLookup, out result)) {
-						return true;
-					}
+				if (this.TryGetByName(ModuleCombine(this.currentModule, token.Data), out result)) {
+					return true;
 				}
 
 
@@ -401,20 +401,6 @@ namespace Brass3 {
 			return true;
 		}
 
-
-		/// <summary>
-		/// Gets an array of strings of the resolved label name.
-		/// </summary>
-		/// <param name="source">The source name. This can be any suspected label name, including colon prefix/suffix and module access.</param>
-		public string[] ResolveLabelName(string source) {
-			List<string> Result = new List<string>();
-
-			string OriginalName = source;
-			Result.Add(ModuleCombine(this.CurrentModule, OriginalName));
-			Result.Add(OriginalName);
-
-			return Result.ToArray();
-		}
 
 		/// <summary>
 		/// Parse a string into a label.
@@ -540,6 +526,8 @@ namespace Brass3 {
 			for (int i = 0; i < ModuleComponents.Length; ++i) {
 				if (ModuleComponents[i].ToLowerInvariant() == "parent") {
 					Result.RemoveAt(Result.Count - 1);
+				} else if (ModuleComponents[i].ToLowerInvariant() == "global") {
+					Result.Clear();
 				} else {
 					Result.Add(ModuleComponents[i]);
 				}
@@ -579,6 +567,19 @@ namespace Brass3 {
 			Label L;
 			if (this.TryGetByName(name, out L)) return L.Name;
 			return ModuleCombine(this.CurrentModule, name);
+		}
+
+		/// <summary>
+		/// Returns true if a label is in the current module.
+		/// </summary>
+		/// <param name="label">The label to check.</param>
+		/// <returns>True if the label is in the current module, false otherwise.</returns>
+		public bool LabelIsInCurrentModule(Label label) {
+			if (label.Name.IndexOf('.') == -1) {
+				return string.IsNullOrEmpty(this.currentModule);
+			} else {
+				return ModuleGetParent(label.Name).ToLowerInvariant() == this.currentModule.ToLowerInvariant();
+			}
 		}
 
 	}
