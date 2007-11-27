@@ -34,6 +34,7 @@ namespace Brass3 {
 				Console.WriteLine(Strings.CommandLineCalculatorMode);
 				Console.WriteLine();
 
+
 				foreach (string s in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")) {
 					try {
 						C.LoadPluginsFromAssembly(s);
