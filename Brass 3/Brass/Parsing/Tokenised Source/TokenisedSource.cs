@@ -117,7 +117,7 @@ namespace Brass3 {
 		public TokenisedSource.Token GetExpressionToken(int index) {
 			TokenisedSource Source = this.GetExpressionTokens(index);
 			if (Source.Tokens.Length == 1) return Source.Tokens[0];
-			throw new CompilerExpection(Source, Strings.ErrorArgumentExpectedSingleToken);
+			throw new CompilerExpection(Source, Strings.ErrorExpectedSingleToken);
 		}
 
 		/// <summary>
