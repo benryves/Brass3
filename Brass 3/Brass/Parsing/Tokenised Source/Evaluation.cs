@@ -13,6 +13,13 @@ namespace Brass3 {
 		/// Class used to reference labels.
 		/// </summary>
 		private class LabelAccessor : ICloneable {
+
+			private bool resolved = true;
+			public bool Resolved {
+				get { return this.resolved; }
+				set { this.resolved = value; }
+			}
+
 			private Label label;
 			/// <summary>
 			/// Gets or sets the label being referenced.
@@ -42,7 +49,14 @@ namespace Brass3 {
 				Label L = label.Clone() as Label;
 				LabelAccessor LA = new LabelAccessor(L);
 				LA.AccessesPage = this.AccessesPage;
+				LA.Resolved = this.Resolved;
 				return LA;
+			}
+
+			public bool ForceResolve() {
+				if (this.Resolved) return true;
+				this.Resolved = this.label.Collection.TryParse(new Token("global." + this.label.Token.Data), out this.label) && this.label.Created;
+				return this.Resolved;
 			}
 		}
 
@@ -160,7 +174,8 @@ namespace Brass3 {
 				return true;
 			}
 
-			List<Label> TempLabels = new List<Label>();
+			var TempLabels = new List<LabelAccessor>();
+			var TempLabelsToDelete = new List<Label>();
 
 			if (this.tokens.Length == 0) {
 				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, Strings.ErrorEvaluationNothingToEvaluate);
@@ -276,14 +291,21 @@ namespace Brass3 {
 						} else {
 
 							Label ToEvaluate;
-							if (!compiler.Labels.TryParse(T, out ToEvaluate)) {
+							LabelAccessor WrappedAccessor;
+							bool Resolved;
+							if (!(Resolved = compiler.Labels.TryParse(T, out ToEvaluate))) {
 								// Create a temporary label:
 								ToEvaluate = compiler.Labels.Create(T);
 								ToEvaluate.ChangeCount = -1;
 								ToEvaluate.Created = false;
-								TempLabels.Add(ToEvaluate);
+								TempLabelsToDelete.Add(ToEvaluate);
+							} else {
+								Resolved = ToEvaluate.Created;
 							}
-							LabelsToEvaluate.AddLast(new LabelAccessor(ToEvaluate));
+							WrappedAccessor = new LabelAccessor(ToEvaluate);
+							WrappedAccessor.Resolved = Resolved;
+							LabelsToEvaluate.AddLast(WrappedAccessor);
+							if (!Resolved) TempLabels.Add(WrappedAccessor);
 						}
 					}
 
@@ -326,7 +348,10 @@ namespace Brass3 {
 								LabelAccessor Op = O.ExpressionPosition.Next.Value;
 								LabelAccessor Result = Op;
 
-								if (!O.IsAssignment) {
+								
+								if (O.IsAssignment) {
+									Result.Label.Created = true;
+								} else {
 									
 									try {
 										Result = (LabelAccessor)Result.Clone();
@@ -337,10 +362,7 @@ namespace Brass3 {
 
 									O.ExpressionPosition.List.AddAfter(O.ExpressionPosition.Next, Result);
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
-								} else {
-									Result.Label.Created = true;
 								}
-
 								switch (O.Type) {
 									case Operator.OperatorType.UnaryAddition:
 										break;
@@ -609,13 +631,13 @@ namespace Brass3 {
 				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, Strings.ErrorEvaluationNoSingleResult);
 			} else {
 				if (!canCreateImplicitLabels) {
-					foreach (Label L in TempLabels) {
-						if (!L.Created) {
-							string Error = string.Format(Strings.ErrorLabelNotFound, L.Name);
-							if (L.Token == null) {
+					foreach (var L in TempLabels) {
+						if (!L.ForceResolve()) {
+							string Error = string.Format(Strings.ErrorLabelNotFound, L.Label.Name);
+							if (L.Label.Token == null) {
 								reasonForFailure = new InvalidExpressionSyntaxExpection(this, Error);
 							} else {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(L.Token, Error);
+								reasonForFailure = new InvalidExpressionSyntaxExpection(L.Label.Token, Error);
 							}
 						}
 					}
@@ -623,7 +645,7 @@ namespace Brass3 {
 			}
 
 			if (reasonForFailure != null) {
-				foreach (Label L in TempLabels) {
+				foreach (var L in TempLabelsToDelete) {
 					compiler.Labels.Remove(L);
 				}
 				return false;
