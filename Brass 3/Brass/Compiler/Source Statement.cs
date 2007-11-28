@@ -136,6 +136,7 @@ namespace Brass3 {
 			#endregion
 
 
+
 			/// <summary>
 			/// Compiles the statement.
 			/// </summary>
@@ -148,6 +149,14 @@ namespace Brass3 {
 			/// </summary>
 			/// <param name="mustMakeAssignment">True if an assignment must be made; false otherwise.</param>
 			public Label Compile(bool mustMakeAssignment) {
+
+				if (this.compiler.currentPass == AssemblyPass.CreatingLabels) {
+					this.compiler.CompileOrder.Enqueue(this.index);
+				} else {
+					if (this.compiler.CompileOrder.Count == 0 || this.compiler.CompileOrder.Dequeue() != this.index) {
+						throw new CompilerExpection(this.source, Strings.ErrorCompilerFollowsDifferentPath);
+					}
+				}
 
 				//Console.WriteLine("{0}:={1}", this.compiler.currentPass, this.ToString());
 				
@@ -237,7 +246,7 @@ namespace Brass3 {
 				this.source = source;
 				this.sourceFile = filename;
 				this.lineNumber = lineNumber;
-
+				
 				this.writtenToListFile = compiler.writingToListFile;
 
 				// Now, we have (potentially) two parts:  [label] [directive | assembly code]

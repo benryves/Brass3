@@ -14,6 +14,8 @@ namespace Brass3 {
 		private Dictionary<int, Dictionary<int, Label>> ReusableBackwards;
 		private Dictionary<int, Dictionary<int, Label>> ReusableForwards;
 
+		private int MaxReusableIndex;
+
 		#region Properties
 
 		private string currentModule;
@@ -176,6 +178,7 @@ namespace Brass3 {
 			// Create, add, and return the new label.
 			Label CreatedLabel = this.ImplicitCreationDefault.Clone() as Label;
 			Reusables.Add(this.Compiler.CompiledStatements, CreatedLabel);
+			this.MaxReusableIndex = Math.Max(this.MaxReusableIndex, this.Compiler.CompiledStatements);
 			CreatedLabel.Name = "{" + reusable + "}";
 			return CreatedLabel;
 		}
@@ -254,6 +257,7 @@ namespace Brass3 {
 
 		#region Parsing
 
+
 		/// <summary>
 		/// Try and parse a string into a label.
 		/// </summary>
@@ -299,14 +303,14 @@ namespace Brass3 {
 						Dictionary<int, Dictionary<int, Label>> ReusableClassDictionary;
 
 						int Step;
-						int Start = Compiler.CompiledStatements;
+						int Start = compiler.CompiledStatements;
 						int End;
 
 						switch (ReusableClass) {
 							case '+':
 								ReusableClassDictionary = this.ReusableForwards;
 								Step = +1;
-								End = Compiler.Statements.Length + 1;
+								End = this.MaxReusableIndex + 1;
 								break;
 							case '-':
 								ReusableClassDictionary = this.ReusableBackwards;
@@ -316,6 +320,9 @@ namespace Brass3 {
 							default:
 								throw new Exception(); // ?!
 						}
+
+						// Check that we're going to move the correct way through the source.
+						if (Math.Sign(End - Start) != Step) return false;
 
 						Dictionary<int, Label> ReusableOffsetDictionary;
 						if (!ReusableClassDictionary.TryGetValue(ReusableName.Length, out ReusableOffsetDictionary)) {

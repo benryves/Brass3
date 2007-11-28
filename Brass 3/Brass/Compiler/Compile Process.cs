@@ -133,6 +133,21 @@ namespace Brass3 {
 			get { return this.compiledStatements; }
 		}
 
+		/// <summary>
+		/// Gets the index of the current source statement.
+		/// </summary>
+		public int CurrentStatementIndex {
+			get {
+				int Result = 0;
+				var CountStatements = this.currentStatement;
+				while (CountStatements.Previous != null) {
+					CountStatements = CountStatements.Previous;
+					++Result;
+				}
+				return Result;
+			}
+		}
+
 		private bool IsCompiling = false;
 
 		#endregion
@@ -161,12 +176,16 @@ namespace Brass3 {
 
 		#endregion
 
+		private Queue<int> CompileOrder;
+
 		/// <summary>
 		/// Compile the source file.
 		/// </summary>
 		public bool Compile(bool writeOutput) {
 
 			try {
+
+				this.CompileOrder = new Queue<int>(1024);
 
 				this.allWarnings.Clear();
 				this.allErrors.Clear();

@@ -268,6 +268,15 @@ namespace Brass3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compile process follows a different path in different passes. This is likely due to a bug in a plugin causing unintentional side-effects..
+        /// </summary>
+        internal static string ErrorCompilerFollowsDifferentPath {
+            get {
+                return ResourceManager.GetString("ErrorCompilerFollowsDifferentPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid directive &apos;{0}&apos;..
         /// </summary>
         internal static string ErrorDirectiveNotDeclared {

@@ -2,7 +2,7 @@
 ; Ben Ryves / Bee Development 2007.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 7
+AppVerName=Brass 3 Beta 8
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
@@ -76,6 +76,9 @@ Source: "Release Notes.rtf"; DestDir: "{app}\Documentation"; Flags: ignoreversio
 Source: "..\Release\Brass.chm"; DestDir: "{app}\Documentation"; Flags: ignoreversion; Components: "Developer\Reference";
 Source: "..\Release\Brass.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: "Developer\XML";
 
+; Translations:
+Source: "..\Release\nl\Brass.resources.dll"; DestDir: "{app}\nl"; Flags: ignoreversion; Components: "Translations\Dutch";
+
 [Components]
 Name: "Brass"; Description: "Brass Compiler"; Types: full compact custom; Flags: fixed;
 
@@ -98,6 +101,9 @@ Name: "Plugins\Scripting"; Description: "Scripting"; Types: full custom;
 Name: "Plugins\Variables"; Description: "Variable Allocation"; Types: full custom;
 Name: "Plugins\Legacy"; Description: "Legacy Collection"; Types: full custom;
 Name: "Plugins\ImageManipulation"; Description: "Image Manipulation"; Types: full custom;
+
+Name: "Translations"; Description: "Translations"; Types: full custom;
+Name: "Translations\Dutch"; Description: "Dutch"; Types: full custom;
 
 Name: "Include"; Description: "Include Files"; Types: full custom;
 Name: "Include\TI"; Description: "Texas Instruments Calculators"; Types: full custom;
