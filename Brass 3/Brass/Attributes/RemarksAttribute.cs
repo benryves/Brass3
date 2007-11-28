@@ -5,7 +5,7 @@ using System.Text;
 namespace Brass3.Attributes {
 
 	/// <summary>
-	/// Defines a syntax example attribute.
+	/// Defines a remarks attribute.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
 	public class RemarksAttribute : Attribute {
