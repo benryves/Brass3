@@ -16,11 +16,11 @@ namespace Core.Directives {
 	public class Echo : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass != AssemblyPass.WritingOutput) return;
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {
-				compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, (source.EvaluateExpression(compiler, Expression).StringValue)));
+				string Message = source.EvaluateExpression(compiler, Expression).StringValue;
+				if (compiler.CurrentPass == AssemblyPass.WritingOutput) compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Message));
 			}
-			if (directive == "echoln") compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Environment.NewLine));
+			if (directive == "echoln" && compiler.CurrentPass == AssemblyPass.WritingOutput) compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Environment.NewLine));
 		}
 
 	}
