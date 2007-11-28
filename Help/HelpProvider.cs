@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Brass3;
@@ -12,6 +13,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Resources;
 
 namespace Help {
 	public class HelpProvider : IDisposable {
@@ -87,7 +89,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(DescriptionAttribute), false)) {
 				DescriptionAttribute D = (o as DescriptionAttribute);
 				if (D != null) {
-					HelpFile.Append("<div class=\"description\">" + DocumentationToHtml(NewLinesToParagraphs(D.Description), forExporting) + "</div>");
+					HelpFile.Append("<div class=\"description\">" + DocumentationToHtml(NewLinesToParagraphs(ParseAttributeString(D.Description, T.Assembly)), forExporting) + "</div>");
 				}
 			}
 
@@ -99,7 +101,7 @@ namespace Help {
 				foreach (object o in SyntaxAttributes) {
 					SyntaxAttribute S = (o as SyntaxAttribute);
 					if (S != null) {
-						HelpFile.AppendLine("<pre class=\"syntax\">" + DocumentationToHtml(S.Syntax, forExporting) + "</pre>");
+						HelpFile.AppendLine("<pre class=\"syntax\">" + DocumentationToHtml(ParseAttributeString(S.Syntax, T.Assembly), forExporting) + "</pre>");
 					}
 				}
 			}
@@ -111,7 +113,7 @@ namespace Help {
 				foreach (object o in RemarksAttributes) {
 					RemarksAttribute R = (o as RemarksAttribute);
 					if (R != null) {
-						HelpFile.Append("<div class=\"remarks\">" + DocumentationToHtml(NewLinesToParagraphs(R.Remarks), forExporting) + "</div>");
+						HelpFile.Append("<div class=\"remarks\">" + DocumentationToHtml(NewLinesToParagraphs(ParseAttributeString(R.Remarks, T.Assembly)), forExporting) + "</div>");
 					}
 				}
 			}
@@ -120,7 +122,7 @@ namespace Help {
 			foreach (object o in T.GetCustomAttributes(typeof(WarningAttribute), false)) {
 				WarningAttribute W = (o as WarningAttribute);
 				if (W != null) {
-					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + DocumentationToHtml(NewLinesToParagraphs(W.Warning), forExporting) + "</div>");
+					HelpFile.Append("<h2 class=\"warning\">Warning</h3><div class=\"warning\">" + DocumentationToHtml(NewLinesToParagraphs(ParseAttributeString(W.Warning, T.Assembly)), forExporting) + "</div>");
 				}
 			}
 
@@ -132,7 +134,7 @@ namespace Help {
 					CodeExampleAttribute C = (o as CodeExampleAttribute);
 					if (C != null && C.Example != null) {
 						if (C.Caption != null && !string.IsNullOrEmpty(C.Caption.Trim())) {
-							HelpFile.Append("<h3 class=\"example\">" + DocumentationToHtml(C.Caption, forExporting) + "</h3>");
+							HelpFile.Append("<h3 class=\"example\">" + DocumentationToHtml(ParseAttributeString(C.Caption, T.Assembly), forExporting) + "</h3>");
 						}
 						HelpFile.Append(GetHighlightedExample(C.Example, forExporting));
 					}
@@ -415,5 +417,28 @@ namespace Help {
 				} catch { }
 			}
 		}
+
+		private string ParseAttributeString(string attributeString, Assembly pluginAssembly) {
+			if (attributeString.StartsWith("resources://")) {
+				var ResourcesPath = attributeString.Substring("resources://".Length).Split('/');
+				if (ResourcesPath.Length == 2) {
+					Assembly ResourceAssembly = pluginAssembly;
+					var AllResources = new List<string>(ResourceAssembly.GetManifestResourceNames());
+					if (AllResources.Contains(ResourcesPath[0] + ".resources")) {
+						var Resources = new ResourceManager(ResourcesPath[0], ResourceAssembly);
+						try {
+							foreach (DictionaryEntry Resource in Resources.GetResourceSet(System.Threading.Thread.CurrentThread.CurrentUICulture, true, true)) {
+								if (Resource.Key as string == ResourcesPath[1]) return Resource.Value as string;
+							}
+						} finally {
+							Resources.ReleaseAllResources();
+						}
+					}
+				}
+				
+			}
+			return attributeString;
+		}
+
 	}
 }
