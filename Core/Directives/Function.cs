@@ -62,8 +62,8 @@ If you develop a complex function that is frequently used in your source file co
 					if (!compiler.IsSwitchedOn) return;
 
 					TokenisedSource Declaration = source.GetExpressionTokens(source.GetCommaDelimitedArguments(index + 1, 1)[0]);
-					if (Declaration.Tokens.Length < 3) throw new DirectiveArgumentException(source, "Invalid function declaration.");
-					if (Declaration.Tokens[0].Type != TokenisedSource.Token.TokenTypes.Function) throw new DirectiveArgumentException(Declaration.Tokens[0], "Function declaration needs to start with name().");
+					if (Declaration.Tokens.Length < 3) throw new DirectiveArgumentException(source, Strings.ErrorFunctionInvalidDeclaration);
+					if (Declaration.Tokens[0].Type != TokenisedSource.Token.TokenTypes.Function) throw new DirectiveArgumentException(Declaration.Tokens[0], Strings.ErrorFunctionMissingArgumentList);
 
 
 					for (int i = 0; i < Declaration.Tokens.Length; ++i) Declaration.Tokens[i].ExpressionGroup = 0;
@@ -100,11 +100,11 @@ If you develop a complex function that is frequently used in your source file co
 										this.DeclaringFunction.ArgumentTypes[i] = FunctionDeclaration.ArgumentType.Macro;
 										break;
 									default:
-										throw new CompilerExpection(Argument.Tokens[0], "Invalid argument type specifier.");
+										throw new CompilerExpection(Argument.Tokens[0], string.Format(Strings.ErrorFunctionInvalidParameterType, Argument.Tokens[0].Data));
 								}
 							}
 						} else {
-							throw new CompilerExpection(source, "Invalid argument declaration.");
+							throw new CompilerExpection(source, Strings.ErrorFunctionInvalidDeclaration);
 						}
 					}
 		
@@ -122,22 +122,29 @@ If you develop a complex function that is frequently used in your source file co
 						string LowerCaseName = this.DeclaringFunction.Name.Data.ToLowerInvariant();
 						this.DeclaringFunction.ExitPoint = compiler.CurrentStatement;
 
-						List<FunctionDeclaration> Declarations;
-						if (!this.UserDefinedFunctions.TryGetValue(LowerCaseName, out Declarations)) {
-							Declarations = new List<FunctionDeclaration>();
-							this.UserDefinedFunctions.Add(LowerCaseName, Declarations);
+						try {
+
+							if (this.DeclaringFunction.EntryPoint == this.DeclaringFunction.ExitPoint.Previous) {
+								throw new CompilerExpection(source, string.Format(Strings.ErrorFunctionEmpty, this.DeclaringFunction.Name.Data));
+							}
+
+							List<FunctionDeclaration> Declarations;
+							if (!this.UserDefinedFunctions.TryGetValue(LowerCaseName, out Declarations)) {
+								Declarations = new List<FunctionDeclaration>();
+								this.UserDefinedFunctions.Add(LowerCaseName, Declarations);
+							}
+
+							Declarations.Add(this.DeclaringFunction);
+
+							if (compiler.Functions.Contains(LowerCaseName)) {
+								if (compiler.Functions[LowerCaseName].GetType() != typeof(Functions.UserFunction)) throw new CompilerExpection(source, string.Format(Strings.ErrorFunctionAlreadyDefined, this.DeclaringFunction.Name.Data));
+							} else {
+								compiler.Functions.AddRuntimeAlias((IFunction)compiler.GetPluginInstanceFromType(typeof(Functions.UserFunction)), LowerCaseName);
+							}
+						} finally {
+							this.DeclaringFunction = null;
+							compiler.SwitchOn();
 						}
-
-						Declarations.Add(this.DeclaringFunction);
-
-						if (compiler.Functions.Contains(LowerCaseName)) {
-							if (compiler.Functions[LowerCaseName].GetType() != typeof(Functions.UserFunction)) throw new InvalidOperationException("Function " + this.DeclaringFunction.Name.Data + " already natively defined.");
-						} else {
-							compiler.Functions.AddRuntimeAlias((IFunction)compiler.GetPluginInstanceFromType(typeof(Functions.UserFunction)), LowerCaseName);
-						}						
-
-						this.DeclaringFunction = null;
-						compiler.SwitchOn();
 					}
 					break;
 			}
