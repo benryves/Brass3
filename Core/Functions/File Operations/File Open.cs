@@ -33,7 +33,7 @@ namespace Core.Functions.FileOperations {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1);
 			string Filename = (source.GetExpressionStringConstant(compiler, Args[0], false));
 
-			if (!File.Exists(Filename)) throw new CompilerExpection(source, "File '" + Filename + "' not found.");
+			if (!File.Exists(Filename)) throw new CompilerExpection(source, string.Format(Strings.ErrorFileNotFound, Filename));
 
 			double FileHandle = FileHandleAllocation++;
 			this.FileHandles.Add(FileHandle, File.OpenRead(Filename));
@@ -43,15 +43,15 @@ namespace Core.Functions.FileOperations {
 
 		internal static FileStream GetFilestreamFromHandle(Compiler compiler, double handle) {
 			FOpen Handles = compiler.GetPluginInstanceFromType<FOpen>();
-			if (Handles == null) throw new InvalidOperationException("fopen() plugin not loaded.");
+			if (Handles == null) throw new InvalidOperationException(string.Format(Strings.ErrorPluginNotLoaded, "fopen"));
 			FileStream Result;
-			if (!Handles.FileHandles.TryGetValue(handle, out Result)) throw new InvalidOperationException("File handle " + handle + " is invalid.");
+			if (!Handles.FileHandles.TryGetValue(handle, out Result)) throw new InvalidOperationException(string.Format(Strings.ErrorFileHandleInvalid, handle));
 			return Result;
 		}
 
 		internal static FileStream GetFilestreamFromHandle(Compiler compiler, TokenisedSource source) {
 			int[] Args = source.GetCommaDelimitedArguments(0);
-			if (Args.Length < 1) throw new DirectiveArgumentException(source, "File handle not specified.");
+			if (Args.Length < 1) throw new DirectiveArgumentException(source, Strings.ErrorFileHandleNotSpecified);
 			return GetFilestreamFromHandle(compiler, source.EvaluateExpression(compiler, Args[0]).NumericValue);
 		}
 	}

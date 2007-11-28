@@ -429,7 +429,7 @@ console.putchar:
 					}
 
 					if (CommentedSource.Tokens.Length > 0 && HitEndOfFile && !(IsWhitespace || HasSeperatorComments)) {
-						compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, "File contents continue past the end of file marker.", Statement));
+						compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, Strings.ErrorVeraDocFileContentsPastEndOfFile, Statement));
 					}
 
 					// Have we got comments?
@@ -470,12 +470,12 @@ console.putchar:
 
 								Label CheckMatchingLabel;
 								if (!compiler.Labels.TryParse(new TokenisedSource.Token(RoutineName), out CheckMatchingLabel)) {
-									Error = "Documented routine '" + RoutineName + "' doesn't exist in source.";
+									Error = string.Format(Strings.ErrorVeraDocDocumentedInvisibleRoutine, RoutineName);
 									compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, Error, Statement));
 								} else {
 									CurrentRoutine.Label = CheckMatchingLabel;
 									if (CheckMatchingLabel.Name != RoutineName) {
-										Error = string.Format("Documented routine name '{0}' doesn't match source routine declaration '{1}'.", RoutineName, CheckMatchingLabel.Name);
+										Error = string.Format(Strings.ErrorVeraDocDocumentedRoutineSpellingIncorrect, RoutineName, CheckMatchingLabel.Name);
 										compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, Error, Statement));
 									}
 								}
@@ -519,7 +519,7 @@ console.putchar:
 
 				// Check end of file...
 				if (!HitEndOfFile) {
-					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, "File is missing end of file marker.", Statements.Value[Statements.Value.Length - 1]));
+					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, Strings.ErrorVeraDocNoEndOfFile, Statements.Value[Statements.Value.Length - 1]));
 				}
 
 			}
@@ -698,12 +698,12 @@ console.putchar:
 			
 			// check 7-bit ASCII validity;
 			if (Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(name)) != name) {
-				invalidReason = "Name contains characters that cannot be represented with 7-bit ASCII.";
+				invalidReason = string.Format(Strings.ErrorVeraDocNameNot7Bit, name);
 				return false;
 			}
 
 			if (name != name.ToLowerInvariant()) {
-				invalidReason = "Name contains uppercase characters.";
+				invalidReason = string.Format(Strings.ErrorVeraDocNameContainsUppercase, name);
 				return false;
 			}
 
@@ -729,28 +729,28 @@ console.putchar:
 			string ValidChars = "abcdefghijklmnopqrstuvwxyz0123456789_";
 			
 			if (name.Length == 0) {
-				invalidReason = "Name is zero characters long.";
+				invalidReason = string.Format(Strings.ErrorVeraDocNameIsZeroLength, name);
 				return false;
 			}
 
 			if (char.IsNumber(name[0])) {
-				invalidReason = "Name starts with a number.";
+				invalidReason = string.Format(Strings.ErrorVeraDocNameStartsWithNumber, name);
 				return false;
 			}
 
 			if (name[0] == '_') {
-				invalidReason = "Name starts with an underscore.";
+				invalidReason = string.Format(Strings.ErrorVeraDocNameStartsWithUnderscore, name);
 				return false;
 			}
 
 			if (name[name.Length - 1] == '_') {
-				invalidReason = "Name ends with an underscore.";
+				invalidReason = string.Format(Strings.ErrorVeraDocNameEndsWithUnderscore, name);
 				return false;
 			}
 
 			foreach (char c in name) {
 				if (ValidChars.IndexOf(c) == -1) {
-					invalidReason = "Name contains invalid character '" + c + "'.";
+					invalidReason = string.Format(Strings.ErrorVeraDocNameContainsInvalidChar, name, c.ToString());
 					return false;
 				}
 			}

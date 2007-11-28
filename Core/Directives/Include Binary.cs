@@ -19,10 +19,10 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-			
-			string Filename = compiler.ResolveFilename(source.GetExpressionStringConstant(compiler, Args[0], false));
 
-			if (!File.Exists(Filename)) throw new DirectiveArgumentException(source.Tokens[index], "File '" + Filename + "' not found.");
+			string Filename = source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.FilenameArgument)[0] as string;
+
+			if (!File.Exists(Filename)) throw new DirectiveArgumentException(source.Tokens[index], string.Format(Strings.ErrorFileNotFound, Filename));
 
 			try {
 				using (FileStream FS = File.OpenRead(Filename)) {

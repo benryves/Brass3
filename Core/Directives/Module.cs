@@ -24,7 +24,7 @@ namespace Core.Directives {
 
 			switch (directive) {
 				case "module": {
-						if (source.Tokens.Length != index + 2) throw new DirectiveArgumentException(source.Tokens[index], "Expected a module name.");
+						if (source.Tokens.Length != index + 2) throw new DirectiveArgumentException(source.Tokens[index], Strings.ErrorModuleNameExpected);
 						ModuleNames.Push(compiler.Labels.CurrentModule);
 						string NewModuleName = compiler.Labels.CurrentModule;
 						if (!string.IsNullOrEmpty(NewModuleName)) NewModuleName += ".";

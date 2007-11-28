@@ -73,7 +73,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 			switch (directive) {
 				case "section":
 					if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-						if (CurrentSection != null) throw new CompilerExpection(source, string.Format("Currently inside section '{0}'.", this.CurrentSection));
+						if (CurrentSection != null) throw new CompilerExpection(source, string.Format(Strings.ErrorSectionAlreadyInsideSection, this.CurrentSection));
 						this.CurrentSection = (source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.StringOrTokenArgument)[0] as string).ToLowerInvariant();
 						if (!this.Sections.TryGetValue(this.CurrentSection, out SectionRangeData)) {
 							SectionRangeData = new List<SectionRange>();
@@ -85,7 +85,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 					break;
 				case "endsection":
 					if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-						if (CurrentSection == null) throw new CompilerExpection(source, "No section to end.");
+						if (CurrentSection == null) throw new CompilerExpection(source, Strings.ErrorSectionNoSectionToEnd);
 						SectionRangeData = this.Sections[this.CurrentSection];
 						SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
 						Range.LastStatement = compiler.CurrentStatement.Previous;

@@ -76,7 +76,7 @@ namespace Core.Directives {
 						switch (Args.Length) {
 							case 1: {
 									int CurrentExpressionIndex = 1;
-									DirectiveArgumentException BasicStyleForExection = new DirectiveArgumentException(source, "Expected syntax: for <variable> is <start> to <end> [step <step>].");
+									DirectiveArgumentException BasicStyleForExection = new DirectiveArgumentException(source, Strings.ErrorRepetitionForBasicSyntax);
 									int TokensInVariableBlock = 0;
 									for (int i = index + 1; i < source.Tokens.Length; ++i) {
 										source.Tokens[i].ExpressionGroup = 0;
@@ -108,7 +108,7 @@ namespace Core.Directives {
 									double End = source.EvaluateExpression(compiler, 3).NumericValue;
 									double Step = CurrentExpressionIndex == 3 ? Math.Sign(End - Start) : source.EvaluateExpression(compiler, 4).NumericValue;
 
-									if (Math.Sign(Step) == 0 || Math.Sign(Step) != Math.Sign(End - Start)) throw new CompilerExpection(source, "Infinite loop detected.");
+									if (Math.Sign(Step) == 0 || Math.Sign(Step) != Math.Sign(End - Start)) throw new CompilerExpection(source, Strings.ErrorRepetitionInfiniteLoop);
 
 
 									if (LastLoopHit == null) {
@@ -142,7 +142,7 @@ namespace Core.Directives {
 								}
 								break;
 							default:
-								throw new DirectiveArgumentException(source, "Invalid number of arguments.");
+								throw new DirectiveArgumentException(source, Strings.ErrorRepetitionInvalidArgumentCount);
 						}
 						
 					}

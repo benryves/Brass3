@@ -92,7 +92,6 @@
     <Compile Include="Functions\IsString.cs" />
     <Compile Include="Functions\Eval.cs" />
     <Compile Include="Functions\Maths\KB.cs" />
-    <Compile Include="Functions\OutputWriter.cs" />
     <Compile Include="Functions\SizeOf.cs" />
     <Compile Include="Functions\Line.cs" />
     <Compile Include="Functions\File Operations\File Size.cs" />

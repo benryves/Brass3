@@ -19,7 +19,7 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			Output.RawPages PagedRawWriter;
-			if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) == null) throw new CompilerExpection(source, "Paged raw writer plugin not loaded.");
+			if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) == null) throw new CompilerExpection(source, string.Format(Strings.ErrorPluginNotLoaded, "rawpages"));
 
 			int[] Args = Array.ConvertAll<object, int>(source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
 				TokenisedSource.ArgumentType.Value, 
@@ -38,14 +38,14 @@ namespace Core.Directives {
 						Page P;
 						if ((P = compiler.GetPluginInstanceFromType<Page>()) != null) {
 							if (P.SwitchedToPages.Contains(Args[0])) {
-								compiler.OnWarningRaised(string.Format("Page directive used before page {0} was defined.", Args[0]));
+								compiler.OnWarningRaised(string.Format(Strings.ErrorDefPagePageUsedBeforeDefined, Args[0]));
 							}
 						}
 
 					} break;
 				case AssemblyPass.WritingOutput: {
 						if (compiler.GetOutputDataOnPage(Args[0]).Length > 0) {
-							compiler.OnWarningRaised(string.Format("Data already output on page {0}.", Args[0]));
+							compiler.OnWarningRaised(string.Format(Strings.ErrorDefPageDataAlreadyOutput, Args[0]));
 						}
 					} break;
 

@@ -15,7 +15,7 @@ namespace Core.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			source.GetCommaDelimitedArguments(index + 1, 0);
-			//compiler.StopAssemblingCurrentFile();
+			compiler.SwitchOff(null);
 		}
 
 	}

@@ -117,9 +117,48 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorAlignMustBePositiveIntegral" xml:space="preserve">
+    <value>You can only align to positive integral boundaries.</value>
+  </data>
+  <data name="ErrorContiguousOnlyPositiveIncrementsSupported" xml:space="preserve">
+    <value>Contiguous output can only handle increasing output counter values.</value>
+  </data>
+  <data name="ErrorDataTypeNotDefined" xml:space="preserve">
+    <value>Data type '{0}' not defined.</value>
+    <comment>.data 0 where 0 is undefined.</comment>
+  </data>
+  <data name="ErrorDefineMacroParametersExpected" xml:space="preserve">
+    <value>Macro expects parameters.</value>
+    <comment>When a macro is called but no args are specified.</comment>
+  </data>
+  <data name="ErrorDefineMacroParameterSingleTokenExpected" xml:space="preserve">
+    <value>Macro parameter declarations must be a single token.</value>
+    <comment>macro(arg) - "arg" must be a single token.</comment>
+  </data>
+  <data name="ErrorDefPageDataAlreadyOutput" xml:space="preserve">
+    <value>Data already output on page {0}.</value>
+    <comment>Data has been output for page 0.</comment>
+  </data>
+  <data name="ErrorDefPagePageUsedBeforeDefined" xml:space="preserve">
+    <value>Page directive used before page {0} was defined.</value>
+    <comment>.page used before .defpage. 0 = page number.</comment>
+  </data>
+  <data name="ErrorFileHandleInvalid" xml:space="preserve">
+    <value>File handle '{0}' is invalid.</value>
+  </data>
+  <data name="ErrorFileHandleNotSpecified" xml:space="preserve">
+    <value>File handle not specified.</value>
+  </data>
+  <data name="ErrorFileNotFound" xml:space="preserve">
+    <value>File '{0}' not found.</value>
+  </data>
   <data name="ErrorFunctionAlreadyDefined" xml:space="preserve">
     <value>Function '{0}' already defined.</value>
     <comment>When function is already defined. 0 = Function name.</comment>
+  </data>
+  <data name="ErrorFunctionAmbiguousSignature" xml:space="preserve">
+    <value>Ambiguous function signature.</value>
+    <comment>Two (or more) functions have very similar signatures.</comment>
   </data>
   <data name="ErrorFunctionEmpty" xml:space="preserve">
     <value>Function '{0}' is empty.</value>
@@ -135,5 +174,102 @@
   <data name="ErrorFunctionMissingArgumentList" xml:space="preserve">
     <value>Function declaration needs to start with name().</value>
     <comment>When the function name isn't in the form name() (missing parentheses).</comment>
+  </data>
+  <data name="ErrorFunctionUnmatchedSignature" xml:space="preserve">
+    <value>Couldn't find matching function signature.</value>
+    <comment>Try to call function(x,y,z) when only function(x,y) has been declared.</comment>
+  </data>
+  <data name="ErrorModuleNameExpected" xml:space="preserve">
+    <value>Expected a module name.</value>
+    <comment>When an incorrect number of args are passed to .module</comment>
+  </data>
+  <data name="ErrorPluginNotLoaded" xml:space="preserve">
+    <value>{0} plugin not loaded.</value>
+    <comment>Where a plugin relies on another one (eg .incsection  relies on .section).</comment>
+  </data>
+  <data name="ErrorRawPagesDataOutOfBounds" xml:space="preserve">
+    <value>{0} byte(s) appears outside page {1}'s boundaries.</value>
+    <comment>0 = Number of overflowing bytes, 1 = page number.</comment>
+  </data>
+  <data name="ErrorRawPagesUsedPageNotDefined" xml:space="preserve">
+    <value>Page {0} is used but never defined, so its data isn't output.</value>
+    <comment>0 = Page</comment>
+  </data>
+  <data name="ErrorRepetitionForBasicSyntax" xml:space="preserve">
+    <value>Expected syntax: for &lt;variable&gt; is &lt;start&gt; to &lt;end&gt; [step &lt;step&gt;].</value>
+    <comment>When a BASIC-style for loop is declared incorrectly.</comment>
+  </data>
+  <data name="ErrorRepetitionInfiniteLoop" xml:space="preserve">
+    <value>Infinite loop detected.</value>
+  </data>
+  <data name="ErrorRepetitionInvalidArgumentCount" xml:space="preserve">
+    <value>Invalid number of arguments.</value>
+    <comment>Invalid number of arguments passed to a directive.</comment>
+  </data>
+  <data name="ErrorSectionAlreadyInsideSection" xml:space="preserve">
+    <value>Currently inside section '{0}'.</value>
+    <comment>Tried to use .section inside a section.</comment>
+  </data>
+  <data name="ErrorSectionNoSectionToEnd" xml:space="preserve">
+    <value>No section to end.</value>
+    <comment>Tried to use .endsection outside a section.</comment>
+  </data>
+  <data name="ErrorSectionNotDefined" xml:space="preserve">
+    <value>Section '{0}' not defined.</value>
+    <comment>.incsection x where .section x has not been defined.</comment>
+  </data>
+  <data name="ErrorStructInvalidArrayDeclaration" xml:space="preserve">
+    <value>Invalid structure field array declaration.</value>
+    <comment>Something wrong with an array field in a struct.</comment>
+  </data>
+  <data name="ErrorStructInvalidFieldDeclaration" xml:space="preserve">
+    <value>Invalid field declaration.</value>
+    <comment>Something wrong with a field in a struct.</comment>
+  </data>
+  <data name="ErrorUndefExpectedLabelOrMacroName" xml:space="preserve">
+    <value>Expected label or macro name.</value>
+  </data>
+  <data name="ErrorVeraDocDocumentedInvisibleRoutine" xml:space="preserve">
+    <value>Documented routine '{0}' doesn't exist in source.</value>
+    <comment>A routine is documented that doesn't exist in the source.</comment>
+  </data>
+  <data name="ErrorVeraDocDocumentedRoutineSpellingIncorrect" xml:space="preserve">
+    <value>Documented routine name '{0}' doesn't match source routine declaration '{1}'.</value>
+    <comment>Capitalisation between documentation and actual routine differs.</comment>
+  </data>
+  <data name="ErrorVeraDocFileContentsPastEndOfFile" xml:space="preserve">
+    <value>File contents continue past the end of file marker.</value>
+    <comment>There is code after === \ End of file \ ===</comment>
+  </data>
+  <data name="ErrorVeraDocNameContainsInvalidChar" xml:space="preserve">
+    <value>Name contains invalid character '{1}'.</value>
+    <comment>0 = Name, 1 = Character.</comment>
+  </data>
+  <data name="ErrorVeraDocNameContainsUppercase" xml:space="preserve">
+    <value>Name contains uppercase characters.</value>
+    <comment>0 = Name.</comment>
+  </data>
+  <data name="ErrorVeraDocNameEndsWithUnderscore" xml:space="preserve">
+    <value>Name ends with an underscore.</value>
+    <comment>0 = Name.</comment>
+  </data>
+  <data name="ErrorVeraDocNameIsZeroLength" xml:space="preserve">
+    <value>Name is zero characters long.</value>
+    <comment>0 = Name.</comment>
+  </data>
+  <data name="ErrorVeraDocNameNot7Bit" xml:space="preserve">
+    <value>Name contains characters that cannot be represented with 7-bit ASCII.</value>
+    <comment>0 = Name.</comment>
+  </data>
+  <data name="ErrorVeraDocNameStartsWithNumber" xml:space="preserve">
+    <value>Name starts with a number.</value>
+    <comment>0 = Name.</comment>
+  </data>
+  <data name="ErrorVeraDocNameStartsWithUnderscore" xml:space="preserve">
+    <value>Name starts with an underscore.</value>
+    <comment>0 = Name.</comment>
+  </data>
+  <data name="ErrorVeraDocNoEndOfFile" xml:space="preserve">
+    <value>File is missing end of file marker.</value>
   </data>
 </root>

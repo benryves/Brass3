@@ -61,11 +61,110 @@ namespace Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can only align to positive integral boundaries..
+        /// </summary>
+        internal static string ErrorAlignMustBePositiveIntegral {
+            get {
+                return ResourceManager.GetString("ErrorAlignMustBePositiveIntegral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contiguous output can only handle increasing output counter values..
+        /// </summary>
+        internal static string ErrorContiguousOnlyPositiveIncrementsSupported {
+            get {
+                return ResourceManager.GetString("ErrorContiguousOnlyPositiveIncrementsSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data type &apos;{0}&apos; not defined..
+        /// </summary>
+        internal static string ErrorDataTypeNotDefined {
+            get {
+                return ResourceManager.GetString("ErrorDataTypeNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Macro expects parameters..
+        /// </summary>
+        internal static string ErrorDefineMacroParametersExpected {
+            get {
+                return ResourceManager.GetString("ErrorDefineMacroParametersExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Macro parameter declarations must be a single token..
+        /// </summary>
+        internal static string ErrorDefineMacroParameterSingleTokenExpected {
+            get {
+                return ResourceManager.GetString("ErrorDefineMacroParameterSingleTokenExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data already output on page {0}..
+        /// </summary>
+        internal static string ErrorDefPageDataAlreadyOutput {
+            get {
+                return ResourceManager.GetString("ErrorDefPageDataAlreadyOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page directive used before page {0} was defined..
+        /// </summary>
+        internal static string ErrorDefPagePageUsedBeforeDefined {
+            get {
+                return ResourceManager.GetString("ErrorDefPagePageUsedBeforeDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File handle &apos;{0}&apos; is invalid..
+        /// </summary>
+        internal static string ErrorFileHandleInvalid {
+            get {
+                return ResourceManager.GetString("ErrorFileHandleInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File handle not specified..
+        /// </summary>
+        internal static string ErrorFileHandleNotSpecified {
+            get {
+                return ResourceManager.GetString("ErrorFileHandleNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string ErrorFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function &apos;{0}&apos; already defined..
         /// </summary>
         internal static string ErrorFunctionAlreadyDefined {
             get {
                 return ResourceManager.GetString("ErrorFunctionAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ambiguous function signature..
+        /// </summary>
+        internal static string ErrorFunctionAmbiguousSignature {
+            get {
+                return ResourceManager.GetString("ErrorFunctionAmbiguousSignature", resourceCulture);
             }
         }
         
@@ -102,6 +201,231 @@ namespace Core {
         internal static string ErrorFunctionMissingArgumentList {
             get {
                 return ResourceManager.GetString("ErrorFunctionMissingArgumentList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find matching function signature..
+        /// </summary>
+        internal static string ErrorFunctionUnmatchedSignature {
+            get {
+                return ResourceManager.GetString("ErrorFunctionUnmatchedSignature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a module name..
+        /// </summary>
+        internal static string ErrorModuleNameExpected {
+            get {
+                return ResourceManager.GetString("ErrorModuleNameExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} plugin not loaded..
+        /// </summary>
+        internal static string ErrorPluginNotLoaded {
+            get {
+                return ResourceManager.GetString("ErrorPluginNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} byte(s) appears outside page {1}&apos;s boundaries..
+        /// </summary>
+        internal static string ErrorRawPagesDataOutOfBounds {
+            get {
+                return ResourceManager.GetString("ErrorRawPagesDataOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page {0} is used but never defined, so its data isn&apos;t output..
+        /// </summary>
+        internal static string ErrorRawPagesUsedPageNotDefined {
+            get {
+                return ResourceManager.GetString("ErrorRawPagesUsedPageNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected syntax: for &lt;variable&gt; is &lt;start&gt; to &lt;end&gt; [step &lt;step&gt;]..
+        /// </summary>
+        internal static string ErrorRepetitionForBasicSyntax {
+            get {
+                return ResourceManager.GetString("ErrorRepetitionForBasicSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Infinite loop detected..
+        /// </summary>
+        internal static string ErrorRepetitionInfiniteLoop {
+            get {
+                return ResourceManager.GetString("ErrorRepetitionInfiniteLoop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid number of arguments..
+        /// </summary>
+        internal static string ErrorRepetitionInvalidArgumentCount {
+            get {
+                return ResourceManager.GetString("ErrorRepetitionInvalidArgumentCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currently inside section &apos;{0}&apos;..
+        /// </summary>
+        internal static string ErrorSectionAlreadyInsideSection {
+            get {
+                return ResourceManager.GetString("ErrorSectionAlreadyInsideSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No section to end..
+        /// </summary>
+        internal static string ErrorSectionNoSectionToEnd {
+            get {
+                return ResourceManager.GetString("ErrorSectionNoSectionToEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Section &apos;{0}&apos; not defined..
+        /// </summary>
+        internal static string ErrorSectionNotDefined {
+            get {
+                return ResourceManager.GetString("ErrorSectionNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid structure field array declaration..
+        /// </summary>
+        internal static string ErrorStructInvalidArrayDeclaration {
+            get {
+                return ResourceManager.GetString("ErrorStructInvalidArrayDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid field declaration..
+        /// </summary>
+        internal static string ErrorStructInvalidFieldDeclaration {
+            get {
+                return ResourceManager.GetString("ErrorStructInvalidFieldDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected label or macro name..
+        /// </summary>
+        internal static string ErrorUndefExpectedLabelOrMacroName {
+            get {
+                return ResourceManager.GetString("ErrorUndefExpectedLabelOrMacroName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documented routine &apos;{0}&apos; doesn&apos;t exist in source..
+        /// </summary>
+        internal static string ErrorVeraDocDocumentedInvisibleRoutine {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocDocumentedInvisibleRoutine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documented routine name &apos;{0}&apos; doesn&apos;t match source routine declaration &apos;{1}&apos;..
+        /// </summary>
+        internal static string ErrorVeraDocDocumentedRoutineSpellingIncorrect {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocDocumentedRoutineSpellingIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File contents continue past the end of file marker..
+        /// </summary>
+        internal static string ErrorVeraDocFileContentsPastEndOfFile {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocFileContentsPastEndOfFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name contains invalid character &apos;{1}&apos;..
+        /// </summary>
+        internal static string ErrorVeraDocNameContainsInvalidChar {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameContainsInvalidChar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name contains uppercase characters..
+        /// </summary>
+        internal static string ErrorVeraDocNameContainsUppercase {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameContainsUppercase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name ends with an underscore..
+        /// </summary>
+        internal static string ErrorVeraDocNameEndsWithUnderscore {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameEndsWithUnderscore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name is zero characters long..
+        /// </summary>
+        internal static string ErrorVeraDocNameIsZeroLength {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameIsZeroLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name contains characters that cannot be represented with 7-bit ASCII..
+        /// </summary>
+        internal static string ErrorVeraDocNameNot7Bit {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameNot7Bit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name starts with a number..
+        /// </summary>
+        internal static string ErrorVeraDocNameStartsWithNumber {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameStartsWithNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name starts with an underscore..
+        /// </summary>
+        internal static string ErrorVeraDocNameStartsWithUnderscore {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNameStartsWithUnderscore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File is missing end of file marker..
+        /// </summary>
+        internal static string ErrorVeraDocNoEndOfFile {
+            get {
+                return ResourceManager.GetString("ErrorVeraDocNoEndOfFile", resourceCulture);
             }
         }
     }

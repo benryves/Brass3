@@ -18,10 +18,9 @@ namespace Core.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			int[] Args = source.GetCommaDelimitedArguments(index + 1);
-			if (Args.Length != 1) throw new DirectiveArgumentException(source, "Only one argument expected.");
 
-			double Boundary = source.EvaluateExpression(compiler, Args[0]).NumericValue;
-			if (Boundary < 1 || (int)Boundary != Boundary) throw new DirectiveArgumentException(source, "You can only align to positive integral boundaries.");
+			double Boundary = (double)source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.ValueArgument)[0];
+			if (Boundary < 1 || (int)Boundary != Boundary) throw new DirectiveArgumentException(source, Strings.ErrorAlignMustBePositiveIntegral);
 
 			compiler.Labels.ProgramCounter.NumericValue = ((((int)compiler.Labels.ProgramCounter.NumericValue) + ((int)Boundary - 1)) / (int)(Boundary)) * Boundary;
 

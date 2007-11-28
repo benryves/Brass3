@@ -101,7 +101,7 @@ namespace Core.Output {
 					if (data == null || data.Length == 0) return;
 					break;
 				default:
-					throw new ArgumentException(record + " is not a valid record type.");
+					throw new ArgumentException();
 			}
 
 			byte[] ChunkedData = new byte[32];

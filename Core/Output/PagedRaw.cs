@@ -57,7 +57,7 @@ namespace Core.Output {
 
 			foreach (int Page in compiler.GetUniquePageIndices()) {
 				if (!DeclaredPages.Contains(Page)) {
-					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, string.Format("Page {0} is used but never defined, so its data isn't output.", Page)));
+					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, string.Format(Strings.ErrorRawPagesUsedPageNotDefined, Page)));
 				}
 			}
 
@@ -83,7 +83,7 @@ namespace Core.Output {
 				}
 
 				if (OutOfPageBounds > 0) {
-					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, string.Format("{0} byte{1} appears outside page {2}'s boundaries.", OutOfPageBounds, OutOfPageBounds == 1 ? "" : "s", Page)));
+					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, string.Format(Strings.ErrorRawPagesDataOutOfBounds, OutOfPageBounds, Page)));
 				}
 
 				Output.AddRange(PageData);
