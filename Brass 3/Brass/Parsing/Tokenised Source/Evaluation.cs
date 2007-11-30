@@ -651,6 +651,11 @@ namespace Brass3 {
 				return false;
 			} else {
 				result = LabelsToEvaluate.First.Value.Label;
+				foreach (var L in TempLabelsToDelete) {
+					if (L != result && !L.Created) {
+						compiler.Labels.Remove(L);
+					}
+				}
 				return true;
 			}
 
