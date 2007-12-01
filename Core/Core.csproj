@@ -84,6 +84,11 @@
     <Compile Include="Directives\Echo.cs" />
     <Compile Include="Directives\Endianness.cs" />
     <Compile Include="Directives\Data.cs" />
+    <Compile Include="Documentation.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Documentation.resx</DependentUpon>
+    </Compile>
     <Compile Include="Functions\PluginIs.cs" />
     <Compile Include="Functions\EnvVar.cs" />
     <Compile Include="Functions\Date\Date Component.cs" />
@@ -204,6 +209,7 @@
     <Compile Include="Functions\Maths\Truncate.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Listing\EmukonPatch.cs" />
     <Compile Include="Listing\Html.cs" />
     <Compile Include="Listing\Text.cs" />
     <Compile Include="Listing\No%24Gmb.cs" />
@@ -240,6 +246,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Documentation.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Documentation.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

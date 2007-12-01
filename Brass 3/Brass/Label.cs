@@ -11,6 +11,28 @@ namespace Brass3 {
 	/// </summary>
 	public class Label : ICloneable {
 
+		#region Types
+
+		/// <summary>
+		/// Describes the usage of the label.
+		/// </summary>
+		public enum UsageType {
+			/// <summary>
+			/// The label defines an executable address (such as a function entry point).
+			/// </summary>
+			Execution,
+			/// <summary>
+			/// The label defines a variable (pointer to memory).
+			/// </summary>
+			Variable,
+			/// <summary>
+			/// The label defines a constant.
+			/// </summary>
+			Constant,
+		}
+
+		#endregion
+
 		#region Events
 
 		/// <summary>
@@ -141,10 +163,15 @@ namespace Brass3 {
 		/// <summary>
 		/// Gets or sets the underlying <see cref="IDataStructure"/> type defined by the label.
 		/// </summary>
-		public IDataStructure Type {
+		public IDataStructure DataType {
 			get { return this.type; }
 			set { this.type = value; }
 		}
+
+		/// <summary>
+		/// Gets or sets the <see cref="UsageType"/> of the label.
+		/// </summary>
+		public UsageType Usage { get; set; }
 
 		/// <summary>
 		/// Gets the size of the label's underlying type.
@@ -350,6 +377,7 @@ namespace Brass3 {
 			this.value = value;
 			this.page = collection.ProgramCounter.page;
 			this.isConstant = isConstant;
+			this.Usage = UsageType.Execution;
 		}
 
 		/// <summary>
@@ -374,8 +402,6 @@ namespace Brass3 {
 		}
 
 		#endregion
-
-
 
 		#region ICloneable Members
 

@@ -42,6 +42,7 @@ namespace Brass3 {
 				}
 
 				C.SwitchOn();
+				C.BeginPass(AssemblyPass.None);
 
 				for (; ; ) {
 					Console.Write("> ");
@@ -62,7 +63,7 @@ namespace Brass3 {
 						default:
 							try {
 								foreach (TokenisedSource TS in TokenisedSource.FromString(C, StringInput)) {
-									Label L = TS.GetCode().EvaluateExpression(C);
+									Label L = TS.GetCode().EvaluateExpression(C, 0, false, true);
 									try {
 										if (L.IsString) {
 											Console.WriteLine(L.StringValue);

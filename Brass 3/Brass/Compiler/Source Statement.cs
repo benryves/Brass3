@@ -150,12 +150,16 @@ namespace Brass3 {
 			/// <param name="mustMakeAssignment">True if an assignment must be made; false otherwise.</param>
 			public Label Compile(bool mustMakeAssignment) {
 
-				if (this.compiler.currentPass == AssemblyPass.CreatingLabels) {
-					this.compiler.CompileOrder.Enqueue(this.index);
-				} else {
-					if (this.compiler.CompileOrder.Count == 0 || this.compiler.CompileOrder.Dequeue() != this.index) {
-						throw new CompilerExpection(this.source, Strings.ErrorCompilerFollowsDifferentPath);
-					}
+
+				switch (this.compiler.currentPass) {
+					case AssemblyPass.CreatingLabels:
+						this.compiler.CompileOrder.Enqueue(this.index);
+						break;
+					case AssemblyPass.WritingOutput:
+						if (this.compiler.CompileOrder.Count == 0 || this.compiler.CompileOrder.Dequeue() != this.index) {
+							throw new CompilerExpection(this.source, Strings.ErrorCompilerFollowsDifferentPath);
+						}
+						break;
 				}
 
 				//Console.WriteLine("{0}:={1}", this.compiler.currentPass, this.ToString());

@@ -136,12 +136,12 @@ namespace Variables {
 					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerExpection(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Data));
 					Label StructLabel = compiler.Labels.Create(Var.Name);
 					StructLabel.NumericValue = this.VariableLocations[0].CurrentOffset;
-					StructLabel.Type = Var.DataType;
+					StructLabel.DataType = Var.DataType;
 					foreach (KeyValuePair<string, DataStructure.Field> Field in Var.DataType.GetAllFields()) {
 						TokenisedSource.Token StructField = new TokenisedSource.Token(LabelCollection.ModuleCombine(Var.Name.Data, Field.Key));
 						Label StructFieldLabel = compiler.Labels.Create(StructField);
 						StructFieldLabel.NumericValue = this.VariableLocations[0].CurrentOffset + Field.Value.Offset;
-						StructFieldLabel.Type = Field.Value.DataType;						
+						StructFieldLabel.DataType = Field.Value.DataType;						
 					}
 
 					

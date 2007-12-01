@@ -19,7 +19,7 @@ namespace Core.Directives {
 	[Category("Data")]
 	[PluginName("data"), PluginName("db"), PluginName("byte"), PluginName("dw"), PluginName("word"), PluginName("di"), PluginName("int")]
 	public class DataDeclaration : IDirective {
-		
+
 		private Core.NumberEncoding.Byte ByteEncoder;
 		private Core.NumberEncoding.Word WordEncoder;
 		private Core.NumberEncoding.Int IntEncoder;
@@ -45,7 +45,7 @@ namespace Core.Directives {
 				NumberEncoder = compiler.NumberEncoders[Type.Data];
 
 				// Set size of declaring label if applicable.
-				if (compiler.LabelEvaluationResult != null) compiler.LabelEvaluationResult.Type = NumberEncoder;
+				if (compiler.LabelEvaluationResult != null) compiler.LabelEvaluationResult.DataType = NumberEncoder;
 			} else {
 
 				Args = source.GetCommaDelimitedArguments(index + 1);
@@ -74,7 +74,7 @@ namespace Core.Directives {
 				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 
 					CompilerExpection ReasonForFailure;
-					if(source.TryEvaluateExpression(compiler, Arg, out Result, out ReasonForFailure)) {
+					if (source.TryEvaluateExpression(compiler, Arg, out Result, out ReasonForFailure)) {
 						IsString = Result.IsString;
 					} else {
 						IsString = false;

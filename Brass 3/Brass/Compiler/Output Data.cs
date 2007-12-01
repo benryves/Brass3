@@ -7,39 +7,38 @@ namespace Brass3 {
 	/// <summary>
 	/// Defines output data.
 	/// </summary>
-	/// <remarks>Output data is later turned into binaries by an <see cref="Plugins.IOutputWriter"/> plugin.</remarks>
-	public struct OutputData : IComparable {
+	/// <remarks>Output data are later turned into binaries by an <see cref="Plugins.IOutputWriter"/> plugin.</remarks>
+	public class OutputData : IComparable {
 
 		/// <summary>
 		/// Gets the program counter value that the output data starts at.
 		/// </summary>
-		public readonly int ProgramCounter;
+		public int ProgramCounter { get; private set; }
 
 		/// <summary>
 		/// Gets the output counter value that the output data starts at.
 		/// </summary>
-		public readonly int OutputCounter;
+		public int OutputCounter { get; private set; }
 
 		/// <summary>
 		/// Gets the page number that the output data resides on.
 		/// </summary>
-		public readonly int Page;
+		public int Page { get; private set; }
 
 		/// <summary>
 		/// Gets the raw data that this structure represents.
 		/// </summary>
-		public readonly byte[] Data;
+		public byte[] Data { get; private set; }
 
 		/// <summary>
 		/// Gets the source statement that generated the output data.
 		/// </summary>
-		public readonly Compiler.SourceStatement Source;
-
+		public Compiler.SourceStatement Source { get; private set; }
 
 		/// <summary>
 		/// Gets whether the output data can be overwritten.
 		/// </summary>
-		public readonly bool Background;
+		public bool Background { get; private set; }
 
 		/// <summary>
 		/// Creates an instance of the <see cref="OutputData"/> structure.

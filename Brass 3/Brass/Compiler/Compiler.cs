@@ -45,14 +45,5 @@ namespace Brass3 {
 
 		#endregion
 
-
-		#region Public Methods
-
-
-
-
-
-		#endregion
-
 	}
 }

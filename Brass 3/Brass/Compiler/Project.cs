@@ -59,8 +59,8 @@ namespace Brass3 {
 				this.OnWarningRaised(new NotificationEventArgs(this, "String encoder not set."));
 			}
 
-			this.header = project.Header;
-			this.footer = project.Footer;
+			this.Header = project.Header;
+			this.Footer = project.Footer;
 
 			this.ListingFiles.Clear();
 

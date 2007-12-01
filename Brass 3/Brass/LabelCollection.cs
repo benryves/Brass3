@@ -225,7 +225,7 @@ namespace Brass3 {
 			Label Result = (Label)this.ImplicitCreationDefault.Clone();
 			Result.Name = FullName;
 			Result.Token = name;
-			Result.Type = type;
+			Result.DataType = type;
 
 			// Add to dictionary:
 			this.Lookup.Add(FullName.ToLowerInvariant(), Result);

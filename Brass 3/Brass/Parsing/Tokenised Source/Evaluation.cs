@@ -77,6 +77,7 @@ namespace Brass3 {
 			return this.TryEvaluateExpression(compiler, 0, out result, out reasonForFailure);
 		}
 
+
 		/// <summary>
 		/// Try to evaluate an expression within the source line.
 		/// </summary>
@@ -557,15 +558,15 @@ namespace Brass3 {
 
 									if (O.ExpressionPosition.Next.Next != null && O.ExpressionPosition.Next.Next.Value != null) {
 										LabelAccessor FieldName = O.ExpressionPosition.Next.Next.Value;
-										if (OpA.Label.Type == null) {
+										if (OpA.Label.DataType == null) {
 											reasonForFailure = new CompilerExpection(OpA.Label.Token, Strings.ErrorEvaluationTypeInformationMissing);
 											return false;
 										}
 										if (FieldName.Label.Name.Length > 0 && FieldName.Label.Name[0] == '.') {
 											string Field = FieldName.Label.Name.Substring(1);
-											DataStructure.Field SubField = (OpA.Label.Type as DataStructure)[Field];
+											DataStructure.Field SubField = (OpA.Label.DataType as DataStructure)[Field];
 											Result.Label.NumericValue += SubField.Offset;
-											Result.Label.Type = SubField.DataType;
+											Result.Label.DataType = SubField.DataType;
 											if (!FieldName.Label.Created) compiler.Labels.Remove(FieldName.Label);
 											LabelsToEvaluate.Remove(O.ExpressionPosition.Next.Next);
 										} else {

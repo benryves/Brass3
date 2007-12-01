@@ -7,23 +7,15 @@ using System.IO;
 namespace Brass3 {
 	public partial class Compiler {
 
-		private string header;
 		/// <summary>
 		/// Gets or sets a an assembly snippet header for the entire compilation process.
 		/// </summary>
-		public string Header {
-			get { return this.header; }
-			set { this.header = value; }
-		}
+		public string Header { get; set; }
 
-		private string footer;
 		/// <summary>
 		/// Gets or sets a an assembly snippet footer for the entire compilation process.
 		/// </summary>
-		public string Footer {
-			get { return this.footer; }
-			set { this.footer = value; }
-		}
+		public string Footer { get; set; }
 
 
 		/// <summary>
@@ -78,16 +70,13 @@ namespace Brass3 {
 			return Result;
 		}
 
-		#region Private Methods
+		#region Internal Methods
 
-
-
-		private void BeginPass(AssemblyPass pass) {
+		internal void BeginPass(AssemblyPass pass) {
 			this.currentPass = pass;
 			this.ResetState();
 			this.OnPassBegun(new EventArgs());
 		}
-
 
 		#endregion
 
