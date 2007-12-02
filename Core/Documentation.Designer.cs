@@ -90,7 +90,8 @@ namespace Core {
         
         /// <summary>
         ///   Looks up a localized string similar to This plugin generates an Emukon patch file.
-        ///Emukon patch files can describe labels, execution breakpoints and variables (8-bit byte, 16-bit word and 32-bit word variables are supported)..
+        ///Emukon patch files can describe labels, execution breakpoints and variables (8-bit byte, 16-bit word and 32-bit word variables are supported).
+        ///The patch file should be saved in the &quot;Patches&quot; directory inside Emukon&apos;s installation directory..
         /// </summary>
         internal static string EmukonPatchRemarks {
             get {
