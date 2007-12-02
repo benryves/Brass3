@@ -135,6 +135,7 @@ namespace Variables {
 
 					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerExpection(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Data));
 					Label StructLabel = compiler.Labels.Create(Var.Name);
+					StructLabel.Usage = Label.UsageType.Variable;
 					StructLabel.NumericValue = this.VariableLocations[0].CurrentOffset;
 					StructLabel.DataType = Var.DataType;
 					foreach (KeyValuePair<string, DataStructure.Field> Field in Var.DataType.GetAllFields()) {
