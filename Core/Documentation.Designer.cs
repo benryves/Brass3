@@ -61,6 +61,25 @@ namespace Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inserts a breakpoint at the current program counter address..
+        /// </summary>
+        internal static string BreakpointDescription {
+            get {
+                return ResourceManager.GetString("BreakpointDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some debugging emulators support loading lists of breakpoints from an external file.
+        ///The compiler records a list of breakpoints that can be accessed by a plugin that can export such a list of breakpoints..
+        /// </summary>
+        internal static string BreakpointRemarks {
+            get {
+                return ResourceManager.GetString("BreakpointRemarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a patch file for use with Emukon&apos;s debugger..
         /// </summary>
         internal static string EmukonPatchDescription {
