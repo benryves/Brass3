@@ -9,6 +9,8 @@ namespace Brass3 {
 	/// </summary>
 	public class Breakpoint {
 
+		#region Types
+
 		/// <summary>
 		/// Describes the event that triggers the breakpoint.
 		/// </summary>
@@ -32,6 +34,15 @@ namespace Brass3 {
 			MemoryWrite = 0x04,
 		}
 
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		/// Gets the compiler that created this breakpoint.
+		/// </summary>
+		public Compiler Compiler { get; private set; }
+
 		/// <summary>
 		/// Gets or sets the page that the breakpoint occurs on.
 		/// </summary>
@@ -47,6 +58,38 @@ namespace Brass3 {
 		/// </summary>
 		public BreakpointTrigger Trigger { get; set; }
 
+		/// <summary>
+		/// Gets or sets the description of the breakpoint.
+		/// </summary>
+		public string Description { get; set; }
 
+		#endregion
+
+		#region Constructors
+
+		/// <summary>
+		/// Creates an instance of a breakpoint.
+		/// </summary>
+		/// <param name="compiler">The compiler that created the breakpoint.</param>
+		/// <param name="trigger">The event that triggers the breakpoint.</param>
+		/// <param name="address">The address that the breakpoint refers to</param>
+		/// <param name="page">The page that the breakpoint occurs on.</param>
+		/// <param name="description">A description of the breakpoint.</param>
+		public Breakpoint(Compiler compiler, BreakpointTrigger trigger, int address, int page, string description) {
+			this.Compiler = compiler;
+			this.Trigger = trigger;
+			this.Address = address;
+			this.Page = page;
+			this.Description = description;
+		}
+
+		/// <summary>
+		/// Creates an instance of a breakpoint.
+		/// </summary>
+		public Breakpoint(Compiler compiler)
+			: this(compiler, BreakpointTrigger.Execution, (int)compiler.Labels.ProgramCounter.NumericValue, compiler.Labels.ProgramCounter.Page, null) {
+		}
+
+		#endregion
 	}
 }
