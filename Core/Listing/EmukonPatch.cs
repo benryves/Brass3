@@ -30,7 +30,7 @@ namespace Core.Listing {
 			// Dump labels:
 			foreach (var L in compiler.Labels) {
 				
-				if (L.Exported && L != compiler.Labels.ProgramCounter && !string.IsNullOrEmpty(L.Name)) {
+				if (L.Exported && L != compiler.Labels.ProgramCounter && !string.IsNullOrEmpty(L.Name) && !L.IsString) {
 
 					/*
 					Label   <address>, <name>  adds a label
