@@ -320,5 +320,13 @@ namespace Brass3 {
 			get { return this.allInformation.ToArray(); }
 		}
 
+		/// <summary>
+		/// Gets the list of <see cref="Breakpoint"/> created during the compilation.
+		/// </summary>
+		public List<Breakpoint> Breakpoints {
+			get;
+			private set;
+		}
+
 	}
 }

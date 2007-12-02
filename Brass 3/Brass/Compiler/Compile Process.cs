@@ -179,6 +179,7 @@ namespace Brass3 {
 				this.allWarnings.Clear();
 				this.allErrors.Clear();
 				this.allInformation.Clear();
+				this.Breakpoints.Clear();
 
 				// Set the assembler:
 				if (this.assembler == null) {

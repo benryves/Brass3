@@ -40,6 +40,7 @@ namespace Brass3 {
 			this.allErrors = new List<NotificationEventArgs>();
 			this.allWarnings = new List<NotificationEventArgs>();
 			this.allInformation = new List<NotificationEventArgs>();
+			this.Breakpoints = new List<Breakpoint>();
 		}
 
 
