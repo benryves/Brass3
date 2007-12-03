@@ -17,8 +17,13 @@ namespace Core.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {
-				string Message = source.EvaluateExpression(compiler, Expression).StringValue;
-				if (compiler.CurrentPass == AssemblyPass.WritingOutput) compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Message));
+				Label Message;
+				CompilerExpection ReasonForFailure;
+				bool Success = source.TryEvaluateExpression(compiler, Expression, out Message, out ReasonForFailure);
+				if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
+					if (!Success) throw ReasonForFailure;
+					compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Message.StringValue));
+				}
 			}
 			if (directive == "echoln" && compiler.CurrentPass == AssemblyPass.WritingOutput) compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Environment.NewLine));
 		}
