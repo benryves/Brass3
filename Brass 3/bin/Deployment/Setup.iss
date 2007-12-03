@@ -2,7 +2,7 @@
 ; Ben Ryves / Bee Development 2007.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 8
+AppVerName=Brass 3 Beta 9
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
@@ -75,6 +75,7 @@ Source: "Release Notes.rtf"; DestDir: "{app}\Documentation"; Flags: ignoreversio
 ; Developer Notes:
 Source: "..\Release\Brass.chm"; DestDir: "{app}\Documentation"; Flags: ignoreversion; Components: "Developer\Reference";
 Source: "..\Release\Brass.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: "Developer\XML";
+Source: "Source Release\Source.zip"; DestDir: "{app}"; Flags: ignoreversion; Components: "Developer\Source";
 
 ; Translations:
 Source: "..\Release\nl\Brass.resources.dll"; DestDir: "{app}\nl"; Flags: ignoreversion; Components: "Translations\Dutch";
@@ -124,6 +125,7 @@ Name: "Templates\SMS"; Description: "Sega Master System"; Types: full custom;
 Name: "Templates\SMS\32KB"; Description: "32KB Master System / Game Gear ROM"; Types: full custom;
 
 Name: "Developer"; Description: "Developer Information"; Types: full custom;
+Name: "Developer\Source"; Description: "Source Code"; Types: full custom;
 Name: "Developer\Reference"; Description: "Class Library Reference"; Types: full custom;
 Name: "Developer\XML"; Description: "XML Documentation Comments"; Types: full custom;
 
@@ -143,10 +145,11 @@ Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environmen
 Filename: "{app}\Documentation\Brass Website.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://www.bee-dev.com/?go=brass";
 
 [Icons]
-Name: "{group}\Release Notes"; Filename: "{app}\Documentation\Release Notes.rtf";
-Name: "{group}\Brass Manual"; Filename: "{app}\Help.exe"; Components: "Tools\Help";
+Name: "{group}\Documentation\Release Notes"; Filename: "{app}\Documentation\Release Notes.rtf";
+Name: "{group}Brass Manual"; Filename: "{app}\Help.exe"; Components: "Tools\Help";
 Name: "{group}\Projects Directory"; Filename: "{userdocs}\Brass Projects"; Components: "Samples";
-Name: "{group}\Class Library Reference"; Filename: "{app}\Documentation\Brass.chm"; Components: "Developer\Reference";
+Name: "{group}\Developer Tools\Class Library Reference"; Filename: "{app}\Documentation\Brass.chm"; Components: "Developer\Reference";
+Name: "{group}\Developer Tools\Source Code"; Filename: "{app}\Brass.zip"; Components: "Developer\Source";
 Name: "{group}\{cm:ProgramOnTheWeb,Brass}"; Filename: "{app}\Documentation\Brass Website.url";
 Name: "{group}\{cm:UninstallProgram,Brass}"; Filename: "{uninstallexe}";
 
