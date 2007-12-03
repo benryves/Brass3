@@ -1,8 +1,30 @@
 {\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Tahoma;}{\f1\fswiss\fcharset0 Arial;}{\f2\fnil\fcharset2 Symbol;}}
-{\colortbl ;\red0\green0\blue128;\red163\green21\blue21;\red0\green0\blue0;\red128\green128\blue128;}
-{\*\generator Msftedit 5.41.21.2507;}\viewkind4\uc1\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 8)\par
+{\colortbl ;\red0\green0\blue0;\red0\green0\blue128;\red128\green128\blue128;\red163\green21\blue21;}
+{\*\generator Msftedit 5.41.21.2507;}\viewkind4\uc1\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 9)\par
 \par
-\b0 Corrected a $ and @ label resolution bug fixed.\par
+\b0 Further label-related parsing bugs repaired.\par
+\par
+\cf1 A usage type is associated with labels, and can be set to \cf2 Execution\cf1 , \cf2 Variable\cf1  or \cf2 Constant\cf1 .\par
+\cf0\par
+Added internal support for breakpoints. The breakpoint type can refer to execution, data read or data write breakpoints (as flags, so a single breakpoint could refer to a data read or a data write). Each breakpoint has an address and page associated with it, as well as a text description. Breakpoints do, unfortunately, rely on external debuggers recognising them.\par
+\par
+A \cf2 .breakpoint\cf0  directive has been added, currently only with support for execution breakpoints at the current location.\par
+\par
+Added an \cf2 emukonpatch\cf0  listing writer for the Sega Master System and Game Gear debugging emulator Emukon. It supports label exports, three types of variable (8-bit byte, 16-bit word and 32-bit dword) and execution breakpoints.\par
+\par
+Released the source code.\par
+\par
+\b Known Issues\b0\par
+\par
+\pard{\pntext\f2\'B7\tab}{\*\pn\pnlvlblt\pnf2\pnindent0{\pntxtb\'B7}}\fi-284\li710 Conditional operator (?:) doesn't work properly. You can use the \cf2 if()\cf0  function as a workaround.\f1\par
+\f0{\pntext\f2\'B7\tab}As some reusable labels look like unary operators, using a reusable label in the same statement as a function that doesn't return a value - such as \cf2 bcall()\cf0  - silently fails to create the label. If you use a reusable label on the same line as such a function, you can insert a \\ character to be safe.\f1\par
+\f0{\pntext\f2\'B7\tab}If output data overlaps itself (\cf3 .org $00 \\ .db 1 \\ .org $00 \\ .db 2\cf0 ) no error is reported.\f1\par
+\f0{\pntext\f2\'B7\tab}Zip classes aren't documented. I didn't write them, and hope to get rid of them soon (to be replaced by my own) due to some slightly bizarre design decisions by the original author.\f1\par
+\f0{\pntext\f2\'B7\tab}TI applications are signed by an external COM object provided by the TI-83 Plus SDK -- not very cross platform friendly, I'm afraid.\f1\par
+\pard\b\f0\par
+3.0.0.0 Beta 8\par
+\par
+\pard\li284\b0 Corrected a $ and @ label resolution bug.\par
 \par
 Added a Dutch translation to Brass.exe by Timendus.\par
 \par
@@ -10,21 +32,13 @@ Added a feature to make sure that flow through the compiler source is the same o
 \par
 Changed the way that reusable labels are checked, fixing cases where the assembler appears to hang when resolving the label name (in these cases it would in fact loop around past int.MaxValue and pick the first reusable label in the file).\par
 \par
-Added a check for empty functions to the \cf1 .function\cf0  directive.\par
+Added a check for empty functions to the \cf2 .function\cf0  directive.\par
 \par
-Changed string constants in core plugin collection to strings in a resource file, and added s\fs16 upport for plugin documentation attributes to be extracted from resource files (specify the documentation attribute in the form \cf2 resources://ResourceFileName/ResourceStringName\cf3 ). This can allow for translated documentation.\fs17\par
-\cf0\par
-\b Known Issues\b0\par
-\par
-\pard{\pntext\f2\'B7\tab}{\*\pn\pnlvlblt\pnf2\pnindent0{\pntxtb\'B7}}\fi-284\li710 Conditional operator (?:) doesn't work properly. You can use the \cf1 if()\cf0  function as a workaround.\f1\par
-\f0{\pntext\f2\'B7\tab}As some reusable labels look like unary operators, using a reusable label in the same statement as a function that doesn't return a value - such as \cf1 bcall()\cf0  - silently fails to create the label. If you use a reusable label on the same line as such a function, you can insert a \\ character to be safe.\f1\par
-\f0{\pntext\f2\'B7\tab}If output data overlaps itself (\cf4 .org $00 \\ .db 1 \\ .org $00 \\ .db 2\cf0 ) no error is reported.\f1\par
-\f0{\pntext\f2\'B7\tab}Zip classes aren't documented. I didn't write them, and hope to get rid of them soon (to be replaced by my own) due to some slightly bizarre design decisions by the original author.\f1\par
-\f0{\pntext\f2\'B7\tab}TI applications are signed by an external COM object provided by the TI-83 Plus SDK -- not very cross platform friendly, I'm afraid.\f1\par
-\pard\b\f0\par
+Changed string constants in core plugin collection to strings in a resource file, and added s\fs16 upport for plugin documentation attributes to be extracted from resource files (specify the documentation attribute in the form \cf4 resources://ResourceFileName/ResourceStringName\cf1 ). This can allow for translated documentation.\cf0\b\fs17\par
+\pard\par
 3.0.0.0 Beta 7\par
 \pard\li284\b0\par
-Fixes to module/label access. This was a bit awkward to work on, so hopefully I didn't break anything else in the process. To aid this, there's a new label access keyword, \cf1 global\cf0  (to complement \cf1 parent\cf0 ).\par
+Fixes to module/label access. This was a bit awkward to work on, so hopefully I didn't break anything else in the process. To aid this, there's a new label access keyword, \cf2 global\cf0  (to complement \cf2 parent\cf0 ).\par
 \par
 Removal of hard-coded strings from Brass.exe. They are now declared in resource files.\par
 \par
@@ -32,9 +46,9 @@ Conversion to C#3 and Visual Studio 2008. The project still targets .NET 2.0, ho
 \pard\par
 3.0.0.0 Beta 6\b0\par
 \pard\li284\par
-Numerous fixes to Intel HEX writer (checksum calculation, page numbering, order of output); List file writers are run; Improved error detection on \cf1 .page\cf0  and \cf1 .defpage\cf0  directives.\par
+Numerous fixes to Intel HEX writer (checksum calculation, page numbering, order of output); List file writers are run; Improved error detection on \cf2 .page\cf0  and \cf2 .defpage\cf0  directives.\par
 \par
-\cf1 .incscript\cf0  syntax has changed; \cf1 .scriptreference\cf0  directive added.\par
+\cf2 .incscript\cf0  syntax has changed; \cf2 .scriptreference\cf0  directive added.\par
 \par
 Some TI application support along with a template and 2-page sample.\par
 \par
@@ -42,7 +56,7 @@ The Help Viewer now has an index with search-as-you-type functionality.\b\par
 \pard\par
 3.0.0.0 Beta 5\par
 \par
-\pard\li284\b0 New internal source statement layout (linked list rather than fixed indexing) means that statements can be inserted at any position and redirected at any point - so loops work inside \cf1 eval()\cf0 , you can include external files inside \cf1 .sections\cf0  and so on and so forth. This fixes a few issues (past, present and future) but the change broke a lot of plugins - hopefully I've repaired them now!\par
+\pard\li284\b0 New internal source statement layout (linked list rather than fixed indexing) means that statements can be inserted at any position and redirected at any point - so loops work inside \cf2 eval()\cf0 , you can include external files inside \cf2 .sections\cf0  and so on and so forth. This fixes a few issues (past, present and future) but the change broke a lot of plugins - hopefully I've repaired them now!\par
 \par
 New plugin collection for scripting lets you script the assembler in any .NET-compatible language without needing to develop and install plugins. The documentation contains some samples in Visual Basic and C#.\par
 \par
@@ -58,13 +72,13 @@ I have added some (Sandcastle-generated) documentation on Brass itself. It's not
 \par
 \pard\li284\b0 Major bug fixed where directives calling an internal method to leave temporary modules wouldn't actually leave the module, resulting in bizarre label name resolution bugs.\par
 \par
-Internal functionality to easily retrieve tokens between parentheses added, resulting in easier and more reliable plugin development - and fixing bugs in \cf1 .define\cf0  in the process.\par
+Internal functionality to easily retrieve tokens between parentheses added, resulting in easier and more reliable plugin development - and fixing bugs in \cf2 .define\cf0  in the process.\par
 \par
-\cf1 #macro/#endmacro\cf3  added to complement \cf1 #function/#endfunction\cf3 . Performs exactly the same job, except that arguments are passed as macro replacements by default rather than by value.\par
+\cf2 #macro/#endmacro\cf1  added to complement \cf2 #function/#endfunction\cf1 . Performs exactly the same job, except that arguments are passed as macro replacements by default rather than by value.\par
 \par
-Ability to break code into sections that can be linked together in a particular order via the \cf1 .section/.endsection\cf3  and \cf1 .incsection\cf3  directives.\par
+Ability to break code into sections that can be linked together in a particular order via the \cf2 .section/.endsection\cf1  and \cf2 .incsection\cf1  directives.\par
 \par
-\cf0 Added basic DoorsCS 6 support with a header writer and template.\cf3\par
+\cf0 Added basic DoorsCS 6 support with a header writer and template.\cf1\par
 \par
 \cf0 Improved flexibility in the Help Viewer, including support for "documentation-only" plugins (and hiding plugins that aren't end-user accessible).\b\par
 \pard\par
@@ -78,7 +92,7 @@ Projects no longer raise warnings if no string encoder is set.\par
 \par
 I've added a Sega Master System / Game Gear 32KB ROM template and sample program. The SDSC tag directive has been fixed to work with strings passed in labels.\par
 \par
-The \cf1 .echochar\cf0  directive has been removed.\par
+The \cf2 .echochar\cf0  directive has been removed.\par
 \par
 The project file format and GUI builder have been extended to support display name attributes on build configurations (you get "Sega Master System" instead of "SMS" and "TI-83 Plus, MirageOS" instead of "TI8X.MirageOS").\par
 \pard\b\par
