@@ -275,7 +275,13 @@ namespace Brass3 {
 
 							Plugins.IFunction Function = compiler.Functions[T.Data];
 
-							Label ResultFromFunction = Function.Invoke(compiler, SourceInsideFunction, T.Data.ToLowerInvariant());
+							Label ResultFromFunction;
+							try {
+								ResultFromFunction = Function.Invoke(compiler, SourceInsideFunction, T.Data.ToLowerInvariant());
+							} catch (CompilerExpection ex) {
+								reasonForFailure = ex;
+								return false;
+							}
 
 							for (int j = 0; j < OriginalExpressionIndices.Length; ++j) SourceInsideFunction.Tokens[j].ExpressionGroup = OriginalExpressionIndices[j];
 
