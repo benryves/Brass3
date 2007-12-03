@@ -149,7 +149,7 @@ Name: "{group}\Documentation\Release Notes"; Filename: "{app}\Documentation\Rele
 Name: "{group}\Brass Manual"; Filename: "{app}\Help.exe"; Components: "Tools\Help";
 Name: "{group}\Projects Directory"; Filename: "{userdocs}\Brass Projects"; Components: "Samples";
 Name: "{group}\Developer Tools\Class Library Reference"; Filename: "{app}\Documentation\Brass.chm"; Components: "Developer\Reference";
-Name: "{group}\Developer Tools\Source Code"; Filename: "{app}\Brass.zip"; Components: "Developer\Source";
+Name: "{group}\Developer Tools\Source Code"; Filename: "{app}\Source.zip"; Components: "Developer\Source";
 Name: "{group}\{cm:ProgramOnTheWeb,Brass}"; Filename: "{app}\Documentation\Brass Website.url";
 Name: "{group}\{cm:UninstallProgram,Brass}"; Filename: "{uninstallexe}";
 
