@@ -44,7 +44,7 @@ If you develop a complex function that is frequently used in your source file co
 
 		public Function(Compiler c) {
 			this.UserDefinedFunctions = new Dictionary<string, List<FunctionDeclaration>>();
-			c.PassBegun += delegate(object sender, EventArgs e) {
+			c.CompilationBegun += delegate(object sender, EventArgs e) {
 				this.DeclaringFunction = null;
 				this.UserDefinedFunctions.Clear();
 			};

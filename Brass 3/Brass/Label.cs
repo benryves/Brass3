@@ -234,7 +234,6 @@ namespace Brass3 {
 					this.OnValueChanged(new ValueChangedEventArgs(ValueChangedEventArgs.FieldChangedType.Page, Old, this.page));
 				} else {
 					if (this.IsConstant) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
-					this.lastAssignedPass = this.collection.Compiler.CurrentPass;
 					if (this.created) ++ChangeCount;
 					this.created = true;
 					this.isString = false;
@@ -256,7 +255,6 @@ namespace Brass3 {
 			}
 			set {
 				if (this.IsConstant) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
-				this.lastAssignedPass = this.collection.Compiler.CurrentPass;
 				this.created = true;
 				this.page = value;
 			}
@@ -287,13 +285,6 @@ namespace Brass3 {
 			return this.Name + "=" + (this.IsString ? this.StringValue : this.NumericValue.ToString()) + ":" + this.Page;
 		}
 
-		/// <summary>
-		/// Returns true if the label is "defined".
-		/// </summary>
-		/// <remarks>A "defined" label is one that has been created and assigned to during the current pass.</remarks>
-		public bool Defined {
-			get { return this.lastAssignedPass == this.collection.Compiler.CurrentPass; }
-		}
 
 
 		private bool accessingPage = false;

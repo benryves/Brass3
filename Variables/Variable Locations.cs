@@ -17,8 +17,6 @@ namespace Variables {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) return;
-
 			Var Vars = compiler.GetPluginInstanceFromType(typeof(Var)) as Var;
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 1, 2);

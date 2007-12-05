@@ -25,17 +25,7 @@ namespace Core.Directives {
 			if (!File.Exists(Filename)) throw new DirectiveArgumentException(source.Tokens[index], string.Format(Strings.ErrorFileNotFound, Filename));
 
 			try {
-				using (FileStream FS = File.OpenRead(Filename)) {
-					switch (compiler.CurrentPass) {
-						case AssemblyPass.CreatingLabels:
-							compiler.IncrementProgramAndOutputCounters((int)FS.Length);
-							break;
-						case AssemblyPass.WritingOutput:
-							int Data = 0;
-							while ((Data = FS.ReadByte()) != -1) compiler.WriteOutput((byte)Data);
-							break;
-					}
-				}
+				compiler.WriteStaticOutput(File.ReadAllBytes(Filename));
 			} catch (Exception ex) {
 				throw new CompilerExpection(source, ex.Message);
 			}

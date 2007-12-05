@@ -141,25 +141,23 @@ namespace TexasInstruments.Brass.Directives {
 		public AppHeader(Compiler compiler) {
 
 			// Reset state.
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.ProgramRevision = 1;
-					this.BuildNumber = 1;
-					this.ProgramExpirationDate = null;
-					this.OveruseCount = null;
-					this.DisableTISplashScreen = true;
-					this.MaximumHardwareRevision = null;
-					this.LowestBasecode = null;
-					this.Name = "MYAPP";
-					this.Invoked = false;
-					this.ProgramCounter = null;
-					this.OutputCounter = null;
-				}
+			compiler.CompilationBegun += delegate(object sender, EventArgs e) {
+				this.ProgramRevision = 1;
+				this.BuildNumber = 1;
+				this.ProgramExpirationDate = null;
+				this.OveruseCount = null;
+				this.DisableTISplashScreen = true;
+				this.MaximumHardwareRevision = null;
+				this.LowestBasecode = null;
+				this.Name = "MYAPP";
+				this.Invoked = false;
+				this.ProgramCounter = null;
+				this.OutputCounter = null;
 			};
 
-			compiler.PassEnded += delegate(object sender, EventArgs e) {
+			compiler.CompilationEnded += delegate(object sender, EventArgs e) {
 
-				if (this.Invoked && compiler.CurrentPass == AssemblyPass.WritingOutput) {
+				if (this.Invoked) {
 
 					compiler.Labels.ProgramCounter.NumericValue = this.ProgramCounter.NumericValue;
 					compiler.Labels.ProgramCounter.Page = this.ProgramCounter.Page;
@@ -218,7 +216,7 @@ namespace TexasInstruments.Brass.Directives {
 					byte[] RawHeaderData = HeaderData.ToArray();
 					Array.Resize<byte>(ref RawHeaderData, 128);
 
-					compiler.WriteOutput(RawHeaderData);
+					compiler.WriteStaticOutput(RawHeaderData);
 				}
 
 			};
@@ -231,21 +229,16 @@ namespace TexasInstruments.Brass.Directives {
 		private Label OutputCounter;
 		private Label ProgramCounter;
 		private bool Invoked = false;
-		
+
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels:
-					// 128 bytes of headery goodness.
-					compiler.IncrementProgramAndOutputCounters(128);
-					break;
-				case AssemblyPass.WritingOutput:
-					Invoked = true;
-					this.OutputCounter = compiler.Labels.OutputCounter.Clone() as Label;
-					this.ProgramCounter = compiler.Labels.ProgramCounter.Clone() as Label;
-					compiler.WriteOutput(new byte[128], true); // 128 bytes of dud data.
-					break;
-			}
+			Invoked = true;
+			this.OutputCounter = compiler.Labels.OutputCounter.Clone() as Label;
+			this.ProgramCounter = compiler.Labels.ProgramCounter.Clone() as Label;
+			bool WasBackground = compiler.DataWrittenToBackground;
+			compiler.DataWrittenToBackground = true;
+			compiler.WriteStaticOutput(new byte[128]); // 128 bytes of dud data.
+			compiler.DataWrittenToBackground = WasBackground;
 		}
 
 		#endregion

@@ -288,151 +288,141 @@ namespace Z80 {
 			// Fetch the instruction that matches this line of code:
 			Instruction I = this.AllInstructions[source.MatchedItem];
 
-			switch (compiler.CurrentPass) {
 
-				case AssemblyPass.CreatingLabels:
-					// We get off lightly in pass 1.
-					compiler.IncrementProgramAndOutputCounters(I.Size);
+			// Storage for the results of the evaluation:
+			List<int> OperandResults = new List<int>(I.Operands.Length);
+
+			int[] SourceArguments = source.GetCommaDelimitedArguments(index + 1, I.Operands.Length);
+			for (int i = 0; i < SourceArguments.Length; ++i) {
+
+				switch (I.Operands[i].Key & Instruction.OperandType.Types) {
+
+					case Instruction.OperandType.Register:
+						// Do nothing!
+						break;
+
+					case Instruction.OperandType.Value:
+						// Evaluate:
+						OperandResults.Add((int)source.EvaluateExpression(compiler, SourceArguments[i]).NumericValue);
+
+						if ((I.Operands[i].Key & Instruction.OperandType.Indirect) == Instruction.OperandType.None) {
+							TokenisedSource CheckAccidentalIndirection = (source.GetExpressionTokens(SourceArguments[i]));
+							if (CheckAccidentalIndirection.Tokens[0].Data == "(" && CheckAccidentalIndirection.GetCloseBracketIndex(0) == CheckAccidentalIndirection.Tokens.Length - 1) {
+								string ErrorMessage = string.Format("Attempted use of indirection with an unsupported instruction ({0}).", I);
+								compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(CheckAccidentalIndirection, ErrorMessage)));
+							}
+						}
+						break;
+
+					case Instruction.OperandType.Index:
+						// Kludge for evaluations of form ix+*
+						TokenisedSource IndexAccess = source.GetExpressionTokens(SourceArguments[i]);
+
+						// Sanity check:
+						if (IndexAccess.Tokens.Length < 3
+							|| IndexAccess.Tokens[1].DataLowerCase != I.Operands[i].Value
+							|| IndexAccess.Tokens[0].Data != "("
+							|| IndexAccess.Tokens[IndexAccess.Tokens.Length - 1].Data != ")"
+							) throw new CompilerExpection(source, "Instruction not implemented properly.");
+
+						if (IndexAccess.Tokens.Length == 3) {
+							// If it's only three tokens, chances are it goes (ix) or (iy):
+							OperandResults.Add(0);
+						} else {
+							// It'll hopefully be (ix*)
+							IndexAccess.ReplaceToken(1, new TokenisedSource.Token[] { });
+							OperandResults.Add((int)IndexAccess.EvaluateExpression(compiler).NumericValue);
+						}
+						break;
+					default:
+						throw new CompilerExpection(source, "Instruction not implemented properly.");
+				}
+
+			}
+
+			// Now we have calculated the values of the various arguments,
+			// We need to build and output the data.
+
+			// The following code is pretty much a copy-and-paste job from Brass 1. Sorry.
+
+			if (I.Class == Instruction.InstructionClass.ZIndex && OperandResults.Count == 1) {
+				OperandResults[0] &= 0xFF;
+			}
+
+			if (OperandResults.Count > 0 && I.Class != Instruction.InstructionClass.ZBit && !(I.Class == Instruction.InstructionClass.ZIndex && OperandResults.Count != 1)) {
+				OperandResults[0] <<= I.Shift;
+				OperandResults[0] |= I.Or;
+			}
+
+			byte[] OutputData = new byte[I.Size];
+			for (int i = 0; i < I.Opcodes.Length; ++i) {
+				OutputData[i] = I.Opcodes[i];
+			}
+
+
+			switch (I.Class) {
+				case Instruction.InstructionClass.None:
+					for (int i = I.Opcodes.Length; i < I.Size; ++i) {
+						OutputData[i] = (byte)OperandResults[0];
+						OperandResults[0] >>= 8;
+					}
 					break;
+				case Instruction.InstructionClass.Relative:
+					OperandResults[0] -= (int)(compiler.Labels.ProgramCounter.NumericValue + I.Size);
+					if (OperandResults[0] > 127 || OperandResults[0] < -128) {
+						throw new CompilerExpection(source.Tokens[index], "Range of relative jump exceeded.");
+					}
+					OutputData[OutputData.Length - 1] = (byte)OperandResults[0];
+					break;
+				case Instruction.InstructionClass.ZIndex:
+					if (OperandResults.Count == 2) {
+						for (int i = I.Opcodes.Length; i < I.Size; i++) {
+							OutputData[i] = (byte)OperandResults[i - I.Opcodes.Length];
+						}
+					} else {
+						for (int j = I.Opcodes.Length; j < I.Size; ++j) {
+							OutputData[j] = (byte)(OperandResults[0] & 0xFF);
+							OperandResults[0] >>= 8;
+						}
+					}
 
-				case AssemblyPass.WritingOutput:
+					break;
+				case Instruction.InstructionClass.ZBit:
+					if (OperandResults[0] < 0 || OperandResults[0] > 7) {
+						throw new CompilerExpection(source.Tokens[index], "Bit index must be in the range 0-7 (not " + OperandResults[0] + ").");
+					}
+					OperandResults[0] *= 8;
+					if (I.Size == 4) {
+						int SecondArgument = OperandResults[1];
 
-					// Storage for the results of the evaluation:
-					List<int> OperandResults = new List<int>(I.Operands.Length);
-
-					int[] SourceArguments = source.GetCommaDelimitedArguments(index + 1, I.Operands.Length);
-					for (int i = 0; i < SourceArguments.Length; ++i) {
-
-						switch (I.Operands[i].Key & Instruction.OperandType.Types) {
-
-							case Instruction.OperandType.Register:
-								// Do nothing!
-								break;
-
-							case Instruction.OperandType.Value:
-								// Evaluate:
-								OperandResults.Add((int)source.EvaluateExpression(compiler, SourceArguments[i]).NumericValue);
-
-								if ((I.Operands[i].Key & Instruction.OperandType.Indirect) == Instruction.OperandType.None) {
-									TokenisedSource CheckAccidentalIndirection = (source.GetExpressionTokens(SourceArguments[i]));
-									if (CheckAccidentalIndirection.Tokens[0].Data == "(" && CheckAccidentalIndirection.GetCloseBracketIndex(0) == CheckAccidentalIndirection.Tokens.Length - 1) {
-										string ErrorMessage = string.Format("Attempted use of indirection with an unsupported instruction ({0}).", I);
-										compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(CheckAccidentalIndirection, ErrorMessage)));
-									}
-								}
-								break;
-
-							case Instruction.OperandType.Index:
-								// Kludge for evaluations of form ix+*
-								TokenisedSource IndexAccess = source.GetExpressionTokens(SourceArguments[i]);
-
-								// Sanity check:
-								if (IndexAccess.Tokens.Length < 3
-									|| IndexAccess.Tokens[1].DataLowerCase != I.Operands[i].Value
-									|| IndexAccess.Tokens[0].Data != "("
-									|| IndexAccess.Tokens[IndexAccess.Tokens.Length - 1].Data != ")"
-									) throw new CompilerExpection(source, "Instruction not implemented properly.");
-
-								if (IndexAccess.Tokens.Length == 3) {
-									// If it's only three tokens, chances are it goes (ix) or (iy):
-									OperandResults.Add(0);
-								} else {
-									// It'll hopefully be (ix*)
-									IndexAccess.ReplaceToken(1, new TokenisedSource.Token[] { });
-									OperandResults.Add((int)IndexAccess.EvaluateExpression(compiler).NumericValue);
-								}
-								break;
-							default:
-								throw new CompilerExpection(source, "Instruction not implemented properly.");
+						if (SecondArgument > 127 || SecondArgument < -128) {
+							throw new CompilerExpection(source.Tokens[index], "Range of IX must be between -128 and 127 (not " + SecondArgument + ").");
 						}
 
+						OutputData[2] = (byte)((SecondArgument | (I.Or & 0xFF)) & 0xFF);
+						OutputData[3] = (byte)(OperandResults[0] | (I.Or >> 8));
+					} else if (I.Size == 2) {
+						OutputData[1] += (byte)(OperandResults[0]);
+					} else {
+						throw new CompilerExpection(source.Tokens[index], "ZBIT instruction not supported.");
 					}
-
-					// Now we have calculated the values of the various arguments,
-					// We need to build and output the data.
-
-					// The following code is pretty much a copy-and-paste job from Brass 1. Sorry.
-
-					if (I.Class == Instruction.InstructionClass.ZIndex && OperandResults.Count == 1) {
-						OperandResults[0] &= 0xFF;
-					}
-
-					if (OperandResults.Count > 0 && I.Class != Instruction.InstructionClass.ZBit && !(I.Class == Instruction.InstructionClass.ZIndex && OperandResults.Count != 1)) {
-						OperandResults[0] <<= I.Shift;
-						OperandResults[0] |= I.Or;
-					}
-
-					byte[] OutputData = new byte[I.Size];
-					for (int i = 0; i < I.Opcodes.Length; ++i) {
-						OutputData[i] = I.Opcodes[i];
-					}
-
-
-					switch (I.Class) {
-						case Instruction.InstructionClass.None:
-							for (int i = I.Opcodes.Length; i < I.Size; ++i) {
-								OutputData[i] = (byte)OperandResults[0];
-								OperandResults[0] >>= 8;
-							}
-							break;
-						case Instruction.InstructionClass.Relative:
-							OperandResults[0] -= (int)(compiler.Labels.ProgramCounter.NumericValue + I.Size);
-							if (OperandResults[0] > 127 || OperandResults[0] < -128) {
-								throw new CompilerExpection(source.Tokens[index], "Range of relative jump exceeded.");
-							}
-							OutputData[OutputData.Length - 1] = (byte)OperandResults[0];
-							break;
-						case Instruction.InstructionClass.ZIndex:
-							if (OperandResults.Count == 2) {
-								for (int i = I.Opcodes.Length; i < I.Size; i++) {
-									OutputData[i] = (byte)OperandResults[i - I.Opcodes.Length];
-								}
-							} else {
-								for (int j = I.Opcodes.Length; j < I.Size; ++j) {
-									OutputData[j] = (byte)(OperandResults[0] & 0xFF);
-									OperandResults[0] >>= 8;
-								}
-							}
-
-							break;
-						case Instruction.InstructionClass.ZBit:
-							if (OperandResults[0] < 0 || OperandResults[0] > 7) {
-								throw new CompilerExpection(source.Tokens[index], "Bit index must be in the range 0-7 (not " + OperandResults[0] + ").");
-							}
-							OperandResults[0] *= 8;
-							if (I.Size == 4) {
-								int SecondArgument = OperandResults[1];
-
-								if (SecondArgument > 127 || SecondArgument < -128) {
-									throw new CompilerExpection(source.Tokens[index], "Range of IX must be between -128 and 127 (not " + SecondArgument + ").");
-								}
-
-								OutputData[2] = (byte)((SecondArgument | (I.Or & 0xFF)) & 0xFF);
-								OutputData[3] = (byte)(OperandResults[0] | (I.Or >> 8));
-							} else if (I.Size == 2) {
-								OutputData[1] += (byte)(OperandResults[0]);
-							} else {
-								throw new CompilerExpection(source.Tokens[index], "ZBIT instruction not supported.");
-							}
-							break;
-						case Instruction.InstructionClass.Restart:
-							if (OperandResults[0] < 0x00 || OperandResults[0] > 0x38) {
-								throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses between $00 and $38 inclusive.");
-							} else if ((OperandResults[0] & 0x07) != 0) {
-								throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses divisible by eight.");
-							} else {
-								OutputData[0] = (byte)((int)OutputData[0] + OperandResults[0]);
-							}
-							break;
-						default:
-							throw new NotImplementedException();
-					}
-
-					// Commit!
-					compiler.WriteOutput(OutputData);
-
 					break;
-			}	
+				case Instruction.InstructionClass.Restart:
+					if (OperandResults[0] < 0x00 || OperandResults[0] > 0x38) {
+						throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses between $00 and $38 inclusive.");
+					} else if ((OperandResults[0] & 0x07) != 0) {
+						throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses divisible by eight.");
+					} else {
+						OutputData[0] = (byte)((int)OutputData[0] + OperandResults[0]);
+					}
+					break;
+				default:
+					throw new NotImplementedException();
+			}
+
+			// Commit!
+			compiler.WriteStaticOutput(OutputData);
+
 		}
 
 

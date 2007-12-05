@@ -183,18 +183,6 @@ namespace Brass3 {
 			get { return this.dataStructures; }
 		}
 
-
-		private AssemblyPass currentPass;
-		/// <summary>
-		/// Gets the current pass of the compiler.
-		/// </summary>
-		public AssemblyPass CurrentPass {
-			get {
-				if (!this.IsCompiling) return AssemblyPass.None;
-				return this.currentPass; 
-			}
-		}
-
 		private Endianness endianness;
 		/// <summary>
 		/// Gets or sets the current endianness of the compiler.

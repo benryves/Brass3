@@ -72,28 +72,24 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 			List<SectionRange> SectionRangeData;
 			switch (directive) {
 				case "section":
-					if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-						if (CurrentSection != null) throw new CompilerExpection(source, string.Format(Strings.ErrorSectionAlreadyInsideSection, this.CurrentSection));
-						this.CurrentSection = (source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.StringOrTokenArgument)[0] as string).ToLowerInvariant();
-						if (!this.Sections.TryGetValue(this.CurrentSection, out SectionRangeData)) {
-							SectionRangeData = new List<SectionRange>();
-							this.Sections.Add(this.CurrentSection, SectionRangeData);
-						}
-						SectionRangeData.Add(new SectionRange(compiler.CurrentStatement));
+					if (CurrentSection != null) throw new CompilerExpection(source, string.Format(Strings.ErrorSectionAlreadyInsideSection, this.CurrentSection));
+					this.CurrentSection = (source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.StringOrTokenArgument)[0] as string).ToLowerInvariant();
+					if (!this.Sections.TryGetValue(this.CurrentSection, out SectionRangeData)) {
+						SectionRangeData = new List<SectionRange>();
+						this.Sections.Add(this.CurrentSection, SectionRangeData);
 					}
+					SectionRangeData.Add(new SectionRange(compiler.CurrentStatement));
 					compiler.SwitchOff(typeof(Section));
 					break;
 				case "endsection":
-					if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-						if (CurrentSection == null) throw new CompilerExpection(source, Strings.ErrorSectionNoSectionToEnd);
-						SectionRangeData = this.Sections[this.CurrentSection];
-						SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
-						Range.LastStatement = compiler.CurrentStatement.Previous;
-						if (Range.LastStatement == Range.FirstStatement) {
-							SectionRangeData.Remove(Range);
-						}
-						this.CurrentSection = null;
+					if (CurrentSection == null) throw new CompilerExpection(source, Strings.ErrorSectionNoSectionToEnd);
+					SectionRangeData = this.Sections[this.CurrentSection];
+					SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
+					Range.LastStatement = compiler.CurrentStatement.Previous;
+					if (Range.LastStatement == Range.FirstStatement) {
+						SectionRangeData.Remove(Range);
 					}
+					this.CurrentSection = null;
 					compiler.SwitchOn();
 					break;
 			}
@@ -105,11 +101,8 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 			this.Sections = new Dictionary<string, List<SectionRange>>();
 			
 			// Clear sections at start of pass 1.
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
+			compiler.CompilationBegun += delegate(object sender, EventArgs e) {
 				this.CurrentSection = null;
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.Sections.Clear();
-				}
 			};
 
 		}

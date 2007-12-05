@@ -100,8 +100,8 @@ The directive will report a warning if there is not two bytes output before this
 					Arguments = new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String, TokenisedSource.ArgumentType.Filename | TokenisedSource.ArgumentType.Optional };
 					break;
 			}
-				
-				
+
+
 
 			object[] ParsedArguments = source.GetCommaDelimitedArguments(compiler, index + 1, Arguments);
 
@@ -115,15 +115,13 @@ The directive will report a warning if there is not two bytes output before this
 				compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Output writer is neither TI83 nor TI8X; assuming TI-83.")));
 			}
 
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
-				if (Is83Plus) {
-					if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length != 2) {
-						compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Invalid data before the the header.")));
-					}
-				} else {
-					if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length > 0) {
-						compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Data has already been output before the the header.")));
-					}
+			if (Is83Plus) {
+				if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length != 2) {
+					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Invalid data before the the header.")));
+				}
+			} else {
+				if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length > 0) {
+					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Data has already been output before the the header.")));
 				}
 			}
 
@@ -158,65 +156,58 @@ The directive will report a warning if there is not two bytes output before this
 			 * .dw ALE               // 2 bytes.
 			 */
 
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels:
-					compiler.IncrementProgramAndOutputCounters(HeaderSize + ProgramName.Length);
-					break;
-				case AssemblyPass.WritingOutput:
-					switch (Shell) {
-						case ShellType.Ion: {
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Ret);
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.JrNC);
-								compiler.WriteOutput((byte)(ProgramName.Length + 1));
-								compiler.WriteOutput(ProgramName);
-								compiler.WriteOutput((byte)0x00);
-							} break;
-						case ShellType.MirageOS: {
-								if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "MirageOS header is only valid with the TI-83 Plus output writer.")));
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Ret);
-								compiler.WriteOutput((byte)0x01);
-								byte[] Icon = new byte[30];
-								if (ParsedArguments.Length == 2) Icon = GetIcon(ParsedArguments[1] as string, 15);
-								compiler.WriteOutput(Icon);
-								compiler.WriteOutput(ProgramName);
-								compiler.WriteOutput((byte)0x00);
-							} break;
-						case ShellType.Venus: {
-								if (Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "Venus header is only valid with the TI-83 output writer.")));
-								compiler.WriteOutput(new byte[] { 0xE7, 0x39, 0x5F, 0x5B, 0x56, 0x3F, 0x00 });
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.JrNC);
-								compiler.WriteOutput((byte)(ProgramName.Length + (HeaderSize - 9)));
-								compiler.WriteOutput(ProgramName);
-								compiler.WriteOutput((byte)0x00);
-								if (ParsedArguments.Length == 2) {
-									byte[] Icon = GetIcon(ParsedArguments[1] as string, 16);
-									compiler.WriteOutput(Icon);
-								}
-							} break;
-						case ShellType.DoorsCS: {
-								if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "DoorsCS header is only valid with the TI-83 Plus output writer.")));
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.XorD);
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Ret);
-								compiler.WriteOutput((byte)Functions.BCall.Z80Instruction.Jr);
+			switch (Shell) {
+				case ShellType.Ion: {
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Ret);
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.JrNC);
+						compiler.WriteStaticOutput((byte)(ProgramName.Length + 1));
+						compiler.WriteStaticOutput(ProgramName);
+						compiler.WriteStaticOutput((byte)0x00);
+					} break;
+				case ShellType.MirageOS: {
+						if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "MirageOS header is only valid with the TI-83 Plus output writer.")));
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Ret);
+						compiler.WriteStaticOutput((byte)0x01);
+						byte[] Icon = new byte[30];
+						if (ParsedArguments.Length == 2) Icon = GetIcon(ParsedArguments[1] as string, 15);
+						compiler.WriteStaticOutput(Icon);
+						compiler.WriteStaticOutput(ProgramName);
+						compiler.WriteStaticOutput((byte)0x00);
+					} break;
+				case ShellType.Venus: {
+						if (Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "Venus header is only valid with the TI-83 output writer.")));
+						compiler.WriteStaticOutput(new byte[] { 0xE7, 0x39, 0x5F, 0x5B, 0x56, 0x3F, 0x00 });
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.JrNC);
+						compiler.WriteStaticOutput((byte)(ProgramName.Length + (HeaderSize - 9)));
+						compiler.WriteStaticOutput(ProgramName);
+						compiler.WriteStaticOutput((byte)0x00);
+						if (ParsedArguments.Length == 2) {
+							byte[] Icon = GetIcon(ParsedArguments[1] as string, 16);
+							compiler.WriteStaticOutput(Icon);
+						}
+					} break;
+				case ShellType.DoorsCS: {
+						if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "DoorsCS header is only valid with the TI-83 Plus output writer.")));
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.XorD);
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Ret);
+						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Jr);
 
-								if (ProgramName.Length != 0) {
-									Array.Resize<byte>(ref ProgramName, ProgramName.Length + 1);
-								}
+						if (ProgramName.Length != 0) {
+							Array.Resize<byte>(ref ProgramName, ProgramName.Length + 1);
+						}
 
-								byte[] IconData = new byte[0];
-								if (ParsedArguments.Length == 2) IconData = GetIcon(ParsedArguments[1] as string, 16);
-								compiler.WriteOutput((byte)(8 + ProgramName.Length + IconData.Length));
-								compiler.WriteOutput((ushort)(ProgramName.Length == 0 ? 0x0000 : compiler.Labels.ProgramCounter.NumericValue + 8));
-								compiler.WriteOutput((ushort)0x0005);
-								compiler.WriteOutput((ushort)(IconData.Length == 0 ? 0x0000 : compiler.Labels.ProgramCounter.NumericValue + 4 + ProgramName.Length));
-								compiler.WriteOutput((ushort)0x0000);
-								compiler.WriteOutput(ProgramName);
-								compiler.WriteOutput(IconData);
-								
-							} break;
-					}
-					break;
-			}			
+						byte[] IconData = new byte[0];
+						if (ParsedArguments.Length == 2) IconData = GetIcon(ParsedArguments[1] as string, 16);
+						compiler.WriteStaticOutput((byte)(8 + ProgramName.Length + IconData.Length));
+						compiler.WriteStaticOutput((ushort)(ProgramName.Length == 0 ? 0x0000 : compiler.Labels.ProgramCounter.NumericValue + 8));
+						compiler.WriteStaticOutput((ushort)0x0005);
+						compiler.WriteStaticOutput((ushort)(IconData.Length == 0 ? 0x0000 : compiler.Labels.ProgramCounter.NumericValue + 4 + ProgramName.Length));
+						compiler.WriteStaticOutput((ushort)0x0000);
+						compiler.WriteStaticOutput(ProgramName);
+						compiler.WriteStaticOutput(IconData);
+
+					} break;
+			}
 		}
 
 		private byte[] GetIcon(string iconName, int size) {

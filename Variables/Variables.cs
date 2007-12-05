@@ -64,8 +64,6 @@ namespace Variables {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) return;
-
 			if (index > source.Tokens.Length - 3) throw new DirectiveArgumentException(source.Tokens[index], "Variable declarations require at least a type and a name.");
 
 			source.GetCommaDelimitedArguments(index + 1);
@@ -108,15 +106,15 @@ namespace Variables {
 			this.ToAllocate = new List<VariableToAllocate>();
 			this.AlreadyAllocated = new List<string>();
 			this.VariableLocations = new List<VariableAllocationRegion>();
-			c.PassBegun += new EventHandler(c_PassBegun);
-			c.PassEnded += new EventHandler(c_PassEnded);
+			c.CompilationBegun += new EventHandler(c_PassBegun);
+			c.CompilationEnded += new EventHandler(c_PassEnded);
 		}
 
 		void c_PassEnded(object sender, EventArgs e) {
 			// Perform the allocation..!
 			Compiler compiler = sender as Compiler;
 
-			if (compiler.CurrentPass == AssemblyPass.CreatingLabels && this.ToAllocate.Count > 0) {
+			if (this.ToAllocate.Count > 0) {
 
 				compiler.Labels.CurrentModule = "";
 

@@ -103,9 +103,6 @@ namespace Core.Output {
 
 		public RawPages(Compiler compiler) {
 			this.PageDeclarations = new Dictionary<int, PageDeclaration>();
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) this.PageDeclarations.Clear();
-			};
 		}
 
 

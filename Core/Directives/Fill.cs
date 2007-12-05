@@ -17,7 +17,7 @@ namespace Core.Directives {
 	public class Fill : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			
+
 			object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
 				TokenisedSource.ArgumentType.Value | TokenisedSource.ArgumentType.Positive,
 				TokenisedSource.ArgumentType.Value | TokenisedSource.ArgumentType.Optional,
@@ -26,15 +26,8 @@ namespace Core.Directives {
 			int Amount = (int)(double)Args[0];
 			byte FillValue = Args.Length == 2 ? (byte)(double)Args[1] : compiler.EmptyFill;
 
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels:
-					compiler.IncrementProgramAndOutputCounters(Amount);
-					break;
-				case AssemblyPass.WritingOutput:
-					for (int i = 0; i < Amount; ++i) {
-						compiler.WriteOutput(FillValue);						
-					}
-					break;
+			for (int i = 0; i < Amount; ++i) {
+				compiler.WriteStaticOutput(FillValue);
 			}
 		}
 

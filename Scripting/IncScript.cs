@@ -167,8 +167,8 @@ ClickCount = 0
 
 		public IncScript(Compiler compiler) {
 			this.WrappedFunctions = new Queue<List<ScriptWrapper>>();
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) this.WrappedFunctions.Clear();
+			compiler.CompilationBegun += delegate(object sender, EventArgs e) {
+				this.WrappedFunctions.Clear();
 			};
 		}
 
@@ -176,137 +176,131 @@ ClickCount = 0
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-
-				// Runtime-created wrapper function around the .NET method.
-				List<ScriptWrapper> Wrappers = new List<ScriptWrapper>();
+			// Runtime-created wrapper function around the .NET method.
+			List<ScriptWrapper> Wrappers = new List<ScriptWrapper>();
 
 
-				// Try - if we throw an exception we'll add a dummy anyway to keep the queue happy.
-				try {
+			// Try - if we throw an exception we'll add a dummy anyway to keep the queue happy.
+			try {
 
-					object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1,
-						new TokenisedSource.ArgumentType[] {
+				object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1,
+					new TokenisedSource.ArgumentType[] {
 							TokenisedSource.ArgumentType.Filename,
 							TokenisedSource.ArgumentType.String | TokenisedSource.ArgumentType.Optional | TokenisedSource.ArgumentType.RepeatForever,
 						}
+				);
+
+				string[] ScriptFiles = Array.ConvertAll<object, string>(Args, delegate(object o) { return o as string; });
+
+				// Hunt through all available compilers and dig out one with a matching extension.
+				CodeDomProvider Provider = null;
+				string Extension = Path.GetExtension(ScriptFiles[0]).ToLowerInvariant();
+				if (Extension.Length > 0 && Extension[0] == '.') Extension = Extension.Substring(1);
+				foreach (CompilerInfo Info in CodeDomProvider.GetAllCompilerInfo()) {
+					if (Info.IsCodeDomProviderTypeValid) {
+						CodeDomProvider TestProvider = Info.CreateProvider();
+						if (TestProvider.FileExtension.ToLowerInvariant() == Extension) {
+							Provider = TestProvider;
+							break;
+						}
+					}
+				}
+
+				if (Provider == null) throw new CompilerExpection(source, "Script language not found.");
+
+				// Compile the bugger:
+				CompilerParameters Parameters = new CompilerParameters();
+				Parameters.GenerateExecutable = false;
+				Parameters.GenerateInMemory = true;
+				Parameters.TreatWarningsAsErrors = false;
+
+				ScriptReference Refs = compiler.GetPluginInstanceFromType<ScriptReference>();
+				if (Refs != null) {
+					Parameters.ReferencedAssemblies.AddRange(Refs.References.ToArray()); // Goes without saying, eh? :)
+				}
+
+				CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFiles);
+
+				// Errors?
+				foreach (CompilerError Error in Results.Errors) {
+					Compiler.NotificationEventArgs Notification = new Compiler.NotificationEventArgs(compiler, Error.ErrorText, Error.FileName, Error.Line);
+					if (Error.IsWarning) {
+						compiler.OnWarningRaised(Notification);
+					} else {
+						compiler.OnErrorRaised(Notification);
+					}
+				}
+
+				// Do nothing if there were errors.
+				if (Results.Errors.HasErrors) return;
+
+
+				// Grab the public classes from the script.
+				foreach (Type T in Results.CompiledAssembly.GetExportedTypes()) {
+					if (!T.IsClass) continue;
+
+					// Try and create an instance of the class.
+					object ClassInstance = null;
+
+					// Dig out a constructor.
+					ConstructorInfo InstanceConstructor = null;
+					object[] ConstructorArgs = new object[] { compiler };
+					if ((InstanceConstructor = T.GetConstructor(new Type[] { typeof(Compiler) })) == null) {
+						InstanceConstructor = T.GetConstructor(Type.EmptyTypes);
+						ConstructorArgs = new object[] { };
+					}
+
+					if (ConstructorArgs != null) {
+						ClassInstance = InstanceConstructor.Invoke(BindingFlags.Default, null, ConstructorArgs, CultureInfo.InvariantCulture);
+					}
+
+					List<Type> ValidTypes = new List<Type>(
+						new Type[] { typeof(string), typeof(double), typeof(float), typeof(int), typeof(uint), typeof(short), typeof(ushort), typeof(byte), typeof(sbyte), typeof(bool) }
 					);
 
-					string[] ScriptFiles = Array.ConvertAll<object, string>(Args, delegate(object o) { return o as string; });
+					// Hunt public static methods.
+					foreach (MethodInfo Method in T.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)) {
 
-					// Hunt through all available compilers and dig out one with a matching extension.
-					CodeDomProvider Provider = null;
-					string Extension = Path.GetExtension(ScriptFiles[0]).ToLowerInvariant();
-					if (Extension.Length > 0 && Extension[0] == '.') Extension = Extension.Substring(1);
-					foreach (CompilerInfo Info in CodeDomProvider.GetAllCompilerInfo()) {
-						if (Info.IsCodeDomProviderTypeValid) {
-							CodeDomProvider TestProvider = Info.CreateProvider();
-							if (TestProvider.FileExtension.ToLowerInvariant() == Extension) {
-								Provider = TestProvider;
+						// Valid type?
+						if (!(Method.ReturnType == typeof(void) || ValidTypes.Contains(Method.ReturnType))) continue;
+
+						// Create an array of method parameters.
+						List<TokenisedSource.ArgumentType> MethodParameters = new List<TokenisedSource.ArgumentType>();
+
+						// Iterate over all of them...
+						bool IsValid = true;
+
+						foreach (ParameterInfo Parameter in Method.GetParameters()) {
+
+							if (Parameter.ParameterType == typeof(Compiler)) {
+								// ... :)
+							} else if (Parameter.ParameterType == typeof(Label)) {
+								MethodParameters.Add(TokenisedSource.ArgumentType.Label);
+							} else if (Parameter.ParameterType == typeof(string)) {
+								MethodParameters.Add(TokenisedSource.ArgumentType.String);
+							} else if (ValidTypes.Contains(Parameter.ParameterType)) {
+								MethodParameters.Add(TokenisedSource.ArgumentType.Value);
+							} else {
+								IsValid = false;
 								break;
 							}
 						}
-					}
 
-					if (Provider == null) throw new CompilerExpection(source, "Script language not found.");
-
-					// Compile the bugger:
-					CompilerParameters Parameters = new CompilerParameters();
-					Parameters.GenerateExecutable = false;
-					Parameters.GenerateInMemory = true;
-					Parameters.TreatWarningsAsErrors = false;
-
-					ScriptReference Refs = compiler.GetPluginInstanceFromType<ScriptReference>();
-					if (Refs != null) {
-						Parameters.ReferencedAssemblies.AddRange(Refs.References.ToArray()); // Goes without saying, eh? :)
-					}
-
-					CompilerResults Results = Provider.CompileAssemblyFromFile(Parameters, ScriptFiles);
-
-					// Errors?
-					foreach (CompilerError Error in Results.Errors) {
-						Compiler.NotificationEventArgs Notification = new Compiler.NotificationEventArgs(compiler, Error.ErrorText, Error.FileName, Error.Line);
-						if (Error.IsWarning) {
-							compiler.OnWarningRaised(Notification);
-						} else {
-							compiler.OnErrorRaised(Notification);
-						}
-					}
-
-					// Do nothing if there were errors.
-					if (Results.Errors.HasErrors) return;
-
-
-					// Grab the public classes from the script.
-					foreach (Type T in Results.CompiledAssembly.GetExportedTypes()) {
-						if (!T.IsClass) continue;
-
-						// Try and create an instance of the class.
-						object ClassInstance = null;
-
-						// Dig out a constructor.
-						ConstructorInfo InstanceConstructor = null;
-						object[] ConstructorArgs = new object[]{compiler};
-						if ((InstanceConstructor = T.GetConstructor(new Type[] { typeof(Compiler) })) == null) {
-							InstanceConstructor = T.GetConstructor(Type.EmptyTypes);
-							ConstructorArgs = new object[] { };
-						}
-
-						if (ConstructorArgs != null) {
-							ClassInstance = InstanceConstructor.Invoke(BindingFlags.Default, null, ConstructorArgs, CultureInfo.InvariantCulture);
-						}
-
-						List<Type> ValidTypes = new List<Type>(
-							new Type[] { typeof(string), typeof(double), typeof(float), typeof(int), typeof(uint), typeof(short), typeof(ushort), typeof(byte), typeof(sbyte), typeof(bool) }
-						);
-
-						// Hunt public static methods.
-						foreach (MethodInfo Method in T.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)) {
-
-							// Valid type?
-							if (!(Method.ReturnType == typeof(void) || ValidTypes.Contains(Method.ReturnType))) continue;
-
-							// Create an array of method parameters.
-							List<TokenisedSource.ArgumentType> MethodParameters = new List<TokenisedSource.ArgumentType>();
-
-							// Iterate over all of them...
-							bool IsValid = true;
-
-							foreach (ParameterInfo Parameter in Method.GetParameters()) {
-
-								if (Parameter.ParameterType == typeof(Compiler)) {
-									// ... :)
-								} else if (Parameter.ParameterType == typeof(Label)) {
-									MethodParameters.Add(TokenisedSource.ArgumentType.Label);
-								} else if (Parameter.ParameterType == typeof(string)) {
-									MethodParameters.Add(TokenisedSource.ArgumentType.String);
-								} else if (ValidTypes.Contains(Parameter.ParameterType)) {
-									MethodParameters.Add(TokenisedSource.ArgumentType.Value);
-								} else {
-									IsValid = false;
-									break;
-								}
+						if (IsValid) {
+							// Create the wrapper!
+							if (Method.ReturnType == typeof(void)) {
+								Wrappers.Add(new ScriptDirectiveWrapper(ClassInstance, Method, MethodParameters.ToArray()));
+							} else {
+								Wrappers.Add(new ScriptFunctionWrapper(ClassInstance, Method, MethodParameters.ToArray()));
 							}
-
-							if (IsValid) {
-								// Create the wrapper!
-								if (Method.ReturnType == typeof(void)) {
-									Wrappers.Add(new ScriptDirectiveWrapper(ClassInstance, Method, MethodParameters.ToArray()));
-								} else {
-									Wrappers.Add(new ScriptFunctionWrapper(ClassInstance, Method, MethodParameters.ToArray()));
-								}
-							}
-
 						}
 
 					}
-				} finally {
-					this.WrappedFunctions.Enqueue(Wrappers);
-					foreach (ScriptWrapper Wrapper in Wrappers) AddWrapperToCompiler(compiler, Wrapper);
+
 				}
-			} else {
-				List<ScriptWrapper> Functions = this.WrappedFunctions.Dequeue();
-				foreach (ScriptWrapper Function in Functions) AddWrapperToCompiler(compiler, Function);
+			} finally {
+				this.WrappedFunctions.Enqueue(Wrappers);
+				foreach (ScriptWrapper Wrapper in Wrappers) AddWrapperToCompiler(compiler, Wrapper);
 			}
 		}
 

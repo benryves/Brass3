@@ -41,29 +41,15 @@ My_Err_Handle:
 
 			switch (function) {
 				case "apponerr":
-					switch (compiler.CurrentPass) {
-						case AssemblyPass.CreatingLabels:
-							compiler.IncrementProgramAndOutputCounters(6);
-							break;
-						case AssemblyPass.WritingOutput:
-							compiler.WriteOutput((byte)BCall.Z80Instruction.LdHl);
-							compiler.WriteOutput((ushort)(double)source.GetCommaDelimitedArguments(compiler, 0, TokenisedSource.ValueArgument)[0]);
-							compiler.WriteOutput((byte)BCall.Z80Instruction.Call);
-							compiler.WriteOutput((ushort)0x59);
-							break;
-					}
+					compiler.WriteStaticOutput((byte)BCall.Z80Instruction.LdHl);
+					compiler.WriteStaticOutput((ushort)(double)source.GetCommaDelimitedArguments(compiler, 0, TokenisedSource.ValueArgument)[0]);
+					compiler.WriteStaticOutput((byte)BCall.Z80Instruction.Call);
+					compiler.WriteStaticOutput((ushort)0x59);
 					break;
 				case "appofferr":
-					switch (compiler.CurrentPass) {
-						case AssemblyPass.CreatingLabels:
-							compiler.IncrementProgramAndOutputCounters(3);
-							break;
-						case AssemblyPass.WritingOutput:
-							source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] { });
-							compiler.WriteOutput((byte)BCall.Z80Instruction.Call);
-							compiler.WriteOutput((ushort)0x5C);
-							break;
-					}					
+					source.GetCommaDelimitedArguments(compiler, 0, new TokenisedSource.ArgumentType[] { });
+					compiler.WriteStaticOutput((byte)BCall.Z80Instruction.Call);
+					compiler.WriteStaticOutput((ushort)0x5C);
 					break;
 				default:
 					throw new InvalidOperationException();

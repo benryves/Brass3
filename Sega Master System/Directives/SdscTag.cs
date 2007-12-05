@@ -113,46 +113,39 @@ namespace SegaMasterSystem.Directives {
 
 
 		public SdscTag(Compiler c) {
-			c.PassBegun += delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.Date = DateTime.Now;
-					this.Author = new SdscString("");
-					this.ProgramName = new SdscString(0xFFFF);
-					this.ReleaseNotes = new SdscString(0xFFFF);
-				}
+			c.CompilationBegun += delegate(object sender, EventArgs e) {
+				this.Date = DateTime.Now;
+				this.Author = new SdscString("");
+				this.ProgramName = new SdscString(0xFFFF);
+				this.ReleaseNotes = new SdscString(0xFFFF);
 			};
-			
 		}
 
 		public string Name { get { return this.Names[0]; } }
 		public string[] Names { get { return new string[] { "sdsctag" }; } }
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
 
-				object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
+			object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
 					TokenisedSource.ArgumentType.Value,
 					TokenisedSource.ArgumentType.String,
 					TokenisedSource.ArgumentType.String,
 					TokenisedSource.ArgumentType.String,
 				});
 
-				double Version = (double)Args[0];
-				try{
-					this.MajorVersion = (int)Version;
-				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
+			double Version = (double)Args[0];
+			try {
+				this.MajorVersion = (int)Version;
+			} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
-				try {
-					this.MinorVersion = ((int)(Math.Abs(Version - Math.Truncate(Version)) * 100));
-				} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
+			try {
+				this.MinorVersion = ((int)(Math.Abs(Version - Math.Truncate(Version)) * 100));
+			} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
-				this.ProgramName = new SdscString(compiler, Args[1]);
-				this.ReleaseNotes = new SdscString(compiler, Args[2]);
-				this.Author = new SdscString(compiler, Args[3]);
+			this.ProgramName = new SdscString(compiler, Args[1]);
+			this.ReleaseNotes = new SdscString(compiler, Args[2]);
+			this.Author = new SdscString(compiler, Args[3]);
 
-			}
 		}
-
-
 	}
 }

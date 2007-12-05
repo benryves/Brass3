@@ -162,7 +162,7 @@ namespace Brass3 {
 
 
 				Label Reusable;
-				if (canCreateImplicitLabels && compiler.CurrentPass == AssemblyPass.CreatingLabels) {
+				if (canCreateImplicitLabels) {
 					Reusable = compiler.Labels.CreateReusable(ReusableName);
 					Reusable.Created = false;
 				} else {

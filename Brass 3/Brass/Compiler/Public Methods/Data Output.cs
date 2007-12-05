@@ -17,149 +17,128 @@ namespace Brass3 {
 			this.Labels.OutputCounter.NumericValue += amount;
 		}
 
+		List<OutputData> WorkingOutputData = new List<OutputData>();
+
 		/// <summary>
-		/// Write a <c>byte</c> of data to the output.
+		/// Gets or sets whether currently output data is sent to the background or foreground.
+		/// </summary>
+		/// <remarks>Background data can be overwritten by foreground data.</remarks>
+		public bool DataWrittenToBackground { get; set; }
+
+		#region WriteStaticOutput
+
+		/// <summary>
+		/// Write an array of <c>byte</c>s of data to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		/// <param name="background">True if the data can be overwritten by other data.</param>
-		public void WriteOutput(byte data, bool background) {
-
-
-			byte[] TranslatedData = new byte[] { data };
-
-			foreach (IOutputModifier M in this.outputModifiers) {
-				List<byte> NewOutput = new List<byte>(TranslatedData.Length);
-				NewOutput.AddRange(M.ModifyOutput(this, data));
-				TranslatedData = NewOutput.ToArray();
-			}
-
-			this.output.Add(new OutputData(this.CurrentStatement.Value, 
+		public void WriteStaticOutput(byte[] data) {
+		
+			this.WorkingOutputData.Add(new StaticOutputData(this.CurrentStatement.Value,
 				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
-				(int)this.labels.OutputCounter.NumericValue, TranslatedData, background));
+				(int)this.labels.OutputCounter.NumericValue, data, this.DataWrittenToBackground));
 
-			++this.Labels.ProgramCounter.NumericValue;
-			++this.Labels.OutputCounter.NumericValue;
+			this.Labels.ProgramCounter.NumericValue += data.Length;
+			this.Labels.OutputCounter.NumericValue += data.Length;
+
 		}
 
-		/// <summary>
-		/// Write a <c>byte</c> of data to the output.
-		/// </summary>
-		/// <param name="data">The data to write.</param>
-		public void WriteOutput(byte data) { this.WriteOutput(data, false); }
 
 		/// <summary>
-		/// Write an array of <c>byte</c>s of data to the output.
+		/// Write a <see cref="Int32"/> to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		/// <param name="background">True if the data can be overwritten.</param>
-		public void WriteOutput(byte[] data, bool background) {
-			foreach (byte b in data) this.WriteOutput(b, background);
-		}
-
-		/// <summary>
-		/// Write an array of <c>byte</c>s of data to the output.
-		/// </summary>
-		/// <param name="data">The data to write.</param>
-		public void WriteOutput(byte[] data) { this.WriteOutput(data, false); }
-
-		/// <summary>
-		/// Write a <c>ushort</c> of data to the output.
-		/// </summary>
-		/// <param name="data">The data to write.</param>
-		/// <param name="background">True if the data can be overwritten.</param>
-		public void WriteOutput(ushort data, bool background) {
-			this.WriteOutput((short)data, background);
-		}
-
-		/// <summary>
-		/// Write a <c>ushort</c> of data to the output.
-		/// </summary>
-		/// <param name="data">The data to write.</param>
-		public void WriteOutput(ushort data) { this.WriteOutput(data, false); }
-
-		/// <summary>
-		/// Write a <c>short</c> of data to the output.
-		/// </summary>
-		/// <param name="data">The data to write.</param>
-		/// <param name="background">True if the data can be overwritten.</param>
-		public void WriteOutput(short data, bool background) {
+		public void WriteStaticOutput(int data) {
+			byte[] Data;
 			switch (this.Endianness) {
 				case Endianness.Little:
-					this.WriteOutput((byte)(data), background);
-					this.WriteOutput((byte)(data >> 8), background);
+					Data = new[] { (byte)data, (byte)(data >> 8), (byte)(data >> 16), (byte)(data >> 24) };
 					break;
 				case Endianness.Big:
-					this.WriteOutput((byte)(data >> 8), background);
-					this.WriteOutput((byte)(data), background);
+					Data = new[] { (byte)(data >> 24), (byte)(data >> 16), (byte)(data >> 8), (byte)data };
 					break;
 				default:
 					throw new InvalidOperationException();
 			}
+			this.WriteStaticOutput(Data);
 		}
 
 		/// <summary>
-		/// Write a <c>short</c> of data to the output.
+		/// Write a <see cref="UInt32"/> to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		public void WriteOutput(short data) {
-			this.WriteOutput(data, false);
+		public void WriteStaticOutput(uint data) {
+			this.WriteStaticOutput((int)data);
 		}
 
 		/// <summary>
-		/// Write an <c>int</c> of data to the output.
+		/// Write a <see cref="Int16"/> to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		/// <param name="background">True if the data can be overwritten.</param>
-		public void WriteOutput(int data, bool background) {
+		public void WriteStaticOutput(short data) {
+			byte[] Data;
 			switch (this.Endianness) {
 				case Endianness.Little:
-					this.WriteOutput((byte)(data), background);
-					this.WriteOutput((byte)(data >> 8), background);
-					this.WriteOutput((byte)(data >> 16), background);
-					this.WriteOutput((byte)(data >> 24), background);
+					Data = new[] { (byte)data, (byte)(data >> 8) };
 					break;
 				case Endianness.Big:
-					this.WriteOutput((byte)(data >> 24), background);
-					this.WriteOutput((byte)(data >> 16), background);
-					this.WriteOutput((byte)(data >> 8), background);
-					this.WriteOutput((byte)(data), background);
+					Data = new[] { (byte)(data >> 8), (byte)data };
 					break;
 				default:
 					throw new InvalidOperationException();
 			}
+			this.WriteStaticOutput(Data);
 		}
 
 		/// <summary>
-		/// Write an <c>int</c> of data to the output.
+		/// Write a <see cref="UInt16"/> to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		public void WriteOutput(int data) {
-			this.WriteOutput(data, false);
+		public void WriteStaticOutput(ushort data) {
+			this.WriteStaticOutput((short)data);
 		}
 
 		/// <summary>
-		/// Write an <c>uint</c> of data to the output.
+		/// Write a <see cref="Byte"/> to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		/// <param name="background">True if the data can be overwritten.</param>
-		public void WriteOutput(uint data, bool background) {
-			this.WriteOutput((int)data, background);
+		public void WriteStaticOutput(byte data) {
+			this.WriteStaticOutput(new[] { data });
 		}
 
 		/// <summary>
-		/// Write an <c>uint</c> of data to the output.
+		/// Write a <see cref="SByte"/> to the output.
 		/// </summary>
 		/// <param name="data">The data to write.</param>
-		public void WriteOutput(uint data) {
-			this.WriteOutput(data, false);
+		public void WriteStaticOutput(sbyte data) {
+			this.WriteStaticOutput((byte)data);
 		}
+
+		
+		#endregion
+
+		#region WriteDynamicOutput
+
+		/// <summary>
+		/// Writes a block of dynamic output data.
+		/// </summary>
+		/// <param name="dataSize">The size of the dynamic data block.</param>
+		/// <param name="generator">The delegate that will be called to populate the dynamic data when required.</param>
+		public void WriteDynamicOutput(int dataSize, DynamicOutputData.DynamicDataGenerator generator) {
+			this.WorkingOutputData.Add(new DynamicOutputData(this.CurrentStatement.Value,
+				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
+				(int)this.labels.OutputCounter.NumericValue, dataSize, generator, this.DataWrittenToBackground));
+			this.Labels.ProgramCounter.NumericValue += dataSize;
+			this.Labels.OutputCounter.NumericValue += dataSize;
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Writes the empty fill value.
 		/// </summary>
 		/// <param name="amount">The number of bytes to write.</param>
 		public void WriteEmptyFill(int amount) {
-			for (int i = 0; i < amount; ++i) { this.WriteOutput(this.EmptyFill); }
+			for (int i = 0; i < amount; ++i) { this.WriteStaticOutput(this.EmptyFill); }
 		}
 
 		/// <summary>

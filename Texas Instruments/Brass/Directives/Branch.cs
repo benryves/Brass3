@@ -28,18 +28,8 @@ OffPageCall
 			// First: align up to the next 3-byte boundary;
 			while (((int)compiler.Labels.OutputCounter.NumericValue - 0x4000) % 3 != 0) compiler.IncrementProgramAndOutputCounters(1);
 
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels: {
-						Label Target = compiler.Labels.Create(new TokenisedSource.Token("_" + source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.TokenArgument)[0] as string));
-						Target.NumericValue -= 0x4000;
-						compiler.IncrementProgramAndOutputCounters(3);
-					} break;
-				case AssemblyPass.WritingOutput: {
-						Label Target = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.Label })[0] as Label;
-						compiler.WriteOutput((ushort)Target.NumericValue);
-						compiler.WriteOutput((byte)Target.Page);
-					} break;
-			}
+			//TODO: Restore .branch
+			throw new NotImplementedException();
 		}
 
 	}

@@ -70,16 +70,6 @@ namespace Brass3 {
 			return Result;
 		}
 
-		#region Internal Methods
-
-		internal void BeginPass(AssemblyPass pass) {
-			this.currentPass = pass;
-			this.ResetState();
-			this.OnPassBegun(new EventArgs());
-		}
-
-		#endregion
-
 		#region Private Members
 
 		private LinkedListNode<SourceStatement> nextStatementToCompile;
@@ -164,9 +154,6 @@ namespace Brass3 {
 
 
 		#endregion
-
-		private Queue<int> CompileOrder;
-
 		/// <summary>
 		/// Compile the source file.
 		/// </summary>
@@ -174,12 +161,11 @@ namespace Brass3 {
 
 			try {
 
-				this.CompileOrder = new Queue<int>(1024);
-
 				this.allWarnings.Clear();
 				this.allErrors.Clear();
 				this.allInformation.Clear();
 				this.Breakpoints.Clear();
+				this.ResetState();
 
 				// Set the assembler:
 				if (this.assembler == null) {
@@ -196,10 +182,11 @@ namespace Brass3 {
 
 				// Clear state:
 				this.statements.Clear();
+				this.WorkingOutputData.Clear();
 				this.output.Clear();
 
-				// Run pass 1:
-				this.BeginPass(AssemblyPass.CreatingLabels);
+				// Assemble.
+				this.OnCompilationBegun(new EventArgs());
 
 				if (!string.IsNullOrEmpty(this.Header)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Header)), null);
 
@@ -207,29 +194,16 @@ namespace Brass3 {
 
 				if (!string.IsNullOrEmpty(this.Footer)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Footer)), null);
 
-				this.OnPassEnded(new EventArgs());
+				this.OnCompilationEnded(new EventArgs());
 
-				// TODO: Warn if any output was written?
-				this.output.Clear();
-
-				// Clear variable variables:
-				List<Label> ToRemove = new List<Label>();
-				foreach (Label L in this.labels) {
-					if (L != this.labels.ProgramCounter && L.NeedsClearingBetweenPasses) ToRemove.Add(L);
+				
+				// Insert dynamic data.
+				foreach (var DataItem in this.WorkingOutputData) {
+					if (DataItem is DynamicOutputData) {
+						(DataItem as DynamicOutputData).Generator.Invoke(DataItem as DynamicOutputData);
+					}
+					this.output.Add(new StaticOutputData(DataItem.Source, DataItem.Page, DataItem.ProgramCounter, DataItem.OutputCounter, DataItem.Data, DataItem.Background));
 				}
-				foreach (Label L in ToRemove) this.labels.Remove(L);
-
-				if (this.allErrors.Count > 0) {
-					this.OnErrorRaised(new NotificationEventArgs(this, string.Format(Strings.ErrorCancellingBuild, allErrors.Count)));
-					return false; // An error!
-				}
-
-				// Run pass 2:
-				this.BeginPass(AssemblyPass.WritingOutput);
-				while (NextStatementToCompile != null) {
-					this.CompileCurrentStatement();
-				}
-				this.OnPassEnded(new EventArgs());
 
 				if (this.allErrors.Count > 0) {
 					this.OnErrorRaised(new NotificationEventArgs(this,string.Format(Strings.ErrorCancellingBuild, allErrors.Count)));
@@ -276,8 +250,6 @@ namespace Brass3 {
 		/// <param name="filename">The filename associated with a stream.</param>
 		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileStream(Stream stream, string filename) {
-			if (this.currentPass == AssemblyPass.WritingOutput) throw new InvalidOperationException(Strings.ErrorOnlyLoadDuringInitialPass);
-
 			using (AssemblyReader AR = new AssemblyReader(this, stream)) {
 
 				while (AR.HasMoreData || NextStatementToCompile != null) {

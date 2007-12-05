@@ -149,100 +149,89 @@ String .byte ""Brass 3"", 0")]
 			}
 
 
-			switch (compiler.CurrentPass) {
+			if (RequiresVoodoo) {
 
-				case AssemblyPass.CreatingLabels:
-					compiler.IncrementProgramAndOutputCounters(InstructionSize);
-					break;
+				// Output Z80 instructions to invoke ROM call handler at $28, or jump over it.
 
-				case AssemblyPass.WritingOutput:
+				ushort JumpTarget = (ushort)(compiler.Labels.ProgramCounter.NumericValue + InstructionSize);
 
-					if (RequiresVoodoo) {
+				switch (function.Substring(5)) {
+					case "":
+						break;
+					case "z":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JrNZ);
+						compiler.WriteStaticOutput((byte)(InstructionSize - 2));
+						break;
+					case "nz":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JrZ);
+						compiler.WriteStaticOutput((byte)(InstructionSize - 2));
+						break;
+					case "c":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JrNC);
+						compiler.WriteStaticOutput((byte)(InstructionSize - 2));
+						break;
+					case "nc":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JrC);
+						compiler.WriteStaticOutput((byte)(InstructionSize - 2));
+						break;
+					case "pe":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JpPO);
+						compiler.WriteStaticOutput(JumpTarget);
+						break;
+					case "po":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JpPE);
+						compiler.WriteStaticOutput(JumpTarget);
+						break;
+					case "p":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JpM);
+						compiler.WriteStaticOutput(JumpTarget);
+						break;
+					case "m":
+						compiler.WriteStaticOutput((byte)Z80Instruction.JpP);
+						compiler.WriteStaticOutput(JumpTarget);
+						break;
+					default:
+						throw new InvalidOperationException();
+				}
 
-						// Output Z80 instructions to invoke ROM call handler at $28, or jump over it.
+				if (function.StartsWith("bcall")) {
+					compiler.WriteStaticOutput((byte)Z80Instruction.Rst28h);
+				} else {
+					compiler.WriteStaticOutput((byte)Z80Instruction.Call);
+					compiler.WriteStaticOutput((ushort)0x50);
+				}
 
-						ushort JumpTarget = (ushort)(compiler.Labels.ProgramCounter.NumericValue + InstructionSize);
+			} else {
 
-						switch (function.Substring(5)) {
-							case "":
-								break;
-							case "z":
-								compiler.WriteOutput((byte)Z80Instruction.JrNZ);
-								compiler.WriteOutput((byte)(InstructionSize - 2));
-								break;
-							case "nz":
-								compiler.WriteOutput((byte)Z80Instruction.JrZ);
-								compiler.WriteOutput((byte)(InstructionSize - 2));
-								break;
-							case "c":
-								compiler.WriteOutput((byte)Z80Instruction.JrNC);
-								compiler.WriteOutput((byte)(InstructionSize - 2));
-								break;
-							case "nc":
-								compiler.WriteOutput((byte)Z80Instruction.JrC);
-								compiler.WriteOutput((byte)(InstructionSize - 2));
-								break;
-							case "pe":
-								compiler.WriteOutput((byte)Z80Instruction.JpPO);
-								compiler.WriteOutput(JumpTarget);
-								break;
-							case "po":
-								compiler.WriteOutput((byte)Z80Instruction.JpPE);
-								compiler.WriteOutput(JumpTarget);
-								break;
-							case "p":
-								compiler.WriteOutput((byte)Z80Instruction.JpM);
-								compiler.WriteOutput(JumpTarget);
-								break;
-							case "m":
-								compiler.WriteOutput((byte)Z80Instruction.JpP);
-								compiler.WriteOutput(JumpTarget);
-								break;
-							default:
-								throw new InvalidOperationException();
-						}
-
-						if (function.StartsWith("bcall")) {
-							compiler.WriteOutput((byte)Z80Instruction.Rst28h);
-						} else {
-							compiler.WriteOutput((byte)Z80Instruction.Call);
-							compiler.WriteOutput((ushort)0x50);
-						}
-
-					} else {
-
-						// Output regular Z80 calls.
-						switch (function) {
-							case "bcall": compiler.WriteOutput((byte)Z80Instruction.Call); break;
-							case "bcallz": compiler.WriteOutput((byte)Z80Instruction.CallZ); break;
-							case "bcallnz": compiler.WriteOutput((byte)Z80Instruction.CallNZ); break;
-							case "bcallc": compiler.WriteOutput((byte)Z80Instruction.CallC); break;
-							case "bcallnc": compiler.WriteOutput((byte)Z80Instruction.CallNC); break;
-							case "bcallpe": compiler.WriteOutput((byte)Z80Instruction.CallPE); break;
-							case "bcallpo": compiler.WriteOutput((byte)Z80Instruction.CallPO); break;
-							case "bcallp": compiler.WriteOutput((byte)Z80Instruction.CallP); break;
-							case "bcallm": compiler.WriteOutput((byte)Z80Instruction.CallM); break;
-							case "bjump": compiler.WriteOutput((byte)Z80Instruction.Jp); break;
-							case "bjumpz": compiler.WriteOutput((byte)Z80Instruction.JpZ); break;
-							case "bjumpnz": compiler.WriteOutput((byte)Z80Instruction.JpNZ); break;
-							case "bjumpc": compiler.WriteOutput((byte)Z80Instruction.JpC); break;
-							case "bjumpnc": compiler.WriteOutput((byte)Z80Instruction.JpNC); break;
-							case "bjumppe": compiler.WriteOutput((byte)Z80Instruction.JpPE); break;
-							case "bjumppo": compiler.WriteOutput((byte)Z80Instruction.JpPO); break;
-							case "bjumpp": compiler.WriteOutput((byte)Z80Instruction.JpP); break;
-							case "bjumpm": compiler.WriteOutput((byte)Z80Instruction.JpM); break;
-							default: throw new InvalidOperationException();
-						}
-					}
-
-					compiler.WriteOutput(address);
-					break;
+				// Output regular Z80 calls.
+				switch (function) {
+					case "bcall": compiler.WriteStaticOutput((byte)Z80Instruction.Call); break;
+					case "bcallz": compiler.WriteStaticOutput((byte)Z80Instruction.CallZ); break;
+					case "bcallnz": compiler.WriteStaticOutput((byte)Z80Instruction.CallNZ); break;
+					case "bcallc": compiler.WriteStaticOutput((byte)Z80Instruction.CallC); break;
+					case "bcallnc": compiler.WriteStaticOutput((byte)Z80Instruction.CallNC); break;
+					case "bcallpe": compiler.WriteStaticOutput((byte)Z80Instruction.CallPE); break;
+					case "bcallpo": compiler.WriteStaticOutput((byte)Z80Instruction.CallPO); break;
+					case "bcallp": compiler.WriteStaticOutput((byte)Z80Instruction.CallP); break;
+					case "bcallm": compiler.WriteStaticOutput((byte)Z80Instruction.CallM); break;
+					case "bjump": compiler.WriteStaticOutput((byte)Z80Instruction.Jp); break;
+					case "bjumpz": compiler.WriteStaticOutput((byte)Z80Instruction.JpZ); break;
+					case "bjumpnz": compiler.WriteStaticOutput((byte)Z80Instruction.JpNZ); break;
+					case "bjumpc": compiler.WriteStaticOutput((byte)Z80Instruction.JpC); break;
+					case "bjumpnc": compiler.WriteStaticOutput((byte)Z80Instruction.JpNC); break;
+					case "bjumppe": compiler.WriteStaticOutput((byte)Z80Instruction.JpPE); break;
+					case "bjumppo": compiler.WriteStaticOutput((byte)Z80Instruction.JpPO); break;
+					case "bjumpp": compiler.WriteStaticOutput((byte)Z80Instruction.JpP); break;
+					case "bjumpm": compiler.WriteStaticOutput((byte)Z80Instruction.JpM); break;
+					default: throw new InvalidOperationException();
+				}
 			}
 
+			compiler.WriteStaticOutput(address);
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			this.RomCall(compiler, function, (ushort)(compiler.CurrentPass == AssemblyPass.WritingOutput ? source.EvaluateExpression(compiler).NumericValue : 0));			
+			this.RomCall(compiler, function, 0x0000);
 			return new Label(compiler.Labels, double.NaN);
 		}
 	}

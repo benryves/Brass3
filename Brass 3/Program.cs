@@ -42,7 +42,6 @@ namespace Brass3 {
 				}
 
 				C.SwitchOn();
-				C.BeginPass(AssemblyPass.None);
 
 				for (; ; ) {
 					Console.Write("> ");

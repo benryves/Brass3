@@ -73,42 +73,39 @@ namespace TexasInstruments.Brass.Directives {
 	public class AppField : IDirective {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
 
-				AppHeader Header = compiler.GetPluginInstanceFromType<AppHeader>();
+			AppHeader Header = compiler.GetPluginInstanceFromType<AppHeader>();
 
-				if (Header == null) throw new CompilerExpection(source, "appheader plugin not loaded.");
+			if (Header == null) throw new CompilerExpection(source, "appheader plugin not loaded.");
 
-				object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.SingleToken | TokenisedSource.ArgumentType.String, TokenisedSource.ArgumentType.Value });
+			object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.SingleToken | TokenisedSource.ArgumentType.String, TokenisedSource.ArgumentType.Value });
 
-				double Value = (double)Args[1];
+			double Value = (double)Args[1];
 
-				switch ((Args[0] as string).ToLowerInvariant()) {
-					case "revision":
-						Header.ProgramRevision = (byte)Value;
-						break;
-					case "build":
-						Header.BuildNumber = (byte)Value;
-						break;
-					case "uses":
-						Header.OveruseCount = (byte)Value;
-						break;
-					case "nosplash":
-						Header.DisableTISplashScreen = (bool)Convert.ChangeType(Value, typeof(bool));
-						break;
-					case "hardware":
-						Header.MaximumHardwareRevision = (byte)Value;
-						break;
-					case "basecode":
-						Header.LowestBasecode = (decimal)Value;
-						break;
-					default:
-						compiler.OnWarningRaised(string.Format("Application field '{0}' not recognised.", Args[0] as string), source);
-						break;
-				}
+			switch ((Args[0] as string).ToLowerInvariant()) {
+				case "revision":
+					Header.ProgramRevision = (byte)Value;
+					break;
+				case "build":
+					Header.BuildNumber = (byte)Value;
+					break;
+				case "uses":
+					Header.OveruseCount = (byte)Value;
+					break;
+				case "nosplash":
+					Header.DisableTISplashScreen = (bool)Convert.ChangeType(Value, typeof(bool));
+					break;
+				case "hardware":
+					Header.MaximumHardwareRevision = (byte)Value;
+					break;
+				case "basecode":
+					Header.LowestBasecode = (decimal)Value;
+					break;
+				default:
+					compiler.OnWarningRaised(string.Format("Application field '{0}' not recognised.", Args[0] as string), source);
+					break;
 
 			}
 		}
-
 	}
 }

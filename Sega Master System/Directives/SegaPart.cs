@@ -32,19 +32,13 @@ namespace SegaMasterSystem.Directives {
 		}
 
 		public SegaProduct(Compiler c) {
-			c.PassBegun += delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.ProductNumber = 0;
-				}
-			};			
+			c.CompilationBegun += delegate(object sender, EventArgs e) {
+				this.ProductNumber = 0;
+			};
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
-				this.ProductNumber = (int)source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(index + 1, 1)[0]).NumericValue;
-			}
+			this.ProductNumber = (int)source.EvaluateExpression(compiler, source.GetCommaDelimitedArguments(index + 1, 1)[0]).NumericValue;
 		}
-
-
 	}
 }

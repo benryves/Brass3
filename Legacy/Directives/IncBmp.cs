@@ -143,19 +143,16 @@ Using the width/height flags forces the bitmap data to a particular size; note t
 						}
 					}
 					if (CanRle) ToAdd = RLE(ToAdd);
-					if (compiler.CurrentPass  ==  AssemblyPass.CreatingLabels) {
-						compiler.IncrementProgramAndOutputCounters(ToAdd.Length);
-					} else {
-						for (int i = 0; i < ToAdd.Length; i++) {
-							compiler.WriteOutput(ToAdd[i]);
-						}
+
+					for (int i = 0; i < ToAdd.Length; i++) {
+						compiler.WriteStaticOutput(ToAdd[i]);
 					}
 				}
 			}
 		}
 
 		public IncBmp(Compiler c) {
-			c.PassBegun += delegate(object sender, EventArgs e) {
+			c.CompilationBegun += delegate(object sender, EventArgs e) {
 				RLE_Flag = 0x91;
 				RLE_ValueFirst = true;
 			};

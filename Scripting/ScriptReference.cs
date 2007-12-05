@@ -28,12 +28,10 @@ By default, only <c>System.dll</c> and <c>Brass.exe</c> are referenced.")]
 
 		public ScriptReference(Compiler compiler) {
 			this.References = new List<string>();
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.References.Clear();
-					this.References.Add(ResolveAssemblyName("System.dll"));
-					this.References.Add(ResolveAssemblyName("Brass.exe"));
-				}
+			compiler.CompilationBegun += delegate(object sender, EventArgs e) {
+				this.References.Clear();
+				this.References.Add(ResolveAssemblyName("System.dll"));
+				this.References.Add(ResolveAssemblyName("Brass.exe"));
 			};
 		}
 
@@ -43,10 +41,8 @@ By default, only <c>System.dll</c> and <c>Brass.exe</c> are referenced.")]
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-				foreach (object o in source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String | TokenisedSource.ArgumentType.RepeatForever })) {
-					this.References.Add(ResolveAssemblyName(o as string));
-				}
+			foreach (object o in source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.String | TokenisedSource.ArgumentType.RepeatForever })) {
+				this.References.Add(ResolveAssemblyName(o as string));
 			}
 		}
 	}

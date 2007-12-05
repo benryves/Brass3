@@ -26,19 +26,17 @@ See <c>TASMTABS.HTM</c> in TASM's zip file for more information.")]
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
 
-				Z80.Z80 Assembler = compiler.GetPluginInstanceFromType<Z80.Z80>();
-				if (Assembler == null) throw new CompilerExpection(source.Tokens[index], ".addinstr needs the Z80 assembler plugin to be loaded.");
+			Z80.Z80 Assembler = compiler.GetPluginInstanceFromType<Z80.Z80>();
+			if (Assembler == null) throw new CompilerExpection(source.Tokens[index], ".addinstr needs the Z80 assembler plugin to be loaded.");
 
-				StringBuilder AddInstrSyntax = new StringBuilder(32);
+			StringBuilder AddInstrSyntax = new StringBuilder(32);
 
-				foreach (int Arg in source.GetCommaDelimitedArguments(index + 1)) {
-					AddInstrSyntax.Append(source.GetExpressionTokens(Arg).ToString());
-				}
-
-				Assembler.AddInstruction(new Z80.Z80.Instruction(AddInstrSyntax.ToString()), true);
+			foreach (int Arg in source.GetCommaDelimitedArguments(index + 1)) {
+				AddInstrSyntax.Append(source.GetExpressionTokens(Arg).ToString());
 			}
+
+			Assembler.AddInstruction(new Z80.Z80.Instruction(AddInstrSyntax.ToString()), true);
 		}
 	}
 }

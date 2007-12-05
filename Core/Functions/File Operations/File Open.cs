@@ -25,8 +25,8 @@ namespace Core.Functions.FileOperations {
 
 		public FOpen(Compiler compiler) {
 			this.FileHandles = new Dictionary<double, FileStream>();
-			compiler.PassBegun += new EventHandler(delegate(object sender, EventArgs e) { FileHandles.Clear(); FileHandleAllocation = 1; });
-			compiler.PassEnded += new EventHandler(delegate(object sender, EventArgs e) { foreach (KeyValuePair<double, FileStream> KVP in FileHandles) { KVP.Value.Dispose(); } });
+			compiler.CompilationBegun += new EventHandler(delegate(object sender, EventArgs e) { FileHandles.Clear(); FileHandleAllocation = 1; });
+			compiler.CompilationEnded += new EventHandler(delegate(object sender, EventArgs e) { foreach (KeyValuePair<double, FileStream> KVP in FileHandles) { KVP.Value.Dispose(); } });
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {

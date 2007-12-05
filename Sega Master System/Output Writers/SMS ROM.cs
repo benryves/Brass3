@@ -82,7 +82,7 @@ namespace SegaMasterSystem.Output {
 							// Dirty the SDSC tag area and Sega header;
 							compiler.Labels.ProgramCounter.Page = PageIndex;
 							compiler.Labels.OutputCounter.NumericValue = 0x7FE0;
-							compiler.WriteOutput(new byte[32]);
+							compiler.WriteStaticOutput(new byte[32]);
 
 							// "SDSC"
 							byte[] Sdsc = Encoding.ASCII.GetBytes("SDSC");
@@ -250,7 +250,7 @@ namespace SegaMasterSystem.Output {
 				if (Address < 0x7FE0) {
 					c.Labels.OutputCounter.NumericValue = Address;
 					Array.Copy(Data, 0, binary, Address, Data.Length); // Copy in the string!
-					c.WriteOutput(Data);
+					c.WriteStaticOutput(Data);
 					return (ushort)Address;
 				}
 				c.OnWarningRaised(new Compiler.NotificationEventArgs(c, "No room to store SDSC tag '" + str.Value + "'."));

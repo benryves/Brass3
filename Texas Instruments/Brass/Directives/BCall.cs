@@ -45,7 +45,9 @@ namespace TexasInstruments.Brass.Directives {
 				}
 				Name += NameSuffix;
 			}
-			BCaller.RomCall(compiler, Name, (ushort)(compiler.CurrentPass == AssemblyPass.WritingOutput ? source.EvaluateExpression(compiler, Arguments[Arguments.Length - 1]).NumericValue : 0));
+
+			//TODO: Fix bcall
+			BCaller.RomCall(compiler, Name, 0);
 		}
 
 	}

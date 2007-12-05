@@ -18,16 +18,8 @@ namespace Legacy.Directives {
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			// Only invoke this bugger in pass 1:
-			if (compiler.CurrentPass != AssemblyPass.CreatingLabels) return;
-
-			// Fetch the filename.
-			string Filename = compiler.ResolveFilename(
-				source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.UnescapedString })[0] as string
-			);
-
 			// Read the label file:
-			using (BinaryReader BR = new BinaryReader(new FileStream(Filename, FileMode.Open))) {
+			using (BinaryReader BR = new BinaryReader(new FileStream(source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.FilenameArgument)[0] as string, FileMode.Open))) {
 				while (BR.BaseStream.Position < BR.BaseStream.Length) {
 					string LN = new string(BR.ReadChars(BR.ReadByte()));
 					uint LV = BR.ReadUInt16();
@@ -39,9 +31,6 @@ namespace Legacy.Directives {
 					L.SetImplicitlyCreated();
 				}
 			}
-
-
 		}
-
 	}
 }

@@ -38,17 +38,15 @@ output writing plugin for this to work. */")]
 		internal Dictionary<int, string> VariableNames;
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			if (compiler.CurrentPass == AssemblyPass.WritingOutput) {
-				int Page = compiler.Labels.ProgramCounter.Page;
-				int NameIndex = source.GetCommaDelimitedArguments(index + 1, 1)[0];
-				if (VariableNames.ContainsKey(Page)) VariableNames.Remove(Page);
-				VariableNames.Add(Page, source.GetExpressionStringConstant(compiler, NameIndex));
-			}
+			int Page = compiler.Labels.ProgramCounter.Page;
+			int NameIndex = source.GetCommaDelimitedArguments(index + 1, 1)[0];
+			if (VariableNames.ContainsKey(Page)) VariableNames.Remove(Page);
+			VariableNames.Add(Page, source.GetExpressionStringConstant(compiler, NameIndex));
 		}
 		
 		public TIVariableName(Compiler c) {
 			this.VariableNames = new Dictionary<int, string>();
-			c.PassBegun += delegate(object sender, EventArgs e) {
+			c.CompilationBegun += delegate(object sender, EventArgs e) {
 				this.VariableNames.Clear();
 			};
 

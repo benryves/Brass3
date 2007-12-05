@@ -48,10 +48,8 @@ namespace Core.Functions.Maths {
 		}
 
 		public Rand(Compiler c) {
-			c.PassBegun += new EventHandler(delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.Seed(0);
-				}
+			c.CompilationBegun += new EventHandler(delegate(object sender, EventArgs e) {
+				this.Seed(0);
 			});
 
 		}

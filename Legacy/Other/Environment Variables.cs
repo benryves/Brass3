@@ -19,24 +19,20 @@ namespace Legacy.Other {
 	public class EnvVars : IPlugin {
 
 		public EnvVars(Compiler compiler) {
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
+			compiler.CompilationBegun += delegate(object sender, EventArgs e) {
 
-					foreach (DictionaryEntry Variable in Process.GetCurrentProcess().StartInfo.EnvironmentVariables) {
-						string Key = Variable.Key as string;
-						string Value = Variable.Value as string;
+				foreach (DictionaryEntry Variable in Process.GetCurrentProcess().StartInfo.EnvironmentVariables) {
+					string Key = Variable.Key as string;
+					string Value = Variable.Value as string;
 
-						TokenisedSource.Token[] ReplacementString = TokenisedSource.Join(TokenisedSource.FromString(compiler, "\"" + Value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""));
+					TokenisedSource.Token[] ReplacementString = TokenisedSource.Join(TokenisedSource.FromString(compiler, "\"" + Value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""));
 
-						Compiler.PreprocessMacro ReplacementMacro = delegate(Compiler c, ref TokenisedSource source, int index) {
-							source.ReplaceToken(index, ReplacementString);
-						};
+					Compiler.PreprocessMacro ReplacementMacro = delegate(Compiler c, ref TokenisedSource source, int index) {
+						source.ReplaceToken(index, ReplacementString);
+					};
 
-						compiler.RegisterMacro("\"[%" + Key + "%]\"", ReplacementMacro);
-						compiler.RegisterMacro("\"[%$" + Key + "$%]\"", ReplacementMacro);
-
-					}
-
+					compiler.RegisterMacro("\"[%" + Key + "%]\"", ReplacementMacro);
+					compiler.RegisterMacro("\"[%$" + Key + "$%]\"", ReplacementMacro);
 				}
 			};
 		}

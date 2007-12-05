@@ -52,7 +52,7 @@ namespace Core.Directives {
 
 		public Repetition(Compiler c) {
 			this.RepetitionStack = new Stack<RepetitionStackEntry>();
-			c.PassBegun += new EventHandler(delegate(object sender, EventArgs e) { this.RepetitionStack.Clear(); this.LastLoopHit = null; });
+			c.CompilationBegun += new EventHandler(delegate(object sender, EventArgs e) { this.RepetitionStack.Clear(); this.LastLoopHit = null; });
 
 		}
 

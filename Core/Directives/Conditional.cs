@@ -88,7 +88,7 @@ namespace Core.Directives {
 
 		public Conditional(Compiler compiler) {
 			this.Compiler = compiler;
-			this.Compiler.PassBegun += new EventHandler(Compiler_PassBegun);
+			this.Compiler.CompilationBegun += new EventHandler(Compiler_PassBegun);
 		}
 
 		void Compiler_PassBegun(object sender, EventArgs e) {

@@ -19,58 +19,41 @@ Subsequent use of this directive only changes the page numbers and not the progr
 
 	public class Page : IDirective {
 
-		Queue<int> PageOffsetAddresses;
 		internal List<int> SwitchedToPages;
 
 		public Page(Compiler compiler) {
-			
-			this.PageOffsetAddresses = new Queue<int>();
+
 			this.SwitchedToPages = new List<int>();
 
-			compiler.PassBegun += delegate(object sender, EventArgs e) {
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.PageOffsetAddresses.Clear();
-					this.SwitchedToPages.Clear();
-				}
+			compiler.CompilationBegun += delegate(object sender, EventArgs e) {
+				this.SwitchedToPages.Clear();
 			};
 		}
 
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int Argument = (int)(double)source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.ValueArgument)[0];
-			
+
 			compiler.Labels.ProgramCounter.Page = Argument;
 			compiler.Labels.OutputCounter.Page = Argument;
 
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels:
 
-					if (!this.SwitchedToPages.Contains(compiler.Labels.ProgramCounter.Page)) {
-						int DefaultAddress = 0;
-						Output.RawPages PagedRawWriter;
-						if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) != null) {
-							Output.RawPages.PageDeclaration PD;
-							if (PagedRawWriter.PageDeclarations.TryGetValue(compiler.Labels.ProgramCounter.Page, out PD)) {
-								DefaultAddress = PD.Address;
-							}
-						}
-						compiler.Labels.ProgramCounter.NumericValue = DefaultAddress;
-						compiler.Labels.OutputCounter.NumericValue = DefaultAddress;
-						this.SwitchedToPages.Add(compiler.Labels.ProgramCounter.Page);
+
+			if (!this.SwitchedToPages.Contains(compiler.Labels.ProgramCounter.Page)) {
+				int DefaultAddress = 0;
+				Output.RawPages PagedRawWriter;
+				if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) != null) {
+					Output.RawPages.PageDeclaration PD;
+					if (PagedRawWriter.PageDeclarations.TryGetValue(compiler.Labels.ProgramCounter.Page, out PD)) {
+						DefaultAddress = PD.Address;
 					}
-
-					PageOffsetAddresses.Enqueue((int)compiler.Labels.ProgramCounter.NumericValue);
-					PageOffsetAddresses.Enqueue((int)compiler.Labels.OutputCounter.NumericValue);
-
-					break;
-				case AssemblyPass.WritingOutput:
-					compiler.Labels.ProgramCounter.NumericValue = PageOffsetAddresses.Dequeue();
-					compiler.Labels.OutputCounter.NumericValue = PageOffsetAddresses.Dequeue();
-					break;
+				}
+				compiler.Labels.ProgramCounter.NumericValue = DefaultAddress;
+				compiler.Labels.OutputCounter.NumericValue = DefaultAddress;
+				this.SwitchedToPages.Add(compiler.Labels.ProgramCounter.Page);
 			}
 
-			
-			
+
 
 		}
 

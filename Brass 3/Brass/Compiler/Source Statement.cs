@@ -151,17 +151,6 @@ namespace Brass3 {
 			public Label Compile(bool mustMakeAssignment) {
 
 
-				switch (this.compiler.currentPass) {
-					case AssemblyPass.CreatingLabels:
-						this.compiler.CompileOrder.Enqueue(this.index);
-						break;
-					case AssemblyPass.WritingOutput:
-						if (this.compiler.CompileOrder.Count == 0 || this.compiler.CompileOrder.Dequeue() != this.index) {
-							throw new CompilerExpection(this.source, Strings.ErrorCompilerFollowsDifferentPath);
-						}
-						break;
-				}
-
 				//Console.WriteLine("{0}:={1}", this.compiler.currentPass, this.ToString());
 				
 				++this.compiler.compiledStatements;
@@ -187,7 +176,7 @@ namespace Brass3 {
 							Result = compiler.labelEvaluationResult = L;
 
 							// Check for (implicit) duplicate label creation:
-							if (compiler.CurrentPass == AssemblyPass.CreatingLabels && expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], string.Format(Strings.ErrorLabelAlreadyDefined , L.Name));
+							if (expressionStatementSplit == 1 && !L.IsConstant && L.Created) throw new CompilerExpection(Source.Tokens[0], string.Format(Strings.ErrorLabelAlreadyDefined , L.Name));
 							L.Created = true;
 						}
 					}

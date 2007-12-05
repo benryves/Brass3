@@ -24,9 +24,6 @@ namespace Core.Directives {
 		private Core.NumberEncoding.Word WordEncoder;
 		private Core.NumberEncoding.Int IntEncoder;
 
-
-		private Queue<bool> IsStringQueue;
-
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			int[] Args;
@@ -65,61 +62,14 @@ namespace Core.Directives {
 
 			}
 
-			// Iterate over each argument;
-			foreach (int Arg in Args) {
-
-				Label Result = null;
-
-				bool IsString = false;
-				if (compiler.CurrentPass == AssemblyPass.CreatingLabels) {
-
-					CompilerExpection ReasonForFailure;
-					if (source.TryEvaluateExpression(compiler, Arg, out Result, out ReasonForFailure)) {
-						IsString = Result.IsString;
-					} else {
-						IsString = false;
-					}
-
-					this.IsStringQueue.Enqueue(IsString);
-				} else {
-					IsString = this.IsStringQueue.Dequeue();
-				}
-
-
-				// Which pass?
-				switch (compiler.CurrentPass) {
-					case AssemblyPass.CreatingLabels: // Just $+=sizeof(data)
-						if (IsString) {
-							compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size * Result.StringValue.Length);
-						} else {
-							compiler.IncrementProgramAndOutputCounters(NumberEncoder.Size);
-						}
-						break;
-					case AssemblyPass.WritingOutput: // Evaluate and write the data!
-						Result = source.EvaluateExpression(compiler, Arg);
-						if (IsString) {
-							foreach (byte b in compiler.StringEncoder.GetData(Result.StringValue)) compiler.WriteOutput(NumberEncoder.GetBytes(compiler, b));
-						} else {
-							compiler.WriteOutput(NumberEncoder.GetBytes(compiler, Result.NumericValue));
-						}
-						break;
-				}
-			}
-
-
+			throw new NotImplementedException();
 
 		}
 
 		public DataDeclaration(Compiler c) {
-			this.IsStringQueue = new Queue<bool>();
 			ByteEncoder = new Core.NumberEncoding.Byte();
 			WordEncoder = new Core.NumberEncoding.Word();
 			IntEncoder = new Core.NumberEncoding.Int();
-			c.PassBegun += delegate(object sender, EventArgs e) {
-				if (c.CurrentPass == AssemblyPass.CreatingLabels) {
-					this.IsStringQueue.Clear();
-				}
-			};
 		}
 
 	}

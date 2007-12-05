@@ -39,7 +39,7 @@ namespace Core.Directives {
 
 		public Module(Compiler c) {
 			this.ModuleNames = new Stack<string>();
-			c.PassBegun += new EventHandler(delegate(object sender, EventArgs e) { this.ModuleNames.Clear(); });
+			c.CompilationBegun += new EventHandler(delegate(object sender, EventArgs e) { this.ModuleNames.Clear(); });
 
 		}
 	}

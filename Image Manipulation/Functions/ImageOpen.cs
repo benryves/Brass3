@@ -27,7 +27,7 @@ namespace ImageManipulation {
 
 		public ImgOpen(Compiler c) {
 			this.OpenedImages = new Dictionary<double, ImageManipulator>();
-			c.PassBegun += delegate(object sender, EventArgs e) {
+			c.CompilationBegun += delegate(object sender, EventArgs e) {
 				this.CurrentHandle = 0;
 				this.OpenedImages.Clear();
 			};

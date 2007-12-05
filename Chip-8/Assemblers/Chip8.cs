@@ -326,213 +326,207 @@ namespace Chip8.Assemblers {
 		}
 
 		public void Assemble(Compiler compiler, TokenisedSource source, int index) {
-			switch (compiler.CurrentPass) {
-				case AssemblyPass.CreatingLabels:
-					compiler.IncrementProgramAndOutputCounters(2); // If only it was always this easy, huh?
+
+
+			InstructionType Instruction = (InstructionType)source.MatchedItem;
+
+			ArgumentType[] ArgumentTypes = GetArguments(Instruction);
+			int[] Arguments = new int[ArgumentTypes.Length];
+
+			int[] PassedArguments = source.GetCommaDelimitedArguments(index + 1);
+			if (PassedArguments.Length != Arguments.Length) throw new InvalidOperationException();
+
+			// Evaluate arguments:
+			for (int i = 0; i < ArgumentTypes.Length; ++i) {
+				switch (ArgumentTypes[i]) {
+					case ArgumentType.Immediate:
+						Arguments[i] = (int)source.EvaluateExpression(compiler, PassedArguments[i]).NumericValue;
+						break;
+					case ArgumentType.Register:
+						Arguments[i] = "0123456789abcdef".IndexOf(char.ToLowerInvariant(source.GetExpressionTokens(PassedArguments[i]).Tokens[0].Data[1]));
+						CheckRange16(source, Arguments[i]);
+						break;
+				}
+			}
+
+			switch ((InstructionType)source.MatchedItem) {
+				case InstructionType.ScDown:
+					CheckRange16(source, Arguments[0]);
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)(0xC0 | Arguments[0]));
 					break;
-				case AssemblyPass.WritingOutput:
-
-					InstructionType Instruction = (InstructionType)source.MatchedItem;
-
-					ArgumentType[] ArgumentTypes = GetArguments(Instruction);
-					int[] Arguments = new int[ArgumentTypes.Length];
-
-					int[] PassedArguments = source.GetCommaDelimitedArguments(index + 1);
-					if (PassedArguments.Length != Arguments.Length) throw new InvalidOperationException();
-
-					// Evaluate arguments:
-					for (int i = 0; i < ArgumentTypes.Length; ++i) {
-						switch (ArgumentTypes[i]) {
-							case ArgumentType.Immediate:
-								Arguments[i] = (int)source.EvaluateExpression(compiler, PassedArguments[i]).NumericValue;
-								break;
-							case ArgumentType.Register:
-								Arguments[i] = "0123456789abcdef".IndexOf(char.ToLowerInvariant(source.GetExpressionTokens(PassedArguments[i]).Tokens[0].Data[1]));
-								CheckRange16(source, Arguments[i]);
-								break;
-						}
-					}
-
-					switch ((InstructionType)source.MatchedItem) {
-						case InstructionType.ScDown:
-							CheckRange16(source, Arguments[0]);
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)(0xC0 | Arguments[0]));
-							break;
-						case InstructionType.Cls:
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)0xE0);
-							break;
-						case InstructionType.Rts:
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)0xEE);
-							break;
-						case InstructionType.ScRight:
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)0xFB);
-							break;
-						case InstructionType.ScLeft:
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)0xFC);
-							break;
-						case InstructionType.Low:
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)0xFE);
-							break;
-						case InstructionType.High:
-							compiler.WriteOutput((byte)0x00);
-							compiler.WriteOutput((byte)0xFF);
-							break;
-						case InstructionType.Jmp:
-							CheckRange4K(source, Arguments[0]);
-							compiler.WriteOutput((byte)(0x10 | (Arguments[0] >> 8)));
-							compiler.WriteOutput((byte)(Arguments[0]));
-							break;
-						case InstructionType.Jsr:
-							CheckRange4K(source, Arguments[0]);
-							compiler.WriteOutput((byte)(0x20 | (Arguments[0] >> 8)));
-							compiler.WriteOutput((byte)(Arguments[0]));
-							break;
-						case InstructionType.SkEqImmediate:
-							//CheckRange256(Arguments[1]);
-							compiler.WriteOutput((byte)(0x30 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1]));
-							break;
-						case InstructionType.SkNeImmediate:
-							//CheckRange256(Arguments[1]);
-							compiler.WriteOutput((byte)(0x40 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1]));
-							break;
-						case InstructionType.SkEqRegister:
-							compiler.WriteOutput((byte)(0x50 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1] << 4));
-							break;
-						case InstructionType.MovRegImmediate:
-							CheckRange256(source, Arguments[1]);
-							compiler.WriteOutput((byte)(0x60 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1]));
-							break;
-						case InstructionType.AddRegImmediate:
-							CheckRange256(source, Arguments[1]);
-							compiler.WriteOutput((byte)(0x70 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1]));
-							break;
-						case InstructionType.MovRegReg:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x00 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.OrRegReg:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x01 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.AndRegReg:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x02 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.XorRegReg:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x03 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.AddRegReg:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x04 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.SubRegReg:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x05 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.Shr:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)0x06);
-							break;
-						case InstructionType.Rsb:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)(0x07 | (Arguments[1] << 4)));
-							break;
-						case InstructionType.Shl:
-							compiler.WriteOutput((byte)(0x80 | Arguments[0]));
-							compiler.WriteOutput((byte)0x0E);
-							break;
-						case InstructionType.SkNeRegister:
-							compiler.WriteOutput((byte)(0x90 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1] << 4));
-							break;
-						case InstructionType.Mvi:
-							//CheckRange4K(Arguments[0]);
-							compiler.WriteOutput((byte)(0xA0 | (Arguments[0] >> 8)));
-							compiler.WriteOutput((byte)(Arguments[0]));
-							break;
-						case InstructionType.Jmi:
-							CheckRange4K(source, Arguments[0]);
-							compiler.WriteOutput((byte)(0xB0 | (Arguments[0] >> 8)));
-							compiler.WriteOutput((byte)(Arguments[0]));
-							break;
-						case InstructionType.Rand:
-							compiler.WriteOutput((byte)(0xC0 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1]));
-							break;
-						case InstructionType.Sprite:
-							CheckRange(source, Arguments[2], 0, 16);
-							Arguments[2] &= 0x0F;
-							compiler.WriteOutput((byte)(0xD0 | Arguments[0]));
-							compiler.WriteOutput((byte)((Arguments[1] << 4) | Arguments[2]));
-							break;
-						case InstructionType.XSprite:
-							compiler.WriteOutput((byte)(0xD0 | Arguments[0]));
-							compiler.WriteOutput((byte)(Arguments[1] << 4));
-							break;
-						case InstructionType.SkPr:
-							compiler.WriteOutput((byte)(0xE0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x9E);
-							break;
-						case InstructionType.SkUp:
-							compiler.WriteOutput((byte)(0xE0 | Arguments[0]));
-							compiler.WriteOutput((byte)0xA1);
-							break;
-						case InstructionType.GDelay:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x07);
-							break;
-						case InstructionType.Key:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x0A);
-							break;
-						case InstructionType.SDelay:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x15);
-							break;
-						case InstructionType.SSound:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x18);
-							break;
-						case InstructionType.Adi:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x1E);
-							break;
-						case InstructionType.Font:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x29);
-							break;
-						case InstructionType.XFont:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x30);
-							break;
-						case InstructionType.Bcd:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x33);
-							break;
-						case InstructionType.Str:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x55);
-							break;
-						case InstructionType.Ldr:
-							compiler.WriteOutput((byte)(0xF0 | Arguments[0]));
-							compiler.WriteOutput((byte)0x65);
-							break;
-						default:
-							throw new NotImplementedException();
-					}
+				case InstructionType.Cls:
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)0xE0);
 					break;
+				case InstructionType.Rts:
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)0xEE);
+					break;
+				case InstructionType.ScRight:
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)0xFB);
+					break;
+				case InstructionType.ScLeft:
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)0xFC);
+					break;
+				case InstructionType.Low:
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)0xFE);
+					break;
+				case InstructionType.High:
+					compiler.WriteStaticOutput((byte)0x00);
+					compiler.WriteStaticOutput((byte)0xFF);
+					break;
+				case InstructionType.Jmp:
+					CheckRange4K(source, Arguments[0]);
+					compiler.WriteStaticOutput((byte)(0x10 | (Arguments[0] >> 8)));
+					compiler.WriteStaticOutput((byte)(Arguments[0]));
+					break;
+				case InstructionType.Jsr:
+					CheckRange4K(source, Arguments[0]);
+					compiler.WriteStaticOutput((byte)(0x20 | (Arguments[0] >> 8)));
+					compiler.WriteStaticOutput((byte)(Arguments[0]));
+					break;
+				case InstructionType.SkEqImmediate:
+					//CheckRange256(Arguments[1]);
+					compiler.WriteStaticOutput((byte)(0x30 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1]));
+					break;
+				case InstructionType.SkNeImmediate:
+					//CheckRange256(Arguments[1]);
+					compiler.WriteStaticOutput((byte)(0x40 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1]));
+					break;
+				case InstructionType.SkEqRegister:
+					compiler.WriteStaticOutput((byte)(0x50 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1] << 4));
+					break;
+				case InstructionType.MovRegImmediate:
+					CheckRange256(source, Arguments[1]);
+					compiler.WriteStaticOutput((byte)(0x60 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1]));
+					break;
+				case InstructionType.AddRegImmediate:
+					CheckRange256(source, Arguments[1]);
+					compiler.WriteStaticOutput((byte)(0x70 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1]));
+					break;
+				case InstructionType.MovRegReg:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x00 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.OrRegReg:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x01 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.AndRegReg:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x02 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.XorRegReg:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x03 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.AddRegReg:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x04 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.SubRegReg:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x05 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.Shr:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x06);
+					break;
+				case InstructionType.Rsb:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(0x07 | (Arguments[1] << 4)));
+					break;
+				case InstructionType.Shl:
+					compiler.WriteStaticOutput((byte)(0x80 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x0E);
+					break;
+				case InstructionType.SkNeRegister:
+					compiler.WriteStaticOutput((byte)(0x90 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1] << 4));
+					break;
+				case InstructionType.Mvi:
+					//CheckRange4K(Arguments[0]);
+					compiler.WriteStaticOutput((byte)(0xA0 | (Arguments[0] >> 8)));
+					compiler.WriteStaticOutput((byte)(Arguments[0]));
+					break;
+				case InstructionType.Jmi:
+					CheckRange4K(source, Arguments[0]);
+					compiler.WriteStaticOutput((byte)(0xB0 | (Arguments[0] >> 8)));
+					compiler.WriteStaticOutput((byte)(Arguments[0]));
+					break;
+				case InstructionType.Rand:
+					compiler.WriteStaticOutput((byte)(0xC0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1]));
+					break;
+				case InstructionType.Sprite:
+					CheckRange(source, Arguments[2], 0, 16);
+					Arguments[2] &= 0x0F;
+					compiler.WriteStaticOutput((byte)(0xD0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)((Arguments[1] << 4) | Arguments[2]));
+					break;
+				case InstructionType.XSprite:
+					compiler.WriteStaticOutput((byte)(0xD0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)(Arguments[1] << 4));
+					break;
+				case InstructionType.SkPr:
+					compiler.WriteStaticOutput((byte)(0xE0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x9E);
+					break;
+				case InstructionType.SkUp:
+					compiler.WriteStaticOutput((byte)(0xE0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0xA1);
+					break;
+				case InstructionType.GDelay:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x07);
+					break;
+				case InstructionType.Key:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x0A);
+					break;
+				case InstructionType.SDelay:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x15);
+					break;
+				case InstructionType.SSound:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x18);
+					break;
+				case InstructionType.Adi:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x1E);
+					break;
+				case InstructionType.Font:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x29);
+					break;
+				case InstructionType.XFont:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x30);
+					break;
+				case InstructionType.Bcd:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x33);
+					break;
+				case InstructionType.Str:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x55);
+					break;
+				case InstructionType.Ldr:
+					compiler.WriteStaticOutput((byte)(0xF0 | Arguments[0]));
+					compiler.WriteStaticOutput((byte)0x65);
+					break;
+				default:
+					throw new NotImplementedException();
 			}
 		}
 

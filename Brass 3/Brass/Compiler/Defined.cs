@@ -28,7 +28,7 @@ namespace Brass3 {
 		/// <remarks>Constants implicitly return true.</remarks>
 		public bool LabelIsDefined(TokenisedSource.Token name) {
 			Label L;
-			return (this.labels.TryParse(name, out L) && L.Defined);
+			return (this.labels.TryParse(name, out L) && L.Created);
 		}
 
 
