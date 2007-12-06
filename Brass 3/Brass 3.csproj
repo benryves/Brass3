@@ -68,7 +68,6 @@
     <Compile Include="Brass\Compiler\Compile Process.cs" />
     <Compile Include="Brass\Compiler\Breakpoint.cs" />
     <Compile Include="Brass\Compiler\Macros.cs" />
-    <Compile Include="Brass\Compiler\Output Data Filtering.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Files.cs" />
     <Compile Include="Brass\Compiler\Reset State.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Data Structures.cs" />
@@ -77,7 +76,7 @@
     <Compile Include="Brass\Compiler\Project.cs" />
     <Compile Include="Brass\Compiler\Properties.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Flow Control.cs" />
-    <Compile Include="Brass\Compiler\Public Methods\Data Output.cs" />
+    <Compile Include="Brass\Compiler\Output Data.cs" />
     <Compile Include="Brass\Compiler\Public Methods\Plugin Management.cs" />
     <Compile Include="Brass\Compiler\Defined.cs" />
     <Compile Include="Brass\Default String Encoder.cs" />
@@ -114,7 +113,6 @@
     <Compile Include="Brass\General.cs" />
     <Compile Include="Brass\Label.cs" />
     <Compile Include="Brass\LabelCollection.cs" />
-    <Compile Include="Brass\Compiler\Output Data.cs" />
     <Compile Include="Brass\Attributes\WarningAttribute.cs" />
     <Compile Include="Brass\Parsing\Tokenised Source\TokenisedSource.cs" />
     <Compile Include="Brass\Parsing\Assembly Reader.cs" />
