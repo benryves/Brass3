@@ -72,7 +72,7 @@ namespace Core.Output {
 
 
 				int OutOfPageBounds = 0;
-				foreach (OutputData DataToWrite in compiler.GetOutputDataOnPage(Page)) {
+				foreach (Compiler.OutputData DataToWrite in compiler.GetOutputDataOnPage(Page)) {
 					if (DataToWrite.Data == null || DataToWrite.Data.Length < 1) continue;
 					int DestinationAddress = DataToWrite.OutputCounter - PD.Address;
 					if (DestinationAddress < 0 || DestinationAddress >= PD.Size) {

@@ -23,7 +23,7 @@ namespace Core.Output {
 
 			Writer.WritePageNumbers = compiler.GetUniquePageIndices().Length > 1;
 
-			foreach (OutputData Output in compiler.Output) {
+			foreach (Compiler.OutputData Output in compiler.Output) {
 				if (Output.Data.Length > 0) {
 					Writer.Write((ushort)Output.OutputCounter, (ushort)Output.Page, Output.Data[0]);
 				}

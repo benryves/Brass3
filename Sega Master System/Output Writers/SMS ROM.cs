@@ -65,7 +65,7 @@ namespace SegaMasterSystem.Output {
 					// PageIndex = the page to write to :)
 					// First, check the address range is free;
 					bool HeaderRangeIsFree = true;
-					foreach (OutputData CheckNotOverwriting in compiler.GetOutputDataOnPage(PageIndex)) {
+					foreach (Compiler.OutputData CheckNotOverwriting in compiler.GetOutputDataOnPage(PageIndex)) {
 						if (CheckNotOverwriting.OutputCounter >= MinAddress && CheckNotOverwriting.OutputCounter <= 0x7FFF) {
 							compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, string.Format("There is output data in the ${0:X4}..$7FFF range that would get overwritten by the Sega header.", MinAddress)));
 							HeaderRangeIsFree = false;

@@ -52,7 +52,7 @@ namespace TexasInstruments.Brass.Output {
 
 
 				List<byte> Data = new List<byte>(1024);
-				foreach (OutputData D in compiler.GetOutputDataOnPage(Page)) {
+				foreach (Compiler.OutputData D in compiler.GetOutputDataOnPage(Page)) {
 					Data.AddRange(D.Data);
 				}
 

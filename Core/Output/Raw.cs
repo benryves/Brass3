@@ -24,7 +24,7 @@ namespace Core.Output {
 			if (compiler.Output.Length == 0) return;
 			
 			BinaryWriter BW = new BinaryWriter(stream);
-			foreach (OutputData OD in compiler.Output) {
+			foreach (Compiler.OutputData OD in compiler.Output) {
 				BW.Write(OD.Data);
 			}
 		}

@@ -288,7 +288,7 @@ namespace Z80 {
 			// Fetch the instruction that matches this line of code:
 			Instruction I = this.AllInstructions[source.MatchedItem];
 
-
+			compiler.WriteDynamicOutput(3, G => G.Data = new byte[] { 1, 2, 3 });
 			compiler.WriteDynamicOutput(I.Size, Generator => {
 
 				// Storage for the results of the evaluation:
