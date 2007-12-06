@@ -199,7 +199,21 @@ namespace Brass3 {
 				
 				// Insert dynamic data.
 				foreach (var DataItem in this.WorkingOutputData) {
-					if (DataItem is DynamicOutputData) {
+
+					DynamicOutputData DynamicDataItem = DataItem as DynamicOutputData;
+
+					if (DynamicDataItem != null) {
+
+						// Restore program/output counter states.
+						this.Labels.ProgramCounter.NumericValue = DataItem.ProgramCounter;
+						this.Labels.OutputCounter.NumericValue = DataItem.OutputCounter;
+						this.Labels.ProgramCounter.Page = DataItem.Page;
+						this.Labels.OutputCounter.Page = DataItem.Page;
+
+						// Restore module state.
+						this.Labels.CurrentModule = DynamicDataItem.Module;
+
+						// Populate the dynamic data.
 						(DataItem as DynamicOutputData).Generator.Invoke(DataItem as DynamicOutputData);
 					}
 					this.output.Add(new StaticOutputData(DataItem.Source, DataItem.Page, DataItem.ProgramCounter, DataItem.OutputCounter, DataItem.Data, DataItem.Background));
@@ -209,8 +223,6 @@ namespace Brass3 {
 					this.OnErrorRaised(new NotificationEventArgs(this,string.Format(Strings.ErrorCancellingBuild, allErrors.Count)));
 					return false; // An error!
 				}
-
-
 				// Done!
 				this.RemoveRedundantOutputData();
 

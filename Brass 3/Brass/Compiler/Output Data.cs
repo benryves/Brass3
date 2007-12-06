@@ -126,6 +126,11 @@ namespace Brass3 {
 		public DynamicDataGenerator Generator { get; private set; }
 
 		/// <summary>
+		/// Gets the module that the output data was created in.
+		/// </summary>
+		public string Module { get; private set; }
+
+		/// <summary>
 		/// Creates an instance of the <see cref="DynamicOutputData"/> class.
 		/// </summary>
 		/// <param name="source">The <see cref="Compiler.SourceStatement"/> that generated this output.</param>
@@ -137,6 +142,7 @@ namespace Brass3 {
 		public DynamicOutputData(Compiler.SourceStatement source, int page, int programCounter, int outputCounter, int dataSize, DynamicDataGenerator generator, bool background)
 			: base(source, page, programCounter, outputCounter, new byte[dataSize], background) {
 			this.Generator = generator;
+			this.Module = source.Compiler.Labels.CurrentModule;
 		}
 
 	}
