@@ -13,6 +13,7 @@ namespace Brass3 {
 		/// <remarks>Output data are later turned into binaries by an <see cref="Plugins.IOutputWriter"/> plugin.</remarks>
 		public abstract class OutputData : IComparable {
 
+			#region Properties
 
 			/// <summary>
 			/// Gets the program counter value that the output data starts at.
@@ -44,6 +45,10 @@ namespace Brass3 {
 			/// </summary>
 			public bool Background { get; private set; }
 
+			#endregion
+
+			#region Constructor
+
 			/// <summary>
 			/// Creates an instance of the <see cref="OutputData"/> class.
 			/// </summary>
@@ -60,8 +65,21 @@ namespace Brass3 {
 				this.Page = page;
 				this.Data = data;
 				this.Background = background;
+				this.StoredData = new Dictionary<Type, object>();
 			}
 
+			#endregion
+
+			#region Private Fields
+
+			/// <summary>
+			/// Stores data (for example, state information for external plugins).
+			/// </summary>
+			private Dictionary<Type, object> StoredData;
+
+			#endregion
+
+			#region Public Methods
 
 			/// <summary>
 			/// Compares two <see cref="OutputData"/> structures for the purpose of sorting.
@@ -89,6 +107,29 @@ namespace Brass3 {
 				}
 				return s;
 			}
+
+			/// <summary>
+			/// Gets data stored in the <see cref="OutputData"/> object by an external plugin.
+			/// </summary>
+			/// <param name="storingPluginType">The <see cref="Type"/> of the plugin that stored the data.</param>
+			/// <returns>The stored data, or null if no stored data could be found.</returns>
+			public object GetStoredData(Type storingPluginType) {
+				object Output;
+				return (this.StoredData.TryGetValue(storingPluginType, out Output)) ? Output : null;
+			}
+
+			/// <summary>
+			/// Sets data stored in the <see cref="OutputData"/> object by an external plugin.
+			/// </summary>
+			/// <param name="storingPluginType">The <see cref="Type"/> of the plugin that is storing the data.</param>
+			/// <param name="dataToStore">The data to store.</param>
+			public void SetStoredData(Type storingPluginType, object dataToStore) {
+				if (this.StoredData.ContainsKey(storingPluginType)) this.StoredData.Remove(storingPluginType);
+				this.StoredData.Add(storingPluginType, dataToStore);
+			}
+
+			#endregion
+
 		}
 
 
@@ -166,12 +207,11 @@ namespace Brass3 {
 			public OutputData Data { get; private set; }
 
 			/// <summary>
-			/// Creates an instance of the <see cref="OuptutDataEventArgs"/> class.
+			/// Creates an instance of the <see cref="OutputDataEventArgs"/> class.
 			/// </summary>
 			/// <param name="data">The <see cref="OutputData"/> object that this event refers to.</param>
 			public OutputDataEventArgs(OutputData data) {
-				this.Data = data;
-				
+				this.Data = data;				
 			}
 
 		}
@@ -198,17 +238,17 @@ namespace Brass3 {
 		}
 
 		/// <summary>
-		/// Represents the method that will handle the event fired immediately before dynamic output data are generated.
+		/// Represents the method that will handle the event fired immediately before output data are run through any loaded <see cref="Plugins.IOutputModifier"/> plugins.
 		/// </summary>
-		public event OutputDataEventHandler BeforeDynamicOutputDataGenerated;
+		public event OutputDataEventHandler BeforeOutputDataModified;
 
 		/// <summary>
-		/// Represents the method that will handle the event fired immediately before dynamic output data are generated.
+		/// Represents the method that will handle the event fired immediately before output data are run through any loaded <see cref="Plugins.IOutputModifier"/> plugins.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="OutputDataEventArgs"/> that contains <see cref="OutputData"/> event data.</param>
-		protected void OnBeforeDynamicOutputDataGenerated(object sender, OutputDataEventArgs e) {
-			if (this.BeforeDynamicOutputDataGenerated != null) this.BeforeDynamicOutputDataGenerated(sender, e);
+		protected void OnBeforeOutputDataModified(object sender, OutputDataEventArgs e) {
+			if (this.BeforeOutputDataModified != null) this.BeforeOutputDataModified(sender, e);
 		}
 
 		#endregion

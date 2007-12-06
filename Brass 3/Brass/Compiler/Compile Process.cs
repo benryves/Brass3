@@ -154,6 +154,7 @@ namespace Brass3 {
 
 
 		#endregion
+
 		/// <summary>
 		/// Compile the source file.
 		/// </summary>
@@ -170,7 +171,7 @@ namespace Brass3 {
 				// Set the assembler:
 				if (this.assembler == null) {
 					if (this.assemblers.Count == 1) {
-						IEnumerator<IAssembler> IEA=assemblers.GetEnumerator();
+						IEnumerator<IAssembler> IEA = assemblers.GetEnumerator();
 						IEA.MoveNext();
 						this.assembler = IEA.Current;
 						this.OnWarningRaised(new NotificationEventArgs(this, string.Format(Strings.ErrorAssemblerNotSetAssumeDefault, Compiler.GetPluginName(this.assembler))));
@@ -216,7 +217,23 @@ namespace Brass3 {
 						// Populate the dynamic data.
 						(DataItem as DynamicOutputData).Generator.Invoke(DataItem as DynamicOutputData);
 					}
-					this.output.Add(new StaticOutputData(DataItem.Source, DataItem.Page, DataItem.ProgramCounter, DataItem.OutputCounter, DataItem.Data, DataItem.Background));
+
+					// Alert plugins that we're about to modify output data (and set state accordingly!)
+					this.OnBeforeOutputDataModified(this, new OutputDataEventArgs(DataItem));
+
+					byte[] ExpandedData = DataItem.Data;
+
+					// Iterate over all output modifiers.
+					foreach (var Modifier in this.OutputModifiers) {
+						var WorkingExpanded = new List<byte>();
+						foreach (var b in ExpandedData) {
+							WorkingExpanded.AddRange(Modifier.ModifyOutput(this, b));	
+						}
+						ExpandedData = WorkingExpanded.ToArray();
+					}
+
+					// Add the finally calculated (static) data to the output.
+					this.output.Add(new StaticOutputData(DataItem.Source, DataItem.Page, DataItem.ProgramCounter, DataItem.OutputCounter, ExpandedData, DataItem.Background));
 				}
 
 				if (this.allErrors.Count > 0) {
