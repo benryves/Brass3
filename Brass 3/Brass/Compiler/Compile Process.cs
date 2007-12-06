@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Brass3.Plugins;
-using System.IO;
 
 namespace Brass3 {
 	public partial class Compiler {
