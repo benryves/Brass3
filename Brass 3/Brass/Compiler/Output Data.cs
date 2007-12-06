@@ -161,9 +161,19 @@ namespace Brass3 {
 		/// </summary>
 		public class OutputDataEventArgs : EventArgs {
 			/// <summary>
-			/// Gets the <see cref="OutputData"/> object that this event relates to.
+			/// Gets the <see cref="OutputData"/> object that this event refers to.
 			/// </summary>
 			public OutputData Data { get; private set; }
+
+			/// <summary>
+			/// Creates an instance of the <see cref="OuptutDataEventArgs"/> class.
+			/// </summary>
+			/// <param name="data">The <see cref="OutputData"/> object that this event refers to.</param>
+			public OutputDataEventArgs(OutputData data) {
+				this.Data = data;
+				
+			}
+
 		}
 
 		/// <summary>
@@ -227,13 +237,15 @@ namespace Brass3 {
 		/// <param name="data">The data to write.</param>
 		public void WriteStaticOutput(byte[] data) {
 
-			OutputData Data = new StaticOutputData(this.CurrentStatement.Value,
+			var Data = new StaticOutputData(this.CurrentStatement.Value,
 				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
 				(int)this.labels.OutputCounter.NumericValue, data, this.DataWrittenToBackground);
 
 			this.WorkingOutputData.Add(Data);
 			this.Labels.ProgramCounter.NumericValue += data.Length;
 			this.Labels.OutputCounter.NumericValue += data.Length;
+
+			this.OnOutputDataWritten(this, new OutputDataEventArgs(Data));
 		}
 
 
@@ -313,11 +325,17 @@ namespace Brass3 {
 		/// <param name="dataSize">The size of the dynamic data block.</param>
 		/// <param name="generator">The delegate that will be called to populate the dynamic data when required.</param>
 		public void WriteDynamicOutput(int dataSize, DynamicOutputData.DynamicDataGenerator generator) {
-			this.WorkingOutputData.Add(new DynamicOutputData(this.CurrentStatement.Value,
+			
+			var Data = new DynamicOutputData(this.CurrentStatement.Value,
 				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
-				(int)this.labels.OutputCounter.NumericValue, dataSize, generator, this.DataWrittenToBackground));
+				(int)this.labels.OutputCounter.NumericValue, dataSize, generator, this.DataWrittenToBackground);
+
 			this.Labels.ProgramCounter.NumericValue += dataSize;
 			this.Labels.OutputCounter.NumericValue += dataSize;
+
+			this.WorkingOutputData.Add(Data);
+
+			this.OnOutputDataWritten(this, new OutputDataEventArgs(Data));
 		}
 
 		
