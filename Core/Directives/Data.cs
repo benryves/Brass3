@@ -62,7 +62,32 @@ namespace Core.Directives {
 
 			}
 
-			throw new NotImplementedException();
+			// Get the argument indices for the source.
+			foreach (var ExpressionIndex in source.GetCommaDelimitedArguments(index + 1)) {
+
+
+				Label Data; CompilerExpection Error;
+				if (source.TryEvaluateExpression(compiler, ExpressionIndex, out Data, out Error)) {
+
+					// We've managed to calculate the data. It's static!
+					if (Data.IsString) {
+						// For strings, dump out each character (encoded to a byte value)...
+						foreach (var EncodedStringData in compiler.StringEncoder.GetData(Data.StringValue)) {
+							compiler.WriteStaticOutput(NumberEncoder.GetBytes(compiler, EncodedStringData));
+						}
+					} else {
+						// For numbers, just dump out a single value.
+						compiler.WriteStaticOutput(NumberEncoder.GetBytes(compiler, Data.NumericValue));
+					}
+
+				} else {
+					
+					// We can't actually calculate the data just yet, so do something dynamic!
+					compiler.WriteDynamicOutput(NumberEncoder.Size, G => G.Data = NumberEncoder.GetBytes(compiler, source.EvaluateExpression(compiler,ExpressionIndex).NumericValue));
+
+				}
+
+			}
 
 		}
 
