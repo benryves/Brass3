@@ -176,6 +176,11 @@ namespace Brass3 {
 			public string Module { get; private set; }
 
 			/// <summary>
+			/// Gets the number of statements compiled up to this point.
+			/// </summary>
+			internal int CompiledStatements { get; private set; }
+
+			/// <summary>
 			/// Creates an instance of the <see cref="DynamicOutputData"/> class.
 			/// </summary>
 			/// <param name="source">The <see cref="Compiler.SourceStatement"/> that generated this output.</param>
@@ -188,6 +193,7 @@ namespace Brass3 {
 				: base(source, page, programCounter, outputCounter, new byte[dataSize], background) {
 				this.Generator = generator;
 				this.Module = source.Compiler.Labels.CurrentModule;
+				this.CompiledStatements = source.Compiler.compiledStatements;
 			}
 
 		}

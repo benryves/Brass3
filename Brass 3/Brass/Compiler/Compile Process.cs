@@ -210,10 +210,13 @@ namespace Brass3 {
 						this.Labels.OutputCounter.NumericValue = DataItem.OutputCounter;
 						this.Labels.ProgramCounter.Page = DataItem.Page;
 						this.Labels.OutputCounter.Page = DataItem.Page;
-
+						
 						// Restore module state.
 						this.Labels.CurrentModule = DynamicDataItem.Module;
 
+						// Restore number of compiled statements.
+						this.compiledStatements = DynamicDataItem.CompiledStatements;
+		
 						// Populate the dynamic data.
 						(DataItem as DynamicOutputData).Generator.Invoke(DataItem as DynamicOutputData);
 					}
