@@ -46,8 +46,7 @@ namespace TexasInstruments.Brass.Directives {
 				Name += NameSuffix;
 			}
 
-			//TODO: Fix bcall
-			BCaller.RomCall(compiler, Name, 0);
+			BCaller.RomCall(compiler, Name, source, index + 1);
 		}
 
 	}

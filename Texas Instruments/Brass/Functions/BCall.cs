@@ -122,7 +122,7 @@ String .byte ""Brass 3"", 0")]
 			return OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8X) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI8XApp) || OutputWriterType == typeof(TexasInstruments.Brass.Output.TI73App);
 		}
 
-		internal void RomCall(Compiler compiler, string function, ushort address) {
+		internal void RomCall(Compiler compiler, string function, TokenisedSource source, int index) {
 
 			bool RequiresVoodoo = BCall.RequiresOSHandler(compiler);
 
@@ -227,11 +227,11 @@ String .byte ""Brass 3"", 0")]
 				}
 			}
 
-			compiler.WriteStaticOutput(address);
+			compiler.WriteDynamicOutput(2, G => { ushort Address = (ushort)source.EvaluateExpression(compiler, index).NumericValue; G.Data = new byte[] { (byte)Address, (byte)(Address >> 8) }; });
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			this.RomCall(compiler, function, 0x0000);
+			this.RomCall(compiler, function, source, 0);
 			return new Label(compiler.Labels, double.NaN);
 		}
 	}
