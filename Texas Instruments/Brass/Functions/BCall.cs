@@ -227,11 +227,13 @@ String .byte ""Brass 3"", 0")]
 				}
 			}
 
+			source = source.Clone() as TokenisedSource;
+
 			compiler.WriteDynamicOutput(2, G => { ushort Address = (ushort)source.EvaluateExpression(compiler, index).NumericValue; G.Data = new byte[] { (byte)Address, (byte)(Address >> 8) }; });
 		}
 
 		public Label Invoke(Compiler compiler, TokenisedSource source, string function) {
-			this.RomCall(compiler, function, source, 0);
+			this.RomCall(compiler, function, source, source.GetCommaDelimitedArguments(0, 1)[0]);
 			return new Label(compiler.Labels, double.NaN);
 		}
 	}
