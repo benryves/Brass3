@@ -115,7 +115,7 @@ The directive will report a warning if there is not two bytes output before this
 				compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Output writer is neither TI83 nor TI8X; assuming TI-83.")));
 			}
 
-			if (Is83Plus) {
+			/*if (Is83Plus) {
 				if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length != 2) {
 					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Invalid data before the the header.")));
 				}
@@ -123,7 +123,7 @@ The directive will report a warning if there is not two bytes output before this
 				if (compiler.GetOutputDataOnPage(compiler.Labels.ProgramCounter.Page).Length > 0) {
 					compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new DirectiveArgumentException(source, "Data has already been output before the the header.")));
 				}
-			}
+			}*/
 
 
 			byte[] ProgramName = compiler.StringEncoder.GetData(ParsedArguments[0] as string);
