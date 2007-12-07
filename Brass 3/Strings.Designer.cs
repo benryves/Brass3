@@ -286,6 +286,15 @@ namespace Brass3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamic data can only be written during the main compilation pass..
+        /// </summary>
+        internal static string ErrorDynamicDataCannotBeWrittenOutsideMainPass {
+            get {
+                return ResourceManager.GetString("ErrorDynamicDataCannotBeWrittenOutsideMainPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Environment variable Brass.Templates not set..
         /// </summary>
         internal static string ErrorEnvironmentNotSetTemplates {

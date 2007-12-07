@@ -129,6 +129,8 @@ namespace Brass3 {
 
 		private bool IsCompiling = false;
 
+		private bool IsAssembling = false;
+
 		#endregion
 
 		#region Public Methods
@@ -189,13 +191,18 @@ namespace Brass3 {
 				// Assemble.
 				this.OnCompilationBegun(new EventArgs());
 
+				this.IsAssembling = true;
+
 				if (!string.IsNullOrEmpty(this.Header)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Header)), null);
 
 				this.CompileFile(this.SourceFile);
 
 				if (!string.IsNullOrEmpty(this.Footer)) this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(this.Footer)), null);
 
+				this.IsAssembling = false;
+
 				this.OnCompilationEnded(new EventArgs());
+
 
 				
 				// Insert dynamic data.
@@ -278,7 +285,8 @@ namespace Brass3 {
 				this.OnErrorRaised(new NotificationEventArgs(this, ex.Message, this.currentStatement.Value));
 				return false;
 			} finally {
-				IsCompiling = false;
+				this.IsCompiling = false;
+				this.IsAssembling = false;
 			}
 		}
 

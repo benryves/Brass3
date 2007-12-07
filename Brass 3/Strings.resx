@@ -194,6 +194,9 @@
   <data name="ErrorDirectiveNotDeclared" xml:space="preserve">
     <value>Invalid directive '{0}'.</value>
   </data>
+  <data name="ErrorDynamicDataCannotBeWrittenOutsideMainPass" xml:space="preserve">
+    <value>Dynamic data can only be written during the main compilation pass.</value>
+  </data>
   <data name="ErrorEnvironmentNotSetTemplates" xml:space="preserve">
     <value>Environment variable Brass.Templates not set.</value>
   </data>
