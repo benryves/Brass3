@@ -19,7 +19,9 @@ namespace Brass.TexasInstruments {
 		private bool Squishing = true;
 
 		public Squish(Compiler c) {
-			c.CompilationBegun += new EventHandler(delegate(object sender, EventArgs e) { this.Squishing = true; });
+			c.CompilationBegun += (sender, e) => this.Squishing = true;
+			c.OutputDataWritten += (sender, e) => e.Data.SetStoredData(typeof(Squish), this.Squishing);
+			c.BeforeOutputDataModified += (sender, e) => this.Squishing = (bool)(e.Data.GetStoredData(typeof(Squish)) ?? true);
 		}
 
 		public byte[] ModifyOutput(Compiler compiler, byte data) {
