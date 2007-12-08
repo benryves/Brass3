@@ -45,6 +45,11 @@ namespace Brass3 {
 			/// </summary>
 			public bool Background { get; private set; }
 
+			/// <summary>
+			/// Gets the endianness of the compiler at the point the data was written.
+			/// </summary>
+			public Endianness Endianess { get; private set; }
+
 			#endregion
 
 			#region Constructor
@@ -53,19 +58,17 @@ namespace Brass3 {
 			/// Creates an instance of the <see cref="OutputData"/> class.
 			/// </summary>
 			/// <param name="source">The <see cref="Compiler.SourceStatement"/> that generated this output.</param>
-			/// <param name="page">The page number that the output data resides on.</param>
-			/// <param name="programCounter">The program counter that the output data starts at.</param>
-			/// <param name="outputCounter">The output counter that the output data starts at.</param>
 			/// <param name="data">The raw data that the class is to represent.</param>
 			/// <param name="background">True if the data can be overwritten.</param>
-			public OutputData(Compiler.SourceStatement source, int page, int programCounter, int outputCounter, byte[] data, bool background) {
+			public OutputData(Compiler.SourceStatement source, byte[] data, bool background) {
 				this.Source = source;
-				this.ProgramCounter = programCounter;
-				this.OutputCounter = outputCounter;
-				this.Page = page;
+				this.ProgramCounter = (int)source.Compiler.Labels.ProgramCounter.NumericValue;
+				this.OutputCounter = (int)source.Compiler.Labels.OutputCounter.NumericValue;
+				this.Page = (int)source.Compiler.Labels.OutputCounter.Page;
 				this.Data = data;
 				this.Background = background;
 				this.StoredData = new Dictionary<Type, object>();
+				this.Endianess = source.Compiler.Endianness;
 			}
 
 			#endregion
@@ -148,8 +151,8 @@ namespace Brass3 {
 			/// <param name="outputCounter">The output counter that the output data starts at.</param>
 			/// <param name="data">The raw data that the class is to represent.</param>
 			/// <param name="background">True if the data can be overwritten.</param>
-			public StaticOutputData(Compiler.SourceStatement source, int page, int programCounter, int outputCounter, byte[] data, bool background)
-				: base(source, page, programCounter, outputCounter, data, background) {
+			public StaticOutputData(Compiler.SourceStatement source, byte[] data, bool background)
+				: base(source, data, background) {
 			}
 
 		}
@@ -189,8 +192,8 @@ namespace Brass3 {
 			/// <param name="outputCounter">The output counter that the output data starts at.</param>
 			/// <param name="dataSize">The size of the dynamic data.</param>
 			/// <param name="background">True if the data can be overwritten.</param>
-			public DynamicOutputData(Compiler.SourceStatement source, int page, int programCounter, int outputCounter, int dataSize, DynamicDataGenerator generator, bool background)
-				: base(source, page, programCounter, outputCounter, new byte[dataSize], background) {
+			public DynamicOutputData(Compiler.SourceStatement source, int dataSize, DynamicDataGenerator generator, bool background)
+				: base(source, new byte[dataSize], background) {
 				this.Generator = generator;
 				this.Module = source.Compiler.Labels.CurrentModule;
 				this.CompiledStatements = source.Compiler.compiledStatements;
@@ -283,9 +286,7 @@ namespace Brass3 {
 		/// <param name="data">The data to write.</param>
 		public void WriteStaticOutput(byte[] data) {
 
-			var Data = new StaticOutputData(this.CurrentStatement.Value,
-				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
-				(int)this.labels.OutputCounter.NumericValue, data, this.DataWrittenToBackground);
+			var Data = new StaticOutputData(this.CurrentStatement.Value, data, this.DataWrittenToBackground);
 
 
 			if (this.IsAssembling) {
@@ -380,9 +381,7 @@ namespace Brass3 {
 
 			if (!this.IsAssembling) throw new Exception(Strings.ErrorDynamicDataCannotBeWrittenOutsideMainPass);
 			
-			var Data = new DynamicOutputData(this.CurrentStatement.Value,
-				this.labels.ProgramCounter.Page, (int)this.labels.OutputCounter.NumericValue,
-				(int)this.labels.OutputCounter.NumericValue, dataSize, generator, this.DataWrittenToBackground);
+			var Data = new DynamicOutputData(this.CurrentStatement.Value, dataSize, generator, this.DataWrittenToBackground);
 
 			this.Labels.ProgramCounter.NumericValue += dataSize;
 			this.Labels.OutputCounter.NumericValue += dataSize;

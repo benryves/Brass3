@@ -223,6 +223,9 @@ namespace Brass3 {
 
 						// Restore number of compiled statements.
 						this.compiledStatements = DynamicDataItem.CompiledStatements;
+
+						// Restore endianness.
+						this.Endianness = DynamicDataItem.Endianess;
 		
 						// Populate the dynamic data.
 						(DataItem as DynamicOutputData).Generator.Invoke(DataItem as DynamicOutputData);
@@ -243,7 +246,7 @@ namespace Brass3 {
 					}
 
 					// Add the finally calculated (static) data to the output.
-					this.output.Add(new StaticOutputData(DataItem.Source, DataItem.Page, DataItem.ProgramCounter, DataItem.OutputCounter, ExpandedData, DataItem.Background));
+					this.output.Add(new StaticOutputData(DataItem.Source, ExpandedData, DataItem.Background));
 				}
 
 				if (this.allErrors.Count > 0) {
