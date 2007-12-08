@@ -423,7 +423,7 @@ namespace Brass3 {
 			int TestAddress = 0;
 			for (int i = 0; i < ExistingData.Count; ++i) {
 				if (ExistingData[i].OutputCounter > (TestAddress + size)) break;
-				TestAddress = ExistingData[i].OutputCounter + 1;
+				TestAddress = ExistingData[i].OutputCounter + ExistingData[i].Data.Length;
 			}
 			return TestAddress;
 		}
