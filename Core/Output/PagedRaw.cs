@@ -75,11 +75,17 @@ namespace Core.Output {
 				foreach (Compiler.OutputData DataToWrite in compiler.GetOutputDataOnPage(Page)) {
 					if (DataToWrite.Data == null || DataToWrite.Data.Length < 1) continue;
 					int DestinationAddress = DataToWrite.OutputCounter - PD.Address;
-					if (DestinationAddress < 0 || DestinationAddress >= PD.Size) {
-						++OutOfPageBounds;
-					} else {
-						PageData[DestinationAddress] = DataToWrite.Data[0];
+
+					for (int i = 0; i < DataToWrite.Data.Length; i++) {
+						if (DestinationAddress < 0 || DestinationAddress >= PD.Size) {
+							++OutOfPageBounds;
+						} else {
+							PageData[DestinationAddress] = DataToWrite.Data[i];
+						}
+						++DestinationAddress;
 					}
+
+					
 				}
 
 				if (OutOfPageBounds > 0) {
