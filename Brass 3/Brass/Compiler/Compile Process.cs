@@ -210,14 +210,15 @@ namespace Brass3 {
 
 					DynamicOutputData DynamicDataItem = DataItem as DynamicOutputData;
 
-					if (DynamicDataItem != null) {
 
-						// Restore program/output counter states.
-						this.Labels.ProgramCounter.NumericValue = DataItem.ProgramCounter;
-						this.Labels.OutputCounter.NumericValue = DataItem.OutputCounter;
-						this.Labels.ProgramCounter.Page = DataItem.Page;
-						this.Labels.OutputCounter.Page = DataItem.Page;
-						
+					// Restore program/output counter states.
+					this.Labels.ProgramCounter.NumericValue = DataItem.ProgramCounter;
+					this.Labels.OutputCounter.NumericValue = DataItem.OutputCounter;
+					this.Labels.ProgramCounter.Page = DataItem.Page;
+					this.Labels.OutputCounter.Page = DataItem.Page;
+
+					if (DynamicDataItem != null) {
+				
 						// Restore module state.
 						this.Labels.CurrentModule = DynamicDataItem.Module;
 
