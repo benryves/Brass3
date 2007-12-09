@@ -39,6 +39,7 @@ namespace Brass3 {
 			/// </summary>
 			/// <param name="label">The label we are accessing.</param>
 			public LabelAccessor(Label label) {
+				if (label == null) throw new NullReferenceException();
 				this.label = label;
 			}
 
@@ -55,7 +56,9 @@ namespace Brass3 {
 
 			public bool ForceResolve() {
 				if (this.Resolved) return true;
-				this.Resolved = this.label.Collection.TryParse(new Token("global." + this.label.Token.Data), out this.label) && this.label.Created;
+				Label L;
+				this.Resolved = this.label.Collection.TryParse(new Token("global." + this.label.Token.Data), out L) && this.label.Created;
+				if (this.Resolved) this.label = L;
 				return this.Resolved;
 			}
 		}
