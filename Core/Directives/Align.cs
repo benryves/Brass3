@@ -22,7 +22,8 @@ namespace Core.Directives {
 			double Boundary = (double)source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.ValueArgument)[0];
 			if (Boundary < 1 || (int)Boundary != Boundary) throw new DirectiveArgumentException(source, Strings.ErrorAlignMustBePositiveIntegral);
 
-			compiler.Labels.ProgramCounter.NumericValue = ((((int)compiler.Labels.ProgramCounter.NumericValue) + ((int)Boundary - 1)) / (int)(Boundary)) * Boundary;
+			int Target = Functions.Align.GetAlignment((int)compiler.Labels.ProgramCounter.NumericValue, (int)Boundary);
+			compiler.IncrementProgramAndOutputCounters(Target - (int)compiler.Labels.ProgramCounter.NumericValue);
 
 		}
 

@@ -89,6 +89,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Documentation.resx</DependentUpon>
     </Compile>
+    <Compile Include="Functions\Align.cs" />
     <Compile Include="Functions\PluginIs.cs" />
     <Compile Include="Functions\EnvVar.cs" />
     <Compile Include="Functions\Date\Date Component.cs" />
