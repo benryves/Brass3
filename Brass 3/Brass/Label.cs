@@ -125,14 +125,6 @@ namespace Brass3 {
 			internal set { this.token = value; }
 		}
 
-		private AssemblyPass lastAssignedPass;
-		/// <summary>
-		/// Gets the last pass that a label was assigned to this label.
-		/// </summary>
-		public AssemblyPass LastAssignedPass {
-			get { return this.lastAssignedPass; }
-		}
-
 		private readonly LabelCollection collection;
 		/// <summary>
 		/// Gets the collection containing the label.
@@ -155,9 +147,6 @@ namespace Brass3 {
 		}
 
 		internal int ChangeCount = 0;
-		internal bool NeedsClearingBetweenPasses {
-			get { return ChangeCount > 1; }
-		}
 
 		private IDataStructure type = null;
 		/// <summary>

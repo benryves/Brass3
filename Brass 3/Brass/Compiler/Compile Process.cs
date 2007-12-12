@@ -99,14 +99,13 @@ namespace Brass3 {
 		/// <summary>
 		/// Gets an array of all of the parsed assembly source statements.
 		/// </summary>
-		/// <remarks>During the first pass this will still be in a process of being populated, but it will remain constant during the second pass.</remarks>
 		public SourceStatement[] Statements {
 			get { return new List<SourceStatement>(this.statements).ToArray(); }
 		}
 
 		private int compiledStatements;
 		/// <summary>
-		/// Gets the number of compiled statements this pass.
+		/// Gets the number of compiled statements thus far.
 		/// </summary>
 		public int CompiledStatements {
 			get { return this.compiledStatements; }
@@ -299,7 +298,6 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="stream">The stream containing source to compile.</param>
 		/// <param name="filename">The filename associated with a stream.</param>
-		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileStream(Stream stream, string filename) {
 			using (AssemblyReader AR = new AssemblyReader(this, stream)) {
 
@@ -353,7 +351,6 @@ namespace Brass3 {
 		/// Load, parse, and compile a file.
 		/// </summary>
 		/// <param name="filename">The name of the file to compile.</param>
-		/// <remarks>The parsed statements are cached, so you can only call this method during the initial pass.</remarks>
 		public void CompileFile(string filename) {
 			this.CompileStream(new MemoryStream(Encoding.Unicode.GetBytes(File.ReadAllText(filename))), filename);
 		}

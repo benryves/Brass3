@@ -6,11 +6,11 @@ namespace Brass3 {
 		#region Events
 
 		/// <summary>
-		/// Event raised at the start of a compilation.
+		/// Event raised at the beginning of compilation.
 		/// </summary>
 		public event EventHandler CompilationBegun;
 		/// <summary>
-		/// Event raised at the start of a pass.
+		/// Event raised at the beginning of compilation.
 		/// </summary>
 		protected virtual void OnCompilationBegun(EventArgs e) { 
 			this.IsCompiling = true;
@@ -22,7 +22,7 @@ namespace Brass3 {
 		/// </summary>
 		public event EventHandler CompilationEnded;
 		/// <summary>
-		/// Event raised at the end of pass.
+		/// Event raised at the end of compilation.
 		/// </summary>
 		protected virtual void OnCompilationEnded(EventArgs e) {
 			if (CompilationEnded != null) CompilationEnded(this, e);
