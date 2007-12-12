@@ -16,7 +16,9 @@ The contiguous data plugin has been removed. Something offering similar function
 \par
 Internal fix to label resolution to prevent the internal label from being accidentally set to a null reference (this caused the error-reporting code to throw a null reference exception instead of the missing label's name).\par
 \par
-\cf0\b Known Issues\b0\par
+Exception is spelled, well, exception. Only one of the new exception types was spelled correctly (all the others were spelled "Expection"). Cheers to gameprograma for spotting this!\par
+\par
+\b Known Issues\b0\par
 \par
 \pard{\pntext\f2\'B7\tab}{\*\pn\pnlvlblt\pnf2\pnindent0{\pntxtb\'B7}}\fi-284\li710 As some reusable labels look like unary operators, using a reusable label in the same statement as a function that doesn't return a value - such as \cf1 bcall()\cf0  - silently fails to create the label. If you use a reusable label on the same line as such a function, you can insert a \\ character to be safe.\f1\par
 \f0{\pntext\f2\'B7\tab}If output data overlaps itself (\cf2 .org $00 \\ .db 1 \\ .org $00 \\ .db 2\cf0 ) no error is reported.\f1\par
