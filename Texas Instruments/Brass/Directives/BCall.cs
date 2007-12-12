@@ -22,7 +22,7 @@ namespace TexasInstruments.Brass.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			Functions.BCall BCaller = compiler.GetPluginInstanceFromType<Functions.BCall>();
 			if (BCaller == null) {
-				throw new CompilerExpection(source.Tokens[index], directive + "() function plugin not available.");
+				throw new CompilerException(source.Tokens[index], directive + "() function plugin not available.");
 			}
 
 			int[] Arguments = source.GetCommaDelimitedArguments(index + 1, 1, 2);

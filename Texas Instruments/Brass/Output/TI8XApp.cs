@@ -37,7 +37,7 @@ If signing the application fails for any reason, A warning message is displayed 
 		internal void Sign(Compiler compiler, Stream stream) {
 			
 			Core.Output.IntelHex HexWriter = compiler.GetPluginInstanceFromType<Core.Output.IntelHex>();
-			if (HexWriter == null) throw new CompilerExpection((TokenisedSource)null, "Intel HEX plugin not available.");
+			if (HexWriter == null) throw new CompilerException((TokenisedSource)null, "Intel HEX plugin not available.");
 
 			Utility.Wappsign Wappsign;
 			List<string> TempFiles = new List<string>();
@@ -53,12 +53,12 @@ If signing the application fails for any reason, A warning message is displayed 
 
 
 				string KeyFile = Wappsign.GetKeyFile(TempFiles[0]);
-				if (string.IsNullOrEmpty(KeyFile) || !File.Exists(KeyFile)) throw new CompilerExpection((TokenisedSource)null, "Invalid key name.");
+				if (string.IsNullOrEmpty(KeyFile) || !File.Exists(KeyFile)) throw new CompilerException((TokenisedSource)null, "Invalid key name.");
 
 
 				TempFiles.Add(Path.GetTempFileName());
 				int SignError = Wappsign.Sign(TempFiles[0], KeyFile, TempFiles[1]);
-				if (SignError != 0) throw new CompilerExpection((TokenisedSource)null, Wappsign.GetErrorMessage(SignError));
+				if (SignError != 0) throw new CompilerException((TokenisedSource)null, Wappsign.GetErrorMessage(SignError));
 
 				byte[] SignedOutput = File.ReadAllBytes(TempFiles[1]);
 

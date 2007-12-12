@@ -210,10 +210,10 @@ namespace Brass3 {
 			Label L;
 			if (this.TryParse(new TokenisedSource.Token(FullName), out L)) {
 				if (L.IsConstant) {
-					throw new LabelExpection(name, string.Format(Strings.ErrorLabelInvalidNameNumber, name.Data));
+					throw new LabelException(name, string.Format(Strings.ErrorLabelInvalidNameNumber, name.Data));
 				} else {
 					if (this.Lookup.ContainsKey(FullName.ToLowerInvariant())) {
-						throw new LabelExpection(name, string.Format(Strings.ErrorLabelAlreadyDefined, name.Data));
+						throw new LabelException(name, string.Format(Strings.ErrorLabelAlreadyDefined, name.Data));
 					}
 				}
 			}
@@ -238,7 +238,7 @@ namespace Brass3 {
 		/// <param name="label">The label to add.</param>
 		public void Add(Label label) {
 			string SearchName = label.Name.ToLowerInvariant();
-			if (this.Lookup.ContainsKey(SearchName)) throw new LabelExpection(label.Token, string.Format(Strings.ErrorLabelAlreadyDefined, label.Name));
+			if (this.Lookup.ContainsKey(SearchName)) throw new LabelException(label.Token, string.Format(Strings.ErrorLabelAlreadyDefined, label.Name));
 			this.Lookup.Add(SearchName, label);
 		}
 
@@ -421,7 +421,7 @@ namespace Brass3 {
 		public Label Parse(TokenisedSource.Token value) {
 			Label Result;
 			if (this.TryParse(value, out Result)) return Result;
-			throw new ParseErrorExpection(value, string.Format(Strings.ErrorLabelCannotParse, value.Data));
+			throw new ParseErrorException(value, string.Format(Strings.ErrorLabelCannotParse, value.Data));
 		}
 
 

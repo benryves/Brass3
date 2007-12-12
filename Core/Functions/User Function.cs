@@ -37,8 +37,8 @@ namespace Core.Functions {
 			}
 
 
-			if (MatchedFunctionDeclarations.Count == 0) throw new CompilerExpection(source, Strings.ErrorFunctionUnmatchedSignature);
-			if (MatchedFunctionDeclarations.Count > 1) throw new CompilerExpection(source, Strings.ErrorFunctionAmbiguousSignature);
+			if (MatchedFunctionDeclarations.Count == 0) throw new CompilerException(source, Strings.ErrorFunctionUnmatchedSignature);
+			if (MatchedFunctionDeclarations.Count > 1) throw new CompilerException(source, Strings.ErrorFunctionAmbiguousSignature);
 
 			Directives.Function.FunctionDeclaration FunctionDeclaration = MatchedFunctionDeclarations[0];			
 			

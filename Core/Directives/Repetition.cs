@@ -108,7 +108,7 @@ namespace Core.Directives {
 									double End = source.EvaluateExpression(compiler, 3).NumericValue;
 									double Step = CurrentExpressionIndex == 3 ? Math.Sign(End - Start) : source.EvaluateExpression(compiler, 4).NumericValue;
 
-									if (Math.Sign(Step) == 0 || Math.Sign(Step) != Math.Sign(End - Start)) throw new CompilerExpection(source, Strings.ErrorRepetitionInfiniteLoop);
+									if (Math.Sign(Step) == 0 || Math.Sign(Step) != Math.Sign(End - Start)) throw new CompilerException(source, Strings.ErrorRepetitionInfiniteLoop);
 
 
 									if (LastLoopHit == null) {

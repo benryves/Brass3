@@ -310,7 +310,7 @@ namespace Z80 {
 								TokenisedSource CheckAccidentalIndirection = (source.GetExpressionTokens(SourceArguments[i]));
 								if (CheckAccidentalIndirection.Tokens[0].Data == "(" && CheckAccidentalIndirection.GetCloseBracketIndex(0) == CheckAccidentalIndirection.Tokens.Length - 1) {
 									string ErrorMessage = string.Format("Attempted use of indirection with an unsupported instruction ({0}).", I);
-									compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(CheckAccidentalIndirection, ErrorMessage)));
+									compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerException(CheckAccidentalIndirection, ErrorMessage)));
 								}
 							}
 							break;
@@ -324,7 +324,7 @@ namespace Z80 {
 								|| IndexAccess.Tokens[1].DataLowerCase != I.Operands[i].Value
 								|| IndexAccess.Tokens[0].Data != "("
 								|| IndexAccess.Tokens[IndexAccess.Tokens.Length - 1].Data != ")"
-								) throw new CompilerExpection(source, "Instruction not implemented properly.");
+								) throw new CompilerException(source, "Instruction not implemented properly.");
 
 							if (IndexAccess.Tokens.Length == 3) {
 								// If it's only three tokens, chances are it goes (ix) or (iy):
@@ -336,7 +336,7 @@ namespace Z80 {
 							}
 							break;
 						default:
-							throw new CompilerExpection(source, "Instruction not implemented properly.");
+							throw new CompilerException(source, "Instruction not implemented properly.");
 					}
 
 				}
@@ -371,7 +371,7 @@ namespace Z80 {
 					case Instruction.InstructionClass.Relative:
 						OperandResults[0] -= (int)(compiler.Labels.ProgramCounter.NumericValue + I.Size);
 						if (OperandResults[0] > 127 || OperandResults[0] < -128) {
-							throw new CompilerExpection(source.Tokens[index], "Range of relative jump exceeded.");
+							throw new CompilerException(source.Tokens[index], "Range of relative jump exceeded.");
 						}
 						OutputData[OutputData.Length - 1] = (byte)OperandResults[0];
 						break;
@@ -390,14 +390,14 @@ namespace Z80 {
 						break;
 					case Instruction.InstructionClass.ZBit:
 						if (OperandResults[0] < 0 || OperandResults[0] > 7) {
-							throw new CompilerExpection(source.Tokens[index], "Bit index must be in the range 0-7 (not " + OperandResults[0] + ").");
+							throw new CompilerException(source.Tokens[index], "Bit index must be in the range 0-7 (not " + OperandResults[0] + ").");
 						}
 						OperandResults[0] *= 8;
 						if (I.Size == 4) {
 							int SecondArgument = OperandResults[1];
 
 							if (SecondArgument > 127 || SecondArgument < -128) {
-								throw new CompilerExpection(source.Tokens[index], "Range of IX must be between -128 and 127 (not " + SecondArgument + ").");
+								throw new CompilerException(source.Tokens[index], "Range of IX must be between -128 and 127 (not " + SecondArgument + ").");
 							}
 
 							OutputData[2] = (byte)((SecondArgument | (I.Or & 0xFF)) & 0xFF);
@@ -405,14 +405,14 @@ namespace Z80 {
 						} else if (I.Size == 2) {
 							OutputData[1] += (byte)(OperandResults[0]);
 						} else {
-							throw new CompilerExpection(source.Tokens[index], "ZBIT instruction not supported.");
+							throw new CompilerException(source.Tokens[index], "ZBIT instruction not supported.");
 						}
 						break;
 					case Instruction.InstructionClass.Restart:
 						if (OperandResults[0] < 0x00 || OperandResults[0] > 0x38) {
-							throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses between $00 and $38 inclusive.");
+							throw new CompilerException(source.Tokens[index], "You can only restart to addresses between $00 and $38 inclusive.");
 						} else if ((OperandResults[0] & 0x07) != 0) {
-							throw new CompilerExpection(source.Tokens[index], "You can only restart to addresses divisible by eight.");
+							throw new CompilerException(source.Tokens[index], "You can only restart to addresses divisible by eight.");
 						} else {
 							OutputData[0] = (byte)((int)OutputData[0] + OperandResults[0]);
 						}

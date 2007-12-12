@@ -69,7 +69,7 @@ namespace Variables {
 			source.GetCommaDelimitedArguments(index + 1);
 
 			DataStructure VarType = compiler.GetStructureByName(source.Tokens[index + 1].Data);
-			if (VarType == null) throw new CompilerExpection(source.Tokens[index + 1], string.Format("Unrecognised variable type '{0}'.", source.Tokens[index + 1].Data));
+			if (VarType == null) throw new CompilerException(source.Tokens[index + 1], string.Format("Unrecognised variable type '{0}'.", source.Tokens[index + 1].Data));
 
 			int NameListIndex = index + 2;
 			int ElementCount = 1;
@@ -87,13 +87,13 @@ namespace Variables {
 			foreach (object NameArg in source.GetCommaDelimitedArguments(compiler, NameListIndex, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.SingleToken | TokenisedSource.ArgumentType.RepeatForever })) {
 				string VariableName = NameArg as string;
 				if (!Label.IsValidLabelName(VariableName)) {
-					throw new CompilerExpection(source, string.Format("Invalid variable name '{0}'.", VariableName));
+					throw new CompilerException(source, string.Format("Invalid variable name '{0}'.", VariableName));
 				}
 
 				TokenisedSource.Token VarName = new TokenisedSource.Token(compiler.Labels.ModuleGetFullLabelPath(VariableName));
 				string VarNameLower = VarName.DataLowerCase;
 
-				if (AlreadyAllocated.Contains(VarNameLower)) throw new CompilerExpection(source, string.Format("Variable '{0}' already declared.", VarName.Data));
+				if (AlreadyAllocated.Contains(VarNameLower)) throw new CompilerException(source, string.Format("Variable '{0}' already declared.", VarName.Data));
 
 				ToAllocate.Add(new VariableToAllocate(VarName, VarType, ElementCount));
 				AlreadyAllocated.Add(VarNameLower);
@@ -123,7 +123,7 @@ namespace Variables {
 
 
 				// Check if there are any variable slots free:
-				if (this.VariableLocations.Count == 0) throw new CompilerExpection((TokenisedSource)null, "No variable locations defined.");
+				if (this.VariableLocations.Count == 0) throw new CompilerException((TokenisedSource)null, "No variable locations defined.");
 
 				// Allocate each variable in turn:
 				foreach (VariableToAllocate Var in this.ToAllocate) {
@@ -131,7 +131,7 @@ namespace Variables {
 					// Sort by free space:
 					this.VariableLocations.Sort();
 
-					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerExpection(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Data));
+					if (this.VariableLocations[0].FreeSpace < Var.Size) throw new CompilerException(Var.Name, string.Format("Not enough free space for variable '{0}'.", Var.Name.Data));
 					Label StructLabel = compiler.Labels.Create(Var.Name);
 					StructLabel.Usage = Label.UsageType.Variable;
 					StructLabel.NumericValue = this.VariableLocations[0].CurrentOffset;

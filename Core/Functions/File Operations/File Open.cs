@@ -33,7 +33,7 @@ namespace Core.Functions.FileOperations {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1);
 			string Filename = (source.GetExpressionStringConstant(compiler, Args[0], false));
 
-			if (!File.Exists(Filename)) throw new CompilerExpection(source, string.Format(Strings.ErrorFileNotFound, Filename));
+			if (!File.Exists(Filename)) throw new CompilerException(source, string.Format(Strings.ErrorFileNotFound, Filename));
 
 			double FileHandle = FileHandleAllocation++;
 			this.FileHandles.Add(FileHandle, File.OpenRead(Filename));

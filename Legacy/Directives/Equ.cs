@@ -16,7 +16,7 @@ namespace Legacy.Directives {
 	public class Equ : IDirective {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
-			if (compiler.LabelEvaluationResult == null) throw new CompilerExpection(source, "No label in the statement to assign to.");
+			if (compiler.LabelEvaluationResult == null) throw new CompilerException(source, "No label in the statement to assign to.");
 
 			int[] Args = source.GetCommaDelimitedArguments(index + 1);
 			if (Args.Length != 1) throw new DirectiveArgumentException(source, "Expected one argument.");

@@ -7,7 +7,7 @@ namespace Brass3 {
 	/// <summary>
 	/// Represents an error in an argument passed to a directive or a function.
 	/// </summary>
-	public class DirectiveArgumentException : CompilerExpection {
+	public class DirectiveArgumentException : CompilerException {
 
 		/// <summary>
 		/// Creates an instance of <see cref="DirectiveArgumentException"/>.

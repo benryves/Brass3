@@ -28,7 +28,7 @@ See <c>TASMTABS.HTM</c> in TASM's zip file for more information.")]
 
 
 			Z80.Z80 Assembler = compiler.GetPluginInstanceFromType<Z80.Z80>();
-			if (Assembler == null) throw new CompilerExpection(source.Tokens[index], ".addinstr needs the Z80 assembler plugin to be loaded.");
+			if (Assembler == null) throw new CompilerException(source.Tokens[index], ".addinstr needs the Z80 assembler plugin to be loaded.");
 
 			StringBuilder AddInstrSyntax = new StringBuilder(32);
 

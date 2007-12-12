@@ -213,7 +213,7 @@ namespace Brass3 {
 				if (AccessingPage) {
 					return this.Page;
 				} else {
-					if (!this.Created) throw new LabelNotFoundExpection(this.Token, string.Format(Strings.ErrorLabelNotFound, this.Name));
+					if (!this.Created) throw new LabelNotFoundException(this.Token, string.Format(Strings.ErrorLabelNotFound, this.Name));
 					if (this.IsString) {
 						byte[] Data = this.collection.Compiler.StringEncoder.GetData(this.StringValue);
 						double ParsedValue = 0;
@@ -233,7 +233,7 @@ namespace Brass3 {
 					this.Page = (int)value;
 					this.OnValueChanged(new ValueChangedEventArgs(ValueChangedEventArgs.FieldChangedType.Page, Old, this.page));
 				} else {
-					if (this.IsConstant) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
+					if (this.IsConstant) throw new LabelException(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
 					if (this.created) ++ChangeCount;
 					this.created = true;
 					this.isString = false;
@@ -250,11 +250,11 @@ namespace Brass3 {
 		/// </summary>
 		public int Page {
 			get {
-				if (!this.Created) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelPageNotFound, this.Name));
+				if (!this.Created) throw new LabelException(this.token, string.Format(Strings.ErrorLabelPageNotFound, this.Name));
 				return this.page;
 			}
 			set {
-				if (this.IsConstant) throw new LabelExpection(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
+				if (this.IsConstant) throw new LabelException(this.token, string.Format(Strings.ErrorLabelIsConstant, this.Name));
 				this.created = true;
 				this.page = value;
 			}

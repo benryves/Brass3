@@ -75,7 +75,7 @@ namespace Brass3 {
 		/// <param name="result">Outputs the result, if successful.</param>
 		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
-		public bool TryEvaluateExpression(Compiler compiler, out Label result, out CompilerExpection reasonForFailure) {
+		public bool TryEvaluateExpression(Compiler compiler, out Label result, out CompilerException reasonForFailure) {
 			for (int i = 0; i < this.tokens.Length; ++i) this.tokens[i].ExpressionGroup = 0;
 			return this.TryEvaluateExpression(compiler, 0, out result, out reasonForFailure);
 		}
@@ -90,7 +90,7 @@ namespace Brass3 {
 		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
-		public bool TryEvaluateExpression(Compiler compiler, int index, out Label result, out CompilerExpection reasonForFailure) {
+		public bool TryEvaluateExpression(Compiler compiler, int index, out Label result, out CompilerException reasonForFailure) {
 			return this.TryEvaluateExpression(compiler, index, false, false, out result, out reasonForFailure);
 		}
 
@@ -105,10 +105,10 @@ namespace Brass3 {
 		/// <param name="reasonForFailure">Outputs an exception containing the reason for failure, if any.</param>
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>True if the expression was evaluated successfully, false otherwise.</returns>
-		public bool TryEvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, bool canPerformAssignments, out Label result, out CompilerExpection reasonForFailure) {
+		public bool TryEvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, bool canPerformAssignments, out Label result, out CompilerException reasonForFailure) {
 
 			// Set the default outputs...
-			reasonForFailure = default(CompilerExpection);
+			reasonForFailure = default(CompilerException);
 			result = default(Label);
 
 			// Check for reusables first;
@@ -170,7 +170,7 @@ namespace Brass3 {
 					Reusable.Created = false;
 				} else {
 					if (!compiler.Labels.TryParse(new Token(ReusableName), out Reusable)) {
-						reasonForFailure = new CompilerExpection(this, string.Format(Strings.ErrorLabelReusableNotFound, ReusableName));
+						reasonForFailure = new CompilerException(this, string.Format(Strings.ErrorLabelReusableNotFound, ReusableName));
 						return false;
 					}
 				}
@@ -182,7 +182,7 @@ namespace Brass3 {
 			var TempLabelsToDelete = new List<Label>();
 
 			if (this.tokens.Length == 0) {
-				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, Strings.ErrorEvaluationNothingToEvaluate);
+				reasonForFailure = new InvalidExpressionSyntaxException(OutermostTokenisedSource, Strings.ErrorEvaluationNothingToEvaluate);
 				return false;
 			}
 
@@ -219,7 +219,7 @@ namespace Brass3 {
 							}
 
 							if (!canPerformAssignments && Op.IsAssignment) {
-								reasonForFailure = new CompilerExpection(T, Strings.ErrorEvaluationAssignmentsNotPermitted);
+								reasonForFailure = new CompilerException(T, Strings.ErrorEvaluationAssignmentsNotPermitted);
 								return false;
 							}
 
@@ -244,7 +244,7 @@ namespace Brass3 {
 							}
 
 							if (!compiler.Functions.Contains(T.Data)) {
-								reasonForFailure = new CompilerExpection(T, string.Format(Strings.ErrorEvaluationFunctionNotDeclared, T.Data));
+								reasonForFailure = new CompilerException(T, string.Format(Strings.ErrorEvaluationFunctionNotDeclared, T.Data));
 								return false;
 							}
 
@@ -281,7 +281,7 @@ namespace Brass3 {
 							Label ResultFromFunction;
 							try {
 								ResultFromFunction = Function.Invoke(compiler, SourceInsideFunction, T.Data.ToLowerInvariant());
-							} catch (CompilerExpection ex) {
+							} catch (CompilerException ex) {
 								reasonForFailure = ex;
 								return false;
 							}
@@ -344,14 +344,14 @@ namespace Brass3 {
 									LabelToAccess = O.ExpressionPosition.Previous.Value;
 									LabelToAccess.AccessesPage = false;
 								} else {
-									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationAccessorLabelNotFound);
+									reasonForFailure = new InvalidExpressionSyntaxException(O.Token, Strings.ErrorEvaluationAccessorLabelNotFound);
 									return false;
 								}
 
 							} else {
 
 								if (O.ExpressionPosition.Next == null) {
-									reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
+									reasonForFailure = new InvalidExpressionSyntaxException(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
 									return false;
 								}
 
@@ -365,7 +365,7 @@ namespace Brass3 {
 									
 									try {
 										Result = (LabelAccessor)Result.Clone();
-									} catch (CompilerExpection c) {
+									} catch (CompilerException c) {
 										reasonForFailure = c;
 										return false;
 									}
@@ -392,7 +392,7 @@ namespace Brass3 {
 										Result.Label.NumericValue = -Op.Label.NumericValue;
 										break;
 									default:
-										reasonForFailure = new CompilerExpection(O.Token, O.Type.ToString());
+										reasonForFailure = new CompilerException(O.Token, O.Type.ToString());
 										return false;
 								}
 							}
@@ -402,12 +402,12 @@ namespace Brass3 {
 
 
 							if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
+								reasonForFailure = new InvalidExpressionSyntaxException(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
 								return false;
 							}
 
 							if (O.ExpressionPosition.Next == null || O.ExpressionPosition.Next.Value == null) {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandAfterOperator);
+								reasonForFailure = new InvalidExpressionSyntaxException(O.Token, Strings.ErrorEvaluationExpectedOperandAfterOperator);
 								return false;
 							}
 
@@ -419,7 +419,7 @@ namespace Brass3 {
 								
 								try {
 									Result = (LabelAccessor)Result.Clone();
-								} catch (CompilerExpection c) {
+								} catch (CompilerException c) {
 									reasonForFailure = c;
 									return false;
 								}
@@ -568,7 +568,7 @@ namespace Brass3 {
 									if (O.ExpressionPosition.Next.Next != null && O.ExpressionPosition.Next.Next.Value != null) {
 										LabelAccessor FieldName = O.ExpressionPosition.Next.Next.Value;
 										if (OpA.Label.DataType == null) {
-											reasonForFailure = new CompilerExpection(OpA.Label.Token, Strings.ErrorEvaluationTypeInformationMissing);
+											reasonForFailure = new CompilerException(OpA.Label.Token, Strings.ErrorEvaluationTypeInformationMissing);
 											return false;
 										}
 										if (FieldName.Label.Name.Length > 0 && FieldName.Label.Name[0] == '.') {
@@ -579,7 +579,7 @@ namespace Brass3 {
 											if (!FieldName.Label.Created) compiler.Labels.Remove(FieldName.Label);
 											LabelsToEvaluate.Remove(O.ExpressionPosition.Next.Next);
 										} else {
-											reasonForFailure = new CompilerExpection(FieldName.Label.Token, Strings.ErrorEvaluationExpectedFieldAccess);
+											reasonForFailure = new CompilerException(FieldName.Label.Token, Strings.ErrorEvaluationExpectedFieldAccess);
 											return false;
 										}
 									}
@@ -587,7 +587,7 @@ namespace Brass3 {
 									break;
 
 								default:
-									reasonForFailure = new CompilerExpection(O.Token, O.Type.ToString());
+									reasonForFailure = new CompilerException(O.Token, O.Type.ToString());
 									return false;
 							}
 
@@ -597,7 +597,7 @@ namespace Brass3 {
 							switch (O.Type) {
 								case Operator.OperatorType.ConditionalQuery:
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Value == null) {
-										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
+										reasonForFailure = new InvalidExpressionSyntaxException(O.Token, Strings.ErrorEvaluationExpectedOperandBeforeOperator);
 										return false;
 									}
 									EvaluatedTernaries.Add(O.ExpressionPosition.Previous.Value, O.ExpressionPosition.Previous.Value.Label.NumericValue != 0);
@@ -605,7 +605,7 @@ namespace Brass3 {
 								case Operator.OperatorType.ConditionalResultSplitter:
 
 									if (O.ExpressionPosition.Previous == null || O.ExpressionPosition.Previous.Previous == null || !EvaluatedTernaries.ContainsKey(O.ExpressionPosition.Previous.Previous.Value)) {
-										reasonForFailure = new InvalidExpressionSyntaxExpection(O.Token, Strings.ErrorEvaluationMissingConditionalOperator);
+										reasonForFailure = new InvalidExpressionSyntaxException(O.Token, Strings.ErrorEvaluationMissingConditionalOperator);
 										return false;
 									}
 
@@ -624,13 +624,13 @@ namespace Brass3 {
 									O.ExpressionPosition.List.Remove(O.ExpressionPosition.Next);
 									break;
 								default:
-									reasonForFailure = new CompilerExpection(O.Token, O.Type.ToString());
+									reasonForFailure = new CompilerException(O.Token, O.Type.ToString());
 									return false;
 							}
 
 						} break;
 					default:
-						reasonForFailure = new CompilerExpection(O.Token, string.Format(Strings.ErrorEvaluationOperandsUnsupported, O.OperandCount));
+						reasonForFailure = new CompilerException(O.Token, string.Format(Strings.ErrorEvaluationOperandsUnsupported, O.OperandCount));
 						return false;
 				}
 				LabelsToEvaluate.Remove(O.ExpressionPosition);
@@ -638,16 +638,16 @@ namespace Brass3 {
 
 
 			if (LabelsToEvaluate.Count != 1) {
-				reasonForFailure = new InvalidExpressionSyntaxExpection(OutermostTokenisedSource, Strings.ErrorEvaluationNoSingleResult);
+				reasonForFailure = new InvalidExpressionSyntaxException(OutermostTokenisedSource, Strings.ErrorEvaluationNoSingleResult);
 			} else {
 				if (!canCreateImplicitLabels) {
 					foreach (var L in TempLabels) {
 						if (!L.ForceResolve()) {
 							string Error = string.Format(Strings.ErrorLabelNotFound, L.Label.Name);
 							if (L.Label.Token == null) {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(this, Error);
+								reasonForFailure = new InvalidExpressionSyntaxException(this, Error);
 							} else {
-								reasonForFailure = new InvalidExpressionSyntaxExpection(L.Label.Token, Error);
+								reasonForFailure = new InvalidExpressionSyntaxException(L.Label.Token, Error);
 							}
 						}
 					}
@@ -682,7 +682,7 @@ namespace Brass3 {
 		/// <param name="compiler">The compiler being used to build the current project.</param>
 		/// <returns>The result of the evaluation.</returns>
 		public Label EvaluateExpression(Compiler compiler) {
-			Label L; CompilerExpection E;
+			Label L; CompilerException E;
 			return ThrowOrReturn(this.TryEvaluateExpression(compiler, out L, out E), L, E);
 		}
 		/// <summary>
@@ -693,7 +693,7 @@ namespace Brass3 {
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>The result of the evaluation.</returns>
 		public Label EvaluateExpression(Compiler compiler, int index) {
-			Label L; CompilerExpection E;
+			Label L; CompilerException E;
 			return ThrowOrReturn(this.TryEvaluateExpression(compiler, index, out L, out E), L, E);
 		}
 
@@ -707,7 +707,7 @@ namespace Brass3 {
 		/// <remarks>The source must have been broken into expressions first, either by the assembler, a directive or an assignment.</remarks>
 		/// <returns>The result of the evaluation.</returns>
 		public Label EvaluateExpression(Compiler compiler, int index, bool canCreateImplicitLabels, bool canPerformAssignments) {
-			Label L; CompilerExpection E;
+			Label L; CompilerException E;
 			return ThrowOrReturn(this.TryEvaluateExpression(compiler, index, canCreateImplicitLabels, canPerformAssignments, out L, out E), L, E);
 		}
 
@@ -717,7 +717,7 @@ namespace Brass3 {
 		/// <param name="success">True on success, false on failure.</param>
 		/// <param name="result">The label to return if successful.</param>
 		/// <param name="reasonForFailure">The exception to throw if not successful.</param>
-		private Label ThrowOrReturn(bool success, Label result, CompilerExpection reasonForFailure) {
+		private Label ThrowOrReturn(bool success, Label result, CompilerException reasonForFailure) {
 			if (success) {
 				return result;
 			} else {

@@ -76,7 +76,7 @@ namespace TexasInstruments.Brass.Directives {
 
 			AppHeader Header = compiler.GetPluginInstanceFromType<AppHeader>();
 
-			if (Header == null) throw new CompilerExpection(source, "appheader plugin not loaded.");
+			if (Header == null) throw new CompilerException(source, "appheader plugin not loaded.");
 
 			object[] Args = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { TokenisedSource.ArgumentType.SingleToken | TokenisedSource.ArgumentType.String, TokenisedSource.ArgumentType.Value });
 

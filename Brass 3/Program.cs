@@ -69,7 +69,7 @@ namespace Brass3 {
 										} else {
 											Console.WriteLine(L.NumericValue);
 										}
-									} catch (CompilerExpection cex) {
+									} catch (CompilerException cex) {
 										Console.WriteLine(cex.Message);
 										cex.SourceStatement.WriteColouredConsoleOutput(true, cex.Token, false);
 										Console.WriteLine();
@@ -77,7 +77,7 @@ namespace Brass3 {
 										Console.WriteLine(ex.Message);
 									}
 								}
-							} catch (CompilerExpection cex) {
+							} catch (CompilerException cex) {
 								Console.WriteLine(cex.Message);
 								cex.SourceStatement.WriteColouredConsoleOutput(true, cex.Token, false);
 								Console.WriteLine();

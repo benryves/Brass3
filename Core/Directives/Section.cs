@@ -72,7 +72,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 			List<SectionRange> SectionRangeData;
 			switch (directive) {
 				case "section":
-					if (CurrentSection != null) throw new CompilerExpection(source, string.Format(Strings.ErrorSectionAlreadyInsideSection, this.CurrentSection));
+					if (CurrentSection != null) throw new CompilerException(source, string.Format(Strings.ErrorSectionAlreadyInsideSection, this.CurrentSection));
 					this.CurrentSection = (source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.StringOrTokenArgument)[0] as string).ToLowerInvariant();
 					if (!this.Sections.TryGetValue(this.CurrentSection, out SectionRangeData)) {
 						SectionRangeData = new List<SectionRange>();
@@ -82,7 +82,7 @@ Code inside sections isn't compiled immediately. To compile it, you need to use 
 					compiler.SwitchOff(typeof(Section));
 					break;
 				case "endsection":
-					if (CurrentSection == null) throw new CompilerExpection(source, Strings.ErrorSectionNoSectionToEnd);
+					if (CurrentSection == null) throw new CompilerException(source, Strings.ErrorSectionNoSectionToEnd);
 					SectionRangeData = this.Sections[this.CurrentSection];
 					SectionRange Range = SectionRangeData[SectionRangeData.Count - 1];
 					Range.LastStatement = compiler.CurrentStatement.Previous;

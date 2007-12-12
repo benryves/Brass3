@@ -117,7 +117,7 @@ namespace Brass3 {
 		public TokenisedSource.Token GetExpressionToken(int index) {
 			TokenisedSource Source = this.GetExpressionTokens(index);
 			if (Source.Tokens.Length == 1) return Source.Tokens[0];
-			throw new CompilerExpection(Source, Strings.ErrorExpectedSingleToken);
+			throw new CompilerException(Source, Strings.ErrorExpectedSingleToken);
 		}
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace Brass3 {
 				indexExpression = new TokenisedSource(IndexExpression, this);
 				return Source.Tokens[0];
 			}
-			throw new CompilerExpection(Source, Strings.ErrorArgumentExpectedSingleTokenAndIndex);
+			throw new CompilerException(Source, Strings.ErrorArgumentExpectedSingleTokenAndIndex);
 		}
 
 		/// <summary>
@@ -143,7 +143,7 @@ namespace Brass3 {
 		/// </summary>
 		/// <param name="firstBraceIndex">The index of the opening bracket you wish to match.</param>
 		public int GetCloseBracketIndex(int firstBraceIndex) {
-			if (!tokens[firstBraceIndex].IsOpenBracket) throw new CompilerExpection(tokens[firstBraceIndex], Strings.ErrorBracketStartIndexOutOfBounds);
+			if (!tokens[firstBraceIndex].IsOpenBracket) throw new CompilerException(tokens[firstBraceIndex], Strings.ErrorBracketStartIndexOutOfBounds);
 			int BraceDepth = 1;
 			Stack<string> OpenBraces = new Stack<string>();
 			OpenBraces.Push(tokens[firstBraceIndex].Data);
@@ -156,12 +156,12 @@ namespace Brass3 {
 					if (this.tokens[firstBraceIndex].MatchingBracket == OpenBraces.Pop()) {
 						--BraceDepth;
 					} else {
-						throw new CompilerExpection(this.tokens[firstBraceIndex], Strings.ErrorBracketMismatch);
+						throw new CompilerException(this.tokens[firstBraceIndex], Strings.ErrorBracketMismatch);
 					}
 				}
 			}
 			if (BraceDepth == 0) return firstBraceIndex - 1;
-			throw new CompilerExpection(tokens[firstBraceIndex], Strings.ErrorBracketNotClosed);
+			throw new CompilerException(tokens[firstBraceIndex], Strings.ErrorBracketNotClosed);
 		}
 
 		/// <summary>

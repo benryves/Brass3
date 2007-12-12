@@ -206,7 +206,7 @@ ClickCount = 0
 					}
 				}
 
-				if (Provider == null) throw new CompilerExpection(source, "Script language not found.");
+				if (Provider == null) throw new CompilerException(source, "Script language not found.");
 
 				// Compile the bugger:
 				CompilerParameters Parameters = new CompilerParameters();

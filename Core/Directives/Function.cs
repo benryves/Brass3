@@ -100,11 +100,11 @@ If you develop a complex function that is frequently used in your source file co
 										this.DeclaringFunction.ArgumentTypes[i] = FunctionDeclaration.ArgumentType.Macro;
 										break;
 									default:
-										throw new CompilerExpection(Argument.Tokens[0], string.Format(Strings.ErrorFunctionInvalidParameterType, Argument.Tokens[0].Data));
+										throw new CompilerException(Argument.Tokens[0], string.Format(Strings.ErrorFunctionInvalidParameterType, Argument.Tokens[0].Data));
 								}
 							}
 						} else {
-							throw new CompilerExpection(source, Strings.ErrorFunctionInvalidDeclaration);
+							throw new CompilerException(source, Strings.ErrorFunctionInvalidDeclaration);
 						}
 					}
 		
@@ -125,7 +125,7 @@ If you develop a complex function that is frequently used in your source file co
 						try {
 
 							if (this.DeclaringFunction.EntryPoint == this.DeclaringFunction.ExitPoint.Previous) {
-								throw new CompilerExpection(source, string.Format(Strings.ErrorFunctionEmpty, this.DeclaringFunction.Name.Data));
+								throw new CompilerException(source, string.Format(Strings.ErrorFunctionEmpty, this.DeclaringFunction.Name.Data));
 							}
 
 							List<FunctionDeclaration> Declarations;
@@ -137,7 +137,7 @@ If you develop a complex function that is frequently used in your source file co
 							Declarations.Add(this.DeclaringFunction);
 
 							if (compiler.Functions.Contains(LowerCaseName)) {
-								if (compiler.Functions[LowerCaseName].GetType() != typeof(Functions.UserFunction)) throw new CompilerExpection(source, string.Format(Strings.ErrorFunctionAlreadyDefined, this.DeclaringFunction.Name.Data));
+								if (compiler.Functions[LowerCaseName].GetType() != typeof(Functions.UserFunction)) throw new CompilerException(source, string.Format(Strings.ErrorFunctionAlreadyDefined, this.DeclaringFunction.Name.Data));
 							} else {
 								compiler.Functions.AddRuntimeAlias((IFunction)compiler.GetPluginInstanceFromType(typeof(Functions.UserFunction)), LowerCaseName);
 							}

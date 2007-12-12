@@ -25,17 +25,17 @@ namespace Core.Directives {
 				TokenisedSource Field = source.GetExpressionTokens(Arg).Clone() as TokenisedSource;
 				int ArraySize = 1;
 
-				if (Field.Tokens.Length < 2) throw new CompilerExpection(Field, Strings.ErrorStructInvalidFieldDeclaration);
+				if (Field.Tokens.Length < 2) throw new CompilerException(Field, Strings.ErrorStructInvalidFieldDeclaration);
 				if (Field.Tokens.Length > 2) {
-					if (Field.Tokens[1].Data != "[") throw new CompilerExpection(Field, Strings.ErrorStructInvalidArrayDeclaration);
+					if (Field.Tokens[1].Data != "[") throw new CompilerException(Field, Strings.ErrorStructInvalidArrayDeclaration);
 
 					Field.ResetExpressionIndices();
 					for (int i = 2; i < Field.Tokens.Length; ++i) {
 						if (Field.Tokens[i].Data == "]") {
-							if (i != Field.Tokens.Length - 2) throw new CompilerExpection(Field, Strings.ErrorStructInvalidArrayDeclaration);
+							if (i != Field.Tokens.Length - 2) throw new CompilerException(Field, Strings.ErrorStructInvalidArrayDeclaration);
 							break;
 						}
-						if (Field.Tokens[i].Data == "[") throw new CompilerExpection(Field, Strings.ErrorStructInvalidArrayDeclaration);
+						if (Field.Tokens[i].Data == "[") throw new CompilerException(Field, Strings.ErrorStructInvalidArrayDeclaration);
 						Field.Tokens[i].ExpressionGroup = 1;
 					}
 
@@ -44,7 +44,7 @@ namespace Core.Directives {
 
 				string FieldName = Field.Tokens[Field.Tokens.Length - 1].Data;
 				DataStructure FieldType = compiler.GetStructureByName(Field.Tokens[0].Data);
-				if (FieldType == null) throw new CompilerExpection(Field.Tokens[0], string.Format(Strings.ErrorDataTypeNotDefined, Field.Tokens[0].Data));
+				if (FieldType == null) throw new CompilerException(Field.Tokens[0], string.Format(Strings.ErrorDataTypeNotDefined, Field.Tokens[0].Data));
 
 
 				DataStructure.Field F = new DataStructure.Field(FieldName, FieldType, CurrentFieldOffset, ArraySize);

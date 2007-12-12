@@ -38,7 +38,7 @@ namespace Core.Directives {
 				Args = source.GetCommaDelimitedArguments(index + 2, 1, int.MaxValue);
 
 				// Encoder for this data type:
-				if (!compiler.NumberEncoders.Contains(Type.Data)) throw new CompilerExpection(Type, string.Format(Strings.ErrorDataTypeNotDefined, Type.Data));
+				if (!compiler.NumberEncoders.Contains(Type.Data)) throw new CompilerException(Type, string.Format(Strings.ErrorDataTypeNotDefined, Type.Data));
 				NumberEncoder = compiler.NumberEncoders[Type.Data];
 
 				// Set size of declaring label if applicable.
@@ -66,7 +66,7 @@ namespace Core.Directives {
 			foreach (var ExpressionIndex in source.GetCommaDelimitedArguments(index + 1)) {
 
 
-				Label Data; CompilerExpection Error;
+				Label Data; CompilerException Error;
 				if (source.TryEvaluateExpression(compiler, ExpressionIndex, out Data, out Error)) {
 
 					// We've managed to calculate the data. It's static!

@@ -165,7 +165,7 @@ The directive will report a warning if there is not two bytes output before this
 						compiler.WriteStaticOutput((byte)0x00);
 					} break;
 				case ShellType.MirageOS: {
-						if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "MirageOS header is only valid with the TI-83 Plus output writer.")));
+						if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerException(source, "MirageOS header is only valid with the TI-83 Plus output writer.")));
 						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Ret);
 						compiler.WriteStaticOutput((byte)0x01);
 						byte[] Icon = new byte[30];
@@ -175,7 +175,7 @@ The directive will report a warning if there is not two bytes output before this
 						compiler.WriteStaticOutput((byte)0x00);
 					} break;
 				case ShellType.Venus: {
-						if (Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "Venus header is only valid with the TI-83 output writer.")));
+						if (Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerException(source, "Venus header is only valid with the TI-83 output writer.")));
 						compiler.WriteStaticOutput(new byte[] { 0xE7, 0x39, 0x5F, 0x5B, 0x56, 0x3F, 0x00 });
 						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.JrNC);
 						compiler.WriteStaticOutput((byte)(ProgramName.Length + (HeaderSize - 9)));
@@ -187,7 +187,7 @@ The directive will report a warning if there is not two bytes output before this
 						}
 					} break;
 				case ShellType.DoorsCS: {
-						if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerExpection(source, "DoorsCS header is only valid with the TI-83 Plus output writer.")));
+						if (!Is83Plus) compiler.OnWarningRaised(new Compiler.NotificationEventArgs(compiler, new CompilerException(source, "DoorsCS header is only valid with the TI-83 Plus output writer.")));
 						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.XorD);
 						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Ret);
 						compiler.WriteStaticOutput((byte)Functions.BCall.Z80Instruction.Jr);

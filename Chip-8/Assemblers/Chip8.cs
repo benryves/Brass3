@@ -532,7 +532,7 @@ namespace Chip8.Assemblers {
 
 		private static void CheckRange(TokenisedSource source, int value, int min, int max) {
 			if (value < min || value > max) {
-				throw new CompilerExpection(source, string.Format("Argument out of bounds (must be between {0} and {1}).", min, max));
+				throw new CompilerException(source, string.Format("Argument out of bounds (must be between {0} and {1}).", min, max));
 			}
 		}
 		private static void CheckRange16(TokenisedSource source, int value) {

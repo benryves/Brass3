@@ -20,7 +20,7 @@ namespace Legacy.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			IncBmp Parent = compiler.GetPluginInstanceFromType<IncBmp>();
-			if (Parent == null) throw new CompilerExpection(source.Tokens[index], ".incbmp plugin not loaded.");
+			if (Parent == null) throw new CompilerException(source.Tokens[index], ".incbmp plugin not loaded.");
 
 			object[] o = source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
 				TokenisedSource.ArgumentType.Value,

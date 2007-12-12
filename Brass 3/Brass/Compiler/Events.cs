@@ -110,8 +110,8 @@ namespace Brass3 {
 			/// Create a new instance of the NotificationEventArgs class.
 			/// </summary>
 			/// <param name="compiler">The compiler that is raising the notification.</param>
-			/// <param name="sourceException">A <see cref="CompilerExpection"/> to create a notification for.</param>
-			public NotificationEventArgs(Compiler compiler, CompilerExpection sourceException)
+			/// <param name="sourceException">A <see cref="CompilerException"/> to create a notification for.</param>
+			public NotificationEventArgs(Compiler compiler, CompilerException sourceException)
 				: this(compiler, sourceException.Message) {
 				this.sourceToken = sourceException.Token;
 				this.sourceStatement = sourceException.SourceStatement;
@@ -164,12 +164,12 @@ namespace Brass3 {
 		/// <summary>Raise a warning.</summary>
 		/// <param name="message">A message describing the warning.</param>
 		/// <param name="source">The source that the warning relates to.</param>
-		public void OnWarningRaised(string message, TokenisedSource source) { this.OnWarningRaised(new NotificationEventArgs(this, new CompilerExpection(source, message))); }
+		public void OnWarningRaised(string message, TokenisedSource source) { this.OnWarningRaised(new NotificationEventArgs(this, new CompilerException(source, message))); }
 
 		/// <summary>Raise a warning.</summary>
 		/// <param name="message">A message describing the warning.</param>
 		/// <param name="token">The token that the warning relates to.</param>
-		public void OnWarningRaised(string message, TokenisedSource.Token token) { this.OnWarningRaised(new NotificationEventArgs(this, new CompilerExpection(token, message))); }
+		public void OnWarningRaised(string message, TokenisedSource.Token token) { this.OnWarningRaised(new NotificationEventArgs(this, new CompilerException(token, message))); }
 
 		/// <summary>
 		/// Event raised on compiler errors.
@@ -198,12 +198,12 @@ namespace Brass3 {
 		/// <summary>Raise a error.</summary>
 		/// <param name="message">A message describing the error.</param>
 		/// <param name="source">The source that the error relates to.</param>
-		public void OnErrorRaised(string message, TokenisedSource source) { this.OnErrorRaised(new NotificationEventArgs(this, new CompilerExpection(source, message))); }
+		public void OnErrorRaised(string message, TokenisedSource source) { this.OnErrorRaised(new NotificationEventArgs(this, new CompilerException(source, message))); }
 
 		/// <summary>Raise a error.</summary>
 		/// <param name="message">A message describing the error.</param>
 		/// <param name="token">The token that the error relates to.</param>
-		public void OnErrorRaised(string message, TokenisedSource.Token token) { this.OnErrorRaised(new NotificationEventArgs(this, new CompilerExpection(token, message))); }
+		public void OnErrorRaised(string message, TokenisedSource.Token token) { this.OnErrorRaised(new NotificationEventArgs(this, new CompilerException(token, message))); }
 
 
 		/// <summary>

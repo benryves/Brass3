@@ -17,7 +17,7 @@ namespace Core.Functions.Maths {
 			int[] Args = source.GetCommaDelimitedArguments(0, 1, int.MaxValue);
 			int Index = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
 			int AdjustedIndex = (Index > 0) ? (Index) : (Args.Length + Index);
-			if (AdjustedIndex < 1 || AdjustedIndex >= Args.Length) throw new CompilerExpection(source, "Choice " + Index + " not available.");
+			if (AdjustedIndex < 1 || AdjustedIndex >= Args.Length) throw new CompilerException(source, "Choice " + Index + " not available.");
 			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Args[AdjustedIndex]).NumericValue);
 		}
 	}

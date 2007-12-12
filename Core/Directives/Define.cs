@@ -16,7 +16,7 @@ namespace Core.Directives {
 	public class Define : IDirective {
 
 		private static TokenisedSource GetArguments(TokenisedSource s, int i) {
-			if (s.Tokens[i + 1].Data != "(") throw new CompilerExpection(s, Strings.ErrorDefineMacroParametersExpected);
+			if (s.Tokens[i + 1].Data != "(") throw new CompilerException(s, Strings.ErrorDefineMacroParametersExpected);
 
 			List<TokenisedSource.Token> ArgumentitiveTokens = new List<TokenisedSource.Token>();
 			int Start = i + 2; int End;
@@ -58,7 +58,7 @@ namespace Core.Directives {
 					int[] ParameterIndices = Parameters.GetCommaDelimitedArguments(0);
 					foreach (int Parameter in ParameterIndices) {
 						TokenisedSource ParameterName = Parameters.GetExpressionTokens(Parameter);
-						if (ParameterName.Tokens.Length != 1) throw new CompilerExpection(source, Strings.ErrorDefineMacroParameterSingleTokenExpected);
+						if (ParameterName.Tokens.Length != 1) throw new CompilerException(source, Strings.ErrorDefineMacroParameterSingleTokenExpected);
 						ParameterNames.Add(ParameterName.Tokens[0].Data.ToLowerInvariant());
 					}
 				}

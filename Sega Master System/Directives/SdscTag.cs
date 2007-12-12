@@ -92,7 +92,7 @@ namespace SegaMasterSystem.Directives {
 		public int MinorVersion {
 			get { return this.minorVersion; }
 			set {
-				if (value < 0 || value > 99) throw new CompilerExpection((TokenisedSource)null, "Minor versions must be between 0 and 99.");
+				if (value < 0 || value > 99) throw new CompilerException((TokenisedSource)null, "Minor versions must be between 0 and 99.");
 				this.minorVersion = value; 
 			}
 		}
@@ -104,7 +104,7 @@ namespace SegaMasterSystem.Directives {
 		public int MajorVersion {
 			get { return this.majorVersion; }
 			set {
-				if (value < 0 || value > 99) throw new CompilerExpection((TokenisedSource)null, "Major versions must be between 0 and 99."); 
+				if (value < 0 || value > 99) throw new CompilerException((TokenisedSource)null, "Major versions must be between 0 and 99."); 
 				this.majorVersion = value;
 			}
 		}
@@ -136,11 +136,11 @@ namespace SegaMasterSystem.Directives {
 			double Version = (double)Args[0];
 			try {
 				this.MajorVersion = (int)Version;
-			} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
+			} catch (CompilerException ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
 			try {
 				this.MinorVersion = ((int)(Math.Abs(Version - Math.Truncate(Version)) * 100));
-			} catch (CompilerExpection ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
+			} catch (CompilerException ex) { compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, ex)); }
 
 			this.ProgramName = new SdscString(compiler, Args[1]);
 			this.ReleaseNotes = new SdscString(compiler, Args[2]);

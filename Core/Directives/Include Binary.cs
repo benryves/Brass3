@@ -27,7 +27,7 @@ namespace Core.Directives {
 			try {
 				compiler.WriteStaticOutput(File.ReadAllBytes(Filename));
 			} catch (Exception ex) {
-				throw new CompilerExpection(source, ex.Message);
+				throw new CompilerException(source, ex.Message);
 			}
 		}
 

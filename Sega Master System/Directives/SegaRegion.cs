@@ -51,7 +51,7 @@ namespace SegaMasterSystem.Directives {
 					this.Region = Regions.International;
 					break;
 				default:
-					throw new CompilerExpection(Region, "Unrecognised region '" + Region.Data + "' (expected Japan, Export or International).");
+					throw new CompilerException(Region, "Unrecognised region '" + Region.Data + "' (expected Japan, Export or International).");
 			}
 
 		}

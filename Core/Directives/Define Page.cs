@@ -19,7 +19,7 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 
 			Output.RawPages PagedRawWriter;
-			if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) == null) throw new CompilerExpection(source, string.Format(Strings.ErrorPluginNotLoaded, "rawpages"));
+			if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) == null) throw new CompilerException(source, string.Format(Strings.ErrorPluginNotLoaded, "rawpages"));
 
 			int[] Args = Array.ConvertAll<object, int>(source.GetCommaDelimitedArguments(compiler, index + 1, new TokenisedSource.ArgumentType[] { 
 				TokenisedSource.ArgumentType.Value, 

@@ -68,7 +68,7 @@ namespace Brass3 {
 			public TokenTypes Type {
 				get { return this.type; }
 				set {
-					if (TypeLocked || value != TokenTypes.Instruction) throw new CompilerExpection(this, Strings.ErrorTokenTypeToInstruction);
+					if (TypeLocked || value != TokenTypes.Instruction) throw new CompilerException(this, Strings.ErrorTokenTypeToInstruction);
 					this.type = value; 
 				}
 			}
@@ -186,7 +186,7 @@ namespace Brass3 {
 							default: throw new InvalidOperationException();
 						}
 					} else {
-						throw new CompilerExpection(this, Strings.ErrorBracketExpected);
+						throw new CompilerException(this, Strings.ErrorBracketExpected);
 					}
 				}
 			}

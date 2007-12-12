@@ -6,7 +6,7 @@ namespace Brass3 {
 	/// <summary>
 	/// Represents an error that occurs during compilation.
 	/// </summary>
-	public class CompilerExpection : ApplicationException {
+	public class CompilerException : ApplicationException {
 
 		private readonly TokenisedSource source;
 		/// <summary>
@@ -27,22 +27,22 @@ namespace Brass3 {
 		}
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="CompilerExpection"/> class.
+		/// Creates a new instance of the <see cref="CompilerException"/> class.
 		/// </summary>
 		/// <param name="token">The token that the error occured in.</param>
 		/// <param name="message">A description of the error.</param>
-		public CompilerExpection(TokenisedSource.Token token, string message)
+		public CompilerException(TokenisedSource.Token token, string message)
 			: base(message) {
 			this.token = token;
 			this.source = token.Source;
 		}
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="CompilerExpection"/> class.
+		/// Creates a new instance of the <see cref="CompilerException"/> class.
 		/// </summary>
 		/// <param name="source">The source that the error occured in.</param>
 		/// <param name="message">A description of the error.</param>
-		public CompilerExpection(TokenisedSource source, string message)
+		public CompilerException(TokenisedSource source, string message)
 			: base(message) {
 			this.token = null;
 			this.source = source;

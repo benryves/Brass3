@@ -282,7 +282,7 @@ namespace Brass3 {
 				}
 				return true;
 			
-			} catch (CompilerExpection ex) {
+			} catch (CompilerException ex) {
 				this.OnErrorRaised(new NotificationEventArgs(this, ex));
 				return false;
 			} catch (Exception ex) {				
