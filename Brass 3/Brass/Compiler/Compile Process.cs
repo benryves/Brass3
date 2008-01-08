@@ -226,6 +226,9 @@ namespace Brass3 {
 
 						// Restore endianness.
 						this.Endianness = DynamicDataItem.Endianess;
+
+						// Restore current statement.
+						this.currentStatement = new LinkedListNode<SourceStatement>(DataItem.Source);
 		
 						// Populate the dynamic data.
 						(DataItem as DynamicOutputData).Generator.Invoke(DataItem as DynamicOutputData);
