@@ -118,7 +118,10 @@
     <Compile Include="Brass\Parsing\Assembly Reader.cs" />
     <Compile Include="Brass\Plugins\StringEncodingWrapper.cs" />
     <Compile Include="Brass\Project.cs" />
-    <Compile Include="Brass\Utility\Zip.cs" />
+    <Compile Include="Brass\Utility\Crc32.cs" />
+    <Compile Include="Brass\Utility\DosDateTime.cs" />
+    <Compile Include="Brass\Utility\ZipFile.cs" />
+    <Compile Include="Brass\Utility\ZipFileEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strings.Designer.cs">

@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
-using System.IO;
-using System.Xml;
-
-using BeeDevelopment.Brass3;
-using BeeDevelopment.Brass3.Plugins;
-using BeeDevelopment.Brass3.Attributes;
-using BeeDevelopment.Brass3.Utility;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Xml;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Attributes;
+using BeeDevelopment.Brass3.Plugins;
+using BeeDevelopment.Zip;
 
 namespace Core.Listing {
 
@@ -376,8 +375,8 @@ console.putchar:
 		public void WriteListing(Compiler compiler, Stream stream) {
 
 			// All documented files.
-			Dictionary<string, DocumentedFile> DocumentedFiles = new Dictionary<string,DocumentedFile>();
-		
+			Dictionary<string, DocumentedFile> DocumentedFiles = new Dictionary<string, DocumentedFile>();
+
 			// Iterate over all compiled source documentation:
 			foreach (KeyValuePair<string, Compiler.SourceStatement[]> Statements in compiler.GetSourceStatementsByFile(true)) {
 
@@ -523,7 +522,7 @@ console.putchar:
 				}
 
 			}
-			
+
 
 			// By this point everything should have been documented...
 
@@ -531,19 +530,20 @@ console.putchar:
 			XmlSettings.Indent = true;
 			XmlSettings.NewLineHandling = NewLineHandling.Entitize;
 
-			using (Zip.ZipFile ZipFile = new Zip.ZipFile(stream)) {
+			var OutputZip = new ZipFile();
 
-				VeraDoc.WriteResourceToZip(ZipFile, "index.html", Properties.Resources.VeraDoc_Index_HTML.Replace("$(main)", GetXmlFilename(compiler, compiler.SourceFile)));
-				VeraDoc.WriteResourceToZip(ZipFile, "veradoc.xsl", Properties.Resources.VeraDoc_VeraDoc_XSL);
-				VeraDoc.WriteResourceToZip(ZipFile, "veradoc.css", Properties.Resources.VeraDoc_VeraDoc_CSS);
-				VeraDoc.WriteResourceToZip(ZipFile, "icon_file.png", Properties.Resources.VeraDoc_Icon_File_PNG);
-				VeraDoc.WriteResourceToZip(ZipFile, "icon_folder.png", Properties.Resources.VeraDoc_Icon_Folder_PNG);
-				VeraDoc.WriteResourceToZip(ZipFile, "icon_error.png", Properties.Resources.VeraDoc_Icon_Error_PNG);
+			VeraDoc.WriteResourceToZip(OutputZip, "index.html", Properties.Resources.VeraDoc_Index_HTML.Replace("$(main)", GetXmlFilename(compiler, compiler.SourceFile)));
+			VeraDoc.WriteResourceToZip(OutputZip, "veradoc.xsl", Properties.Resources.VeraDoc_VeraDoc_XSL);
+			VeraDoc.WriteResourceToZip(OutputZip, "veradoc.css", Properties.Resources.VeraDoc_VeraDoc_CSS);
+			VeraDoc.WriteResourceToZip(OutputZip, "icon_file.png", Properties.Resources.VeraDoc_Icon_File_PNG);
+			VeraDoc.WriteResourceToZip(OutputZip, "icon_folder.png", Properties.Resources.VeraDoc_Icon_Folder_PNG);
+			VeraDoc.WriteResourceToZip(OutputZip, "icon_error.png", Properties.Resources.VeraDoc_Icon_Error_PNG);
 
-				foreach (KeyValuePair<string, DocumentedFile> DocumentedFile in DocumentedFiles) {
+			foreach (KeyValuePair<string, DocumentedFile> DocumentedFile in DocumentedFiles) {
 
-					string XmlWriterPath = GetXmlFilename(compiler, DocumentedFile.Value.Name);
-					using (XmlWriter VeraDocWriter = XmlWriter.Create(ZipFile.AddFile(XmlWriterPath).FileData, XmlSettings)) {
+				string XmlWriterPath = GetXmlFilename(compiler, DocumentedFile.Value.Name);
+				using (var DocWriterStream = new MemoryStream(1024)) {
+					using (XmlWriter VeraDocWriter = XmlWriter.Create(DocWriterStream, XmlSettings)) {
 
 						int CssDepth = GetPathDepth(XmlWriterPath);
 						StringBuilder CssPath = new StringBuilder(32);
@@ -568,49 +568,66 @@ console.putchar:
 
 						VeraDocWriter.WriteEndElement();
 						VeraDocWriter.Flush();
+
+						OutputZip.Add(new ZipFileEntry() {
+							Name = XmlWriterPath,
+							Data = DocWriterStream.ToArray()
+						});
 					}
 				}
+			}
 
-				// Tree:
-				{
-					using (XmlWriter VeraDocWriter = XmlWriter.Create(ZipFile.AddFile("tree.xml").FileData, XmlSettings)) {
+			// Tree:
+			{
+				using (var DocWriterStream = new MemoryStream(1024)) {
+					using (XmlWriter VeraDocWriter = XmlWriter.Create(DocWriterStream, XmlSettings)) {
 
 						VeraDocWriter.WriteProcessingInstruction("xml-stylesheet", @"type=""text/xsl"" href=""veradoc.xsl""");
 						VeraDocWriter.WriteStartElement("tree");
 
 						foreach (Compiler.SourceTreeEntry SourceTree in compiler.GetSourceTree(true).Children) {
 							WriteTree(SourceTree, VeraDocWriter, null);
-						}						
+						}
 
 						VeraDocWriter.WriteEndElement();
 						VeraDocWriter.Flush();
-					}
 
+						OutputZip.Add(new ZipFileEntry() {
+							Name = "tree.xml",
+							Data = DocWriterStream.ToArray()
+						});
+					}
 				}
 
-				ZipFile.Save();
 			}
-			
+
+			OutputZip.Save(stream);
 		}
 
 		/// <summary>
 		/// Write general data to a zip file.
 		/// </summary>
-		private static void WriteResourceToZip(Zip.ZipFile zip, string filename, byte[] data) {
-			zip.AddFile(filename).FileData.Write(data, 0, data.Length);
+		private static void WriteResourceToZip(ZipFile zip, string filename, byte[] data) {
+			zip.Add(new ZipFileEntry() {
+				Data = data,
+				Name = filename,
+			});
 		}
 
 		/// <summary>
 		/// Write string data to a zip file.
 		/// </summary>
-		private static void WriteResourceToZip(Zip.ZipFile zip, string filename, string data) {
-			VeraDoc.WriteResourceToZip(zip, filename, Encoding.UTF8.GetBytes(data));
+		private static void WriteResourceToZip(ZipFile zip, string filename, string data) {
+			zip.Add(new ZipFileEntry() {
+				Data = Encoding.UTF8.GetBytes(data),
+				Name = filename,
+			});
 		}
 
 		/// <summary>
 		/// Write image data to a zip file (as a PNG).
 		/// </summary>
-		private static void WriteResourceToZip(Zip.ZipFile zip, string filename, Image data) {
+		private static void WriteResourceToZip(ZipFile zip, string filename, Image data) {
 			using (MemoryStream MS = new MemoryStream()) {
 				data.Save(MS, System.Drawing.Imaging.ImageFormat.Png);
 				VeraDoc.WriteResourceToZip(zip, filename, MS.ToArray());
