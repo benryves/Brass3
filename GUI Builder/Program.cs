@@ -31,8 +31,8 @@ namespace GuiBuilder {
 				}
 			}
 
-			Brass3.Compiler Compiler;
-			Brass3.Project Project = new Brass3.Project();
+			BeeDevelopment.Brass3.Compiler Compiler;
+			BeeDevelopment.Brass3.Project Project = new BeeDevelopment.Brass3.Project();
 
 			try {
 				Project.Load(ProjectPath);
@@ -53,7 +53,7 @@ namespace GuiBuilder {
 				if (BuildConfiguration != null) Project = Project.GetBuildConfiguration(BuildConfiguration);
 
 				Directory.SetCurrentDirectory(Path.GetDirectoryName(ProjectPath));
-				Compiler = new Brass3.Compiler();
+				Compiler = new BeeDevelopment.Brass3.Compiler();
 				Compiler.LoadProject(Project);
 			} catch (Exception ex) {
 				MessageBox.Show("Error loading project:" + Environment.NewLine + ex.Message, "Project Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

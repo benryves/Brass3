@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using Brass3.Attributes;
+using BeeDevelopment.Brass3.Attributes;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	public partial class TokenisedSource {
 
 		/// <summary>

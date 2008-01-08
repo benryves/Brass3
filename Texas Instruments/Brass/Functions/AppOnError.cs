@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
-using Brass3;
-using Brass3.Attributes;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Attributes;
+using BeeDevelopment.Brass3.Plugins;
 
 namespace TexasInstruments.Brass.Functions {
 	[Category("Texas Instruments")]

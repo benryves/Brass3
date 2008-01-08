@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3.Plugins {
+namespace BeeDevelopment.Brass3.Plugins {
 	
 	/// <summary>
 	/// Provides a simple wrapper around a single-byte .NET Encoding class.

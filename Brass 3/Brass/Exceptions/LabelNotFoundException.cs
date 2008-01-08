@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 
 	/// <summary>
 	/// Represents an error that occurs when a named label cannot be found.

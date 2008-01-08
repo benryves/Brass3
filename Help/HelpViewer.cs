@@ -5,13 +5,13 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using Brass3;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Plugins;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
-using Brass3.Attributes;
+using BeeDevelopment.Brass3.Attributes;
 using System.Diagnostics;
 
 namespace Help {

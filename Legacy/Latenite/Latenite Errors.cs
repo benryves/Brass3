@@ -5,9 +5,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Xml;
 
-using Brass3;
-using Brass3.Attributes;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Attributes;
+using BeeDevelopment.Brass3.Plugins;
 using System.Globalization;
 
 namespace Legacy.Latenite {

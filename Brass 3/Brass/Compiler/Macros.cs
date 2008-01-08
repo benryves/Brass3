@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	public partial class Compiler {
 
 		#region Types

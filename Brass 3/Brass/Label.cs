@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3.Plugins;
 using System.Globalization;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 
 	/// <summary>
 	/// Defines a value and a page. Can represent a variable value or a constant.

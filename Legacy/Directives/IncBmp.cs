@@ -7,9 +7,9 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 
-using Brass3;
-using Brass3.Plugins;
-using Brass3.Attributes;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Plugins;
+using BeeDevelopment.Brass3.Attributes;
 
 namespace Legacy.Directives {
 	[Description("Loads a monochrome image and includes it directly into the output.")]

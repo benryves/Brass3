@@ -7,7 +7,7 @@
     <ProjectGuid>{75305F27-C13B-4904-9EC4-6FD352230601}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brass3</RootNamespace>
+    <RootNamespace>BeeDevelopment.Brass3</RootNamespace>
     <AssemblyName>Brass</AssemblyName>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <FileUpgradeFlags>

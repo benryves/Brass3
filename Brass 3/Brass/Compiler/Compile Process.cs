@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3.Plugins;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	public partial class Compiler {
 
 		/// <summary>

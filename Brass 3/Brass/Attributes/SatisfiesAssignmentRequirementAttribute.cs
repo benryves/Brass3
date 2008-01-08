@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3.Attributes {
+namespace BeeDevelopment.Brass3.Attributes {
 
 	/// <summary>
 	/// Marks a function as implicitly satisfying the requirement that an assignment should be made in the label assignment section of a statement.

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 
 	/// <summary>
 	/// Represents an error in an argument passed to a directive or a function.

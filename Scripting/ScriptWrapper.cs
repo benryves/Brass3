@@ -6,9 +6,9 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Globalization;
 
-using Brass3;
-using Brass3.Plugins;
-using Brass3.Attributes;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Plugins;
+using BeeDevelopment.Brass3.Attributes;
 
 namespace Scripting {
 	

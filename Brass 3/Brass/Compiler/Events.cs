@@ -1,6 +1,6 @@
 using System;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	public partial class Compiler {
 
 		#region Events

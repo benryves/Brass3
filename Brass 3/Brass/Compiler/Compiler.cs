@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Reflection;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3.Plugins;
 using System.Xml;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	/// <summary>
 	/// Defines a compiler that manages the various stages of building a project.
 	/// </summary>

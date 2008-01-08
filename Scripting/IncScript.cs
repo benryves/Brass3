@@ -7,9 +7,9 @@ using System.Reflection;
 using System.ComponentModel;
 using System.IO;
 
-using Brass3;
-using Brass3.Plugins;
-using Brass3.Attributes;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Plugins;
+using BeeDevelopment.Brass3.Attributes;
 using System.Globalization;
 
 namespace Scripting {

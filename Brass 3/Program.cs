@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Threading;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	class Program {
 		static void Main(string[] args) {
 

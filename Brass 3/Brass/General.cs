@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 
 	/// <summary>
 	/// Represents the endianness of a platform.

@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 
 	/// <summary>
 	/// Describes a <see cref="Project"/>.

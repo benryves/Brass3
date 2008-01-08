@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3.Plugins;
 using System.IO;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 	public partial class Compiler {
 
 		/// <summary>
@@ -77,13 +77,10 @@ namespace Brass3 {
 				get { return this.source; }
 			}
 
-			private StatementType type;
 			/// <summary>
 			/// Gets the type of this statement.
 			/// </summary>
-			public StatementType Type {
-				get { return this.type; }
-			}
+			public StatementType Type { get; private set; }
 
 			private int expressionStatementSplit;
 			/// <summary>
@@ -184,7 +181,7 @@ namespace Brass3 {
 
 					// ...and now we execute the "other" bit:
 					if (expressionStatementSplit != Source.Tokens.Length) {
-						if (this.type == StatementType.Directive) {
+						if (this.Type == StatementType.Directive) {
 							string DirectiveName = Source.Tokens[expressionStatementSplit].DataLowerCase.Substring(1);
 							if (!compiler.Directives.Contains(DirectiveName)) {
 								throw new CompilerException(source.Tokens[expressionStatementSplit], string.Format(Strings.ErrorDirectiveNotDeclared, Source.Tokens[expressionStatementSplit].Data));
@@ -250,7 +247,7 @@ namespace Brass3 {
 					// Is this a directive?
 					if (Source.Tokens[i].Type == TokenisedSource.Token.TokenTypes.Directive) {
 						LabelInstructionSplit = i;
-						this.type = StatementType.Directive;
+						this.Type = StatementType.Directive;
 						break;
 					}
 					// Is this some assembly code?
@@ -259,7 +256,7 @@ namespace Brass3 {
 						if (compiler.CurrentAssembler.TryMatchSource(this.compiler, Source, i)) {
 							LabelInstructionSplit = i;
 							for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = true;
-							this.type = StatementType.Assembly;
+							this.Type = StatementType.Assembly;
 							break;
 						}
 						for (int j = 0; j < Source.Tokens.Length; ++j) Source.Tokens[j].TypeLocked = true;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace Brass3.Plugins {
+namespace BeeDevelopment.Brass3.Plugins {
 
 	/// <summary>
 	/// Defines the interface for plugins with that handle string encoding.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace Brass3.Utility {
+namespace BeeDevelopment.Brass3.Utility {
 	public class Zip {
 
 		// Zip.cs

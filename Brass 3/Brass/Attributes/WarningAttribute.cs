@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brass3.Attributes {
+namespace BeeDevelopment.Brass3.Attributes {
 
 	/// <summary>
 	/// Defines a warning attribute.

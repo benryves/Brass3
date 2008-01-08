@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Brass3;
-using Brass3.Attributes;
-using Brass3.Plugins;
+using BeeDevelopment.Brass3;
+using BeeDevelopment.Brass3.Attributes;
+using BeeDevelopment.Brass3.Plugins;
 using System.ComponentModel;
 
 namespace Core.Directives {
@@ -19,7 +19,7 @@ namespace Core.Directives {
 			string Description = null;
 			if (Arguments.Length == 1) Description = Arguments[0] as string;
 
-			compiler.Breakpoints.Add(new Brass3.Breakpoint(compiler) {
+			compiler.Breakpoints.Add(new BeeDevelopment.Brass3.Breakpoint(compiler) {
 				Description = Description
 			});
 		}

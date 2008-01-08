@@ -3,7 +3,7 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
-namespace Brass3 {
+namespace BeeDevelopment.Brass3 {
 
 	/// <summary>
 	/// Provides a class to read assembly statements from a source file.
@@ -56,7 +56,7 @@ namespace Brass3 {
 
 				bool AffectedByMacro = false;
 
-				if ((FullSource.ParserBehaviourChanges.Behaviour & Brass3.Attributes.ParserBehaviourChangeAttribute.ParserBehaviourModifiers.SkipMacroPreprocessor) == Attributes.ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None) {
+				if ((FullSource.ParserBehaviourChanges.Behaviour & BeeDevelopment.Brass3.Attributes.ParserBehaviourChangeAttribute.ParserBehaviourModifiers.SkipMacroPreprocessor) == Attributes.ParserBehaviourChangeAttribute.ParserBehaviourModifiers.None) {
 
 					// Macro preprocess:
 					for (int i = 0; i < FullSource.Tokens.Length; ++i) {
