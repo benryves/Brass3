@@ -1,7 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>I2C.brassproj TI8X.Ion</StartArguments>
-    <StartWorkingDirectory>D:\Documents\Documents\Brass Projects\I²C</StartWorkingDirectory>
+    <StartArguments>Test\Test.brassproj</StartArguments>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
