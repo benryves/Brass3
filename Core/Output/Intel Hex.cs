@@ -24,8 +24,8 @@ namespace Core.Output {
 			Writer.WritePageNumbers = compiler.GetUniquePageIndices().Length > 1;
 
 			foreach (Compiler.OutputData Output in compiler.Output) {
-				if (Output.Data.Length > 0) {
-					Writer.Write((ushort)Output.OutputCounter, (ushort)Output.Page, Output.Data[0]);
+				for (int i = 0; i < Output.Data.Length; ++i) {
+					Writer.Write((ushort)(Output.OutputCounter + i), (ushort)Output.Page, Output.Data[i]);
 				}
 			}
 			Writer.Flush();
