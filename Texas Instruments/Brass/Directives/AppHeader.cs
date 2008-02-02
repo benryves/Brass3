@@ -150,19 +150,17 @@ namespace TexasInstruments.Brass.Directives {
 				this.MaximumHardwareRevision = null;
 				this.LowestBasecode = null;
 				this.Name = "MYAPP";
-				this.Invoked = false;
-				this.ProgramCounter = null;
-				this.OutputCounter = null;
 			};
+		}
 
-			compiler.CompilationEnded += delegate(object sender, EventArgs e) {
+		#endregion
 
-				if (this.Invoked) {
+		#region Public Methods
 
-					compiler.Labels.ProgramCounter.NumericValue = this.ProgramCounter.NumericValue;
-					compiler.Labels.ProgramCounter.Page = this.ProgramCounter.Page;
-					compiler.Labels.OutputCounter.NumericValue = this.OutputCounter.NumericValue;
-					compiler.Labels.OutputCounter.Page = this.OutputCounter.Page;
+		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
+
+			compiler.WriteDynamicOutput(128,
+				Header => {
 
 					TIVariableName VariableName = compiler.GetPluginInstanceFromType<TIVariableName>();
 					if (VariableName != null) {
@@ -215,30 +213,10 @@ namespace TexasInstruments.Brass.Directives {
 
 					byte[] RawHeaderData = HeaderData.ToArray();
 					Array.Resize<byte>(ref RawHeaderData, 128);
+					Header.Data = RawHeaderData;
 
-					compiler.WriteStaticOutput(RawHeaderData);
 				}
-
-			};
-		}
-
-		#endregion
-
-		#region Public Methods
-
-		private Label OutputCounter;
-		private Label ProgramCounter;
-		private bool Invoked = false;
-
-
-		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
-			Invoked = true;
-			this.OutputCounter = compiler.Labels.OutputCounter.Clone() as Label;
-			this.ProgramCounter = compiler.Labels.ProgramCounter.Clone() as Label;
-			bool WasBackground = compiler.DataWrittenToBackground;
-			compiler.DataWrittenToBackground = true;
-			compiler.WriteStaticOutput(new byte[128]); // 128 bytes of dud data.
-			compiler.DataWrittenToBackground = WasBackground;
+			);
 		}
 
 		#endregion
