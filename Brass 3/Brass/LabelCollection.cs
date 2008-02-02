@@ -357,7 +357,7 @@ namespace BeeDevelopment.Brass3 {
 				}*/
 
 
-				if (this.TryGetByName(ModuleCombine(this.currentModule, token.Data), out result)) {
+				if (this.TryGetByName(token.Data, out result)) {
 					return true;
 				}
 

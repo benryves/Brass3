@@ -57,7 +57,7 @@ namespace BeeDevelopment.Brass3 {
 			public bool ForceResolve() {
 				if (this.Resolved) return true;
 				Label L;
-				this.Resolved = this.label.Collection.TryParse(new Token("global." + this.label.Token.Data), out L) && this.label.Created;
+				this.Resolved = this.label.Collection.TryParse(new Token("global." + this.label.Token.Data), out L) && L.Created;
 				if (this.Resolved) this.label = L;
 				return this.Resolved;
 			}
