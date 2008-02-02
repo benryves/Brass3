@@ -287,8 +287,12 @@ namespace BeeDevelopment.Brass3 {
 			} catch (CompilerException ex) {
 				this.OnErrorRaised(new NotificationEventArgs(this, ex));
 				return false;
-			} catch (Exception ex) {				
-				this.OnErrorRaised(new NotificationEventArgs(this, ex.Message, this.currentStatement.Value));
+			} catch (Exception ex) {
+				if (this.currentStatement != null) {
+					this.OnErrorRaised(new NotificationEventArgs(this, ex.Message, this.currentStatement.Value));
+				} else {
+					this.OnErrorRaised(new NotificationEventArgs(this, ex.Message));
+				}
 				return false;
 			} finally {
 				this.IsCompiling = false;
