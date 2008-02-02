@@ -28,8 +28,17 @@ OffPageCall
 			// First: align up to the next 3-byte boundary;
 			while (((int)compiler.Labels.OutputCounter.NumericValue - 0x4000) % 3 != 0) compiler.IncrementProgramAndOutputCounters(1);
 
-			//TODO: Restore .branch
-			throw new NotImplementedException();
+			Label BranchLabel = compiler.Labels.Create(new TokenisedSource.Token("_" + source.GetCommaDelimitedArguments(compiler, index + 1, TokenisedSource.TokenArgument)[0] as string));
+			BranchLabel.NumericValue -= 0x4000;
+
+			compiler.WriteDynamicOutput(3, Branch => {
+				Label Target = (Label)source.GetCommaDelimitedArguments(compiler, index + 1, new[] { TokenisedSource.ArgumentType.Label })[0];
+				Branch.Data = new byte[]{
+					(byte)(int)Target.NumericValue,
+					(byte)((int)Target.NumericValue >> 8),
+					(byte)Target.Page,
+				};
+			});
 		}
 
 	}
