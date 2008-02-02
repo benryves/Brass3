@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bee Development")]
 [assembly: AssemblyProduct("Sega Master System Plugin Collection")]
-[assembly: AssemblyCopyright("Copyright © Bee Development 2007")]
+[assembly: AssemblyCopyright("Copyright © Bee Development 2007-2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

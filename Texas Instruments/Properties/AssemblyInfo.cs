@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bee Development")]
 [assembly: AssemblyProduct("Texas Instruments Calculator Plugin Collection")]
-[assembly: AssemblyCopyright("Copyright ©  2007 Bee Development")]
+[assembly: AssemblyCopyright("Copyright © Bee Development 2007-2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

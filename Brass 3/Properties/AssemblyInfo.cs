@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bee Development")]
 [assembly: AssemblyProduct("Brass Assembler")]
-[assembly: AssemblyCopyright("Copyright ©  2007 Bee Development")]
+[assembly: AssemblyCopyright("Copyright © Bee Development 2007-2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
