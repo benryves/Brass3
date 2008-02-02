@@ -61,7 +61,7 @@ namespace Core.Directives {
 				case "while":
 					if (!compiler.IsSwitchedOn) break; {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
-						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0]).NumericValue != 0;
+						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0], false, true).NumericValue != 0;
 						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.CurrentStatement;
 						if (!WasSuccessful) {
 							compiler.SwitchOff(typeof(Repetition));
