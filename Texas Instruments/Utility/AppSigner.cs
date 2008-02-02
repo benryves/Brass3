@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace TexasInstruments.Utility {
 	/// <summary>
 	/// AppSigner class provides a wrapper around the Wappsign COM object.
 	/// </summary>
-	class Wappsign {
+	class Wappsign : IDisposable {
 
 		private Type WappsignComType;
 		private object WappsignObj;
@@ -129,6 +130,16 @@ namespace TexasInstruments.Utility {
 		/// <returns>Directory path name. Returns "" if the index is out of range.</returns>
 		public string GetDirectory(int index) {
 			return (string)this.WappsignComType.InvokeMember("GetDirectory", BindingFlags.InvokeMethod, null, this.WappsignObj, new object[] { index });
+		}
+
+		public void Dispose() {
+			if (this.WappsignObj != null) {
+				Marshal.ReleaseComObject(this.WappsignObj);
+				this.WappsignObj = null;
+			}
+		}
+		~Wappsign() {
+			this.Dispose();
 		}
 
 	}
