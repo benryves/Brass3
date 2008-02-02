@@ -502,7 +502,7 @@ namespace BeeDevelopment.Brass3 {
 		public int[] GetUniquePageIndices() {
 			//TODO: Raise error if accessed after bad build.
 			List<int> PageIndices = new List<int>();
-			foreach (OutputData O in this.Output) {
+			foreach (OutputData O in this.WorkingOutputData) {
 				if (!PageIndices.Contains(O.Page)) PageIndices.Add(O.Page);
 			}
 			return PageIndices.ToArray();
