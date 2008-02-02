@@ -18,7 +18,7 @@ namespace GuiBuilder {
 			string BuildConfiguration = null;
 
 			if (args.Length >= 1 && args.Length <= 2) {
-				ProjectPath = args[0];
+				ProjectPath = Path.GetFullPath(args[0]);
 				if (args.Length == 2) BuildConfiguration = args[1];
 			} else {
 				using (OpenFileDialog OpenFile = new OpenFileDialog()) {
