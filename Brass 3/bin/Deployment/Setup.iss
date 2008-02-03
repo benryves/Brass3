@@ -24,7 +24,8 @@ ChangesAssociations=yes
 Source: "..\Release\Brass.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Brass";
 Source: "..\Release\Help.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\Help";
 Source: "..\Release\Skybound.VisualStyles.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\Help";
-Source: "..\Release\BrassGuiBuild.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\GuiBuilder";
+Source: "..\Release\ProjectBuilder.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\ProjectBuilder";
+Source: "..\Release\ProjectBuilder.exe.config"; DestDir: "{app}"; Flags: ignoreversion; Components: "Tools\ProjectBuilder";
 
 ; Bundled plugins:
 Source: "..\Release\Core.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Core";
@@ -85,7 +86,7 @@ Name: "Brass"; Description: "Brass Compiler"; Types: full compact custom; Flags:
 
 Name: "Tools"; Description: "Tools"; Types: full custom;
 Name: "Tools\Help"; Description: "Help Viewer"; Types: full custom;
-Name: "Tools\GuiBuilder"; Description: "GUI Builder"; Types: full custom;
+Name: "Tools\ProjectBuilder"; Description: "Project Builder"; Types: full custom;
 
 Name: "Samples"; Description: "Projects Directory"; Types: full custom;
 Name: "Samples\TIProgram"; Description: "Sample Texas Instruments Calculator Program"; Types: full custom;
@@ -134,7 +135,7 @@ Name: "Developer\XML"; Description: "XML Documentation Comments"; Types: full cu
 ; Register .brassproj file type:
 Root: HKCR; Subkey: ".brassproj"; ValueType: string; ValueData: "Brass.Project";
 Root: HKCR; Subkey: "Brass.Project"; ValueType: string; ValueData: "Brass Project";
-Root: HKCR; Subkey: "Brass.Project\shell\Build\command"; ValueType: string; ValueData: """{app}\BrassGuiBuild.exe"" ""%1"""; Components: "Tools\GuiBuilder";
+Root: HKCR; Subkey: "Brass.Project\shell\Build\command"; ValueType: string; ValueData: """{app}\ProjectBuilder.exe"" ""%1"""; Components: "Tools\ProjectBuilder";
 
 ; Register environment variables:
 Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass"; ValueType: string; ValueData: "{app}";
@@ -148,6 +149,7 @@ Filename: "{app}\Documentation\Brass Website.url"; Section: "InternetShortcut"; 
 Name: "{group}\Documentation\Release Notes"; Filename: "{app}\Documentation\Release Notes.rtf";
 Name: "{group}\Brass Manual"; Filename: "{app}\Help.exe"; Components: "Tools\Help";
 Name: "{group}\Projects Directory"; Filename: "{userdocs}\Brass Projects"; Components: "Samples";
+Name: "{group}\Brass Project Builder"; Filename: "{app}\ProjectBuilder.exe"; Components: "Tools\ProjectBuilder";
 Name: "{group}\Developer Tools\Class Library Reference"; Filename: "{app}\Documentation\Brass.chm"; Components: "Developer\Reference";
 Name: "{group}\Developer Tools\Source Code"; Filename: "{app}\Source.zip"; Components: "Developer\Source";
 Name: "{group}\{cm:ProgramOnTheWeb,Brass}"; Filename: "{app}\Documentation\Brass Website.url";
