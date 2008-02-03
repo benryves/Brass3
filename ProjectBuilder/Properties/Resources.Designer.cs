@@ -74,6 +74,13 @@ namespace ProjectBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap IconFolder {
+            get {
+                object obj = ResourceManager.GetObject("IconFolder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap IconHelp {
             get {
                 object obj = ResourceManager.GetObject("IconHelp", resourceCulture);

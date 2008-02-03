@@ -59,6 +59,5 @@
 		}
 	</style>
 	<body>
-		$(Errors)
 	</body>
 </html>

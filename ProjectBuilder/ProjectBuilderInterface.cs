@@ -39,6 +39,13 @@ namespace ProjectBuilder {
 			this.StoreTemporaryImage("IconWarning", Properties.Resources.IconWarning);
 			this.StoreTemporaryImage("IconMessages", Properties.Resources.IconMessage);
 
+
+			string ErrorText = Properties.Resources.OutputFormatting;
+			foreach (KeyValuePair<string, string> Image in this.TemporaryImages) {
+				ErrorText = ErrorText.Replace(string.Format("$({0})", Image.Key), Image.Value);
+			}
+			this.BrowserOutput.DocumentText = ErrorText;
+
 			this.Disposed += (sender, e) => this.CleanUpTemporaryImages();
 			this.FormClosing += (sender, e) => this.SaveSettings();
 
@@ -52,10 +59,6 @@ namespace ProjectBuilder {
 
 
 		#region Project Loading and Editing
-
-		private void MenuProject_DropDownOpening(object sender, EventArgs e) {
-			foreach (ToolStripItem SubItem in MenuProject.DropDownItems) SubItem.Enabled = WorkingProject != null;
-		}
 
 		private void MenuOpenProject_Click(object sender, EventArgs e) {
 			if (this.OpenProjectDialog.ShowDialog(this) == DialogResult.OK) {
@@ -142,6 +145,9 @@ namespace ProjectBuilder {
 				return;
 			}
 
+			this.BrowserOutput.Document.Body.InnerHtml = "";
+			Application.DoEvents();
+
 			Compiler C = new Compiler();
 			C.LoadProject(this.WorkingProject.GetBuildConfiguration(this.CurrentConfiguration));
 
@@ -149,13 +155,12 @@ namespace ProjectBuilder {
 			var OutputMessages = new StringBuilder(1024);
 			var OutputErrors = new StringBuilder(1024);
 
-			C.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++WarningCount; this.AppendMessage(OutputErrors, "warning", e); };
-			C.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++ErrorCount; this.AppendMessage(OutputErrors, "error", e); };
+			C.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++WarningCount; this.AppendMessage("warning", e); };
+			C.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++ErrorCount; this.AppendMessage("error", e); };
 			C.MessageRaised += delegate(object sender, Compiler.NotificationEventArgs e) { OutputMessages.Append(e.Message); };
 
 			C.Compile(true);
 
-			string ErrorText = OutputErrors.ToString();
 
 			if (OutputMessages.Length != 0) {
 				using (var OutputMessagesStream = new MemoryStream(1024)) {
@@ -182,16 +187,12 @@ namespace ProjectBuilder {
 					Data[1] = 0x20;
 					Data[2] = 0x20;
 
-					ErrorText += Encoding.UTF8.GetString(Data);
+					this.BrowserOutput.Document.Body.InnerHtml += Encoding.UTF8.GetString(Data);
 				}
 			}
 
-			ErrorText = Properties.Resources.OutputFormatting.Replace("$(Errors)", ErrorText);
-			foreach (KeyValuePair<string, string> Image in this.TemporaryImages) {
-				ErrorText = ErrorText.Replace(string.Format("$({0})", Image.Key), Image.Value);
-			}
 
-			this.BrowserOutput.DocumentText = ErrorText;
+			this.BrowserOutput.Document.Body.InnerHtml += string.Format("<p><b>Build completed:</b> {0} error{1}, {2} warning{3}.</p>", ErrorCount, ErrorCount == 1 ? "" : "s", WarningCount, WarningCount == 1 ? "" : "s");
 
 			// Sound effects:
 			if (Properties.Settings.Default.SoundEnabled) {
@@ -212,7 +213,7 @@ namespace ProjectBuilder {
 		/// <param name="toAppendTo">The <see cref="StringBuilder"/> to append the error message to.</param>
 		/// <param name="type">The type (error or warning).</param>
 		/// <param name="message">The message to append.</param>
-		private void AppendMessage(StringBuilder toAppendTo, string type, Compiler.NotificationEventArgs message) {
+		private void AppendMessage(string type, Compiler.NotificationEventArgs message) {
 
 			using (var OutputMessage = new MemoryStream(1024)) {
 
@@ -294,7 +295,8 @@ namespace ProjectBuilder {
 				Data[1] = 0x20;
 				Data[2] = 0x20;
 
-				toAppendTo.Append(Encoding.UTF8.GetString(Data));
+				string ErrorOut = Encoding.UTF8.GetString(Data);
+				this.BrowserOutput.Document.Body.InnerHtml += ErrorOut;
 			}
 		}
 

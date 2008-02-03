@@ -23,13 +23,12 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectBuilderInterface));
 			this.Menus = new System.Windows.Forms.MenuStrip();
 			this.MenuFile = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuOpenProject = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuFileSep0 = new System.Windows.Forms.ToolStripSeparator();
 			this.MenuExit = new System.Windows.Forms.ToolStripMenuItem();
-			this.MenuProject = new System.Windows.Forms.ToolStripMenuItem();
-			this.MenuProjectProperties = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuBuild = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuRebuild = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuOptions = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +45,6 @@
 			// 
 			this.Menus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuFile,
-            this.MenuProject,
             this.MenuBuild,
             this.MenuOptions,
             this.MenuHelp});
@@ -67,6 +65,7 @@
 			// 
 			// MenuOpenProject
 			// 
+			this.MenuOpenProject.Image = global::ProjectBuilder.Properties.Resources.IconFolder;
 			this.MenuOpenProject.Name = "MenuOpenProject";
 			this.MenuOpenProject.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.MenuOpenProject.Size = new System.Drawing.Size(195, 22);
@@ -86,21 +85,6 @@
 			this.MenuExit.Text = "E&xit";
 			this.MenuExit.Click += new System.EventHandler(this.MenuExit_Click);
 			// 
-			// MenuProject
-			// 
-			this.MenuProject.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuProjectProperties});
-			this.MenuProject.Name = "MenuProject";
-			this.MenuProject.Size = new System.Drawing.Size(56, 20);
-			this.MenuProject.Text = "&Project";
-			this.MenuProject.DropDownOpening += new System.EventHandler(this.MenuProject_DropDownOpening);
-			// 
-			// MenuProjectProperties
-			// 
-			this.MenuProjectProperties.Name = "MenuProjectProperties";
-			this.MenuProjectProperties.Size = new System.Drawing.Size(176, 22);
-			this.MenuProjectProperties.Text = "Project &Properties...";
-			// 
 			// MenuBuild
 			// 
 			this.MenuBuild.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -115,7 +99,7 @@
 			this.MenuRebuild.Image = global::ProjectBuilder.Properties.Resources.IconBuild;
 			this.MenuRebuild.Name = "MenuRebuild";
 			this.MenuRebuild.ShortcutKeys = System.Windows.Forms.Keys.F6;
-			this.MenuRebuild.Size = new System.Drawing.Size(133, 22);
+			this.MenuRebuild.Size = new System.Drawing.Size(152, 22);
 			this.MenuRebuild.Text = "&Rebuild";
 			this.MenuRebuild.Click += new System.EventHandler(this.MenuRebuild_Click);
 			// 
@@ -157,7 +141,7 @@
 			this.MenuBrassHelp.Image = global::ProjectBuilder.Properties.Resources.IconHelp;
 			this.MenuBrassHelp.Name = "MenuBrassHelp";
 			this.MenuBrassHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;
-			this.MenuBrassHelp.Size = new System.Drawing.Size(148, 22);
+			this.MenuBrassHelp.Size = new System.Drawing.Size(152, 22);
 			this.MenuBrassHelp.Text = "&Brass Help";
 			this.MenuBrassHelp.Click += new System.EventHandler(this.MenuBrassHelp_Click);
 			// 
@@ -184,6 +168,7 @@
 			this.ClientSize = new System.Drawing.Size(284, 264);
 			this.Controls.Add(this.BrowserOutput);
 			this.Controls.Add(this.Menus);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.Menus;
 			this.Name = "ProjectBuilderInterface";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -203,8 +188,6 @@
 		private System.Windows.Forms.ToolStripMenuItem MenuOpenProject;
 		private System.Windows.Forms.ToolStripSeparator MenuFileSep0;
 		private System.Windows.Forms.ToolStripMenuItem MenuExit;
-		private System.Windows.Forms.ToolStripMenuItem MenuProject;
-		private System.Windows.Forms.ToolStripMenuItem MenuProjectProperties;
 		private System.Windows.Forms.ToolStripMenuItem MenuHelp;
 		private System.Windows.Forms.ToolStripMenuItem MenuBrassHelp;
 		private System.Windows.Forms.ToolStripMenuItem MenuBuild;
