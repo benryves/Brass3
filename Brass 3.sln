@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI Builder", "GUI Builder\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripting", "Scripting\Scripting.csproj", "{681B6876-961D-4DFF-B4F9-D1D16137CBA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBuilder", "ProjectBuilder\ProjectBuilder.csproj", "{AF9A2B66-0FA4-456A-867C-FB28108F67E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{681B6876-961D-4DFF-B4F9-D1D16137CBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{681B6876-961D-4DFF-B4F9-D1D16137CBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{681B6876-961D-4DFF-B4F9-D1D16137CBA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
