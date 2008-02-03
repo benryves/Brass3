@@ -36,9 +36,13 @@
 			this.MenuSound = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuBrassHelp = new System.Windows.Forms.ToolStripMenuItem();
-			this.BrowserOutput = new System.Windows.Forms.WebBrowser();
+			this.MenuHelpSep0 = new System.Windows.Forms.ToolStripSeparator();
+			this.MenuAbout = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenProjectDialog = new System.Windows.Forms.OpenFileDialog();
+			this.BrowserOutputBorder = new System.Windows.Forms.Panel();
+			this.BrowserOutput = new System.Windows.Forms.WebBrowser();
 			this.Menus.SuspendLayout();
+			this.BrowserOutputBorder.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Menus
@@ -50,7 +54,7 @@
             this.MenuHelp});
 			this.Menus.Location = new System.Drawing.Point(0, 0);
 			this.Menus.Name = "Menus";
-			this.Menus.Size = new System.Drawing.Size(284, 24);
+			this.Menus.Size = new System.Drawing.Size(412, 24);
 			this.Menus.TabIndex = 0;
 			// 
 			// MenuFile
@@ -100,7 +104,7 @@
 			this.MenuRebuild.Image = global::ProjectBuilder.Properties.Resources.IconBuild;
 			this.MenuRebuild.Name = "MenuRebuild";
 			this.MenuRebuild.ShortcutKeys = System.Windows.Forms.Keys.F6;
-			this.MenuRebuild.Size = new System.Drawing.Size(152, 22);
+			this.MenuRebuild.Size = new System.Drawing.Size(133, 22);
 			this.MenuRebuild.Text = "&Rebuild";
 			this.MenuRebuild.Click += new System.EventHandler(this.MenuRebuild_Click);
 			// 
@@ -131,7 +135,9 @@
 			// MenuHelp
 			// 
 			this.MenuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuBrassHelp});
+            this.MenuBrassHelp,
+            this.MenuHelpSep0,
+            this.MenuAbout});
 			this.MenuHelp.Name = "MenuHelp";
 			this.MenuHelp.Size = new System.Drawing.Size(44, 20);
 			this.MenuHelp.Text = "&Help";
@@ -143,33 +149,55 @@
 			this.MenuBrassHelp.Image = global::ProjectBuilder.Properties.Resources.IconHelp;
 			this.MenuBrassHelp.Name = "MenuBrassHelp";
 			this.MenuBrassHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;
-			this.MenuBrassHelp.Size = new System.Drawing.Size(148, 22);
+			this.MenuBrassHelp.Size = new System.Drawing.Size(152, 22);
 			this.MenuBrassHelp.Text = "&Brass Help";
 			this.MenuBrassHelp.Click += new System.EventHandler(this.MenuBrassHelp_Click);
+			// 
+			// MenuHelpSep0
+			// 
+			this.MenuHelpSep0.Name = "MenuHelpSep0";
+			this.MenuHelpSep0.Size = new System.Drawing.Size(149, 6);
+			// 
+			// MenuAbout
+			// 
+			this.MenuAbout.Name = "MenuAbout";
+			this.MenuAbout.Size = new System.Drawing.Size(152, 22);
+			this.MenuAbout.Text = "About";
+			this.MenuAbout.Click += new System.EventHandler(this.MenuAbout_Click);
+			// 
+			// OpenProjectDialog
+			// 
+			this.OpenProjectDialog.Filter = "Brass Projects (*.brassproj)|*.brassproj|All Files (*.*)|*.*";
+			// 
+			// BrowserOutputBorder
+			// 
+			this.BrowserOutputBorder.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.BrowserOutputBorder.Controls.Add(this.BrowserOutput);
+			this.BrowserOutputBorder.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.BrowserOutputBorder.Location = new System.Drawing.Point(0, 24);
+			this.BrowserOutputBorder.Name = "BrowserOutputBorder";
+			this.BrowserOutputBorder.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
+			this.BrowserOutputBorder.Size = new System.Drawing.Size(412, 213);
+			this.BrowserOutputBorder.TabIndex = 2;
 			// 
 			// BrowserOutput
 			// 
 			this.BrowserOutput.AllowWebBrowserDrop = false;
 			this.BrowserOutput.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.BrowserOutput.IsWebBrowserContextMenuEnabled = false;
-			this.BrowserOutput.Location = new System.Drawing.Point(0, 24);
+			this.BrowserOutput.Location = new System.Drawing.Point(0, 1);
 			this.BrowserOutput.MinimumSize = new System.Drawing.Size(20, 20);
 			this.BrowserOutput.Name = "BrowserOutput";
 			this.BrowserOutput.ScriptErrorsSuppressed = true;
-			this.BrowserOutput.Size = new System.Drawing.Size(284, 240);
-			this.BrowserOutput.TabIndex = 1;
-			this.BrowserOutput.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.BrowserOutput_Navigating);
-			// 
-			// OpenProjectDialog
-			// 
-			this.OpenProjectDialog.Filter = "Brass Projects (*.brassproj)|*.brassproj|All Files (*.*)|*.*";
+			this.BrowserOutput.Size = new System.Drawing.Size(412, 212);
+			this.BrowserOutput.TabIndex = 2;
 			// 
 			// ProjectBuilderInterface
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 264);
-			this.Controls.Add(this.BrowserOutput);
+			this.ClientSize = new System.Drawing.Size(412, 237);
+			this.Controls.Add(this.BrowserOutputBorder);
 			this.Controls.Add(this.Menus);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.Menus;
@@ -179,6 +207,7 @@
 			this.Resize += new System.EventHandler(this.ProjectBuilderInterface_Resize);
 			this.Menus.ResumeLayout(false);
 			this.Menus.PerformLayout();
+			this.BrowserOutputBorder.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -195,11 +224,14 @@
 		private System.Windows.Forms.ToolStripMenuItem MenuBrassHelp;
 		private System.Windows.Forms.ToolStripMenuItem MenuBuild;
 		private System.Windows.Forms.ToolStripMenuItem MenuRebuild;
-		private System.Windows.Forms.WebBrowser BrowserOutput;
 		private System.Windows.Forms.OpenFileDialog OpenProjectDialog;
 		private System.Windows.Forms.ToolStripMenuItem MenuOptions;
 		private System.Windows.Forms.ToolStripMenuItem MenuAlwaysOnTop;
 		private System.Windows.Forms.ToolStripMenuItem MenuSound;
+		private System.Windows.Forms.Panel BrowserOutputBorder;
+		private System.Windows.Forms.WebBrowser BrowserOutput;
+		private System.Windows.Forms.ToolStripSeparator MenuHelpSep0;
+		private System.Windows.Forms.ToolStripMenuItem MenuAbout;
 	}
 }
 

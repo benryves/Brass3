@@ -416,6 +416,10 @@ namespace ProjectBuilder {
 			}
 		}
 
+		private void MenuAbout_Click(object sender, EventArgs e) {
+			this.BrowserOutput.Document.Body.InnerHtml = Properties.Resources.AboutDialog.Replace("$(AppName)", Application.ProductName).Replace("$(AppVersion)", Application.ProductVersion);
+		}
+
 
 
 	}

@@ -1,0 +1,4 @@
+﻿<p><b>$(AppName) $(AppVersion)</b></p>
+<p>Software developed by Bee Development 2008.</p>
+<p>Menu and build status icons from the famfamfam silk icon set by Mark James.</p>
+<p>Main application icon from the Tango icon theme.</p>
