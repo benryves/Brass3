@@ -96,6 +96,7 @@
 			// 
 			// MenuRebuild
 			// 
+			this.MenuRebuild.Enabled = false;
 			this.MenuRebuild.Image = global::ProjectBuilder.Properties.Resources.IconBuild;
 			this.MenuRebuild.Name = "MenuRebuild";
 			this.MenuRebuild.ShortcutKeys = System.Windows.Forms.Keys.F6;
@@ -138,6 +139,7 @@
 			// 
 			// MenuBrassHelp
 			// 
+			this.MenuBrassHelp.Enabled = false;
 			this.MenuBrassHelp.Image = global::ProjectBuilder.Properties.Resources.IconHelp;
 			this.MenuBrassHelp.Name = "MenuBrassHelp";
 			this.MenuBrassHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;

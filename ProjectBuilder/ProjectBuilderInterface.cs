@@ -27,10 +27,11 @@ namespace ProjectBuilder {
 		/// </summary>
 		private Dictionary<string, string> TemporaryImages;
 
-		public ProjectBuilderInterface() {
+		public ProjectBuilderInterface(string[] args) {
 			InitializeComponent();
 			this.LoadSettings();
 			this.Text = Application.ProductName;
+			this.MenuHelp_DropDownOpening(this, null);
 
 			this.TemporaryImages = new Dictionary<string, string>();
 			this.StoreTemporaryImage("UnderlineError", Properties.Resources.UnderlineError);
@@ -51,6 +52,13 @@ namespace ProjectBuilder {
 
 			this.WorkingProject = null;
 			this.WorkingProject = null;
+
+			if (args.Length >= 1) {
+				LoadProject(args[0]);
+			}
+			if (args.Length >= 2) {
+				this.CurrentConfiguration = args[1];
+			}
 		}
 
 		private void MenuExit_Click(object sender, EventArgs e) {
@@ -62,14 +70,20 @@ namespace ProjectBuilder {
 
 		private void MenuOpenProject_Click(object sender, EventArgs e) {
 			if (this.OpenProjectDialog.ShowDialog(this) == DialogResult.OK) {
-				this.CurrentConfiguration = null;
-				this.WorkingProject = new Project();
-				try {
-					this.WorkingProject.Load(this.OpenProjectDialog.FileName);
-				} catch (Exception ex) {
-					MessageBox.Show(this, "Error loading project:" + Environment.NewLine + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-					this.WorkingProject = null;
-				}
+				LoadProject(this.OpenProjectDialog.FileName);
+			}
+		}
+
+		private void LoadProject(string filename) {
+			this.CurrentConfiguration = null;
+			this.WorkingProject = new Project();
+			try {
+				this.WorkingProject.Load(filename);
+			} catch (Exception ex) {
+				MessageBox.Show(this, "Error loading project:" + Environment.NewLine + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.WorkingProject = null;
+			} finally {
+				this.MenuBuild_DropDownOpening(this, null);
 			}
 		}
 
@@ -115,19 +129,23 @@ namespace ProjectBuilder {
 			if (this.WorkingProject == null) {
 				MenuRebuild.Enabled = false;
 			} else {
-				MenuRebuild.Enabled = CurrentConfiguration != null;
-				var Configurations = new List<KeyValuePair<KeyValuePair<string, string>, Project>>();
-				MenuBuild.DropDownItems.Add(new ToolStripSeparator());
-				foreach (var Configuration in this.WorkingProject.GetBuildConfigurationNames()) {
-					ToolStripMenuItem ConfigurationButton = new ToolStripMenuItem(Configuration.Value);
-					ConfigurationButton.Tag = Configuration.Key;
-					ConfigurationButton.Checked = this.CurrentConfiguration == (ConfigurationButton.Tag as string);
-					ConfigurationButton.Click += (ls, le) => {
-						this.CurrentConfiguration = ConfigurationButton.Tag as string;
-						this.Build();
-					};
-					MenuBuild.DropDownItems.Add(ConfigurationButton);
-
+				var Configurations = this.WorkingProject.GetBuildConfigurationNames();
+				if (Configurations.Length == 0) {
+					MenuRebuild.Enabled = true;
+					this.CurrentConfiguration = "";
+				} else {
+					MenuRebuild.Enabled = CurrentConfiguration != null;
+					MenuBuild.DropDownItems.Add(new ToolStripSeparator());
+					foreach (var Configuration in Configurations) {
+						ToolStripMenuItem ConfigurationButton = new ToolStripMenuItem(Configuration.Value);
+						ConfigurationButton.Tag = Configuration.Key;
+						ConfigurationButton.Checked = this.CurrentConfiguration == (ConfigurationButton.Tag as string);
+						ConfigurationButton.Click += (ls, le) => {
+							this.CurrentConfiguration = ConfigurationButton.Tag as string;
+							this.Build();
+						};
+						MenuBuild.DropDownItems.Add(ConfigurationButton);
+					}
 				}
 			}
 		}
@@ -149,7 +167,7 @@ namespace ProjectBuilder {
 			Application.DoEvents();
 
 			Compiler C = new Compiler();
-			C.LoadProject(this.WorkingProject.GetBuildConfiguration(this.CurrentConfiguration));
+			C.LoadProject(string.IsNullOrEmpty(this.CurrentConfiguration) ? this.WorkingProject : this.WorkingProject.GetBuildConfiguration(this.CurrentConfiguration));
 
 			int WarningCount = 0, ErrorCount = 0;
 			var OutputMessages = new StringBuilder(1024);
