@@ -1,0 +1,64 @@
+﻿<html>
+	<style>
+		body {
+			font-family: "MS Shell Dlg 2", "MS Shell Dlg", sans-serif;
+			font-size: 8.25pt;
+		}
+		pre {
+			font-family: Consolas, "Lucida Console", monospace;
+			border: 1px dotted #CCC;
+			padding: 2px;
+		}
+		span.comment {
+			color: #060;
+		}
+		span.string {
+			color: #900;
+		}
+		span.directive {
+			color: #009;
+		}
+		span.function {
+			color: #069;
+		}
+		span.highlighted {
+			background-image: url("$(UnderlineError)");
+			background-repeat: repeat-x;
+			background-position: bottom left;
+			padding-bottom: 1px;
+		}
+		span.highlighted.warning {
+			background-image: url("$(UnderlineWarning)");
+		}
+		div.error, div.warning, div.messages {
+			border-bottom: 1px solid #CCC;
+		}
+		div.error h1, div.warning h1, div.messages h1 {
+			font-size: 8.25pt;
+			background-image: url("$(IconError)");
+			background-position: top left;
+			background-repeat: no-repeat;
+			padding: 1px 0px 1px 20px;
+		}
+		div.warning h1 {
+			background-image: url("$(IconWarning)");
+		}
+		div.messages h1 {
+			background-image: url("$(IconMessages)");
+		}
+		div a {
+			text-decoration: none;
+			color: black;
+		}
+		div a:hover {
+			text-decoration: underline;
+			color: #009;
+		}
+		h1, p, pre {
+			margin: 8px 0px;
+		}
+	</style>
+	<body>
+		$(Errors)
+	</body>
+</html>
