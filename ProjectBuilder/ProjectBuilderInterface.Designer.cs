@@ -32,20 +32,27 @@
 			this.MenuProjectProperties = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuBuild = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuRebuild = new System.Windows.Forms.ToolStripMenuItem();
+			this.MenuOptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.MenuAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuBrassHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.BrowserOutput = new System.Windows.Forms.WebBrowser();
 			this.OpenProjectDialog = new System.Windows.Forms.OpenFileDialog();
+			this.Menus.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Menus
 			// 
+			this.Menus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuFile,
+            this.MenuProject,
+            this.MenuBuild,
+            this.MenuOptions,
+            this.MenuHelp});
 			this.Menus.Location = new System.Drawing.Point(0, 0);
 			this.Menus.Name = "Menus";
 			this.Menus.Size = new System.Drawing.Size(284, 24);
 			this.Menus.TabIndex = 0;
-			this.Menus.Text = "";
-			this.Menus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.MenuFile, this.MenuProject, this.MenuBuild, this.MenuHelp });
 			// 
 			// MenuFile
 			// 
@@ -110,6 +117,22 @@
 			this.MenuRebuild.Text = "&Rebuild";
 			this.MenuRebuild.Click += new System.EventHandler(this.MenuRebuild_Click);
 			// 
+			// MenuOptions
+			// 
+			this.MenuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuAlwaysOnTop});
+			this.MenuOptions.Name = "MenuOptions";
+			this.MenuOptions.Size = new System.Drawing.Size(61, 20);
+			this.MenuOptions.Text = "&Options";
+			this.MenuOptions.DropDownOpening += new System.EventHandler(this.MenuOptions_DropDownOpening);
+			// 
+			// MenuAlwaysOnTop
+			// 
+			this.MenuAlwaysOnTop.Name = "MenuAlwaysOnTop";
+			this.MenuAlwaysOnTop.Size = new System.Drawing.Size(152, 22);
+			this.MenuAlwaysOnTop.Text = "&Always on Top";
+			this.MenuAlwaysOnTop.Click += new System.EventHandler(this.MenuAlwaysOnTop_Click);
+			// 
 			// MenuHelp
 			// 
 			this.MenuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -123,7 +146,7 @@
 			// 
 			this.MenuBrassHelp.Name = "MenuBrassHelp";
 			this.MenuBrassHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;
-			this.MenuBrassHelp.Size = new System.Drawing.Size(152, 22);
+			this.MenuBrassHelp.Size = new System.Drawing.Size(148, 22);
 			this.MenuBrassHelp.Text = "&Brass Help";
 			this.MenuBrassHelp.Click += new System.EventHandler(this.MenuBrassHelp_Click);
 			// 
@@ -152,6 +175,11 @@
 			this.Controls.Add(this.Menus);
 			this.MainMenuStrip = this.Menus;
 			this.Name = "ProjectBuilderInterface";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.Move += new System.EventHandler(this.ProjectBuilderInterface_Move);
+			this.Resize += new System.EventHandler(this.ProjectBuilderInterface_Resize);
+			this.Menus.ResumeLayout(false);
+			this.Menus.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -172,6 +200,8 @@
 		private System.Windows.Forms.ToolStripMenuItem MenuRebuild;
 		private System.Windows.Forms.WebBrowser BrowserOutput;
 		private System.Windows.Forms.OpenFileDialog OpenProjectDialog;
+		private System.Windows.Forms.ToolStripMenuItem MenuOptions;
+		private System.Windows.Forms.ToolStripMenuItem MenuAlwaysOnTop;
 	}
 }
 

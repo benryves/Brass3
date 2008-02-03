@@ -28,6 +28,7 @@ namespace ProjectBuilder {
 
 		public ProjectBuilderInterface() {
 			InitializeComponent();
+			this.LoadSettings();
 			this.Text = Application.ProductName;
 
 			this.TemporaryImages = new Dictionary<string, string>();
@@ -38,6 +39,7 @@ namespace ProjectBuilder {
 			this.StoreTemporaryImage("IconMessages", Properties.Resources.IconMessage);
 
 			this.Disposed += (sender, e) => this.CleanUpTemporaryImages();
+			this.FormClosing += (sender, e) => this.SaveSettings();
 
 			this.WorkingProject = null;
 			this.WorkingProject = null;
@@ -312,5 +314,57 @@ namespace ProjectBuilder {
 		}
 
 		#endregion
+
+		#region Options
+
+		/// <summary>
+		/// Load settings from settings file.
+		/// </summary>
+		private void LoadSettings() {
+			this.TopMost = Properties.Settings.Default.WindowTopmost;
+
+			if (Properties.Settings.Default.WindowWidth == -1 || Properties.Settings.Default.WindowHeight == -1) {
+				this.CenterToScreen();
+			} else {
+				this.ClientSize = new Size(Properties.Settings.Default.WindowWidth, Properties.Settings.Default.WindowHeight);
+				this.Location = new Point(Properties.Settings.Default.WindowLeft, Properties.Settings.Default.WindowTop);
+				this.WindowState = Properties.Settings.Default.WindowState;
+			}
+
+		}
+
+		/// <summary>
+		/// Save settings to settings file.
+		/// </summary>
+		private void SaveSettings() {
+			if (this.WindowState != FormWindowState.Minimized) Properties.Settings.Default.WindowState = this.WindowState;
+			Properties.Settings.Default.Save();
+		}
+
+		private void MenuAlwaysOnTop_Click(object sender, EventArgs e) {
+			this.TopMost ^= true;
+			Properties.Settings.Default.WindowTopmost = this.TopMost;
+		}
+
+		private void MenuOptions_DropDownOpening(object sender, EventArgs e) {
+			this.MenuAlwaysOnTop.Checked = this.TopMost;
+		}
+		
+		private void ProjectBuilderInterface_Resize(object sender, EventArgs e) {
+			if (this.WindowState == FormWindowState.Normal) {
+				Properties.Settings.Default.WindowWidth = this.ClientSize.Width;
+				Properties.Settings.Default.WindowHeight = this.ClientSize.Height;
+			}
+		}
+
+		private void ProjectBuilderInterface_Move(object sender, EventArgs e) {
+			if (this.WindowState == FormWindowState.Normal) {
+				Properties.Settings.Default.WindowTop = this.Top;
+				Properties.Settings.Default.WindowLeft = this.Left;
+			}
+		}
+
+		#endregion
+
 	}
 }
