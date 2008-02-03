@@ -143,7 +143,7 @@
 			this.MenuBrassHelp.Image = global::ProjectBuilder.Properties.Resources.IconHelp;
 			this.MenuBrassHelp.Name = "MenuBrassHelp";
 			this.MenuBrassHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;
-			this.MenuBrassHelp.Size = new System.Drawing.Size(152, 22);
+			this.MenuBrassHelp.Size = new System.Drawing.Size(148, 22);
 			this.MenuBrassHelp.Text = "&Brass Help";
 			this.MenuBrassHelp.Click += new System.EventHandler(this.MenuBrassHelp_Click);
 			// 
@@ -158,6 +158,7 @@
 			this.BrowserOutput.ScriptErrorsSuppressed = true;
 			this.BrowserOutput.Size = new System.Drawing.Size(284, 240);
 			this.BrowserOutput.TabIndex = 1;
+			this.BrowserOutput.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.BrowserOutput_Navigating);
 			// 
 			// OpenProjectDialog
 			// 

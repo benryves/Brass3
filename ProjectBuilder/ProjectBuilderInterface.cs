@@ -357,6 +357,8 @@ namespace ProjectBuilder {
 
 			if (Properties.Settings.Default.WindowWidth == -1 || Properties.Settings.Default.WindowHeight == -1) {
 				this.CenterToScreen();
+				this.ProjectBuilderInterface_Move(this, null);
+				this.ProjectBuilderInterface_Resize(this, null);
 			} else {
 				this.ClientSize = new Size(Properties.Settings.Default.WindowWidth, Properties.Settings.Default.WindowHeight);
 				this.Location = new Point(Properties.Settings.Default.WindowLeft, Properties.Settings.Default.WindowTop);
@@ -402,6 +404,17 @@ namespace ProjectBuilder {
 		}
 
 		#endregion
+
+		private void BrowserOutput_Navigating(object sender, WebBrowserNavigatingEventArgs e) {
+			if (e.Url.LocalPath.StartsWith("file_")) {
+				try {
+					Process.Start(e.Url.LocalPath.Substring(5));
+				} catch (Exception ex) {
+					MessageBox.Show(this, "Could not open file:" + Environment.NewLine + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				}
+				e.Cancel = true;
+			}
+		}
 
 
 
