@@ -34,6 +34,7 @@
 			this.MenuRebuild = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
+			this.MenuSound = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuBrassHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.BrowserOutput = new System.Windows.Forms.WebBrowser();
@@ -111,6 +112,7 @@
 			// 
 			// MenuRebuild
 			// 
+			this.MenuRebuild.Image = global::ProjectBuilder.Properties.Resources.IconBuild;
 			this.MenuRebuild.Name = "MenuRebuild";
 			this.MenuRebuild.ShortcutKeys = System.Windows.Forms.Keys.F6;
 			this.MenuRebuild.Size = new System.Drawing.Size(133, 22);
@@ -120,7 +122,8 @@
 			// MenuOptions
 			// 
 			this.MenuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuAlwaysOnTop});
+            this.MenuAlwaysOnTop,
+            this.MenuSound});
 			this.MenuOptions.Name = "MenuOptions";
 			this.MenuOptions.Size = new System.Drawing.Size(61, 20);
 			this.MenuOptions.Text = "&Options";
@@ -133,6 +136,13 @@
 			this.MenuAlwaysOnTop.Text = "&Always on Top";
 			this.MenuAlwaysOnTop.Click += new System.EventHandler(this.MenuAlwaysOnTop_Click);
 			// 
+			// MenuSound
+			// 
+			this.MenuSound.Name = "MenuSound";
+			this.MenuSound.Size = new System.Drawing.Size(152, 22);
+			this.MenuSound.Text = "Status &Sounds";
+			this.MenuSound.Click += new System.EventHandler(this.MenuSound_Click);
+			// 
 			// MenuHelp
 			// 
 			this.MenuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -144,6 +154,7 @@
 			// 
 			// MenuBrassHelp
 			// 
+			this.MenuBrassHelp.Image = global::ProjectBuilder.Properties.Resources.IconHelp;
 			this.MenuBrassHelp.Name = "MenuBrassHelp";
 			this.MenuBrassHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.MenuBrassHelp.Size = new System.Drawing.Size(148, 22);
@@ -202,6 +213,7 @@
 		private System.Windows.Forms.OpenFileDialog OpenProjectDialog;
 		private System.Windows.Forms.ToolStripMenuItem MenuOptions;
 		private System.Windows.Forms.ToolStripMenuItem MenuAlwaysOnTop;
+		private System.Windows.Forms.ToolStripMenuItem MenuSound;
 	}
 }
 

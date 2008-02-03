@@ -60,6 +60,13 @@ namespace ProjectBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap IconBuild {
+            get {
+                object obj = ResourceManager.GetObject("IconBuild", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap IconError {
             get {
                 object obj = ResourceManager.GetObject("IconError", resourceCulture);
@@ -67,9 +74,30 @@ namespace ProjectBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap IconHelp {
+            get {
+                object obj = ResourceManager.GetObject("IconHelp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap IconMessage {
             get {
                 object obj = ResourceManager.GetObject("IconMessage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconSound {
+            get {
+                object obj = ResourceManager.GetObject("IconSound", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconSoundMute {
+            get {
+                object obj = ResourceManager.GetObject("IconSoundMute", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

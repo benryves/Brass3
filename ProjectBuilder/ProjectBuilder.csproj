@@ -94,6 +94,18 @@
     <None Include="app.config" />
     <None Include="Resources\IconError.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IconHelp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IconBuild.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IconSoundMute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IconSound.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

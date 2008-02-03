@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using BeeDevelopment.Brass3;
-using System.IO;
 using System.Diagnostics;
-using System.Text;
-using System.Xml;
 using System.Drawing;
+using System.IO;
+using System.Media;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
+using BeeDevelopment.Brass3;
 
 namespace ProjectBuilder {
 	public partial class ProjectBuilderInterface : Form {
@@ -192,6 +193,17 @@ namespace ProjectBuilder {
 
 			this.BrowserOutput.DocumentText = ErrorText;
 
+			// Sound effects:
+			if (Properties.Settings.Default.SoundEnabled) {
+				if (ErrorCount + WarningCount > 0) {
+					SystemSounds.Hand.Play();
+				} else if (OutputMessages.Length > 0) {
+					SystemSounds.Beep.Play();
+				} else {
+					SystemSounds.Asterisk.Play();
+				}
+			}
+
 		}
 
 		/// <summary>
@@ -346,8 +358,13 @@ namespace ProjectBuilder {
 			Properties.Settings.Default.WindowTopmost = this.TopMost;
 		}
 
+		private void MenuSound_Click(object sender, EventArgs e) {
+			Properties.Settings.Default.SoundEnabled ^= true;
+		}
+
 		private void MenuOptions_DropDownOpening(object sender, EventArgs e) {
 			this.MenuAlwaysOnTop.Checked = this.TopMost;
+			this.MenuSound.Image = Properties.Settings.Default.SoundEnabled ? Properties.Resources.IconSound : Properties.Resources.IconSoundMute;
 		}
 		
 		private void ProjectBuilderInterface_Resize(object sender, EventArgs e) {
@@ -365,6 +382,8 @@ namespace ProjectBuilder {
 		}
 
 		#endregion
+
+
 
 	}
 }
