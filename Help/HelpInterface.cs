@@ -22,7 +22,11 @@ namespace Help {
 			Compiler Brass = new Compiler();
 			Brass.LoadPluginsFromAssembly("Brass.exe");
 			foreach (string Plugin in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")) {
-				Brass.LoadPluginsFromAssembly(Plugin);
+				try {
+					Brass.LoadPluginsFromAssembly(Plugin);
+				} catch {
+					MessageBox.Show(this, "There was an error loading the plugin " + Path.GetFileName(Plugin) + "." + Environment.NewLine + "This is most likely due to a plugin that requires an older version of Brass. Please contact the plugin author to see if an upgrade is available.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 			}
 			this.HelpViewer.HelpProvider = new HelpProvider(Brass);
 		}
