@@ -38,6 +38,13 @@ Source: "..\Release\Variables.dll"; DestDir: "{app}"; Flags: ignoreversion; Comp
 Source: "..\Release\Legacy.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\Legacy";
 Source: "..\Release\ImageManipulation.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: "Plugins\ImageManipulation";
 
+
+; Bundled debuggers:
+Source: "..\Release\PindurTI Debugger.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Debuggers\PindurTI";
+Source: "..\Release\pindurti.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "Debuggers\PindurTI";
+Source: "..\Release\PindurTI Debugger.exe.config"; DestDir: "{app}"; Flags: ignoreversion; Components: "Debuggers\PindurTI";
+
+
 ; Includes:
 Source: "Include\TI\ti83plus.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\ti83plus";
 Source: "Include\TI\ti73.inc"; DestDir: "{app}\Include\TI"; Flags: ignoreversion; Components: "Include\TI\ti73";
@@ -53,6 +60,19 @@ Source: "Templates\TI\Program.brassproj"; DestDir: "{app}\Templates\TI"; Flags: 
 Source: "Templates\TI\Resources\Icons\MirageOS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
 Source: "Templates\TI\Resources\Icons\Venus.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
 Source: "Templates\TI\Resources\Icons\DoorsCS.gif"; DestDir: "{app}\Templates\TI\Resources\Icons"; Flags: ignoreversion; Components: "Templates\TI\Program";
+
+Source: "Debug\TI\ROMs\ROMs.txt"; DestDir: "{app}\Debug\TI\ROMs"; Flags: ignoreversion; Components: "Templates\TI";
+Source: "Debug\TI\TI8X.debug"; DestDir: "{app}\Debug\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\TI8X.Ion.debug"; DestDir: "{app}\Debug\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\TI8X.MirageOS.debug"; DestDir: "{app}\Debug\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\TI83.debug"; DestDir: "{app}\Debug\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\TI83.Ion.debug"; DestDir: "{app}\Debug\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\TI83.Venus.debug"; DestDir: "{app}\Debug\TI"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\Shells\Ion.8xg"; DestDir: "{app}\Debug\TI\Shells"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\Shells\Ion.83g"; DestDir: "{app}\Debug\TI\Shells"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\Shells\MirageOS.8xk"; DestDir: "{app}\Debug\TI\Shells"; Flags: ignoreversion; Components: "Templates\TI\Program";
+Source: "Debug\TI\Shells\Venus.83g"; DestDir: "{app}\Debug\TI\Shells"; Flags: ignoreversion; Components: "Templates\TI\Program";
+
 Source: "Templates\TI\Application.brassproj"; DestDir: "{app}\Templates\TI"; Flags: ignoreversion; Components: "Templates\TI\Application";
 
 Source: "Templates\SMS\32KB.brassproj"; DestDir: "{app}\Templates\SMS"; Flags: ignoreversion; Components: "Templates\SMS\32KB";
@@ -87,6 +107,9 @@ Name: "Brass"; Description: "Brass Compiler"; Types: full compact custom; Flags:
 Name: "Tools"; Description: "Tools"; Types: full custom;
 Name: "Tools\Help"; Description: "Help Viewer"; Types: full custom;
 Name: "Tools\ProjectBuilder"; Description: "Project Builder"; Types: full custom;
+
+Name: "Debuggers"; Description: "Debuggers"; Types: full custom;
+Name: "Debuggers\PindurTI"; Description: "Pindur TI"; Types: full custom;
 
 Name: "Samples"; Description: "Projects Directory"; Types: full custom;
 Name: "Samples\TIProgram"; Description: "Sample Texas Instruments Calculator Program"; Types: full custom;
@@ -141,6 +164,7 @@ Root: HKCR; Subkey: "Brass.Project\shell\Build\command"; ValueType: string; Valu
 Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass"; ValueType: string; ValueData: "{app}";
 Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass.Include"; ValueType: string; ValueData: "{app}\Include";
 Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass.Templates"; ValueType: string; ValueData: "{app}\Templates";
+Root: HKLM; Subkey: "System\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "Brass.Debug"; ValueType: string; ValueData: "{app}\Debug";
 
 [INI]
 Filename: "{app}\Documentation\Brass Website.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://www.bee-dev.com/?go=brass";
