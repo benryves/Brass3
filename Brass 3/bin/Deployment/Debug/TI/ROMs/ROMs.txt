@@ -1,0 +1,4 @@
+Please copy ROM dumps for the calculators that you wish to debug with here.
+
+The TI-83 Plus ROM should be named "TI8X.rom".
+The TI-83 ROM should be named "TI83.rom".
