@@ -1,4 +1,14 @@
 Please copy ROM dumps for the calculators that you wish to debug with here.
 
-The TI-83 Plus ROM should be named "TI8X.rom".
-The TI-83 ROM should be named "TI83.rom".
+You should name the dumps according to the following table:
+
+Calculator  ROM name   Size
+----------- --------   -----
+TI-83 Plus  TI8X.rom   512KB
+TI-83       TI83.rom   256KB      
+TI-82       TI82.rom   128KB
+
+Before using the TI-83 Plus ROM, please open it in a regular PindurTI instance and
+reset all memory. The debugger scripts send keystrokes blindly to the emulator, and
+having unexpected programs or applications in their menus will prevent them from
+working correctly.
