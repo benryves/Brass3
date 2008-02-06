@@ -2,7 +2,7 @@
 reset-calc
 run 6000000
 key-press on 6000000
-send-file "%DEBUG_DIR%/Shells/Ion.8xg"
+send-file "%DEBUG_DIR%/TI/Shells/Ion.8xg"
 key-press prgm
 key-press enter
 key-press enter
