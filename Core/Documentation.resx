@@ -135,6 +135,11 @@ The patch file should be saved in the "Patches" directory inside Emukon's instal
   <data name="ExternalProgramDescription" xml:space="preserve">
     <value>Runs an external program of your choice, passing the name of the generated binary as an argument.</value>
   </data>
+  <data name="ExternalProgramRemarks" xml:space="preserve">
+    <value>To use this plugin you need to define two labels; one called &lt;c&gt;Debugger.Path&lt;/c&gt; that contains the full path of the debugger application and another named &lt;c&gt;Debugger.Args&lt;/c&gt; containing the command-line arguments to pass to the application.
+
+You can use Visual Studio style macros (for example, $(TargetPath)) in these strings. They are case sensitive.</value>
+  </data>
   <data name="ExternalProgramWarning" xml:space="preserve">
     <value>Brass has very primitive debugging currently, so this functionality is liable to change.</value>
   </data>

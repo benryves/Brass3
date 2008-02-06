@@ -109,6 +109,17 @@ namespace Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To use this plugin you need to define two labels; one called &lt;c&gt;Debugger.Path&lt;/c&gt; that contains the full path of the debugger application and another named &lt;c&gt;Debugger.Args&lt;/c&gt; containing the command-line arguments to pass to the application.
+        ///
+        ///You can use Visual Studio style macros (for example, $(TargetPath)) in these strings. They are case sensitive..
+        /// </summary>
+        internal static string ExternalProgramRemarks {
+            get {
+                return ResourceManager.GetString("ExternalProgramRemarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brass has very primitive debugging currently, so this functionality is liable to change..
         /// </summary>
         internal static string ExternalProgramWarning {
