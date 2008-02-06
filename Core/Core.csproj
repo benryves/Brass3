@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debuggers\ExternalProgram.cs" />
     <Compile Include="Directives\Breakpoint.cs" />
     <Compile Include="Directives\ClearPage.cs" />
     <Compile Include="Directives\Block.cs" />

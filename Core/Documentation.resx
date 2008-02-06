@@ -132,4 +132,10 @@ The compiler records a list of breakpoints that can be accessed by a plugin that
 Emukon patch files can describe labels, execution breakpoints and variables (8-bit byte, 16-bit word and 32-bit word variables are supported).
 The patch file should be saved in the "Patches" directory inside Emukon's installation directory.</value>
   </data>
+  <data name="ExternalProgramDescription" xml:space="preserve">
+    <value>Runs an external program of your choice, passing the name of the generated binary as an argument.</value>
+  </data>
+  <data name="ExternalProgramWarning" xml:space="preserve">
+    <value>Brass has very primitive debugging currently, so this functionality is liable to change.</value>
+  </data>
 </root>

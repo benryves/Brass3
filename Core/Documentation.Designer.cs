@@ -98,5 +98,23 @@ namespace Core {
                 return ResourceManager.GetString("EmukonPatchRemarks", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runs an external program of your choice, passing the name of the generated binary as an argument..
+        /// </summary>
+        internal static string ExternalProgramDescription {
+            get {
+                return ResourceManager.GetString("ExternalProgramDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brass has very primitive debugging currently, so this functionality is liable to change..
+        /// </summary>
+        internal static string ExternalProgramWarning {
+            get {
+                return ResourceManager.GetString("ExternalProgramWarning", resourceCulture);
+            }
+        }
     }
 }
