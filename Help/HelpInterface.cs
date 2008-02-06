@@ -20,8 +20,12 @@ namespace Help {
 
 		private void HelpInterface_Load(object sender, EventArgs e) {
 			Compiler Brass = new Compiler();
-			Brass.LoadPluginsFromAssembly("Brass.exe");
-			foreach (string Plugin in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")) {
+
+			var PluginFiles = new List<string>();
+			PluginFiles.AddRange(Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.exe"));
+			PluginFiles.AddRange(Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll"));
+
+			foreach (string Plugin in PluginFiles) {
 				try {
 					Brass.LoadPluginsFromAssembly(Plugin);
 				} catch {
