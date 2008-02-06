@@ -5,6 +5,7 @@
 		<collection source="Core.dll" />
 		<collection source="Z80.dll" />
 		<collection source="TiCalc.dll" />
+		<collection source="PindurTI Debugger.exe" />
 	</plugins>
 	
 	<input assembler="Z80" stringencoder="large8x">
@@ -12,6 +13,8 @@
 		<label name="Program.Description" type="string" value="Program" />
 		<header append="true">.tivariablename Program.Name</header>
 	</input>
+	
+	<debugger name="pindurti" />
 
 	<buildconfiguration name="TI8X" displayname="TI-83 Plus">
 	
