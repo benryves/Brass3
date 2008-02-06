@@ -21,7 +21,7 @@
 		<input>
 			<header append="true">.include "TI/ti83plus.inc" \ .org $9D93 \ .dw $6DBB</header>
 			<label name="Debug.Script" type="eval" value="envvar('Brass.Debug')+'/TI/Debug/TI8X.debug" />
-			<label name="Debug.ROM" type="eval" value="envvar('Brass.Debug')+'/TI/Debug/ROMs/TI8X.rom" />
+			<label name="Debug.ROM" type="eval" value="envvar('Brass.Debug')+'/TI/Debug/ROMs/TI8X.rom'" />
 		</input>
 		
 		<output writer="TI8X" />
@@ -29,7 +29,7 @@
 		<buildconfiguration name="Ion">
 			<input>
 				<header append="true">.include "TI/ion8x.inc" \ .ionheader Program.Description</header>
-				<label name="Debug.Script" type="eval" value="envvar('Brass.Debug')+'/TI/Debug/TI8X.Ion.debug" />
+				<label name="Debug.Script" type="eval" value="envvar('Brass.Debug')+'/TI/Debug/TI8X.Ion.debug'" />
 			</input>
 		</buildconfiguration>
 		
