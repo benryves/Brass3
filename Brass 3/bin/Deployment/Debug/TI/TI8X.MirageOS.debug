@@ -12,4 +12,5 @@ key-press enter
 run 48000000
 key-press enter
 key-press down
+breakpoints-on
 key-press enter

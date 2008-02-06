@@ -11,4 +11,5 @@ key-press prgm
 key-press enter
 key-press enter
 run 6000000
+breakpoints-on
 key-press enter
