@@ -1,0 +1,249 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EAC63ED4-621D-42D1-9043-28EA480A5B65}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PindurTI</RootNamespace>
+    <AssemblyName>PindurTI Debugger</AssemblyName>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Brass 3\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Brass 3\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BrassDebugger.cs" />
+    <Compile Include="Breakpoints.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Breakpoints.Designer.cs">
+      <DependentUpon>Breakpoints.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CalcWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CalcWindow.Designer.cs">
+      <DependentUpon>CalcWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomiseKeys.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomiseKeys.Designer.cs">
+      <DependentUpon>CustomiseKeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Keypad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Keypad.Designer.cs">
+      <DependentUpon>Keypad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LateniteInteraction.cs" />
+    <Compile Include="LCD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LCD.Designer.cs">
+      <DependentUpon>LCD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Load Debug Info.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Memory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Memory.Designer.cs">
+      <DependentUpon>Memory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MemoryEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MemoryEditor.Designer.cs">
+      <DependentUpon>MemoryEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PindurTI\Calculator.cs" />
+    <Compile Include="PindurTI\Calculator\Breakpoints.cs" />
+    <Compile Include="PindurTI\Calculator\Keys.cs" />
+    <Compile Include="PindurTI\Calculator\Registers.cs" />
+    <Compile Include="PindurTI\Calculator\Run.cs" />
+    <Compile Include="PindurTI\Calculator\ScreenImage.cs" />
+    <Compile Include="PindurTI\Emulator.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AboutBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Breakpoints.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Breakpoints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CalcWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CalcWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomiseKeys.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CustomiseKeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Keypad.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Keypad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LCD.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LCD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Memory.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Memory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MemoryEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MemoryEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Registers.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Registers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Variables Watcher.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Variables Watcher.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Registers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Registers.Designer.cs">
+      <DependentUpon>Registers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Script.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Variables Watcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Variables Watcher.Designer.cs">
+      <DependentUpon>Variables Watcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Variables.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ASCIIMap.gif" />
+    <Content Include="Help.htm" />
+    <Content Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brass 3\Brass 3.csproj">
+      <Project>{75305F27-C13B-4904-9EC4-6FD352230601}</Project>
+      <Name>Brass 3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

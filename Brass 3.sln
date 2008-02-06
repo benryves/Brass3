@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripting", "Scripting\Scri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBuilder", "ProjectBuilder\ProjectBuilder.csproj", "{AF9A2B66-0FA4-456A-867C-FB28108F67E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PindurTI", "PindurTI\PindurTI.csproj", "{EAC63ED4-621D-42D1-9043-28EA480A5B65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF9A2B66-0FA4-456A-867C-FB28108F67E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

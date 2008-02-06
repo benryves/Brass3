@@ -1,0 +1,198 @@
+<html>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        td, th {
+            border: solid #666666 1px;
+            padding: 2px 10px 2px 10px;
+            background-color: #EEEEEE;
+        }
+        td {
+            color: black;
+            vertical-align: top;
+        }
+        th {
+            background-color: #666666;
+            color: white;
+        }
+        * {
+            font-family: verdana;
+            font-size: 11px;
+            line-height: 16px;
+        }
+        tt, tt *, pre, pre * {
+            font-family: consolas, lucida console, courier new;
+        }
+        pre.code {
+            border-left: dotted #999999 2px;
+            padding-left: 10px;
+            margin-left: 10px;
+        }
+        span.menu {
+            border: 1px solid #DDDDDD;
+            padding: 1px;
+            background-color: #EEEEEE;
+            font-size: 11px;
+            font-family: tahoma;
+                        
+        }
+        body {
+            max-width: 600px;
+            text-align: justify;
+        }
+        a {
+            color: #000099;
+            text-decoration: none;
+            
+        }
+        a:hover {
+            border-bottom: 1px dashed #000099;
+        }
+        img {
+            padding: 2px;
+            border: 2px solid black;
+            background-color: #CCEFCC;
+            margin-bottom: 5px;
+        }
+    </style>
+    <body>
+        <h2>File Menu</h2>
+        <p>The file menu is used to start new emulated calculators from ROM files or to send files to the currently running calculator.</p>
+        <p>The <span class="menu">New Calculator...</span> menu option can be used to open a ROM file and start up a new calculator. Each calculator runs in it's own MDI window and is (currently) completely isolated from all of the other calculators.</p>
+        <p>The <span class="menu">Send File...</span> menu option can be used to send files to the current emulated calculator. Note that the rules for sending files to the emulated calculator are the same as for running a real calculator - it must be switched on, and should be at the homescreen (83/83+) or in the Receive menu (82).</p>
+        
+        
+        <h2>Debug Menu</h2>
+        <p>This is where you can get access to the various simple debugging tools and options.</p>
+        <p>Using the <span class="menu">Windows</span> menu you can open a number of different windows showing information about the currently running calculator. See the relevant section below on what each window does and can be used for.</p>
+        <p>Under <span class="menu">Load</span> you can choose to run a script (see the <a href="#scripts">scripts</a> section) or load a debugging information file. The debugging information file (which can be output from <a href="http://benryves.com/bin/brass">Brass</a> natively) contains information on modules, labels, breakpoints and variables.</p>
+        <p>When <span class="menu">Run</span> is ticked, the emulated calculator runs. Untick this menu option to pause the emulation. Note that if the calculator encounters a breakpoint and breaking on breakpoints is enabled, the calculator will freeze.</p>
+        <p>You can use the <span class="menu">Step</span> menu item to manually step one instruction at a time. If you hit a breakpoint, you can use this item to step over it.</p>
+        <p>The <span class="menu">Reset</span> item resets the emulated calculator.</p>
+        <p>When ticked, <span class="menu">Break On Breakpoints</span> pauses the emulated calculator when a breakpoint is hit. Use the <span class="menu">Step</span> menu item to step over it.</p>
+        <p>You can use <span class="menu">Clear All Breakpoints</span> to clear all the current breakpoints.</p>
+        
+
+        
+        <h2>Options Menu</h2>
+        <p>This menu can be used to set the options for the debugger.</p>
+        <p>The <span class="menu">Customise Keys</span> menu opens up the simple key binding editor. You have a list of calculator buttons (for example, [on]) under which it lists the PC keys that apply to that key (you can have multiple PC keys bound to a single calculator button). Right click a calculator button name to add a new binding or remove all of the existing ones. When you choose to add a new one, the interface 'freezes' until you press a key. This key is bound to the selected calculator button. Do note that the two calculator buttons 'matrx' and 'apps' are, in fact, the same thing.</p>
+        <p>The <span class="menu">Video</span> menu can be used to change the appearance of the emulated calculator's LCD. <span class="menu">Set LCD Colours</span> has options for changing the bright/dark colours used to display the LCD, and a <span class="menu">Reset</span> button to reset them to the LCD-ish default colours. The other options on the <span class="menu">Video</span> menu are to control the way the 96x64 pixel calculator display is scaled up to display on your screen - from unscaled, through LCD-pixel effect 'Zoom' filters to the 'Smooth' filters.</p>
+        <center><img src="smooth2x.png" width="192" height="128" /><br />The <i>Smooth 2x</i> filter.</center>
+
+
+        <h2>LCD Window</h2>
+        <p>This window is always visible. It displays the current calculator screen. Not a lot to say about it, except that you can stretch it larger by dragging one of the corners. Right-click on the display to open a menu with options to <span class="menu">Copy to Clipboard</span> (which copies the current screen to the clipboard) or <span class="menu">Save</span> (which saves a screenshot in one of a variety of formats).</p>
+        
+        <h2>Memory Window</h2>
+        <p>This viewer displays the current 64KB Z80 address space in groups of 16-byte rows. The column on the left shows the start address for each row. You can click on a cell to select it - the address is displayed in the bottom-right hand corner. You can type an address (in hexadecimal) into the box in the bottom right (pressing Enter jumps to it).</p>
+        <p>The button on the left pops open a menu listing all the exported labels from the debugging information file, grouped into modules. Clicking on a label jumps to it.</p>
+        <p>Clicking the button marked <span class="menu">ASCII</span> switches to the ASCII view - clicking it switches back to <span class="menu">Values</span> view.</p>
+        <p>You can add breakpoints from this editor - just right click a cell and select <span class="menu">Add Breakpoint</span>.</p>
+        
+        <h2>Registers Window</h2>
+        <p>Not a lot to describe here - just a simple viewer window</p>
+        
+        <h2>Variables Window</h2>
+        <p>(Not implemented)</p>
+        
+        <h2>Breakpoints Window</h2>
+        <p>This window lists the currently active breakpoints. When a breakpoint is hit, it is selected and the font describing it is emboldened (if the window is not already open, it is opened automatically).</p>
+        <p>Right-clicking a breakpoint gives you options: <span class="menu">Delete</span>, which removes a breakpoint, and <span class="menu">Jump To</span>, which jumps to the memory address of the breakpoint in the memory viewer window.</p>
+        
+        <a name="scripts"></a>
+        <h2>Scripts</h2>
+        <p>Scripts can be used to control an emulated calculator - for example, to reset, load, and run a particular program you are working on. Script files are just plain text. The semicolon character (<tt>;</tt>) can be used for comments.</p>
+        <p>Here are the available commands you can use in a script file.</p>
+        <table>
+            <tr>
+                <th width="140">Command</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>
+                    <tt>
+                        key-down <i>key [pause]</i>
+                    </tt>
+                </td>
+                <td>Press a calculator key. If a value follows it, run the calculator for that many cycles after pressing the key.</td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>
+                        key-up <i>key [pause]</i>
+                    </tt>
+                </td>
+                <td>
+                    Performs the same action as <tt>key-down</tt> but releases the key instead.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>
+                        key-press <i>key [pause]</i>
+                    </tt>
+                </td>
+                <td>
+                    Presses a key, runs for <tt>pause</tt> cycles, releases the key, runs for <tt>pause</tt> cycles. If you don't specify a value for <tt>pause</tt>, it defaults to 1000000.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>
+                        run <i>cycles</i>
+                    </tt>
+                </td>
+                <td>Runs the calculator for a particular number of CPU cycles.</td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>
+                        send-file <i>filename</i>
+                    </tt>
+                </td>
+                <td>Sends a file to the emulated calculator.</td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>reset-calc</tt>
+                </td>
+                <td>Resets the emulated calculator.</td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>breakpoints-on</tt>
+                </td>
+                <td>Enables breaking on breakpoints.</td>
+            </tr>
+            <tr>
+                <td>
+                    <tt>breakpoints-off</tt>
+                </td>
+                <td>Disables breaking on breakpoints.</td>
+            </tr>
+        </table>
+        <p>Here's an example script:</p>
+        <pre class="code">reset-calc            ; Reset the calculator
+run 6000000           ; Run for about a second to warm up
+key-press on 6000000  ; Switch on
+send-file ion.8xg     ; Send Ion
+key-press prgm
+key-press enter
+key-press enter
+run 6000000           ; Wait for it to install
+send-file program.8xp ; Send the program
+key-press prgm
+key-press enter
+key-press enter
+run 6000000
+breakpoints-on        ; Only enable these at the last minute
+key-press enter</pre>
+        <p>You can use command/batch-file style environment variables inside the script files (use the <tt>%variable%</tt> syntax).</p>
+        <p>You can load a script file on the command-line using <tt>-s <i>filename</i></tt>.</p>
+    </body>
+</html>
