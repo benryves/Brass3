@@ -62,7 +62,7 @@
 				.db tEnter, tEnd
 			</footer>
 			<label name="Debug.Script" type="eval" value="envvar('Brass.Debug')+'/TI/TI83.debug'" />
-			<label name="Debug.ROM" type="eval" value="envvar('Brass.Debug')+'/TI/ROMs/TI8X.rom" />
+			<label name="Debug.ROM" type="eval" value="envvar('Brass.Debug')+'/TI/ROMs/TI83.rom'" />
 		</input>
 		
 		<output writer="TI83" />
