@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="IconHardHat.ico" />
+    <None Include="Resources\bug_go.png" />
     <None Include="Resources\AboutDialog.txt" />
     <None Include="Resources\IconFolder.png" />
   </ItemGroup>

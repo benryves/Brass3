@@ -23,6 +23,11 @@ namespace ProjectBuilder {
 		private string CurrentConfiguration;
 
 		/// <summary>
+		/// Gets the most recently used compiler instance.
+		/// </summary>
+		private Compiler LastCompiler;
+
+		/// <summary>
 		/// Dictionary mapping temporary image identifiers to filenames.
 		/// </summary>
 		private Dictionary<string, string> TemporaryImages;
@@ -117,6 +122,7 @@ namespace ProjectBuilder {
 		}
 
 		private void MenuBuild_DropDownOpening(object sender, EventArgs e) {
+
 			List<ToolStripItem> ToPurge = new List<ToolStripItem>();
 			foreach (ToolStripItem SubItem in MenuBuild.DropDownItems) {
 				if (SubItem != MenuRebuild) ToPurge.Add(SubItem);
@@ -134,20 +140,25 @@ namespace ProjectBuilder {
 					MenuRebuild.Enabled = true;
 					this.CurrentConfiguration = "";
 				} else {
-					MenuRebuild.Enabled = CurrentConfiguration != null;
 					MenuBuild.DropDownItems.Add(new ToolStripSeparator());
 					foreach (var Configuration in Configurations) {
+						if (this.CurrentConfiguration == null) this.CurrentConfiguration = Configuration.Key;
 						ToolStripMenuItem ConfigurationButton = new ToolStripMenuItem(Configuration.Value);
 						ConfigurationButton.Tag = Configuration.Key;
 						ConfigurationButton.Checked = this.CurrentConfiguration == (ConfigurationButton.Tag as string);
 						ConfigurationButton.Click += (ls, le) => {
 							this.CurrentConfiguration = ConfigurationButton.Tag as string;
-							this.Build();
+							this.MenuBuild_DropDownOpening(this, null);
+							//this.Build();
 						};
 						MenuBuild.DropDownItems.Add(ConfigurationButton);
+						MenuRebuild.Enabled = CurrentConfiguration != null;
 					}
 				}
 			}
+
+			this.MenuStartDebugging.Enabled = this.MenuRebuild.Enabled;
+
 		}
 
 		#endregion
@@ -157,27 +168,28 @@ namespace ProjectBuilder {
 		/// <summary>
 		/// Builds the currently selected configuration.
 		/// </summary>
-		private void Build() {
+		private bool Build() {
+
 			if (this.CurrentConfiguration == null) {
 				MessageBox.Show(this, "No build configuration selected.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				return;
+				return false;
 			}
 
 			this.BrowserOutput.Document.Body.InnerHtml = "";
 			Application.DoEvents();
 
-			Compiler C = new Compiler();
-			C.LoadProject(string.IsNullOrEmpty(this.CurrentConfiguration) ? this.WorkingProject : this.WorkingProject.GetBuildConfiguration(this.CurrentConfiguration));
+			this.LastCompiler = new Compiler();
+			this.LastCompiler.LoadProject(string.IsNullOrEmpty(this.CurrentConfiguration) ? this.WorkingProject : this.WorkingProject.GetBuildConfiguration(this.CurrentConfiguration));
 
 			int WarningCount = 0, ErrorCount = 0;
 			var OutputMessages = new StringBuilder(1024);
 			var OutputErrors = new StringBuilder(1024);
 
-			C.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++WarningCount; this.AppendMessage("warning", e); };
-			C.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++ErrorCount; this.AppendMessage("error", e); };
-			C.MessageRaised += delegate(object sender, Compiler.NotificationEventArgs e) { OutputMessages.Append(e.Message); };
+			this.LastCompiler.WarningRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++WarningCount; this.AppendMessage("warning", e); };
+			this.LastCompiler.ErrorRaised += delegate(object sender, Compiler.NotificationEventArgs e) { ++ErrorCount; this.AppendMessage("error", e); };
+			this.LastCompiler.MessageRaised += delegate(object sender, Compiler.NotificationEventArgs e) { OutputMessages.Append(e.Message); };
 
-			C.Compile(true);
+			this.LastCompiler.Compile(true);
 
 
 			if (OutputMessages.Length != 0) {
@@ -222,6 +234,8 @@ namespace ProjectBuilder {
 					SystemSounds.Asterisk.Play();
 				}
 			}
+
+			return ErrorCount == 0;
 
 		}
 
@@ -420,8 +434,31 @@ namespace ProjectBuilder {
 			this.BrowserOutput.Document.Body.InnerHtml = Properties.Resources.AboutDialog.Replace("$(AppName)", Application.ProductName).Replace("$(AppVersion)", Application.ProductVersion);
 		}
 
+		private void MenuDebug_DropDownOpening(object sender, EventArgs e) {
+			this.MenuBuild_DropDownOpening(sender, e);
+		}
 
+		private void MenuStartDebugging_Click(object sender, EventArgs e) {
+			if (this.Build()) {
+				if (this.LastCompiler.Debugger == null) {
+					MessageBox.Show(this, "No debugger is available for this project.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					return;
+				}
+				this.LastCompiler.Debugger.Start(this.LastCompiler, true);
+			}
+		}
 
-
+		private void BrowserOutput_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
+			foreach (ToolStripMenuItem Menu in this.Menus.Items) {
+				foreach (var SubMenu in Menu.DropDownItems) {
+					if (SubMenu is ToolStripMenuItem) {
+						if ((SubMenu as ToolStripMenuItem).ShortcutKeys == e.KeyData) {
+							e.IsInputKey = false;
+							(SubMenu as ToolStripMenuItem).PerformClick();
+						}
+					}
+				}
+			}
+		}
 	}
 }

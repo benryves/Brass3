@@ -31,6 +31,8 @@
 			this.MenuExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuBuild = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuRebuild = new System.Windows.Forms.ToolStripMenuItem();
+			this.MenuDebug = new System.Windows.Forms.ToolStripMenuItem();
+			this.MenuStartDebugging = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuSound = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +52,7 @@
 			this.Menus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuFile,
             this.MenuBuild,
+            this.MenuDebug,
             this.MenuOptions,
             this.MenuHelp});
 			this.Menus.Location = new System.Drawing.Point(0, 0);
@@ -107,6 +110,24 @@
 			this.MenuRebuild.Size = new System.Drawing.Size(133, 22);
 			this.MenuRebuild.Text = "&Rebuild";
 			this.MenuRebuild.Click += new System.EventHandler(this.MenuRebuild_Click);
+			// 
+			// MenuDebug
+			// 
+			this.MenuDebug.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuStartDebugging});
+			this.MenuDebug.Name = "MenuDebug";
+			this.MenuDebug.Size = new System.Drawing.Size(54, 20);
+			this.MenuDebug.Text = "&Debug";
+			this.MenuDebug.DropDownOpening += new System.EventHandler(this.MenuDebug_DropDownOpening);
+			// 
+			// MenuStartDebugging
+			// 
+			this.MenuStartDebugging.Image = global::ProjectBuilder.Properties.Resources.DebuggingStart;
+			this.MenuStartDebugging.Name = "MenuStartDebugging";
+			this.MenuStartDebugging.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.MenuStartDebugging.Size = new System.Drawing.Size(179, 22);
+			this.MenuStartDebugging.Text = "&Start Debugging";
+			this.MenuStartDebugging.Click += new System.EventHandler(this.MenuStartDebugging_Click);
 			// 
 			// MenuOptions
 			// 
@@ -191,7 +212,9 @@
 			this.BrowserOutput.ScriptErrorsSuppressed = true;
 			this.BrowserOutput.Size = new System.Drawing.Size(412, 212);
 			this.BrowserOutput.TabIndex = 2;
+			this.BrowserOutput.WebBrowserShortcutsEnabled = false;
 			this.BrowserOutput.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.BrowserOutput_Navigating);
+			this.BrowserOutput.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.BrowserOutput_PreviewKeyDown);
 			// 
 			// ProjectBuilderInterface
 			// 
@@ -201,6 +224,7 @@
 			this.Controls.Add(this.BrowserOutputBorder);
 			this.Controls.Add(this.Menus);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.Menus;
 			this.Name = "ProjectBuilderInterface";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -233,6 +257,8 @@
 		private System.Windows.Forms.WebBrowser BrowserOutput;
 		private System.Windows.Forms.ToolStripSeparator MenuHelpSep0;
 		private System.Windows.Forms.ToolStripMenuItem MenuAbout;
+		private System.Windows.Forms.ToolStripMenuItem MenuDebug;
+		private System.Windows.Forms.ToolStripMenuItem MenuStartDebugging;
 	}
 }
 

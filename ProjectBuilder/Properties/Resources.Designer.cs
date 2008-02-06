@@ -61,37 +61,21 @@ namespace ProjectBuilder.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;html&gt;
-        ///	&lt;style&gt;
-        ///		body {
-        ///			font-family: &quot;MS Shell Dlg 2&quot;, &quot;MS Shell Dlg&quot;, sans-serif;
-        ///			font-size: 8.25pt;
-        ///		}
-        ///		pre {
-        ///			font-family: Consolas, &quot;Lucida Console&quot;, monospace;
-        ///			border: 1px dotted #CCC;
-        ///			padding: 2px;
-        ///		}
-        ///		span.comment {
-        ///			color: #060;
-        ///		}
-        ///		span.string {
-        ///			color: #900;
-        ///		}
-        ///		span.directive {
-        ///			color: #009;
-        ///		}
-        ///		span.function {
-        ///			color: #069;
-        ///		}
-        ///		span.highlighted {
-        ///			background-image: url(&quot;$(UnderlineError)&quot;);
-        ///			background-repeat: repeat-x;
-        ///			backgrou [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;b&gt;$(AppName) $(AppVersion)&lt;/b&gt;&lt;/p&gt;
+        ///&lt;p&gt;Software developed by Bee Development 2008.&lt;/p&gt;
+        ///&lt;p&gt;Menu and build status icons from the famfamfam silk icon set by Mark James.&lt;/p&gt;
+        ///&lt;p&gt;Main application icon from the Tango icon theme.&lt;/p&gt;.
         /// </summary>
         internal static string AboutDialog {
             get {
                 return ResourceManager.GetString("AboutDialog", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap DebuggingStart {
+            get {
+                object obj = ResourceManager.GetObject("DebuggingStart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
