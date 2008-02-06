@@ -2,11 +2,15 @@
 {\colortbl ;\red0\green0\blue128;\red128\green128\blue128;\red0\green0\blue0;\red163\green21\blue21;}
 {\*\generator Msftedit 5.41.21.2507;}\viewkind4\uc1\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 12)\par
 \b0\par
-Added a very, very crude debugging framework that hopefully will become a lot more flexible (and slicker). Currently it can be used (via a plugin in the Core package) to run an external program.\par
+Temporary unresolved labels created when parsing expressions were not being purged if the parser threw an exception, resulting in incorrect error report information. This has been corrected.\par
+\par
+Added a crude debugging framework that hopefully will become a lot more flexible. Currently it can be used (via a plugin in the Core package) to run an external program or a slightly updated version of the PindurTI debugger from Latenite 1.\par
+\par
+Templates have been modified for use with the PindurTI debugger.\par
 \par
 Tidied up the project builder a little (default build configuration, IE stealing shortcut keys).\par
 \par
-An error is displayed when loading buggy, old or otherwise problematic plugins in the help viewer.\par
+An error is displayed when loading buggy, old or otherwise problematic plugins in the help viewer. The help viewer automatically handles all .exe files now (as well as .dlls) and supports debugger plugins.\par
 \par
 \b Known Issues\b0\par
 \par
