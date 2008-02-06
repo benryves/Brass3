@@ -233,6 +233,10 @@
       <Project>{75305F27-C13B-4904-9EC4-6FD352230601}</Project>
       <Name>Brass 3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Legacy\Legacy.csproj">
+      <Project>{B41ADF33-4688-480E-9019-55BBA0F96127}</Project>
+      <Name>Legacy</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

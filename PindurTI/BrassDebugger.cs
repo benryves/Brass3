@@ -63,8 +63,24 @@ namespace PindurTI {
 			var EmulatorWindow = new CalcWindow(Pindur, RomFile);
 			if (EmulatorWindow.IsDisposed) return;
 
+			// Load and execute the debugging script.
+
 			if (!string.IsNullOrEmpty(ScriptFile) && File.Exists(ScriptFile)) {
 				EmulatorWindow.LoadAndRunScript(ScriptFile);
+			}
+
+			// Create an XML debugging log (if required):
+			if (debuggingEnabled) {
+				var DebugEmitter = new Legacy.Latenite.Latenite1Debug();
+				string DebugFilename = Path.GetTempFileName();
+				try {
+					using (var DebugScript = File.Open(DebugFilename, FileMode.Create, FileAccess.Write)) {
+						DebugEmitter.WriteListing(compiler, DebugScript);
+					}
+					EmulatorWindow.LoadDebug(DebugFilename);
+				} finally {
+					File.Delete(DebugFilename);
+				}
 			}
 
 			#region VTI-default keymap
