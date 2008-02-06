@@ -127,5 +127,14 @@ namespace Core {
                 return ResourceManager.GetString("ExternalProgramWarning", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force labels to the global scope..
+        /// </summary>
+        internal static string GlobalDescription {
+            get {
+                return ResourceManager.GetString("GlobalDescription", resourceCulture);
+            }
+        }
     }
 }

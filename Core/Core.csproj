@@ -59,6 +59,7 @@
     <Compile Include="Directives\Breakpoint.cs" />
     <Compile Include="Directives\ClearPage.cs" />
     <Compile Include="Directives\Block.cs" />
+    <Compile Include="Directives\Global.cs" />
     <Compile Include="Directives\Include Section.cs" />
     <Compile Include="Directives\Fill.cs" />
     <Compile Include="Directives\Include Text.cs" />

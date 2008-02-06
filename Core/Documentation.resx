@@ -143,4 +143,7 @@ You can use Visual Studio style macros (for example, $(TargetPath)) in these str
   <data name="ExternalProgramWarning" xml:space="preserve">
     <value>Brass has very primitive debugging currently, so this functionality is liable to change.</value>
   </data>
+  <data name="GlobalDescription" xml:space="preserve">
+    <value>Force labels to the global scope.</value>
+  </data>
 </root>
