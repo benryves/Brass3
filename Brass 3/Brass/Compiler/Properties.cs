@@ -173,6 +173,26 @@ namespace BeeDevelopment.Brass3 {
 
 		#endregion
 
+		#region Debuggers
+
+		/// <summary>
+		/// Gets or sets the debugger being used by the compiler.
+		/// </summary>
+		public IDebugger Debugger {
+			get;
+			set;
+		}
+
+		private readonly PluginCollection<IDebugger> debuggers;
+		/// <summary>
+		/// Gets the <see cref="IDebugger"/> plugins loaded by the compiler.
+		/// </summary>
+		public PluginCollection<IDebugger> Debuggers {
+			get { return this.debuggers; }
+		}
+
+		#endregion
+
 		#endregion
 
 		private readonly PluginCollection<IDataStructure> dataStructures;

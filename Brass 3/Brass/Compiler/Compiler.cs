@@ -32,6 +32,8 @@ namespace BeeDevelopment.Brass3 {
 			this.numberEncoders = new PluginCollection<INumberEncoder>(this);
 			this.invisiblePlugins = new PluginCollection<IPlugin>(this);
 			this.dataStructures = new PluginCollection<IDataStructure>(this);
+			this.debuggers = new PluginCollection<IDebugger>(this);
+
 			this.MacroLookup = new Dictionary<string, PreprocessMacro>(128);
 			this.includeSearchDirectories = new List<string>();
 

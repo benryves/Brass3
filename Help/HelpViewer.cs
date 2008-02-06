@@ -79,6 +79,9 @@ namespace Help {
 				TreeNode Assemblers = GetHelpForPlugin<IAssembler>(this.helpProvider.Compiler.Assemblers, "Assemblers", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Assemblers != null) this.Contents.Nodes.Add(Assemblers);
 
+				TreeNode Debuggers = GetHelpForPlugin<IDebugger>(this.helpProvider.Compiler.Debuggers, "Debuggers", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
+				if (Debuggers != null) this.Contents.Nodes.Add(Debuggers);
+
 				TreeNode Other = GetHelpForPlugin<IPlugin>(this.helpProvider.Compiler.InvisiblePlugins, "Other Plugins", PluginCollections, DocumentationUsageAttribute.DocumentationType.FunctionalityAndDocumentation);
 				if (Other != null) this.Contents.Nodes.Add(Other);
 

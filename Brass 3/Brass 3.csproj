@@ -99,6 +99,7 @@
     <Compile Include="Brass\Parsing\Tokenised Source\Evaluation.cs" />
     <Compile Include="Brass\Parsing\Tokenised Source\Token.cs" />
     <Compile Include="Brass\Plugins\IDataStructure.cs" />
+    <Compile Include="Brass\Plugins\IDebugger.cs" />
     <Compile Include="Brass\Plugins\IListingWriter.cs" />
     <Compile Include="Brass\Plugins\INumberEncoding.cs" />
     <Compile Include="Brass\Plugins\IStringEncoding.cs" />

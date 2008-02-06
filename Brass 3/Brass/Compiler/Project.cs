@@ -70,6 +70,16 @@ namespace BeeDevelopment.Brass3 {
 				}
 			}
 
+			// Set debugger.
+			if (!string.IsNullOrEmpty(project.Debugger)) {
+				if (this.Debuggers.Contains(project.Debugger)) {
+					this.Debugger = this.Debuggers[project.Debugger];
+				} else {
+					this.OnWarningRaised(new NotificationEventArgs(this, "Debugger not set."));
+				}
+			}
+			
+
 			foreach (Project.PredefinedLabel PL in project.Labels) {
 				Label L;
 				TokenisedSource.Token T = new TokenisedSource.Token(PL.Name);

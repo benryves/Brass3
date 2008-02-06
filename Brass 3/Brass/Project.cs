@@ -188,6 +188,14 @@ namespace BeeDevelopment.Brass3 {
 		}
 
 		/// <summary>
+		/// Gets or sets the name of the debugger.
+		/// </summary>
+		public string Debugger {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Describes a predefined label.
 		/// </summary>
 		public struct PredefinedLabel {
@@ -372,6 +380,7 @@ namespace BeeDevelopment.Brass3 {
 				this.destinationFile = null;
 				this.outputWriter = null;
 				this.assembler = null;
+				this.Debugger = null;
 
 				this.plugins.Clear();
 				this.listingFiles.Clear();
@@ -525,6 +534,13 @@ namespace BeeDevelopment.Brass3 {
 				}
 			}
 
+			// Handle debugger:
+			if (ChildNodes.TryGetValue("debugger", out CurrentNodeList)) {
+				if (TryGetNamedItem(CurrentNodeList[CurrentNodeList.Count - 1], "name", out CurrentAttribute)) {
+					this.Debugger = CurrentAttribute.Value;
+				}
+			}
+
 			// Build configuration fun:
 			foreach (XmlNode N in rootNode.ChildNodes) {
 				if (N.Name == "buildconfiguration") {
@@ -567,6 +583,7 @@ namespace BeeDevelopment.Brass3 {
 			Result.StringEncoder = Project.Merge(master.StringEncoder, merger.StringEncoder);
 			Result.OutputWriter = Project.Merge(master.OutputWriter, merger.OutputWriter);
 			Result.Assembler = Project.Merge(master.Assembler, merger.Assembler);
+			Result.Debugger = Project.Merge(master.Debugger, merger.Debugger);
 			Result.Header = Project.Merge(master.Header, merger.Header, merger.AppendHeader, Environment.NewLine);
 			Result.Footer = Project.Merge(master.Footer, merger.Footer, merger.AppendHeader, Environment.NewLine);
 

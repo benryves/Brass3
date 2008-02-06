@@ -270,6 +270,7 @@ namespace BeeDevelopment.Brass3 {
 					if (string.IsNullOrEmpty(Filename)) {
 						this.OnErrorRaised(new NotificationEventArgs(this, Strings.ErrorOutputFilenameNotSet));
 					} else {
+						this.DestinationFile = Filename;
 						using (FileStream OutputStream = new FileStream(Filename, FileMode.Create)) {
 							this.OutputWriter.WriteOutput(this, OutputStream);
 							OutputStream.Flush();

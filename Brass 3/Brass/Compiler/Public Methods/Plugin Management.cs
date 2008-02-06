@@ -140,6 +140,7 @@ namespace BeeDevelopment.Brass3 {
 						if (Plugin is IStringEncoder) { HasCategory = true; this.StringEncoders.Add((IStringEncoder)Plugin); }
 						if (Plugin is IListingWriter) { HasCategory = true; this.ListingWriters.Add((IListingWriter)Plugin); }
 						if (Plugin is INumberEncoder) { HasCategory = true; this.NumberEncoders.Add((INumberEncoder)Plugin); }
+						if (Plugin is IDebugger) { HasCategory = true; this.Debuggers.Add((IDebugger)Plugin); }
 
 						if (!HasCategory) this.InvisiblePlugins.Add((IPlugin)Plugin);
 
@@ -164,6 +165,7 @@ namespace BeeDevelopment.Brass3 {
 			foreach (IListingWriter Plugin in this.listingWriters) if (Plugin.GetType() == type) return Plugin;
 			foreach (INumberEncoder Plugin in this.numberEncoders) if (Plugin.GetType() == type) return Plugin;
 			foreach (IAssembler Plugin in this.assemblers) if (Plugin.GetType() == type) return Plugin;
+			foreach (IDebugger Plugin in this.debuggers) if (Plugin.GetType() == type) return Plugin;
 			return null;
 		}
 
@@ -182,6 +184,8 @@ namespace BeeDevelopment.Brass3 {
 			if (this.listingWriters.TryGetPlugin(name, out Plugin)) return Plugin;
 			if (this.numberEncoders.TryGetPlugin(name, out Plugin)) return Plugin;
 			if (this.assemblers.TryGetPlugin(name, out Plugin)) return Plugin;
+			if (this.debuggers.TryGetPlugin(name, out Plugin)) return Plugin;
+			
 			return null;
 		}
 
@@ -207,6 +211,7 @@ namespace BeeDevelopment.Brass3 {
 			foreach (IListingWriter Plugin in this.listingWriters) if (Plugin.GetType().GUID == guid) return Plugin;
 			foreach (INumberEncoder Plugin in this.numberEncoders) if (Plugin.GetType().GUID == guid) return Plugin;
 			foreach (IAssembler Plugin in this.assemblers) if (Plugin.GetType().GUID == guid) return Plugin;
+			foreach (IDebugger Plugin in this.debuggers) if (Plugin.GetType().GUID == guid) return Plugin;
 			return null;
 		}
 
