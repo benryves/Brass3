@@ -227,12 +227,7 @@ namespace PindurTI {
 
      
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e) {
-            try {
-                string Filename = Path.Combine(Application.StartupPath, "help.htm");
-                Process.Start(Filename);
-            } catch (Exception ex) {
-                MessageBox.Show("Could not open help file - " + ex.Message, "Help", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
+			new HelpForm().Show(this);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {

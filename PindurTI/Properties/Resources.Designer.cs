@@ -59,5 +59,36 @@ namespace PindurTI.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html&gt;
+        ///    &lt;style&gt;
+        ///        table {
+        ///            border-collapse: collapse;
+        ///        }
+        ///        table {
+        ///            border-collapse: collapse;
+        ///        }
+        ///        td, th {
+        ///            border: solid #666666 1px;
+        ///            padding: 2px 10px 2px 10px;
+        ///            background-color: #EEEEEE;
+        ///        }
+        ///        td {
+        ///            color: black;
+        ///            vertical-align: top;
+        ///        }
+        ///        th {
+        ///            background-color: #666666;
+        ///            color: white;
+        ///        }
+        ///        * {
+        ///            fo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
     }
 }

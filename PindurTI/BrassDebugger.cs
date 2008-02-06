@@ -49,18 +49,17 @@ namespace PindurTI {
 				}
 			}
 
-			Emulator Pindur;
 
 
 			try {
-				Pindur = new Emulator();
+				Program.Pindur = new Emulator();
 			} catch (Exception ex) {
 				MessageBox.Show("Could not initialise PindurTI: " + ex.Message, "PindurTI error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 
-			var EmulatorWindow = new CalcWindow(Pindur, RomFile);
+			var EmulatorWindow = new CalcWindow(Program.Pindur, RomFile);
 			if (EmulatorWindow.IsDisposed) return;
 
 			// Load and execute the debugging script.
@@ -219,7 +218,7 @@ namespace PindurTI {
 			Properties.Settings.Default.KeyMap = KeyMapSerialise;
 			Properties.Settings.Default.Save();
 
-			Pindur.Close();
+			Program.Pindur.Close();
 
 
 		}
