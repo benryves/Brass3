@@ -17,6 +17,7 @@
 	
 		<input>
 			<header append="true">.include "TI/ti83plus.inc" \ .org $9D93 \ .dw $6DBB</header>
+			<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI8X.debug" />
 		</input>
 		
 		<output writer="TI8X" />
@@ -24,6 +25,7 @@
 		<buildconfiguration name="Ion">
 			<input>
 				<header append="true">.include "TI/ion8x.inc" \ .ionheader Program.Description</header>
+				<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI8X.Ion.debug" />
 			</input>
 		</buildconfiguration>
 		
@@ -31,6 +33,7 @@
 			<input>
 				<header append="true">.include "TI/mirage.inc" \ .mirageosheader Program.Description, Program.Icon</header>
 				<label name="Program.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/MirageOS.gif'" />
+				<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI8X.MirageOS.debug" />
 			</input>
 		</buildconfiguration>
 		
@@ -38,6 +41,7 @@
 			<input>
 				<header append="true">.include "TI/dcs6.inc" \ .doorscsheader Program.Description, Program.Icon</header>
 				<label name="Program.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/DoorsCS.gif'" />
+				<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI8X.DoorsCS.debug" />
 			</input>
 		</buildconfiguration>
 		
@@ -53,6 +57,7 @@
 				.db tEnter, "0000"
 				.db tEnter, tEnd
 			</footer>
+			<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI83.debug" />
 		</input>
 		
 		<output writer="TI83" />
@@ -61,6 +66,7 @@
 			<input>
 				<header append="true">.squish \ .include "TI/ion83.inc" \ .ionheader Program.Description</header>
 				<footer></footer>
+				<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI83.Ion.debug" />
 			</input>
 		</buildconfiguration>
 		
@@ -69,6 +75,7 @@
 				<header append="true">.squish \ .include "TI/venus.inc" \ .org $9329 \ .venusheader Program.Description, Program.Icon</header>
 				<footer></footer>
 				<label name="Program.Icon" type="eval" value="envvar('Brass.Templates')+'/TI/Resources/Icons/Venus.gif'" />
+				<label name="Debug.Script" type="eval" value="envvar('Brass.Templates')+'/TI/Debug/TI83.Venus.debug" />
 			</input>
 		</buildconfiguration>
 		

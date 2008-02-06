@@ -1,0 +1,15 @@
+; TI-83 Plus MirageOS script
+
+reset-calc
+run 6000000
+key-press on 6000000
+send-file "%DEBUG_DIR%/PindurTI/Shells/MIRAGEOS.8xk"
+run 24000000
+send-file %DEBUG_BINARY%
+key-press apps
+key-press 2
+key-press enter
+run 48000000
+key-press enter
+key-press down
+key-press enter

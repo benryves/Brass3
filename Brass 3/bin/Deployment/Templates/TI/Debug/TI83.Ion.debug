@@ -1,0 +1,14 @@
+; TI-83 Ion script
+reset-calc
+run 6000000
+key-press on 6000000
+send-file "%DEBUG_DIR%/PindurTI/Shells/Ion.83g"
+key-press prgm
+key-press enter
+key-press enter
+send-file %DEBUG_BINARY%
+key-press prgm
+key-press enter
+key-press enter
+run 6000000
+key-press enter
