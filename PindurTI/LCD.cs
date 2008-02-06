@@ -55,7 +55,7 @@ namespace PindurTI {
         bool CanUpdatePosition = false;
         private void LCD_Load(object sender, EventArgs e) {
             try { this.Location = Properties.Settings.Default.LcdPos; } catch { }
-            try { this.Size = Properties.Settings.Default.LcdSize; } catch { }
+            try { this.ClientSize = Properties.Settings.Default.LcdSize; } catch { }
             this.Show();
             CanUpdatePosition = true;
 
@@ -66,7 +66,7 @@ namespace PindurTI {
         }
 
         private void LCD_ResizeEnd(object sender, EventArgs e) {
-            if (this.Visible && CanUpdatePosition) Properties.Settings.Default.LcdSize = this.Size;
+            if (this.Visible && CanUpdatePosition) Properties.Settings.Default.LcdSize = this.ClientSize;
         }        
     }
 }

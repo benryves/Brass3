@@ -209,7 +209,7 @@ namespace PindurTI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("296, 218")]
+        [global::System.Configuration.DefaultSettingValueAttribute("288, 192")]
         public global::System.Drawing.Size LcdSize {
             get {
                 return ((global::System.Drawing.Size)(this["LcdSize"]));

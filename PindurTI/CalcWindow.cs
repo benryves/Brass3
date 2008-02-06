@@ -150,7 +150,7 @@ namespace PindurTI {
         private void CalcWindow_Load(object sender, EventArgs e) {
 
             try { this.Location = Properties.Settings.Default.CalcWindowPos; } catch { }
-            try { this.Size = Properties.Settings.Default.CalcWindowSize; } catch { }
+            try { this.ClientSize = Properties.Settings.Default.CalcWindowSize; } catch { }
             this.TopMost = Properties.Settings.Default.AlwaysOnTop;
             this.Calc.UseLcdMemory = Properties.Settings.Default.UseLcdMemory;
             this.Show();
@@ -359,7 +359,7 @@ namespace PindurTI {
 
         private void CalcWindow_ResizeEnd(object sender, EventArgs e) {
             if (this.Visible && this.WindowState == FormWindowState.Normal) {
-                Properties.Settings.Default.CalcWindowSize = this.Size;
+                Properties.Settings.Default.CalcWindowSize = this.ClientSize;
             }
         }
 

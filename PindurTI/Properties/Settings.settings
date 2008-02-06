@@ -48,7 +48,7 @@
       <Value Profile="(Default)">252, 5</Value>
     </Setting>
     <Setting Name="LcdSize" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">296, 218</Value>
+      <Value Profile="(Default)">288, 192</Value>
     </Setting>
     <Setting Name="BreakpointsPos" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">3, 392</Value>

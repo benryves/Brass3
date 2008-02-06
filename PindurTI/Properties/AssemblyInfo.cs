@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bee Development")]
 [assembly: AssemblyProduct("PindurTI Debugger")]
-[assembly: AssemblyCopyright("Copyright ©  2005-2006")]
+[assembly: AssemblyCopyright("Copyright © Bee Development 2005-2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
