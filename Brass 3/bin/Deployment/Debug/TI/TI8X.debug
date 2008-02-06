@@ -1,0 +1,18 @@
+; TI-83 Plus native script
+reset-calc
+run 6000000
+key-press on 6000000
+send-file %DEBUG_BINARY%
+key-press clear
+key-press 2nd
+key-press 0
+key-press down
+key-press down
+key-press down
+key-press down
+key-press down
+key-press down
+key-press enter
+key-press prgm
+key-press enter
+key-press enter
