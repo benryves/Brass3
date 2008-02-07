@@ -166,8 +166,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Registers.resx">
       <SubType>Designer</SubType>
@@ -177,16 +177,16 @@
       <SubType>Designer</SubType>
       <DependentUpon>Variables Watcher.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -215,6 +215,20 @@
     <None Include="ASCIIMap.gif" />
     <Content Include="Help.htm" />
     <Content Include="Icon.ico" />
+    <None Include="Resources\keyboard_delete.png" />
+    <None Include="Resources\keyboard_add.png" />
+    <None Include="Resources\delete.png" />
+    <None Include="Resources\arrow_refresh.png" />
+    <None Include="Resources\application_form.png" />
+    <None Include="Resources\control_fastforward.png" />
+    <None Include="Resources\calculator.png" />
+    <None Include="Resources\keyboard.png" />
+    <None Include="Resources\television.png" />
+    <None Include="Resources\script_go.png" />
+    <None Include="Resources\camera.png" />
+    <None Include="Resources\asterisk_orange.png" />
+    <None Include="Resources\help.png" />
+    <None Include="Resources\calculator_add.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

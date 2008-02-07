@@ -60,6 +60,104 @@ namespace PindurTI.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap IconApplicationForm {
+            get {
+                object obj = ResourceManager.GetObject("IconApplicationForm", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconAsterisk {
+            get {
+                object obj = ResourceManager.GetObject("IconAsterisk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconCalculator {
+            get {
+                object obj = ResourceManager.GetObject("IconCalculator", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconCalculatorAdd {
+            get {
+                object obj = ResourceManager.GetObject("IconCalculatorAdd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconCamera {
+            get {
+                object obj = ResourceManager.GetObject("IconCamera", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconDelete {
+            get {
+                object obj = ResourceManager.GetObject("IconDelete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconFastForward {
+            get {
+                object obj = ResourceManager.GetObject("IconFastForward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconHelp {
+            get {
+                object obj = ResourceManager.GetObject("IconHelp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconKeyboard {
+            get {
+                object obj = ResourceManager.GetObject("IconKeyboard", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconKeyboardAdd {
+            get {
+                object obj = ResourceManager.GetObject("IconKeyboardAdd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconKeyboardDelete {
+            get {
+                object obj = ResourceManager.GetObject("IconKeyboardDelete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconRefresh {
+            get {
+                object obj = ResourceManager.GetObject("IconRefresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconScriptGo {
+            get {
+                object obj = ResourceManager.GetObject("IconScriptGo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap IconTelevision {
+            get {
+                object obj = ResourceManager.GetObject("IconTelevision", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to &lt;html&gt;
         ///    &lt;style&gt;
@@ -85,9 +183,9 @@ namespace PindurTI.Properties {
         ///        * {
         ///            fo [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Help {
+        internal static string TextHelp {
             get {
-                return ResourceManager.GetString("Help", resourceCulture);
+                return ResourceManager.GetString("TextHelp", resourceCulture);
             }
         }
     }
