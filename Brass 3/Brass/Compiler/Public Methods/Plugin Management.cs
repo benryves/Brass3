@@ -92,7 +92,14 @@ namespace BeeDevelopment.Brass3 {
 
 			string AssemblyName = Path.GetFullPath(assemblyName);
 			if (!File.Exists(AssemblyName)) AssemblyName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Path.GetFileName(AssemblyName));
-			Assembly PluginAssembly = Assembly.LoadFile(AssemblyName);
+
+			Assembly PluginAssembly;
+			try {
+				PluginAssembly = Assembly.LoadFile(AssemblyName);
+			} catch (BadImageFormatException) {
+				// Ignore these (and stop trying to load native PEs, you numpty).
+				return;
+			}
 
 			Type[] Plugins = PluginAssembly.GetExportedTypes();
 
