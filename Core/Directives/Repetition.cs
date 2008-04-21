@@ -59,7 +59,9 @@ namespace Core.Directives {
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			switch (directive) {
 				case "while":
-					if (!compiler.IsSwitchedOn) break; {
+					if (!compiler.IsSwitchedOn) {
+						RepetitionStack.Push(new RepetitionStackEntry("while", false, compiler.CurrentStatement));
+					} else {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 						bool WasSuccessful = source.EvaluateExpression(compiler, Args[0], false, true).NumericValue != 0;
 						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.CurrentStatement;
@@ -70,7 +72,9 @@ namespace Core.Directives {
 					}
 					break;
 				case "for":
-					if (!compiler.IsSwitchedOn) break; {
+					if (!compiler.IsSwitchedOn) {
+						RepetitionStack.Push(new RepetitionStackEntry("while", false, compiler.CurrentStatement));
+					} else {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1, 3);
 
 						switch (Args.Length) {
@@ -150,7 +154,9 @@ namespace Core.Directives {
 					break;
 				case "rept":
 				case "repeat":
-					if (!compiler.IsSwitchedOn) break; {
+					if (!compiler.IsSwitchedOn) {
+						RepetitionStack.Push(new RepetitionStackEntry("rept", false, compiler.CurrentStatement));
+					} else {
 						int[] Args = source.GetCommaDelimitedArguments(index + 1, 1);
 						int RepeatCount = (int)source.EvaluateExpression(compiler, Args[0]).NumericValue;
 						LinkedListNode<Compiler.SourceStatement> WhileLoopIndex = compiler.CurrentStatement;
@@ -168,7 +174,6 @@ namespace Core.Directives {
 							LastLoopHit = null;
 						} else {
 
-
 							this.LastLoopHit = RepetitionStack.Pop();
 
 							bool CanRepeat = LastLoopHit.WasSuccessful;
@@ -184,7 +189,7 @@ namespace Core.Directives {
 							} else {
 								LastLoopHit = null;
 							}
-							if (RepetitionStack.Count == 0 || Array.TrueForAll<RepetitionStackEntry>(RepetitionStack.ToArray(), delegate(RepetitionStackEntry e) { return e.WasSuccessful; })) {
+							if (RepetitionStack.Count == 0 || Array.TrueForAll<RepetitionStackEntry>(RepetitionStack.ToArray(), e => e.WasSuccessful)) {
 								compiler.SwitchOn();
 							}
 						}
