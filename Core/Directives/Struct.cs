@@ -50,6 +50,8 @@ namespace Core.Directives {
 				DataStructure.Field F = new DataStructure.Field(FieldName, FieldType, CurrentFieldOffset, ArraySize);
 				NewStruct.Fields.Add(F);
 
+				CreateFieldOffsetLabels(compiler, NewStruct, F);
+
 				CurrentFieldOffset += F.Size;
 			}
 
@@ -58,5 +60,15 @@ namespace Core.Directives {
 
 		}
 
+		private void CreateFieldOffsetLabels(Compiler compiler, DataStructure s, DataStructure.Field f) {
+			IDataStructure OffsetLabelType;
+			if (f.ElementCount == 1) {
+				OffsetLabelType = f.DataType;
+			} else {
+				OffsetLabelType = new DataStructure(f.Name);
+				(OffsetLabelType as DataStructure).Fields.Add(f);				
+			}
+			compiler.Labels.Add(new Label(compiler.Labels, new TokenisedSource.Token(s.Name + "." + f.Name), true, f.Offset, compiler.Labels.ProgramCounter.Page, OffsetLabelType));
+		}
 	}
 }
