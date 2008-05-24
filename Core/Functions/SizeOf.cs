@@ -18,7 +18,8 @@ namespace Core.Functions {
 				DataStructure DS = compiler.GetStructureByName(NamedArgs.Tokens[0].Data);
 				if (DS != null) return new Label(compiler.Labels, DS.Size);
 			}
-			return new Label(compiler.Labels, source.EvaluateExpression(compiler, Arg).Size);
+			var SizeOfLabel = source.EvaluateExpression(compiler, Arg);
+			return new Label(compiler.Labels, SizeOfLabel.Size);
 		}
 	}
 }

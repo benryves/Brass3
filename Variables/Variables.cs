@@ -127,7 +127,6 @@ namespace Variables {
 
 				// Allocate each variable in turn:
 				foreach (VariableToAllocate Var in this.ToAllocate) {
-
 					// Sort by free space:
 					this.VariableLocations.Sort();
 
@@ -135,15 +134,19 @@ namespace Variables {
 					Label StructLabel = compiler.Labels.Create(Var.Name);
 					StructLabel.Usage = Label.UsageType.Variable;
 					StructLabel.NumericValue = this.VariableLocations[0].CurrentOffset;
-					StructLabel.DataType = Var.DataType;
+
+					var DT = new DataStructure(Var.DataType.Name);
+					DT.Fields.Add(new DataStructure.Field(Var.DataType) { ElementCount = Var.ArraySize });
+					StructLabel.DataType = DT;
+
 					foreach (KeyValuePair<string, DataStructure.Field> Field in Var.DataType.GetAllFields()) {
 						TokenisedSource.Token StructField = new TokenisedSource.Token(LabelCollection.ModuleCombine(Var.Name.Data, Field.Key));
 						Label StructFieldLabel = compiler.Labels.Create(StructField);
 						StructFieldLabel.NumericValue = this.VariableLocations[0].CurrentOffset + Field.Value.Offset;
-						StructFieldLabel.DataType = Field.Value.DataType;						
-					}
-
-					
+						var DTF = new DataStructure(Field.Value.DataType);
+						DTF.Fields.Add(Field.Value);
+						StructFieldLabel.DataType = DTF;
+					}					
 					this.VariableLocations[0].CurrentOffset += Var.Size;
 
 				}
