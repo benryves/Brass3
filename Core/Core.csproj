@@ -221,8 +221,10 @@
     <Compile Include="Number Encoding\Byte.cs" />
     <Compile Include="Number Encoding\Int.cs" />
     <Compile Include="Number Encoding\Word.cs" />
+    <Compile Include="Output\ContiguousRaw.cs" />
     <Compile Include="Output\PagedRaw.cs" />
     <Compile Include="Output\Intel Hex.cs" />
+    <Compile Include="Directives\PageFreeSpaceReport.cs" />
     <Compile Include="Output\Raw.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

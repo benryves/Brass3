@@ -272,4 +272,12 @@
   <data name="ErrorVeraDocNoEndOfFile" xml:space="preserve">
     <value>File is missing end of file marker.</value>
   </data>
+  <data name="FormatFreePageSpace" xml:space="preserve">
+    <value>Page {0:D2} has {1:N0} bytes ({2:P}) free.</value>
+    <comment>0 = Page index, 1 = free space (bytes), 2 = free space (percentage).</comment>
+  </data>
+  <data name="FormatFreeRomSpace" xml:space="preserve">
+    <value>{0:N0} unused bytes of total {1:N0} ({2:P}).</value>
+    <comment>0 = free space (bytes), 1 = total ROM size (bytes), 2 = free space (percentage).</comment>
+  </data>
 </root>

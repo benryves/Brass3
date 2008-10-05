@@ -130,6 +130,9 @@ namespace BeeDevelopment.Brass3 {
 				get { return this.compilerWasOnAfterwards; }
 			}
 
+			public Label ProgramCounter { get; private set; }
+			public Label OutputCounter { get; private set; }
+
 			#endregion
 
 
@@ -147,6 +150,8 @@ namespace BeeDevelopment.Brass3 {
 			/// <param name="mustMakeAssignment">True if an assignment must be made; false otherwise.</param>
 			public Label Compile(bool mustMakeAssignment) {
 
+				this.ProgramCounter = this.compiler.Labels.ProgramCounter.Clone() as Label;
+				this.OutputCounter = this.compiler.Labels.OutputCounter.Clone() as Label;
 
 				//Console.WriteLine("{0}:={1}", this.compiler.currentPass, this.ToString());
 				

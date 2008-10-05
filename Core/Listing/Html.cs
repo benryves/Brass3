@@ -24,7 +24,7 @@ namespace Core.Listing {
 				StringBuilder HighlightedCode = new StringBuilder(512);
 
 				ListWriter.Write("<tr>");
-				ListWriter.Write("<td class=\"ln\">" + Statement.LineNumber.ToString() + "</td>");
+				ListWriter.Write("<td class=\"ln\">" + Statement.LineNumber.ToString() + " " + ((int)Statement.ProgramCounter.NumericValue).ToString("X4") + "</td>");
 				ListWriter.Write("<td><pre class=\"source");
 				if ((!Statement.CompilerWasOnBefore && !Statement.CompilerWasOnAfterwards)) ListWriter.Write(" disabled");
 				ListWriter.Write("\">");

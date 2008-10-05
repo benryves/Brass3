@@ -32,6 +32,8 @@ namespace Core.Output {
 
 		internal Dictionary<int, PageDeclaration> PageDeclarations;
 
+		internal bool DisplayPageFreeSpace { get; set; }
+
 		/// <summary>
 		/// Try and get the page number that contains a particular range of addresses.
 		/// </summary>
@@ -63,9 +65,17 @@ namespace Core.Output {
 
 			List<byte> Output = new List<byte>(512 * 1024);
 
+			int TotalFreeSpace = 0, TotalAvailableSpace = 0;
+
 			foreach (int Page in DeclaredPages) {
+
 				PageDeclaration PD = this.PageDeclarations[Page];
+
 				byte[] PageData = new byte[PD.Size];
+				bool[] WrittenPageData = new bool[PD.Size];
+
+				TotalAvailableSpace += PD.Size;
+
 				if (compiler.EmptyFill != 0) {
 					for (int i = 0; i < PageData.Length; ++i) PageData[i] = compiler.EmptyFill;
 				}
@@ -81,34 +91,41 @@ namespace Core.Output {
 							++OutOfPageBounds;
 						} else {
 							PageData[DestinationAddress] = DataToWrite.Data[i];
+							WrittenPageData[DestinationAddress] = true;
 						}
 						++DestinationAddress;
-					}
-
-					
+					}					
 				}
 
 				if (OutOfPageBounds > 0) {
 					compiler.OnErrorRaised(new Compiler.NotificationEventArgs(compiler, string.Format(Strings.ErrorRawPagesDataOutOfBounds, OutOfPageBounds, Page)));
 				}
 
+				int PageFreeSpace = 0;
+				foreach (var Written in WrittenPageData) PageFreeSpace += Written ? 0 : 1;
+				TotalFreeSpace += PageFreeSpace;
+
+				if (this.DisplayPageFreeSpace) compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, string.Format(Strings.FormatFreePageSpace + Environment.NewLine, Page, PageFreeSpace, (double)PageFreeSpace / (double)PD.Size)));
+
 				Output.AddRange(PageData);
 			}
+
+			if (this.DisplayPageFreeSpace) compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, string.Format(Strings.FormatFreeRomSpace + Environment.NewLine, TotalFreeSpace, TotalAvailableSpace, (double)TotalFreeSpace / (double)TotalAvailableSpace)));
 
 			return Output.ToArray();
 
 		}
 
 		public virtual void WriteOutput(Compiler compiler, Stream stream) {
-
-			
-
 			BinaryWriter PagedOutputWriter = new BinaryWriter(stream);
 			PagedOutputWriter.Write(this.CreateOutputData(compiler));
 		}
 
 		public RawPages(Compiler compiler) {
-			this.PageDeclarations = new Dictionary<int, PageDeclaration>();
+			compiler.CompilationBegun += (sender, e) => {
+				this.PageDeclarations = new Dictionary<int, PageDeclaration>();
+				this.DisplayPageFreeSpace = false;
+			};
 		}
 
 
