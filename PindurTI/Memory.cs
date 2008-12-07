@@ -83,7 +83,7 @@ namespace PindurTI {
         private void AddressJump_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
                 try {
-                    M.SelectedAddress = Convert.ToInt16(this.AddressJump.Text, 16);
+                    M.SelectedAddress = Convert.ToUInt16(this.AddressJump.Text, 16);
                 } catch {
                     this.AddressJump.Text = M.SelectedAddress.ToString("X4");
                 }
