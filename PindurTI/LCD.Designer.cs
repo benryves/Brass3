@@ -24,7 +24,6 @@ namespace PindurTI {
         /// </summary>
         private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.LCDContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -32,20 +31,13 @@ namespace PindurTI {
 			this.LCDContext.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(0, -30);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(77, 20);
-			this.textBox1.TabIndex = 0;
-			// 
 			// LCDContext
 			// 
 			this.LCDContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToClipboardToolStripMenuItem,
             this.saveToolStripMenuItem});
 			this.LCDContext.Name = "LCDContext";
-			this.LCDContext.Size = new System.Drawing.Size(172, 70);
+			this.LCDContext.Size = new System.Drawing.Size(172, 48);
 			// 
 			// copyToClipboardToolStripMenuItem
 			// 
@@ -76,7 +68,6 @@ namespace PindurTI {
 			this.ClientSize = new System.Drawing.Size(291, 193);
 			this.ContextMenuStrip = this.LCDContext;
 			this.ControlBox = false;
-			this.Controls.Add(this.textBox1);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
@@ -90,14 +81,12 @@ namespace PindurTI {
 			this.ResizeEnd += new System.EventHandler(this.LCD_ResizeEnd);
 			this.LCDContext.ResumeLayout(false);
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ContextMenuStrip LCDContext;
+		private System.Windows.Forms.ContextMenuStrip LCDContext;
         private System.Windows.Forms.ToolStripMenuItem copyToClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog SaveImage;

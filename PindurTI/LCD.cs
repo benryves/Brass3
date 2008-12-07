@@ -11,9 +11,13 @@ using System.IO;
 namespace PindurTI {
     public partial class LCD : Form {
         public LCD() {
-            InitializeComponent();
-  
+            InitializeComponent();  
         }
+
+		protected override bool IsInputKey(Keys keyData) {
+			return true;
+		}
+
         private void LCD_BackgroundImageChanged(object sender, EventArgs e) {
             if (this.BackgroundImage != null && SnapSizeRequest) {
                 this.ClientSize = this.BackgroundImage.Size;
