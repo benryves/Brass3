@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBuilder", "ProjectBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PindurTI", "PindurTI\PindurTI.csproj", "{EAC63ED4-621D-42D1-9043-28EA480A5B65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "File Size Profile Report", "File Size Profile Report\File Size Profile Report.csproj", "{00CC67B0-1966-4428-95BC-C729A6466698}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAC63ED4-621D-42D1-9043-28EA480A5B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00CC67B0-1966-4428-95BC-C729A6466698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00CC67B0-1966-4428-95BC-C729A6466698}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00CC67B0-1966-4428-95BC-C729A6466698}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00CC67B0-1966-4428-95BC-C729A6466698}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
