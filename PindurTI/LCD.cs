@@ -18,6 +18,11 @@ namespace PindurTI {
 			return true;
 		}
 
+		protected override void OnKeyDown(KeyEventArgs e) {
+			e.Handled = true;
+			base.OnKeyDown(e);
+		}
+
         private void LCD_BackgroundImageChanged(object sender, EventArgs e) {
             if (this.BackgroundImage != null && SnapSizeRequest) {
                 this.ClientSize = this.BackgroundImage.Size;
