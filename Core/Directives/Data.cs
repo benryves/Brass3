@@ -81,9 +81,9 @@ namespace Core.Directives {
 					}
 
 				} else {
-					
+					var exIndex = ExpressionIndex;
 					// We can't actually calculate the data just yet, so do something dynamic!
-					compiler.WriteDynamicOutput(NumberEncoder.Size, G => G.Data = NumberEncoder.GetBytes(compiler, source.EvaluateExpression(compiler,ExpressionIndex).NumericValue));
+					compiler.WriteDynamicOutput(NumberEncoder.Size, G => G.Data = NumberEncoder.GetBytes(compiler, source.EvaluateExpression(compiler, exIndex).NumericValue));
 
 				}
 
