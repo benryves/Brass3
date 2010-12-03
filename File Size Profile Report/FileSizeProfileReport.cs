@@ -14,7 +14,7 @@ namespace BeeDevelopment.FileSizeProfileReport {
 				this.FileSizeCounter.Clear();
 			};
 			compiler.OutputDataWritten += (sender, e) => {
-				if (!e.Data.Background) {
+				if (!e.Data.Background && compiler.CurrentFile != null) {
 					long CurrentLength = 0;
 					if (FileSizeCounter.TryGetValue(compiler.CurrentFile, out CurrentLength)) {
 						FileSizeCounter.Remove(compiler.CurrentFile);
