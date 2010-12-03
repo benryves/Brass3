@@ -1,6 +1,14 @@
 {\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Tahoma;}{\f1\fswiss\fcharset0 Arial;}{\f2\fnil\fcharset2 Symbol;}}
 {\colortbl ;\red0\green0\blue128;\red128\green128\blue128;\red0\green0\blue0;\red163\green21\blue21;}
-{\*\generator Msftedit 5.41.21.2507;}\viewkind4\uc1\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 12)\par
+{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 13)\par
+\par
+\b0 Updated the TI-83 include file with more equates (based on Brandon Wilson's work).\par
+\par
+Updated the TI program project template to allow for custom icons.\par
+\par
+Multiple forward-references in single .data statements (e.g. .dw label1, label2) should now assemble correctly.\b\par
+\par
+Release Notes (3.0.0.0 Beta 12)\par
 \b0\par
 Temporary unresolved labels created when parsing expressions were not being purged if the parser threw an exception, resulting in incorrect error report information. This has been corrected.\par
 \par
