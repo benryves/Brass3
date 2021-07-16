@@ -263,9 +263,16 @@ namespace BeeDevelopment.Brass3 {
 				if (writeOutput && this.OutputWriter != null) {
 					string Filename = this.DestinationFile;
 					if (string.IsNullOrEmpty(Filename) && this.OutputWriter != null) {
+						
 						string Basename = this.SourceFile;
-						if (this.Project != null && !string.IsNullOrEmpty(this.Project.ProjectFilename)) Basename = this.Project.ProjectFilename;
-						Filename = Path.Combine(Path.GetDirectoryName(Basename), Path.GetFileNameWithoutExtension(Basename) + "." + this.OutputWriter.DefaultExtension);
+						string Extension = this.outputWriter.DefaultExtension;
+
+						if (this.Project != null) {
+							if (!string.IsNullOrEmpty(this.Project.ProjectFilename)) Basename = this.Project.ProjectFilename;
+							if (!string.IsNullOrEmpty(this.Project.DestinationExtension)) Extension = this.Project.DestinationExtension;
+						}
+
+						Filename = Path.Combine(Path.GetDirectoryName(Basename), Path.GetFileNameWithoutExtension(Basename) + "." + Extension);
 					}
 					if (string.IsNullOrEmpty(Filename)) {
 						this.OnErrorRaised(new NotificationEventArgs(this, Strings.ErrorOutputFilenameNotSet));

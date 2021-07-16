@@ -91,6 +91,16 @@ namespace BeeDevelopment.Brass3 {
 			set { this.sourceFile = value; }
 		}
 
+
+		private string destinationExtension;
+		/// <summary>
+		/// Gets or sets the destination file extension.
+		/// </summary>
+		public string DestinationExtension {
+			get { return this.destinationExtension; }
+			set { this.destinationExtension = value; }
+		}
+
 		private string destinationFile;
 		/// <summary>
 		/// Gets or sets the destination file.
@@ -516,6 +526,11 @@ namespace BeeDevelopment.Brass3 {
 					this.destinationFile = CurrentAttribute.Value;
 				}
 
+				// Get the extension:
+				if (TryGetNamedItem(CurrentNodeList[CurrentNodeList.Count - 1], "extension", out CurrentAttribute)) {
+					this.destinationExtension = CurrentAttribute.Value;
+				}
+
 				// Get output writer:
 				if (TryGetNamedItem(CurrentNodeList[CurrentNodeList.Count - 1], "writer", out CurrentAttribute)) {
 					this.outputWriter = CurrentAttribute.Value;
@@ -580,6 +595,7 @@ namespace BeeDevelopment.Brass3 {
 
 			Result.SourceFile = Project.Merge(master.SourceFile, merger.SourceFile);
 			Result.DestinationFile = Project.Merge(master.DestinationFile, merger.DestinationFile);
+			Result.DestinationExtension = Project.Merge(master.DestinationExtension, merger.DestinationExtension);
 			Result.StringEncoder = Project.Merge(master.StringEncoder, merger.StringEncoder);
 			Result.OutputWriter = Project.Merge(master.OutputWriter, merger.OutputWriter);
 			Result.Assembler = Project.Merge(master.Assembler, merger.Assembler);
