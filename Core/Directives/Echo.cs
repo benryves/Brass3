@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using BeeDevelopment.Brass3;
-using BeeDevelopment.Brass3.Plugins;
 using BeeDevelopment.Brass3.Attributes;
+using BeeDevelopment.Brass3.Plugins;
+using System;
 using System.ComponentModel;
 
 namespace Core.Directives {
@@ -15,11 +13,15 @@ namespace Core.Directives {
 	[PluginName("echo"), PluginName("echoln")]
 	public class Echo : IDirective {
 
+		protected virtual void OutputMessage(Compiler compiler, string message) {
+			compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, message));
+		}
+
 		public void Invoke(Compiler compiler, TokenisedSource source, int index, string directive) {
 			foreach (int Expression in source.GetCommaDelimitedArguments(index + 1)) {
-				compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, source.EvaluateExpression(compiler, Expression).StringValue));
+				this.OutputMessage(compiler, source.EvaluateExpression(compiler, Expression).StringValue);
 			}
-			if (directive == "echoln") compiler.OnMessageRaised(new Compiler.NotificationEventArgs(compiler, Environment.NewLine));
+			if (directive.EndsWith("ln")) this.OutputMessage(compiler, Environment.NewLine);
 		}
 
 	}
