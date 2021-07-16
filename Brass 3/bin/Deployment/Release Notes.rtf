@@ -1,6 +1,11 @@
-{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Tahoma;}{\f1\fswiss\fcharset0 Arial;}{\f2\fnil\fcharset2 Symbol;}}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Tahoma;}{\f1\fswiss\fcharset0 Arial;}{\f2\fnil\fcharset2 Symbol;}}
 {\colortbl ;\red0\green0\blue128;\red128\green128\blue128;\red0\green0\blue0;\red163\green21\blue21;}
-{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 13)\par
+{\*\generator Riched20 10.0.18362}\viewkind4\uc1 
+\pard\b\f0\fs17 Release Notes (3.0.0.0 Beta 14)\par
+\par
+\b0 Improved compatibility with 64-bit versions of Windows.\b\par
+\par
+Release Notes (3.0.0.0 Beta 13)\par
 \par
 \b0 Updated the TI-83 include file with more equates (based on Brandon Wilson's work).\par
 \par
@@ -22,12 +27,15 @@ An error is displayed when loading buggy, old or otherwise problematic plugins i
 \par
 \b Known Issues\b0\par
 \par
+
 \pard{\pntext\f2\'B7\tab}{\*\pn\pnlvlblt\pnf2\pnindent0{\pntxtb\'B7}}\fi-284\li710 As some reusable labels look like unary operators, using a reusable label in the same statement as a function that doesn't return a value - such as \cf1 bcall()\cf0  - silently fails to create the label. If you use a reusable label on the same line as such a function, you can insert a \\ character to be safe.\f1\par
-\f0{\pntext\f2\'B7\tab}If output data overlaps itself (\cf2 .org $00 \\ .db 1 \\ .org $00 \\ .db 2\cf0 ) no error is reported.\f1\par
-\f0{\pntext\f2\'B7\tab}TI applications are signed by an external COM object provided by the TI-83 Plus SDK -- not very cross platform friendly, I'm afraid.\f1\par
+{\pntext\f2\'B7\tab}\f0 If output data overlaps itself (\cf2 .org $00 \\ .db 1 \\ .org $00 \\ .db 2\cf0 ) no error is reported.\f1\par
+{\pntext\f2\'B7\tab}\f0 TI applications are signed by an external COM object provided by the TI-83 Plus SDK -- not very cross platform friendly, I'm afraid.\f1\par
+
 \pard\b\f0\par
 3.0.0.0 Beta 11\par
 \par
+
 \pard\li284\b0 Replacement of the old GUI builder application with a new project builder.\par
 \par
 A label resolution bug has been fixed.\par
@@ -47,9 +55,11 @@ I have replaced the zip utilty class with one I wrote myself.\par
 All namespaces for Brass 3 itself have been moved into a parent BeeDevelopment namespace.\par
 \par
 Unicode arrow characters were removed from the \cf1 .asciimap\cf0  directive documentation.\b\par
+
 \pard\par
 3.0.0.0 Beta 10\par
 \par
+
 \pard\li284\b0 Historically, the source has been assembled twice, and plugins decide what action to take based on the pass (typically creating labels and incrementing the program counter in the first pass, then writing output in the second pass). The result is that each plugin gets called twice and has to maintain its state. This can cause headaches for plugins that control the flow through the assembler, as they might do one thing on one pass, then a label will have been created or assigned differently the next time they're run which makes them take a different decision.\par
 \par
 The new design is that everything happens in the first pass, so functions and directives only get invoked once. However, this causes a different problem - how can we, for example, jump forwards if the label we wish to jump to hasn't been created yet? The solution is to be able to write dynamic output data. This writes an empty chunk of data, but lets the plugin writing the data register a delegate that will be called after compilation so it can go back and write the data it needs to.\par
@@ -65,9 +75,11 @@ The contiguous data plugin has been removed. Something offering similar function
 Internal fix to label resolution to prevent the internal label from being accidentally set to a null reference (this caused the error-reporting code to throw a null reference exception instead of the missing label's name).\par
 \par
 Exception is spelled, well, exception. Only one of the new exception types was spelled correctly (all the others were spelled "Expection"). Cheers to gameprograma for spotting this!\b\par
+
 \pard\par
 3.0.0.0 Beta 9\par
 \par
+
 \pard\li284\b0 Further label-related parsing bugs repaired.\par
 \par
 \cf3 A usage type is associated with labels, and can be set to \cf1 Execution\cf3 , \cf1 Variable\cf3  or \cf1 Constant\cf3 .\par
@@ -79,9 +91,11 @@ A \cf1 .breakpoint\cf0  directive has been added, currently only with support fo
 Added an \cf1 emukonpatch\cf0  listing writer for the Sega Master System and Game Gear debugging emulator Emukon. It supports label exports, three types of variable (8-bit byte, 16-bit word and 32-bit dword) and execution breakpoints.\par
 \par
 Released the source code.\b\par
+
 \pard\par
 3.0.0.0 Beta 8\par
 \par
+
 \pard\li284\b0 Corrected a $ and @ label resolution bug.\par
 \par
 Added a Dutch translation to Brass.exe by Timendus.\par
@@ -93,16 +107,20 @@ Changed the way that reusable labels are checked, fixing cases where the assembl
 Added a check for empty functions to the \cf1 .function\cf0  directive.\par
 \par
 Changed string constants in core plugin collection to strings in a resource file, and added s\fs16 upport for plugin documentation attributes to be extracted from resource files (specify the documentation attribute in the form \cf4 resources://ResourceFileName/ResourceStringName\cf3 ). This can allow for translated documentation.\cf0\b\fs17\par
+
 \pard\par
 3.0.0.0 Beta 7\par
+
 \pard\li284\b0\par
 Fixes to module/label access. This was a bit awkward to work on, so hopefully I didn't break anything else in the process. To aid this, there's a new label access keyword, \cf1 global\cf0  (to complement \cf1 parent\cf0 ).\par
 \par
 Removal of hard-coded strings from Brass.exe. They are now declared in resource files.\par
 \par
 Conversion to C#3 and Visual Studio 2008. The project still targets .NET 2.0, however.\b\par
+
 \pard\par
 3.0.0.0 Beta 6\b0\par
+
 \pard\li284\par
 Numerous fixes to Intel HEX writer (checksum calculation, page numbering, order of output); List file writers are run; Improved error detection on \cf1 .page\cf0  and \cf1 .defpage\cf0  directives.\par
 \par
@@ -111,9 +129,11 @@ Numerous fixes to Intel HEX writer (checksum calculation, page numbering, order 
 Some TI application support along with a template and 2-page sample.\par
 \par
 The Help Viewer now has an index with search-as-you-type functionality.\b\par
+
 \pard\par
 3.0.0.0 Beta 5\par
 \par
+
 \pard\li284\b0 New internal source statement layout (linked list rather than fixed indexing) means that statements can be inserted at any position and redirected at any point - so loops work inside \cf1 eval()\cf0 , you can include external files inside \cf1 .sections\cf0  and so on and so forth. This fixes a few issues (past, present and future) but the change broke a lot of plugins - hopefully I've repaired them now!\par
 \par
 New plugin collection for scripting lets you script the assembler in any .NET-compatible language without needing to develop and install plugins. The documentation contains some samples in Visual Basic and C#.\par
@@ -125,9 +145,11 @@ If there are any errors after pass one or pass two, the compiler cancels the bui
 Minor fixes on error reporting (command-line Brass.exe differentiates between warnings and errors, missing labels are reported as such rather than the default InvalidOperationException() text). The line spacing on the GUI builder has been reduced somewhat and you can Ctrl+C from it if need be.\par
 \par
 I have added some (Sandcastle-generated) documentation on Brass itself. It's not really enough to get going, but it's a start.\b\par
+
 \pard\par
 3.0.0.0 Beta 4\par
 \par
+
 \pard\li284\b0 Major bug fixed where directives calling an internal method to leave temporary modules wouldn't actually leave the module, resulting in bizarre label name resolution bugs.\par
 \par
 Internal functionality to easily retrieve tokens between parentheses added, resulting in easier and more reliable plugin development - and fixing bugs in \cf1 .define\cf0  in the process.\par
@@ -139,9 +161,11 @@ Ability to break code into sections that can be linked together in a particular 
 \cf0 Added basic DoorsCS 6 support with a header writer and template.\cf3\par
 \par
 \cf0 Improved flexibility in the Help Viewer, including support for "documentation-only" plugins (and hiding plugins that aren't end-user accessible).\b\par
+
 \pard\par
 3.0.0.0 Beta 3\par
 \b0\par
+
 \pard\li284 New Texas Instruments functions and directives for ROM calls and error handlers.\par
 \par
 The Help Viewer's code to convert newlines to HTML paragraphs has been fixed, and it shows the DisplayName for plugins rather than the default name (which appears to be randomly selected).\par
@@ -153,18 +177,22 @@ I've added a Sega Master System / Game Gear 32KB ROM template and sample program
 The \cf1 .echochar\cf0  directive has been removed.\par
 \par
 The project file format and GUI builder have been extended to support display name attributes on build configurations (you get "Sega Master System" instead of "SMS" and "TI-83 Plus, MirageOS" instead of "TI8X.MirageOS").\par
+
 \pard\b\par
 3.0.0.0 Beta 2\par
 \b0\par
+
 \pard\li284 Projects can now reference templates and contain multiple build configurations (supported by the command-line compiler and the GUI builder). To illustrate this a sample project is included.\par
 \par
 To aid this, there are some new plugins (such as the shell headers for TI programs).\par
 \par
 There have also been some general plugin bugfixes and tweaks, but nothing major at the moment.\b\par
+
 \pard\par
 \par
 3.0.0.0 Beta 1\par
 \b0\par
+
 \pard\li284 This is the first public release of Brass 3, so it is very likely that there are still bugs, missing features and the odd architectural silliness to resolve. Please notify me of any problems as soon as possible!\par
 \par
 For this reason, documentation is - at best - limited. The code examples in the supplied documentation are currently the best place to look for syntax.\par
