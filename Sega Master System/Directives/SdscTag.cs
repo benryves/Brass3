@@ -11,7 +11,7 @@ using System.Globalization;
 namespace SegaMasterSystem.Directives {
 	[Description("Adds an SDSC tag to an SMS or Game Gear ROM file.")]
 	[Remarks("If you set the string values to <c>\"\"</c>, 0 or $FFFF they are ignored. You can specify addresses of strings if you prefer.")]
-	[Warning("The strings will be allocated somewhere within the first 16KB page, so do not expect unused areas to be set to the empty fill value and manually fill empty spaces you expect to have certain values.")]
+	[Warning("The strings will be allocated somewhere within the page that includes the range $7FE0..$7FFF, so do not expect unused areas to be set to the empty fill value and manually fill empty spaces you expect to have certain values.")]
 	[Syntax(".sdsctag version, name, notes, author")]
 	[CodeExample("Using string literals to populate tags.", ".sdsctag 3.0, \"Brass\", \"A user-extendable assembler.\", \"Bee Development\"")]
 	[CodeExample("Using addresses of predefined strings.", ".sdsctag 1.02, Name, \"\", Author\r\n\r\nName   .db \"Tag example.\",0\r\nAuthor .db \"Ben Ryves\",0")]

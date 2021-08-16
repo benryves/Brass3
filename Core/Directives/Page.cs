@@ -44,7 +44,7 @@ Subsequent use of this directive only changes the page numbers and not the progr
 				Output.RawPages PagedRawWriter;
 				if ((PagedRawWriter = compiler.GetPluginInstanceFromType(typeof(Output.RawPages)) as Output.RawPages) != null) {
 					Output.RawPages.PageDeclaration PD;
-					if (PagedRawWriter.PageDeclarations.TryGetValue(compiler.Labels.ProgramCounter.Page, out PD)) {
+					if (PagedRawWriter.pageDeclarations.TryGetValue(compiler.Labels.ProgramCounter.Page, out PD)) {
 						DefaultAddress = PD.Address;
 					}
 				}

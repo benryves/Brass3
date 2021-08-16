@@ -30,7 +30,13 @@ namespace Core.Output {
 			}
 		}
 
-		internal Dictionary<int, PageDeclaration> PageDeclarations;
+		internal Dictionary<int, PageDeclaration> pageDeclarations;
+
+		public Dictionary<int, PageDeclaration> PageDeclarations {
+			get {
+				return this.pageDeclarations;
+			}
+		}
 
 		internal bool DisplayPageFreeSpace { get; set; }
 
@@ -43,7 +49,7 @@ namespace Core.Output {
 		/// <returns>True if found, false otherwise.</returns>
 		public bool TryGetPageContainingRange(int startAddress, int endAddress, out int page) {
 			page = 0;
-			foreach (KeyValuePair<int, PageDeclaration> PD in this.PageDeclarations) {
+			foreach (KeyValuePair<int, PageDeclaration> PD in this.pageDeclarations) {
 				if (PD.Value.Address <= startAddress && PD.Value.Address + PD.Value.Size > endAddress) {
 					page = PD.Key;
 					return true;
@@ -54,7 +60,7 @@ namespace Core.Output {
 
 		public byte[] CreateOutputData(Compiler compiler) {
 
-			List<int> DeclaredPages = new List<int>(this.PageDeclarations.Keys);
+			List<int> DeclaredPages = new List<int>(this.pageDeclarations.Keys);
 			DeclaredPages.Sort();
 
 			foreach (int Page in compiler.GetUniquePageIndices()) {
@@ -69,7 +75,7 @@ namespace Core.Output {
 
 			foreach (int Page in DeclaredPages) {
 
-				PageDeclaration PD = this.PageDeclarations[Page];
+				PageDeclaration PD = this.pageDeclarations[Page];
 
 				byte[] PageData = new byte[PD.Size];
 				bool[] WrittenPageData = new bool[PD.Size];
@@ -123,7 +129,7 @@ namespace Core.Output {
 
 		public RawPages(Compiler compiler) {
 			compiler.CompilationBegun += (sender, e) => {
-				this.PageDeclarations = new Dictionary<int, PageDeclaration>();
+				this.pageDeclarations = new Dictionary<int, PageDeclaration>();
 				this.DisplayPageFreeSpace = false;
 			};
 		}

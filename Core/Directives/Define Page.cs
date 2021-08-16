@@ -31,9 +31,8 @@ namespace Core.Directives {
 
 			//TODO: Reintroduce check for .page after data written to existing page.
 
-
-			if (PagedRawWriter.PageDeclarations.ContainsKey(Args[0])) PagedRawWriter.PageDeclarations.Remove(Args[0]);
-			PagedRawWriter.PageDeclarations.Add(Args[0], new Core.Output.RawPages.PageDeclaration(Args[1], Args[2]));
+			if (PagedRawWriter.pageDeclarations.ContainsKey(Args[0])) PagedRawWriter.pageDeclarations.Remove(Args[0]);
+			PagedRawWriter.pageDeclarations.Add(Args[0], new Core.Output.RawPages.PageDeclaration(Args[1], Args[2]));
 
 			Page P;
 			if ((P = compiler.GetPluginInstanceFromType<Page>()) != null) {

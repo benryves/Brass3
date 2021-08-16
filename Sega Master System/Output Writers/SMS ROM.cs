@@ -243,10 +243,22 @@ namespace SegaMasterSystem.Output {
 			return (ushort)((Thousands << 12) | (Hundreds << 8) | (Tens << 4) | Units);
 		}
 
-		private static ushort AllocateSdscString(Compiler c, Directives.SdscTag.SdscString str, byte[] binary) {
+		private ushort AllocateSdscString(Compiler c, Directives.SdscTag.SdscString str, byte[] binary) {
 			if (str.Value != null) {
 				byte[] Data = Encoding.ASCII.GetBytes(str.Value + '\0');
-				int Address = c.FindFreeMemoryBlock(c.Labels.ProgramCounter.Page, Data.Length);
+
+				Core.Output.RawPages PagedRawWriter;
+				
+
+				int startAddress = 0;
+				if (((PagedRawWriter = c.GetPluginInstanceFromType(typeof(Core.Output.RawPages)) as Core.Output.RawPages) != null) && PagedRawWriter.PageDeclarations.TryGetValue(c.Labels.ProgramCounter.Page, out PageDeclaration declaration)) {
+					startAddress = declaration.Address;
+				} else {
+					c.OnWarningRaised(new Compiler.NotificationEventArgs(c, string.Format("Could not determine the address of page {0} when allocating SDSC string '{1}'.", c.Labels.ProgramCounter.Page, str.Value)));
+				}
+
+				int Address = c.FindFreeMemoryBlock(c.Labels.ProgramCounter.Page, Data.Length, startAddress);
+
 				if (Address < 0x7FE0) {
 					c.Labels.OutputCounter.NumericValue = Address;
 					Array.Copy(Data, 0, binary, Address, Data.Length); // Copy in the string!

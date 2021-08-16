@@ -416,10 +416,11 @@ namespace BeeDevelopment.Brass3 {
 		/// <param name="page">The page to search on.</param>
 		/// <param name="size">The size of the continuous block.</param>
 		/// <returns>The lowest output address that meets the requirements.</returns>
-		public int FindFreeMemoryBlock(int page, int size) {
+		public int FindFreeMemoryBlock(int page, int size, int startAddress) {
 			List<OutputData> ExistingData = new List<OutputData>(this.GetOutputDataOnPage(page));
 			ExistingData.Sort();
-			int TestAddress = 0;
+
+			int TestAddress = startAddress;
 			for (int i = 0; i < ExistingData.Count; ++i) {
 				if (ExistingData[i].OutputCounter > (TestAddress + size)) break;
 				TestAddress = ExistingData[i].OutputCounter + ExistingData[i].Data.Length;
