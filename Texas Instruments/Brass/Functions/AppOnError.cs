@@ -5,6 +5,7 @@ using System.ComponentModel;
 using BeeDevelopment.Brass3;
 using BeeDevelopment.Brass3.Attributes;
 using BeeDevelopment.Brass3.Plugins;
+using System.Reflection;
 
 namespace TexasInstruments.Brass.Functions {
 	[Category("Texas Instruments")]
@@ -42,7 +43,7 @@ My_Err_Handle:
 			switch (function) {
 				case "apponerr":
 					compiler.WriteStaticOutput((byte)BCall.Z80Instruction.LdHl);
-					compiler.WriteStaticOutput((ushort)(double)source.GetCommaDelimitedArguments(compiler, 0, TokenisedSource.ValueArgument)[0]);
+					compiler.WriteDynamicOutput(2, G => { ushort Address = (ushort)source.EvaluateExpression(compiler).NumericValue; G.Data = new byte[] { (byte)Address, (byte)(Address >> 8) }; });
 					compiler.WriteStaticOutput((byte)BCall.Z80Instruction.Call);
 					compiler.WriteStaticOutput((ushort)0x59);
 					break;

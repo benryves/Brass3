@@ -1,8 +1,8 @@
 ; Setup Script for Brass 3.
-; Ben Ryves / Bee Development 2007-2021.
+; Ben Ryves / Bee Development 2007-2025.
 [Setup]
 AppName=Brass
-AppVerName=Brass 3 Beta 15
+AppVerName=Brass 3 Beta 16
 AppPublisher=Bee Development
 AppPublisherURL=http://www.bee-dev.com/?go=brass
 AppSupportURL=http://www.bee-dev.com/?go=brass
