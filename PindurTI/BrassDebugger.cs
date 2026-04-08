@@ -20,6 +20,22 @@ namespace PindurTI {
 			Program.ExtraVariables.Add(key, value ?? "");
 		}
 
+		static bool ResolvePath(ref string filename, IEnumerable<string> searchPaths) {
+
+			if (string.IsNullOrEmpty(filename)) return false;
+			if (File.Exists(filename)) return true;
+
+			foreach (var searchPath in searchPaths) {
+				var test = Path.Combine(searchPath, filename);
+				if (File.Exists(test)) {
+					filename = test;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public void Start(Compiler compiler, bool debuggingEnabled) {
 
 			// Legacy fun
@@ -37,7 +53,7 @@ namespace PindurTI {
 				RomFile = WorkingLabel.StringValue;
 			}
 
-			if (!File.Exists(RomFile)) {
+			if (!ResolvePath(ref RomFile, new[] { Application.StartupPath })) {
 				MessageBox.Show("ROM file '" + RomFile + "' not found.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}

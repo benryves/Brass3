@@ -5,6 +5,7 @@
 		<collection source="Core.dll" />
 		<collection source="Z80.dll" />
 		<collection source="TiCalc.dll" />
+		<collection source="PindurTI Debugger.exe" />
 	</plugins>
 	
 	<input assembler="Z80" stringencoder="large8x">
@@ -18,10 +19,13 @@
 			.appheader
 		</header>
 	</input>
+	
+	<debugger name="pindurti" />
 
 	<buildconfiguration name="TI8X" displayname="TI-83 Plus">
 	
 		<input>
+			<label name="Debug.ROM" type="string" value="Debug/TI/ROMs/TI8X.rom" />
 			<header append="true">.include "TI/ti83plus.inc"</header>
 		</input>
 		
@@ -32,6 +36,7 @@
 	<buildconfiguration name="TI73" displayname="TI-73">
 
 		<input>
+			<label name="Debug.ROM" type="string" value="Debug/TI/ROMs/TI73.rom" />
 			<header append="true">.include "TI/ti73.inc"</header>
 		</input>
 
