@@ -67,9 +67,6 @@ namespace BeeDevelopment.Brass3 {
 			char StringChar = '"';
 			int EscapingLength = 0;
 
-			// Used for keeping track of whether we're in whitespace or not:
-			bool InWhiteSpace = false;
-
 			// Used for keeping track of "absolute" strings.
 			bool InAbsolute = false;
 
@@ -80,8 +77,10 @@ namespace BeeDevelopment.Brass3 {
 			// Most recent character:
 			char LastChar = (char)0;
 
+			Token.TokenTypes CurrentTokenType = Token.TokenTypes.None;
 			StringBuilder CurrentToken = new StringBuilder(32);
-			Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+
+			Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 
 			int OriginalPosition = (int)s.Position;
 
@@ -106,8 +105,9 @@ namespace BeeDevelopment.Brass3 {
 					if (lineNumberCounter > 0) ++lineNumberCounter;
 					if (InToEndOfLineComment) {
 						InToEndOfLineComment = false;
+						CurrentTokenType = Token.TokenTypes.None;
 						CurrentToken = new StringBuilder(32);
-						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 					}
 				}
 
@@ -117,8 +117,9 @@ namespace BeeDevelopment.Brass3 {
 					CurrentToken.Append(c);
 					if (c == '/' && LastChar == '*') {
 						InMultilineComment = false;
+						CurrentTokenType = Token.TokenTypes.None;
 						CurrentToken = new StringBuilder(32);
-						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 					}
 				} else if (InAbsolute) {
 					CurrentToken.Append(c);
@@ -140,8 +141,9 @@ namespace BeeDevelopment.Brass3 {
 					} else if (c == '\\') { // Are we about to start escaping?
 						EscapingLength = 1;
 					} else if (c == StringChar) { // Is it the end of a string literal?
+						CurrentTokenType = Token.TokenTypes.None;
 						CurrentToken = new StringBuilder(32);
-						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 						InString = false;
 					}
 				} else {
@@ -200,47 +202,54 @@ namespace BeeDevelopment.Brass3 {
 							KeyValuePair<Token.TokenTypes, StringBuilder> StartComment = Tokens[Tokens.Count - 1];
 							Tokens.RemoveAt(Tokens.Count - 1); // Purge the old incorrectly read token.
 
+							CurrentTokenType = Token.TokenTypes.Comment;
 							CurrentToken = StartComment.Value;
 							CurrentToken.Append(c);
 
-							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.Comment, CurrentToken));
+							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 
 							InMultilineComment = true;
 						} else {
-							CurrentToken = new StringBuilder(32);
-							CurrentToken.Append(c);
 							InAbsolute = c == '{';
-							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(InAbsolute ? Token.TokenTypes.None : Token.TokenTypes.Punctuation, CurrentToken));
+
+							CurrentTokenType = InAbsolute ? Token.TokenTypes.None : Token.TokenTypes.Punctuation;
+							CurrentToken = new StringBuilder(32);
+							
+							CurrentToken.Append(c);
+							
+							Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 							if (!InAbsolute) {
+								CurrentTokenType = Token.TokenTypes.None;
 								CurrentToken = new StringBuilder(32);
-								Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.None, CurrentToken));
+								Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 							}
 						}
 					} else if (c == ';') { // Is it a comment character?
 						InToEndOfLineComment = true;
+						CurrentTokenType = Token.TokenTypes.Comment;
 						CurrentToken = new StringBuilder(32);
 						CurrentToken.Append(c);
-						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.Comment, CurrentToken));
+						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 					} else if (CanBreak && (IsNewLine || IsSeperator)) { // Is it a termination character?
+						CurrentTokenType = Token.TokenTypes.Seperator;
 						CurrentToken = new StringBuilder(c.ToString());
-						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.Seperator, CurrentToken));
+						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 						break; // Done!
-					} else if ((c == '"' || c == '\'') && (InWhiteSpace || LastTokenType != Token.TokenTypes.None)) {
+					} else if ((c == '"' || c == '\'') && (CurrentTokenType == Token.TokenTypes.WhiteSpace || LastTokenType != Token.TokenTypes.None)) {
 						// Is it the start of a string literal?
 						InString = true;
 						StringChar = c;
+						CurrentTokenType = Token.TokenTypes.String;
 						CurrentToken = new StringBuilder(32);
 						CurrentToken.Append(c);
-						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(Token.TokenTypes.String, CurrentToken));
+						Tokens.Add(new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken));
 					} else {
 
 						bool IsWhiteSpace = char.IsWhiteSpace(c);
 
-						if (CurrentToken.Length > 0 && InWhiteSpace == IsWhiteSpace) {
+						if (CurrentToken.Length > 0 && (CurrentTokenType == Token.TokenTypes.WhiteSpace) == IsWhiteSpace) {
 							CurrentToken.Append(c);
 						} else {
-
-							InWhiteSpace = IsWhiteSpace;
 
 							// Kludge for %:
 							if (LastTokenType == Token.TokenTypes.Punctuation && LastChar == '%' && (c == '0' || c == '1')) {
@@ -260,7 +269,8 @@ namespace BeeDevelopment.Brass3 {
 									DirectiveIndex = Tokens.Count;
 								}
 							}
-							KeyValuePair<Token.TokenTypes, StringBuilder> T = new KeyValuePair<Token.TokenTypes, StringBuilder>((IsNewLine || IsSeperator) ? Token.TokenTypes.Seperator : (IsWhiteSpace ? Token.TokenTypes.WhiteSpace : (c == '.' || c == '#' ? Token.TokenTypes.Directive : Token.TokenTypes.None)), CurrentToken);
+							CurrentTokenType = (IsNewLine || IsSeperator) ? Token.TokenTypes.Seperator : (IsWhiteSpace ? Token.TokenTypes.WhiteSpace : (c == '.' || c == '#' ? Token.TokenTypes.Directive : Token.TokenTypes.None));
+							KeyValuePair<Token.TokenTypes, StringBuilder> T = new KeyValuePair<Token.TokenTypes, StringBuilder>(CurrentTokenType, CurrentToken);
 							Tokens.Add(T);
 						}
 					}
